@@ -50,6 +50,7 @@ The current public surface includes:
 - cascade multiplier ladder `x1 → x4 → x16 → x64`;
 - `SOLAR CORONA BONUS` in HELIOS mode;
 - GRIDJACK `DEMO SPIN ENERGY` bank;
+- event-generated cosmic WebAudio soundtrack;
 - independent `SPIN` and `ROUTE POWER` controls;
 - explicit compute consent, CPU cap and immediate revoke;
 - six replaceable compute route classes;
@@ -135,6 +136,35 @@ SOLAR_BONUS_BANK
 
 The Solar Corona is demo-only and has no compute or route effect.
 
+## Cosmic procedural soundtrack
+
+HELIOS does not need a prerecorded background track. `helios-music.js` generates the soundtrack locally with WebAudio after the user explicitly enables `COSMIC AUDIO`.
+
+```text
+GAME MODE ───────┐
+SPIN START ──────┤
+PAID CASCADE ────┤
+SOLAR CORONA ────┤
+SPIN ENERGY ─────┤ → COSMIC EVENT REACTOR → SYNTH TRANSPORT → LIVE AUDIO
+ROUTE CHANGE ────┤
+COMPUTE STATE ───┘
+```
+
+Default tonal identities:
+
+```text
+HELIOS   → D Lydian Orbit      · 66 BPM
+DIVINE   → A Lydian Aether     · 60 BPM
+GRIDJACK → E Dorian Pulse      · 78 BPM
+CUSTOM   → C# Void Minor       · 70 BPM
+```
+
+The architecture is inspired by the separation-of-responsibilities pattern in [`BitMaker-hub/NerdMiner_v2`](https://github.com/BitMaker-hub/NerdMiner_v2): independent monitor/network/mining tasks inform the idea of keeping HELIOS audio transport, event reaction, slot logic and compute routing separate. **No NerdMiner source code is copied.**
+
+The soundtrack is presentation-only. It must not adapt to bet size, loss streaks, near-miss state, wagering history or inferred player vulnerability, and it has no authority over RNG, RTP, payout or compute routing.
+
+See [`docs/COSMIC_SYNTH_ENGINE.md`](docs/COSMIC_SYNTH_ENGINE.md).
+
 ## Ecosystem
 
 ```text
@@ -189,9 +219,11 @@ compute -> personal jackpot weight FORBIDDEN
 spin frequency -> compute rate     FORBIDDEN
 browser -> provider private secret FORBIDDEN
 unverified receipt -> ledger value FORBIDDEN
+music -> RNG / RTP / payout        NONE
+music -> player-vulnerability loop FORBIDDEN
 ```
 
-Compute is OFF by default, requires explicit opt-in and supports immediate revocation.
+Compute is OFF by default, requires explicit opt-in and supports immediate revocation. Audio is OFF by default and requires a user gesture.
 
 ## Current implementation
 
@@ -199,13 +231,16 @@ Compute is OFF by default, requires explicit opt-in and supports immediate revoc
 - [`helios.js`](helios.js) — game core, cascades, multiplier ladder, route arming and Spin Energy;
 - [`helios-polish.js`](helios-polish.js) — observer/presentation layer;
 - [`helios-bonus.js`](helios-bonus.js) — Solar Corona feature;
+- [`helios-music.js`](helios-music.js) — event-driven cosmic procedural WebAudio engine;
 - [`config/helios.public.json`](config/helios.public.json) — public buyer-facing configuration;
+- [`docs/COSMIC_SYNTH_ENGINE.md`](docs/COSMIC_SYNTH_ENGINE.md) — audio architecture and NerdMiner inspiration boundary;
 - [`src/helios-router.js`](src/helios-router.js) — provider-agnostic routing core;
 - [`tests/cascade-energy-invariants.test.mjs`](tests/cascade-energy-invariants.test.mjs) — cascade/Spin Energy invariants;
+- [`tests/cosmic-music-invariants.test.mjs`](tests/cosmic-music-invariants.test.mjs) — procedural-audio invariants;
 - [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — canonical architecture;
 - [`PROJECT_STATUS.json`](PROJECT_STATUS.json) — maturity and open gates.
 
-`helios.js` v1.6.0 has passed a local Node syntax check for the exact committed blob. The complete repository test suite is **not** claimed green until a full runner/CI execution records that result.
+`helios.js` v1.6.0 has passed a local Node syntax check for the exact committed core blob. The newly added `helios-music.js` and the complete repository test suite are **not** claimed green until a real runner/CI execution records that result.
 
 ## Licensing
 
