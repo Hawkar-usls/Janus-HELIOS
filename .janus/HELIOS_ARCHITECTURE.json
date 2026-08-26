@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v7",
+  "schema": "janus.helios.architecture.v8",
   "project": "Janus-HELIOS",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -84,11 +84,13 @@
   },
   "procedural_audio": {
     "module": "helios-music.js",
-    "classification": "EVENT_DRIVEN_PRESENTATION_ENGINE",
-    "engine": "WEB_AUDIO_EVENT_GENERATIVE",
+    "classification": "LIVE_GENERATIVE_PRESENTATION_SEQUENCER",
+    "engine": "WEB_AUDIO_LIVE_SEQUENCER_V2",
     "default_state": "OFF_UNTIL_EXPLICIT_AUDIO_GESTURE",
     "architecture_inspiration": "NERDMINER_V2_TASK_SEPARATION_NO_SOURCE_CODE_COPIED",
-    "transport_model": "LOW_COST_LOOKAHEAD_SCHEDULER_INDEPENDENT_FROM_GAME_AND_COMPUTE_LOOPS",
+    "transport_model": "16_STEP_4_4_LOOKAHEAD_SCHEDULER_INDEPENDENT_FROM_GAME_AND_COMPUTE_LOOPS",
+    "progression_degrees": [0, 4, 5, 3],
+    "continuous_layers": ["SOLAR_PULSE", "SUB_BASS", "ORBITAL_BASS", "ARPEGGIATOR", "COSMIC_PAD", "STARFIELD_BELLS", "COMPUTE_DRONE", "EVENT_FILLS"],
     "profiles": {
       "HELIOS": "D_LYDIAN_ORBIT",
       "DIVINE": "A_LYDIAN_AETHER",
@@ -96,6 +98,7 @@
       "CUSTOM": "C_SHARP_VOID_MINOR"
     },
     "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "event_role": "MODULATE_ARRANGEMENT_DENSITY_REGISTER_AND_FILLS_OVER_CONTINUOUS_TRANSPORT",
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "external_audio_assets_required": false,
     "may_change_rng": false,
