@@ -34,11 +34,11 @@ audited impact / value sink
 
 The buyer decides where the compute stream goes.
 
-## Try the public demo
+## Live public demo
 
-Open [`index.html`](index.html) through GitHub Pages once Pages is enabled for the repository.
+**GitHub Pages:** https://hawkar-usls.github.io/Janus-HELIOS/
 
-The page is Telegram WebApp-compatible and demonstrates:
+The live page is served from [`index.html`](index.html) on `main` and is Telegram WebApp-compatible. It demonstrates:
 
 - a new HELIOS-themed manual slot interface;
 - a visible central compute core;
