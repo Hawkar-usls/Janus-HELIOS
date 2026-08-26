@@ -4,7 +4,8 @@
     "product_name": "JANUS HELIOS",
     "station_name": "HELIOS STATION",
     "tagline": "ONE CORE · ANY DESTINATION",
-    "default_route": "market"
+    "default_route": "market",
+    "default_game_mode": "helios"
   },
   "resource_policy": {
     "compute_off_by_default": true,
@@ -13,6 +14,12 @@
     "gpu_default": false,
     "immediate_revoke": true
   },
+  "game_modes": [
+    {"key": "helios", "label": "HELIOS", "enabled": true, "role": "UNIVERSAL_CORE_PROFILE"},
+    {"key": "divine", "label": "DIVINE", "enabled": true, "role": "RADIANT_FIVE_LINE_PROFILE"},
+    {"key": "gridjack", "label": "GRIDJACK", "enabled": true, "role": "TREASURY_NINE_LINE_PROFILE"},
+    {"key": "custom", "label": "CUSTOM", "enabled": true, "role": "BUYER_CONFIGURABLE_PROFILE"}
+  ],
   "routes": [
     {
       "key": "market",
@@ -32,7 +39,7 @@
     },
     {
       "key": "science",
-      "icon": "🧬",
+      "icon": "✦",
       "name": "SCIENCE",
       "short": "SCIENCE",
       "route_class": "SCIENCE",
@@ -96,7 +103,7 @@
     },
     {
       "key": "custom",
-      "icon": "✦",
+      "icon": "⌘",
       "name": "CUSTOM",
       "short": "CUSTOM",
       "route_class": "CUSTOM",
