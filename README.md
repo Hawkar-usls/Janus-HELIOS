@@ -4,164 +4,87 @@
 ### One Core. Any Destination.
 
 ![Status](https://img.shields.io/badge/status-active%20public%20prototype-2ea043)
-![Class](https://img.shields.io/badge/class-universal%20compute%20routing%20slot-8250df)
-![License](https://img.shields.io/badge/license-source--available%20evaluation-d29922)
+![Class](https://img.shields.io/badge/class-gameplay%20%2B%20compute%20routing-8250df)
+![Version](https://img.shields.io/badge/version-1.10.0-d29922)
 ![Real Money](https://img.shields.io/badge/real--money-disabled-b62324)
 
 </div>
 
-## What HELIOS is
-
-**JANUS HELIOS is the universal configurable parent asset of the JANUS slot/compute ecosystem.**
-
-It is web-first and Telegram-independent. The slot is one surface; behind it is a separate explicit-consent compute router whose destination can be replaced without rewriting the game core.
-
-```text
-PLAYER / DEVICE
-      ↓
-explicit opt-in + resource policy
-      ↓
-JANUS HELIOS ROUTER
-      ↓
-Provider Manifest + Adapter + Verifier
-      ↓
-approved workload
-      ↓
-authoritative receipt
-      ↓
-audited impact / value sink
-```
-
-The buyer decides where the compute stream goes.
-
 ## Product thesis
 
-HELIOS is not intended to be sold as “another slot.” The intended B2B proposition is a configurable gameplay + compute-routing technology class: a game surface can coexist with an opt-in compute layer that produces a measurable external result when authoritative provider/research receipts exist.
+**JANUS HELIOS is not intended to be sold as another slot.**
+
+It is a web-first B2B prototype for a new interaction class: a game surface can coexist with a separately controlled, explicit-opt-in compute layer that routes available resources toward approved external workloads and records the resulting value or impact.
 
 ```text
 GAMEPLAY SURFACE
-      || independent authority boundary
+      || strict authority boundary
 OPT-IN COMPUTE ROUTER
       ↓
 MARKET / SCIENCE / TREASURY / DATA CENTER / OPERATOR / CUSTOM
       ↓
-VERIFIABLE EXTERNAL RESULT
+AUTHORITATIVE RECEIPT
+      ↓
+MEASURABLE EXTERNAL RESULT
 ```
 
-## Live public demo
+Public demo: https://hawkar-usls.github.io/Janus-HELIOS/
 
-**GitHub Pages:** https://hawkar-usls.github.io/Janus-HELIOS/
+## Current demo surface
 
-The current public surface includes:
+HELIOS currently demonstrates:
 
-- HELIOS-specific 5×3 slot interface;
-- native CSS cosmic / solar-station background;
+- 5×3 cosmic slot surface;
 - `HELIOS / DIVINE / GRIDJACK / CUSTOM` game profiles;
-- persistent `LAST PAID WIN`, `TOTAL WINS`, `TOTAL SPINS`;
-- custom dark BET picker;
-- bounded `AUTO ×10`;
-- real tumble/cascade flow after paid wins;
-- cascade multiplier ladder `x1 → x4 → x16 → x64`;
-- `SOLAR CORONA BONUS` in HELIOS mode;
-- public-demo `BUY SOLAR CORONA` capability;
-- GRIDJACK `DEMO SPIN ENERGY` bank;
-- `LUCKY HASH / IMPACT HIT / GOLDEN TASK` contribution-recognition demo;
-- mode + route + event + session-seeded cosmic generative WebAudio soundtrack;
-- independent `SPIN` and `ROUTE POWER` controls;
-- explicit compute consent, CPU cap and immediate revoke;
+- tumble cascades with `x1 → x4 → x16 → x64`;
+- `SOLAR CORONA BONUS`;
+- demo-only `BUY SOLAR CORONA` capability;
+- GRIDJACK `DEMO SPIN ENERGY`;
+- route arming and explicit compute consent;
 - six replaceable compute route classes;
-- route arming feedback and simulated receipts.
+- simulated compute receipts;
+- mode + route + event + session-seeded procedural music;
+- rare `LUCKY HASH / IMPACT HIT / GOLDEN TASK` contribution recognition;
+- `MY HELIOS` miner/operator profile with history, statistics, notifications and a simulated real-time offer board.
 
-No real-money gambling or real provider workload is performed by the public page.
+No real-money gambling and no real production provider workload are performed by the public page.
 
-## Cascade engine
+## MY HELIOS — miner/operator profile
 
-HELIOS uses an actual post-win tumble loop:
+`helios-profile.js` turns the demo into more than a slot presentation. It previews the user-facing compute account that a real deployment could expose.
 
 ```text
-paid line
-   ↓
-highlight paid cells
-   ↓
-remove paid symbols
-   ↓
-survivors fall
-   ↓
-new random symbols enter from above
-   ↓
-re-evaluate
-   ↓
-if another win → next multiplier
+MY HELIOS
+├── OVERVIEW
+│   ├── compute units
+│   ├── demo personal value
+│   ├── external value / impact
+│   └── Lucky Contributions
+├── WORK HISTORY
+│   ├── when the device worked
+│   ├── route / workload
+│   ├── receipt id
+│   └── demo accounting
+├── LIVE OFFERS
+│   └── simulated marketplace / pool / research / operator opportunities
+└── NOTIFICATIONS
+    ├── Lucky Hash / Impact Hit / Golden Task
+    └── Spin Energy events
 ```
 
-Multiplier ladder:
+The public profile uses browser-local demo storage. Its offer cards refresh every 15 seconds to demonstrate marketplace behavior, but they are **not current NiceHash, Golem, cloud or pool prices**.
+
+Production requirements:
 
 ```text
-1st paid cascade → x1
-2nd paid cascade → x4
-3rd paid cascade → x16
-4th+ paid cascade → x64
-```
-
-The full cascade chain is included in the spin's demo payout and therefore in `LAST PAID WIN`.
-
-The cascade engine does **not** read compute route, compute units, provider receipt or compute contribution when generating game outcomes.
-
-## Demo Spin Energy
-
-GRIDJACK can accumulate separate demo-only spin entitlements while **any configured HELIOS compute route** is actively streaming with explicit consent:
-
-```text
-GRIDJACK
-   +
-MARKET / SCIENCE / JACKPOT / DATA CENTER / OPERATOR / CUSTOM
-   +
-explicit consent + ROUTE POWER
-            ↓
-      active compute timer
-            ↓
-       every 30 seconds
-            ↓
-      +1 DEMO SPIN ENERGY
-            ↓
-          bank max 3
-```
-
-This is deliberately a public-demo mechanic:
-
-```text
-Spin Energy -> cashout                       FORBIDDEN
-Spin Energy -> automatic wagering balance   FORBIDDEN
-Spin Energy bank -> autoplay                 FORBIDDEN
-compute -> production real-money free spin  FORBIDDEN BY DEFAULT
-```
-
-## Solar Corona + demo Bonus Buy
-
-HELIOS mode has its own identity feature:
-
-```text
-3+ ☀ on settled HELIOS grid
-        ↓
-SOLAR CORONA BONUS
-        ↓
-8-ray multiplier wheel
-        ↓
-SOLAR_BONUS_BANK
-```
-
-The same feature can also be entered from the public `BUY SOLAR CORONA` capability demo. The demo uses presentation-only units and a configurable `50× BET` display cost. It does **not** enable a production real-money feature-buy product.
-
-```text
-PUBLIC DEMO BONUS BUY → allowed capability demo
-REAL-MONEY FEATURE BUY → disabled pending separate regulatory / platform / responsible-gaming / game-math review
+real offer board      → live provider API
+real earnings history → authoritative receipts + settlement
+real impact history   → authoritative research acceptance
 ```
 
 ## Lucky Contribution
 
-HELIOS now has a route-aware contribution-recognition layer in [`helios-lucky.js`](helios-lucky.js).
-
-Public demo semantics:
+Rare valuable compute contributions belong to the user's compute identity, not to normal reel presentation.
 
 ```text
 MARKETPLACE / TREASURY → LUCKY HASH
@@ -169,115 +92,125 @@ SCIENCE / PUBLIC GOOD  → IMPACT HIT
 DC / OPERATOR / CUSTOM → GOLDEN TASK
 ```
 
-The public page simulates these events from simulated receipts for presentation only. A production reward may only originate from an authoritative provider/research verifier receipt.
+The automatic public-demo rate is intentionally very low: `0.5%` per simulated receipt. The profile contains a separate showcase trigger so a buyer can inspect the feature without making the normal event common.
+
+Production semantics are different: **browser probability is not the authority**.
 
 ```text
-Lucky Contribution -> RNG                     NONE
-Lucky Contribution -> RTP                     NONE
-Lucky Contribution -> bonus probability       NONE
-Lucky Contribution -> personal jackpot weight NONE
+provider / research result
+        ↓
+authoritative receipt
+        ↓
+significance verifier
+        ↓
+Lucky Contribution recognition
 ```
 
-The recognition event may trigger visuals and a musical climax without changing game mathematics.
+Lucky Contribution has no authority over RNG, RTP, bonus probability, bet size or personal jackpot weight.
 
 ## Cosmic procedural soundtrack v3
 
-HELIOS does not need a prerecorded background track. `helios-music.js` generates a continuous soundtrack locally with WebAudio after the user explicitly enables `COSMIC AUDIO`.
+`helios-music.js` generates music locally with WebAudio rather than playing a prerecorded song.
 
 ```text
-GAME MODE ───────┐
-COMPUTE ROUTE ───┤
-SESSION SEED ────┤
-GAME/UI EVENTS ──┤
-                 ▼
-       LIVE MODE + ROUTE + EVENT REACTOR
-                 ↓
-             16-STEP MUSIC
+GAME MODE
++ COMPUTE ROUTE
++ SESSION SEED
++ LIVE EVENTS
+        ↓
+16-STEP GENERATIVE TRANSPORT
+        ↓
+BASS + PULSE + ARP + PAD + STARFIELD + DRONE + FILLS
 ```
 
-Mode tonal identities:
+Base tonal identities:
 
 ```text
-HELIOS   → D Lydian Orbit      · 66 BPM base
-DIVINE   → A Lydian Aether     · 60 BPM base
-GRIDJACK → E Dorian Pulse      · 78 BPM base
-CUSTOM   → C# Void Minor       · 70 BPM base
+HELIOS   → D Lydian Orbit
+DIVINE   → A Lydian Aether
+GRIDJACK → E Dorian Pulse
+CUSTOM   → C# Void Minor
 ```
 
-Route identities then reshape that mode:
+Route selection changes arrangement character, while cascades, Solar Corona, Bonus Buy, Spin Energy, Lucky Contribution and compute state reshape tempo, density, register and fills over the already-running composition.
 
-```text
-MARKET   → brighter exchange arp / +4 BPM
-SCIENCE  → airy starfield / -2 BPM
-TREASURY → heavy bass/pulse / +8 BPM
-DC       → machine clock / +2 BPM
-OPERATOR → dense engine link / +5 BPM
-CUSTOM   → buyer-configurable void profile
-```
-
-Events reshape the already-running composition:
-
-```text
-CASCADE x1  → temporary +3 BPM
-CASCADE x4  → temporary +7 BPM
-CASCADE x16 → temporary +12 BPM
-CASCADE x64 → temporary +18 BPM
-SOLAR CORONA → multi-bar +18 BPM climax
-LUCKY CONTRIBUTION → multi-bar +12 BPM celebration
-DEMO BONUS BUY → +10 BPM transition layer
-COMPUTE ACTIVE → route-specific low engine drone
-```
-
-Each browser session receives a random session seed, so optional rhythm placements, arp mutations and starfield notes vary without reading bet size or player vulnerability.
-
-The architecture is inspired by the separation-of-responsibilities pattern in [`BitMaker-hub/NerdMiner_v2`](https://github.com/BitMaker-hub/NerdMiner_v2). **No NerdMiner source code is copied.**
-
-The soundtrack is presentation-only. It must not adapt to bet size, loss streaks, near-miss state, wagering history or inferred player vulnerability, and it has no authority over RNG, RTP, payout or compute routing.
+The music engine never reads loss streak, near-miss state, wagering history, player vulnerability or bet size.
 
 See [`docs/COSMIC_SYNTH_ENGINE.md`](docs/COSMIC_SYNTH_ENGINE.md).
+
+## Cascade engine
+
+```text
+paid line
+   ↓
+remove winning symbols
+   ↓
+gravity collapse
+   ↓
+random refill
+   ↓
+re-evaluate
+   ↓
+next paid cascade raises multiplier
+```
+
+Multiplier ladder:
+
+```text
+x1 → x4 → x16 → x64
+```
+
+Compute state, route and receipts are not inputs to cascade RNG.
+
+## Demo Spin Energy
+
+In GRIDJACK, any configured active compute route can accumulate separate demo-only Spin Energy while explicit consent remains active.
+
+```text
+30 s eligible demo compute → +1 Energy Spin
+bank max 3
+```
+
+It has no cash value, no cashout, no automatic wagering conversion and no bank autoplay. A production compute-to-real-money-free-spin loop is disabled by default pending separate legal and responsible-gaming review.
+
+## Compute architecture
+
+```text
+EXPLICIT CONSENT
+      ↓
+DEVICE RESOURCE POLICY
+      ↓
+HELIOS ROUTER
+      ↓
+ProviderManifest
+      ↓
+Adapter
+      ↓
+Approved workload
+      ↓
+Authoritative Receipt Verifier
+      ↓
+Audited Value / Impact Sink
+```
+
+Reference destinations include science/public-good work, shared treasury/pool work, compute marketplaces, data-center workloads, buyer-owned operator workloads and custom providers.
+
+The standalone router foundation lives in [`src/helios-router.js`](src/helios-router.js).
 
 ## Ecosystem
 
 ```text
 JANUS HELIOS
-   universal route-switchable parent
+   universal configurable parent
           │
           ├── DIVINE_REALM
           │     fixed SCIENCE / PUBLIC-GOOD child
           │
           └── SSlot
-                fixed SHARED MINING-POOL / JACKPOT child
+                fixed TREASURY / SHARED POOL child
 ```
 
-- [`DIVINE_REALM`](https://github.com/Hawkar-usls/DIVINE_REALM) remains the research/public-good specialization.
-- [`SSlot`](https://github.com/Hawkar-usls/SSlot) remains the shared mining-pool / Compute Treasury / jackpot specialization.
-- HELIOS is the configurable buyer-facing parent asset.
-
-Canonical family contract: [`.janus/HELIOS_ECOSYSTEM.json`](.janus/HELIOS_ECOSYSTEM.json).
-
-## Reference compute routes
-
-| Route | Example use | Task class | Default sink |
-|---|---|---|---|
-| Science | research / public-good Requestor | `SCIENCE_WORK_UNIT` | `IMPACT_LEDGER` |
-| Shared Jackpot Pool | mining / verified pool revenue | `POW_SHARE` / economic compute | `COMPUTE_TREASURY` |
-| Compute Marketplace | Golem or another approved market | `ECONOMIC_COMPUTE_JOB` | player compute value + treasury |
-| Data Center | batch / render / analytics / HPC | `GENERAL_COMPUTE_JOB` | audited contract sink |
-| Operator | buyer-owned approved workload | `GENERAL_COMPUTE_JOB` | audited contract sink |
-| Custom | future provider unknown today | `GENERAL_COMPUTE_JOB` | audited contract sink |
-
-## Replaceable production pieces
-
-```text
-ProviderManifest
-+ server/local-agent Adapter
-+ authoritative Receipt Verifier
-+ audited Sink Policy
-```
-
-—not a rewritten slot.
-
-The standalone router foundation lives in [`src/helios-router.js`](src/helios-router.js).
+HELIOS is the universal buyer-facing parent. SSlot and DIVINE_REALM remain specialized children and provide feature ideas that may be generalized into the parent without erasing their identities.
 
 ## Hard boundaries
 
@@ -291,38 +224,40 @@ spin frequency -> compute rate     FORBIDDEN
 browser -> provider private secret FORBIDDEN
 unverified receipt -> ledger value FORBIDDEN
 music -> RNG / RTP / payout        NONE
-music -> player-vulnerability loop FORBIDDEN
 Lucky Contribution -> game odds    NONE
+simulated offers -> real-price claim FORBIDDEN
 ```
 
-Compute is OFF by default, requires explicit opt-in and supports immediate revocation. Audio is OFF by default and requires a user gesture.
+Compute is OFF by default, requires explicit opt-in and supports immediate revocation.
 
 ## Current implementation
 
-- [`index.html`](index.html) — live public HELIOS surface;
-- [`helios.js`](helios.js) — game core, cascades, multiplier ladder, route arming and Spin Energy;
-- [`helios-polish.js`](helios-polish.js) — observer/presentation layer;
-- [`helios-bonus.js`](helios-bonus.js) — Solar Corona + demo Bonus Buy capability;
-- [`helios-music.js`](helios-music.js) — mode + route + event generative WebAudio v3;
-- [`helios-lucky.js`](helios-lucky.js) — Lucky Contribution recognition layer;
-- [`config/helios.public.json`](config/helios.public.json) — public buyer-facing configuration;
-- [`docs/COSMIC_SYNTH_ENGINE.md`](docs/COSMIC_SYNTH_ENGINE.md) — audio architecture;
-- [`src/helios-router.js`](src/helios-router.js) — provider-agnostic routing core;
-- [`tests/cascade-energy-invariants.test.mjs`](tests/cascade-energy-invariants.test.mjs) — cascade/Spin Energy invariants;
-- [`tests/cosmic-music-invariants.test.mjs`](tests/cosmic-music-invariants.test.mjs) — procedural-audio invariants;
-- [`tests/lucky-contribution-invariants.test.mjs`](tests/lucky-contribution-invariants.test.mjs) — contribution-recognition invariants;
+- [`index.html`](index.html) — live Pages surface;
+- [`helios.js`](helios.js) — game core, cascades, routing and Spin Energy;
+- [`helios-polish.js`](helios-polish.js) — presentation observer layer;
+- [`helios-bonus.js`](helios-bonus.js) — Solar Corona + demo Bonus Buy;
+- [`helios-music.js`](helios-music.js) — procedural music v3;
+- [`helios-lucky.js`](helios-lucky.js) — rare contribution recognition;
+- [`helios-profile.js`](helios-profile.js) — miner/operator profile and simulated offer board;
+- [`config/helios.public.json`](config/helios.public.json) — buyer-facing public configuration;
 - [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — canonical architecture;
 - [`PROJECT_STATUS.json`](PROJECT_STATUS.json) — maturity and open gates.
 
-Project package version is `1.9.0`. The earlier HELIOS core blob passed its local Node syntax check. The newly changed music v3 / Lucky Contribution / Bonus Buy layers and the complete repository test suite are **not** claimed green until a real runner/CI execution records that result and the live Pages behavior is manually rechecked.
+Project package version: `1.10.0`.
+
+The repository contains invariant tests for routing, public surface, polish, Solar Corona, cascades/Spin Energy, cosmic music, Lucky Contribution and the profile dashboard. The full current suite is **not claimed green** until a real runner/CI execution records it.
+
+## Partner direction
+
+A future provider/pool pitch should present HELIOS as an interaction layer for explicit-opt-in compute plus transparent history/receipts — not as a promise of guaranteed profitability.
+
+NiceHash is a planned outreach target **after** the miner profile, rare Lucky flow and offer-board demo are manually validated and the provider-adapter/receipt proposal is ready. Current NiceHash contacts/APIs should be researched again at send time rather than frozen now.
 
 ## Licensing
 
-This repository is **source-available for evaluation, not open source**. Production, commercial, OEM, white-label, hosted, casino/platform or other commercial use requires a separate written agreement.
+This repository is source-available for evaluation. Production, commercial, OEM, white-label, hosted, casino/platform or other commercial use requires a separate written agreement.
 
 - [`LICENSE.md`](LICENSE.md)
 - [`IP_NOTICE.md`](IP_NOTICE.md)
-
-## Motto
 
 > **ONE CORE. ANY DESTINATION.**
