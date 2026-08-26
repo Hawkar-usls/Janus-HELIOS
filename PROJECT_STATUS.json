@@ -1,13 +1,13 @@
 {
-  "schema_id": "hawkar.project-status.v12",
+  "schema_id": "hawkar.project-status.v13",
   "project": "Janus-HELIOS",
-  "project_version": "1.9.0",
+  "project_version": "1.10.0",
   "public_branding": "JANUS HELIOS — One Core. Any Destination.",
   "repository": "https://github.com/Hawkar-usls/Janus-HELIOS",
   "portfolio_class": "universal_configurable_compute_routing_slot_asset",
   "last_reviewed": "2026-08-26",
   "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
-  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_CASCADES_X1_X4_X16_X64_SPIN_ENERGY_SOLAR_CORONA_DEMO_BONUS_BUY_LUCKY_CONTRIBUTION_AND_MODE_ROUTE_EVENT_GENERATIVE_MUSIC",
+  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_CASCADES_X1_X4_X16_X64_SPIN_ENERGY_SOLAR_CORONA_DEMO_BONUS_BUY_RARE_PROFILE_LUCKY_CONTRIBUTION_MODE_ROUTE_EVENT_GENERATIVE_MUSIC_AND_MINER_PROFILE_DASHBOARD",
   "delivery_model": "WEB_FIRST_UNIVERSAL_ASSET",
   "telegram_webapp_integration": false,
   "telegram_required": false,
@@ -28,8 +28,7 @@
   "bet_control": {
     "visible_control": "HELIOS_CUSTOM_DROPDOWN",
     "native_select_visible": false,
-    "native_select_role": "HIDDEN_GAME_STATE_SOURCE_OF_TRUTH",
-    "reason": "AVOID_OS_CHROMIUM_NATIVE_POPUP_THEME_MISMATCH"
+    "native_select_role": "HIDDEN_GAME_STATE_SOURCE_OF_TRUTH"
   },
   "cascade_engine": {
     "enabled": true,
@@ -50,13 +49,28 @@
     "power_cta_requires_explicit_consent": true,
     "active_compute_requires_route_power": true
   },
+  "miner_profile_dashboard": {
+    "module": "helios-profile.js",
+    "enabled": true,
+    "surface": "MY_HELIOS_OPERATOR_PROFILE",
+    "storage": "LOCAL_DEMO_PROFILE_V1",
+    "sections": ["OVERVIEW", "WORK_HISTORY", "LIVE_OFFERS", "NOTIFICATIONS"],
+    "tracks": ["COMPUTE_RECEIPTS", "TIMESTAMPS", "ROUTE_CLASSES", "TASK_TYPES", "COMPUTE_UNITS", "DEMO_PERSONAL_VALUE", "DEMO_EXTERNAL_VALUE_OR_IMPACT", "LUCKY_CONTRIBUTIONS", "SPIN_ENERGY_EARNED"],
+    "work_history_source": "SIMULATED_RECEIPTS_IN_PUBLIC_DEMO",
+    "offers_mode": "SIMULATED_REALTIME_MARKET_BOARD",
+    "offers_refresh_seconds": 15,
+    "offer_board_provider_api_connected": false,
+    "production_offers_require_live_provider_api": true,
+    "production_history_requires_authoritative_receipts": true,
+    "manual_showcase_for_rare_lucky_event": true,
+    "purpose": "Preview a NiceHash-like miner/operator experience without claiming current external market prices or earnings."
+  },
   "ui_polish_layer": {
     "module": "helios-polish.js",
     "authority": "OBSERVE_AND_RENDER_ONLY",
     "source_inspiration": ["SSlot", "DIVINE_REALM"],
     "local_demo_ticker": true,
     "mode_matrix": true,
-    "sound_feedback_default": "OFF",
     "custom_bet_picker": true,
     "persistent_last_non_zero_win": true,
     "svg_win_trace": true,
@@ -76,7 +90,6 @@
     "architecture_inspiration": "BITMAKER_HUB_NERDMINER_V2_INDEPENDENT_TASK_SEPARATION_NO_CODE_COPIED",
     "unique_session_seed": true,
     "continuous_layers": ["SOLAR_PULSE", "SUB_BASS", "ORBITAL_BASS", "ARPEGGIATOR", "COSMIC_PAD", "STARFIELD_BELLS", "COMPUTE_DRONE", "EVENT_FILLS"],
-    "progression_degrees": [0, 4, 5, 3],
     "tonal_profiles": {
       "HELIOS": "D_LYDIAN_ORBIT_66_BPM",
       "DIVINE": "A_LYDIAN_AETHER_60_BPM",
@@ -136,7 +149,11 @@
   "lucky_contribution": {
     "module": "helios-lucky.js",
     "enabled_in_public_demo": true,
-    "demo_probability_per_simulated_receipt": 0.12,
+    "demo_probability_per_simulated_receipt": 0.005,
+    "automatic_demo_event_mean_interval_at_six_second_receipts": "ABOUT_20_MINUTES_STATISTICALLY_NOT_GUARANTEED",
+    "manual_showcase_control": "PROFILE_ONLY",
+    "notification_surface": "HELIOS_PROFILE",
+    "full_screen_game_overlay": false,
     "route_labels": {
       "MARKETPLACE_OR_TREASURY": "LUCKY_HASH",
       "SCIENCE_OR_PUBLIC_GOOD": "IMPACT_HIT",
@@ -146,13 +163,14 @@
     "demo_reward_units": 1,
     "real_money_value": false,
     "wagering_value": false,
+    "production_selection_model": "AUTHORITATIVE_SIGNIFICANCE_RULE_NOT_BROWSER_PROBABILITY",
     "production_requires_authoritative_provider_or_research_receipt": true,
     "browser_self_verification": false,
     "rng_effect": "NONE",
     "rtp_effect": "NONE",
     "bonus_probability_effect": "NONE",
     "personal_jackpot_weight_effect": "NONE",
-    "music_event": "LUCKY_CONTRIBUTION_CLIMAX"
+    "music_event": "RARE_LUCKY_CONTRIBUTION_CLIMAX"
   },
   "intentionally_not_inherited_from_legacy_children": [
     "OUTCOME_DEPENDENT_REEL_TEASER",
@@ -207,28 +225,31 @@
   "rng_compute_independence_required": true,
   "browser_provider_secrets_allowed": false,
   "unverified_receipt_ledger_value": 0,
-  "router_test_suite_present": true,
-  "public_surface_ecosystem_test_suite_present": true,
-  "polish_test_suite_present": true,
-  "solar_corona_test_suite_present": true,
-  "cascade_energy_test_suite_present": true,
-  "cosmic_music_test_suite_present": true,
-  "lucky_contribution_test_suite_present": true,
+  "test_suites_present": ["ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD"],
   "helios_core_blob_sha": "5649974c404b8c4311aaad09b4349c99b9b6e2c2",
   "helios_core_syntax_check": "PASS_LOCAL_NODE_CHECK_EXACT_BLOB",
-  "music_v3_bonus_buy_lucky_syntax_check": "REQUIRES_EXECUTION",
+  "new_profile_lucky_flow_syntax_check": "REQUIRES_EXECUTION",
   "full_test_suite_execution_status": "OPEN_NOT_CLAIMED_PASS",
   "commercial_evaluation_license": true,
   "production_readiness": "NOT_ESTABLISHED",
+  "planned_outreach": {
+    "NiceHash": {
+      "status": "WAIT_UNTIL_HELIOS_MINER_DEMO_READY",
+      "send_now": false,
+      "gate": ["USER_VALIDATE_PROFILE_DASHBOARD", "USER_VALIDATE_RARE_LUCKY_FLOW", "OFFER_BOARD_PRESENTATION_READY", "MINER_DEMO_BRIEF_READY"]
+    }
+  },
   "open_gates": [
     "EXECUTE_FULL_TEST_SUITE",
+    "USER_VALIDATE_PROFILE_DASHBOARD",
+    "USER_VALIDATE_RARE_LUCKY_PROFILE_NOTIFICATION",
     "USER_VALIDATE_MUSIC_V3_ROUTE_AND_EVENT_VARIATION",
     "USER_VALIDATE_DEMO_BONUS_BUY",
-    "USER_VALIDATE_LUCKY_CONTRIBUTION_EVENT",
     "SIGNED_PROVIDER_MANIFEST_MODEL",
     "SERVER_SIDE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
     "REAL_PROVIDER_ADAPTER",
     "REAL_PROVIDER_RECEIPT_VERIFICATION",
+    "LIVE_PROVIDER_OFFER_API",
     "AUTHORITATIVE_LUCKY_CONTRIBUTION_PROOF_SCHEMA",
     "ENERGY_THERMAL_TELEMETRY",
     "INDEPENDENT_SECURITY_PRIVACY_LEGAL_REVIEW",
