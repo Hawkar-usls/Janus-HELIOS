@@ -5,7 +5,8 @@
 
 ![Status](https://img.shields.io/badge/status-active%20public%20prototype-2ea043)
 ![Class](https://img.shields.io/badge/class-gameplay%20%2B%20compute%20routing-8250df)
-![Version](https://img.shields.io/badge/version-1.10.0-d29922)
+![Version](https://img.shields.io/badge/version-1.11.0-d29922)
+![Mobile](https://img.shields.io/badge/mobile-iPhone%20%2F%20Android-1f8fbc)
 ![Real Money](https://img.shields.io/badge/real--money-disabled-b62324)
 
 </div>
@@ -30,6 +31,26 @@ MEASURABLE EXTERNAL RESULT
 
 Public demo: https://hawkar-usls.github.io/Janus-HELIOS/
 
+## Mobile showcase readiness
+
+The public link is designed to survive the first-contact use case where a partner opens it directly from an email on an iPhone or Android phone.
+
+`helios-mobile.js` adds a presentation-only responsive layer without changing slot or compute logic:
+
+- `viewport-fit=cover` and iOS/Android safe-area support;
+- `100dvh` handling for full-screen profile/bonus surfaces;
+- coarse-pointer/touch targets with 44 px minimum interaction height;
+- single-column game/router presentation on narrow screens;
+- two-column route cards sized for thumbs;
+- responsive 5×3 reels without horizontal overflow;
+- mobile-first Spin, BET, AUTO and ROUTE POWER controls;
+- scroll-safe receipts and horizontal ecosystem navigation;
+- full-width `MY HELIOS` drawer behavior;
+- responsive Solar Corona / Bonus Buy / Spin Energy surfaces;
+- separate narrow-phone and landscape-phone breakpoints.
+
+The mobile layer has no RNG, payout, routing, provider or compute authority.
+
 ## Current demo surface
 
 HELIOS currently demonstrates:
@@ -45,13 +66,14 @@ HELIOS currently demonstrates:
 - simulated compute receipts;
 - mode + route + event + session-seeded procedural music;
 - rare `LUCKY HASH / IMPACT HIT / GOLDEN TASK` contribution recognition;
-- `MY HELIOS` miner/operator profile with history, statistics, notifications and a simulated real-time offer board.
+- `MY HELIOS` miner/operator profile with history, statistics, notifications and a simulated real-time offer board;
+- mobile showcase support for iPhone/Android-sized viewports.
 
 No real-money gambling and no real production provider workload are performed by the public page.
 
 ## MY HELIOS — miner/operator profile
 
-`helios-profile.js` turns the demo into more than a slot presentation. It previews the user-facing compute account that a real deployment could expose.
+`helios-profile.js` previews the user-facing compute account that a real deployment could expose.
 
 ```text
 MY HELIOS
@@ -154,11 +176,7 @@ re-evaluate
 next paid cascade raises multiplier
 ```
 
-Multiplier ladder:
-
-```text
-x1 → x4 → x16 → x64
-```
+Multiplier ladder: `x1 → x4 → x16 → x64`.
 
 Compute state, route and receipts are not inputs to cascade RNG.
 
@@ -215,37 +233,39 @@ HELIOS is the universal buyer-facing parent. SSlot and DIVINE_REALM remain speci
 ## Hard boundaries
 
 ```text
-compute -> RNG                     FORBIDDEN
-compute -> RTP                     FORBIDDEN
-compute -> win probability         FORBIDDEN
-compute -> bet size                FORBIDDEN
-compute -> personal jackpot weight FORBIDDEN
-spin frequency -> compute rate     FORBIDDEN
-browser -> provider private secret FORBIDDEN
-unverified receipt -> ledger value FORBIDDEN
-music -> RNG / RTP / payout        NONE
-Lucky Contribution -> game odds    NONE
+compute -> RNG                       FORBIDDEN
+compute -> RTP                       FORBIDDEN
+compute -> win probability           FORBIDDEN
+compute -> bet size                  FORBIDDEN
+compute -> personal jackpot weight   FORBIDDEN
+spin frequency -> compute rate       FORBIDDEN
+browser -> provider private secret   FORBIDDEN
+unverified receipt -> ledger value   FORBIDDEN
+music -> RNG / RTP / payout          NONE
+Lucky Contribution -> game odds      NONE
 simulated offers -> real-price claim FORBIDDEN
+mobile layer -> game/compute math     NONE
 ```
 
 Compute is OFF by default, requires explicit opt-in and supports immediate revocation.
 
 ## Current implementation
 
-- [`index.html`](index.html) — live Pages surface;
+- [`index.html`](index.html) — live responsive Pages surface;
 - [`helios.js`](helios.js) — game core, cascades, routing and Spin Energy;
 - [`helios-polish.js`](helios-polish.js) — presentation observer layer;
 - [`helios-bonus.js`](helios-bonus.js) — Solar Corona + demo Bonus Buy;
 - [`helios-music.js`](helios-music.js) — procedural music v3;
 - [`helios-lucky.js`](helios-lucky.js) — rare contribution recognition;
 - [`helios-profile.js`](helios-profile.js) — miner/operator profile and simulated offer board;
+- [`helios-mobile.js`](helios-mobile.js) — iPhone/Android mobile showcase layer;
 - [`config/helios.public.json`](config/helios.public.json) — buyer-facing public configuration;
 - [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — canonical architecture;
 - [`PROJECT_STATUS.json`](PROJECT_STATUS.json) — maturity and open gates.
 
-Project package version: `1.10.0`.
+Project package version: `1.11.0`.
 
-The repository contains invariant tests for routing, public surface, polish, Solar Corona, cascades/Spin Energy, cosmic music, Lucky Contribution and the profile dashboard. The full current suite is **not claimed green** until a real runner/CI execution records it.
+The repository contains invariant tests for routing, public surface, polish, Solar Corona, cascades/Spin Energy, cosmic music, Lucky Contribution, profile dashboard and mobile showcase behavior. The full current suite is **not claimed green** until a real runner/CI execution records it.
 
 ## Partner direction
 
