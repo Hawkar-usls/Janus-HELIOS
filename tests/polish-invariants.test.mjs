@@ -24,6 +24,10 @@ assert.match(polish, /visual event only/);
 assert.match(polish, /DEMO GAME PROFILE ONLY/);
 assert.match(polish, /They do not select compute routes/);
 
+// Native Windows/Chromium select popup must not render light text on a light menu.
+assert.match(polish, /select\.bet\{color-scheme:dark!important/);
+assert.match(polish, /select\.bet option,select\.bet optgroup\{background:#0b1117!important;color:#f4f7f8!important\}/);
+
 assert.match(core, /READY · CONSENT OFF/);
 assert.match(core, /ROUTE ARMED/);
 assert.match(core, /function updatePowerCTA/);
