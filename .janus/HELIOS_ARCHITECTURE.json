@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v6",
+  "schema": "janus.helios.architecture.v7",
   "project": "Janus-HELIOS",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -33,10 +33,10 @@
     "win_deck": ["LAST_PAID_WIN", "TOTAL_WINS", "TOTAL_SPINS"],
     "bounded_auto_spin": "10_DEMO_SPINS_MAX_PER_ACTIVATION",
     "game_modes": {
-      "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_CASCADES_AND_SOLAR_CORONA",
-      "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE_WITH_CASCADES",
-      "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_CASCADES_AND_DEMO_SPIN_ENERGY",
-      "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE_WITH_CASCADES"
+      "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_CASCADES_SOLAR_CORONA_AND_D_LYDIAN_AUDIO",
+      "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE_WITH_CASCADES_AND_A_LYDIAN_AUDIO",
+      "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_CASCADES_DEMO_SPIN_ENERGY_AND_E_DORIAN_AUDIO",
+      "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE_WITH_CASCADES_AND_C_SHARP_VOID_AUDIO"
     },
     "game_mode_may_change_demo_symbols": true,
     "game_mode_may_change_demo_paylines": true,
@@ -81,6 +81,28 @@
       "POOL_DEPENDENT_PERSONAL_OUTCOME",
       "COMPUTE_DEPENDENT_GAME_EFFECT"
     ]
+  },
+  "procedural_audio": {
+    "module": "helios-music.js",
+    "classification": "EVENT_DRIVEN_PRESENTATION_ENGINE",
+    "engine": "WEB_AUDIO_EVENT_GENERATIVE",
+    "default_state": "OFF_UNTIL_EXPLICIT_AUDIO_GESTURE",
+    "architecture_inspiration": "NERDMINER_V2_TASK_SEPARATION_NO_SOURCE_CODE_COPIED",
+    "transport_model": "LOW_COST_LOOKAHEAD_SCHEDULER_INDEPENDENT_FROM_GAME_AND_COMPUTE_LOOPS",
+    "profiles": {
+      "HELIOS": "D_LYDIAN_ORBIT",
+      "DIVINE": "A_LYDIAN_AETHER",
+      "GRIDJACK": "E_DORIAN_PULSE",
+      "CUSTOM": "C_SHARP_VOID_MINOR"
+    },
+    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
+    "external_audio_assets_required": false,
+    "may_change_rng": false,
+    "may_change_payout": false,
+    "may_change_rtp": false,
+    "may_change_compute_route": false,
+    "may_change_compute_rate": false
   },
   "demo_spin_energy": {
     "classification": "NON_WAGERING_PUBLIC_DEMO_MECHANIC",
@@ -134,7 +156,9 @@
     "DEMO_SPIN_ENERGY_CANNOT_AUTOPLAY_FROM_BANK",
     "COMPUTE_CANNOT_CHANGE_PERSONAL_JACKPOT_WEIGHT",
     "COMPUTE_SCHEDULING_INDEPENDENT_FROM_SPIN_FREQUENCY",
-    "PRESENTATION_LAYER_HAS_NO_RNG_PAYOUT_OR_COMPUTE_AUTHORITY"
+    "PRESENTATION_LAYER_HAS_NO_RNG_PAYOUT_OR_COMPUTE_AUTHORITY",
+    "PROCEDURAL_AUDIO_HAS_NO_RNG_PAYOUT_RTP_OR_COMPUTE_AUTHORITY",
+    "PROCEDURAL_AUDIO_CANNOT_ADAPT_TO_LOSS_STREAK_NEAR_MISS_WAGERING_HISTORY_OR_PLAYER_VULNERABILITY"
   ],
   "production_gate": "BLOCKED_PENDING_REAL_ADAPTERS_VERIFICATION_AND_INDEPENDENT_REVIEW"
 }
