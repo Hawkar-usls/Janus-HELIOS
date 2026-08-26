@@ -59,11 +59,14 @@
   "procedural_audio": {
     "enabled": true,
     "default_on": false,
-    "engine": "WEB_AUDIO_EVENT_GENERATIVE",
+    "engine": "WEB_AUDIO_LIVE_SEQUENCER_V2",
     "architecture_inspiration": "NERDMINER_V2_INDEPENDENT_TASK_SEPARATION_NO_SOURCE_CODE_COPIED",
-    "master_gain": 0.085,
+    "master_gain": 0.30,
     "scheduler_ms": 25,
-    "lookahead_seconds": 0.12,
+    "lookahead_seconds": 0.14,
+    "transport_division": "1/16",
+    "progression_degrees": [0, 4, 5, 3],
+    "layers": ["SOLAR_PULSE", "SUB_BASS", "ORBITAL_BASS", "ARPEGGIATOR", "COSMIC_PAD", "STARFIELD_BELLS", "COMPUTE_DRONE", "EVENT_FILLS"],
     "profiles": {
       "helios": {"name": "D LYDIAN ORBIT", "root_midi": 50, "scale": [0, 2, 4, 6, 7, 9, 11], "motif": [0, 4, 2, 5, 1, 6, 4, 2], "bpm": 66, "wave": "sine"},
       "divine": {"name": "A LYDIAN AETHER", "root_midi": 57, "scale": [0, 2, 4, 6, 7, 9, 11], "motif": [0, 2, 5, 4, 1, 6, 3, 5], "bpm": 60, "wave": "triangle"},
@@ -77,7 +80,7 @@
     "affects_payout": false,
     "affects_compute_route": false,
     "external_audio_assets_required": false,
-    "note": "Procedural cosmic music is generated locally with WebAudio after explicit SOUND/COSMIC AUDIO activation. It reacts to neutral game and interface events but does not adapt to losses, bet size, near-miss state, wagering history or player vulnerability."
+    "note": "Live 16-step procedural cosmic music is generated locally with WebAudio after explicit COSMIC AUDIO activation. Bass, pulse, arp, pad and starfield layers run continuously; neutral HELIOS events reshape arrangement density and register without reading bet size, loss streaks, near-misses, wagering history or player vulnerability."
   },
   "routes": [
     {
