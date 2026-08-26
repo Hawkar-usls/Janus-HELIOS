@@ -12,9 +12,9 @@
 
 ## What HELIOS is
 
-**JANUS HELIOS is the universal configurable parent asset of a three-repository slot/compute ecosystem.**
+**JANUS HELIOS is the universal configurable parent asset of the JANUS slot/compute ecosystem.**
 
-It is web-first and does not require Telegram. The game surface is one face; behind it is an independent explicit-consent compute router whose destination can be replaced without rewriting slot mathematics.
+It is web-first and Telegram-independent. The slot is one surface; behind it is a separate explicit-consent compute router whose destination can be replaced without rewriting the game core.
 
 ```text
 PLAYER / DEVICE
@@ -38,90 +38,102 @@ The buyer decides where the compute stream goes.
 
 **GitHub Pages:** https://hawkar-usls.github.io/Janus-HELIOS/
 
-The live page now includes:
+The current public surface includes:
 
-- a HELIOS-specific 5×3 slot interface;
-- a native CSS cosmic/solar-station background with a sun, orbital station, orbit field, stars and planetary horizon;
-- a visible central HELIOS compute core;
-- a dedicated `LAST WIN` deck plus `TOTAL WINS` and `TOTAL SPINS`;
-- four game profiles: `HELIOS`, `DIVINE`, `GRIDJACK`, `CUSTOM`;
-- mode-specific symbol sets, paylines and demo payout scaling;
-- bounded `AUTO ×10` demo spins;
+- HELIOS-specific 5×3 slot interface;
+- native CSS cosmic / solar-station background;
+- `HELIOS / DIVINE / GRIDJACK / CUSTOM` game profiles;
+- persistent `LAST PAID WIN`, `TOTAL WINS`, `TOTAL SPINS`;
+- custom dark BET picker;
+- bounded `AUTO ×10`;
+- real tumble/cascade flow after paid wins;
+- cascade multiplier ladder `x1 → x4 → x16 → x64`;
+- `SOLAR CORONA BONUS` in HELIOS mode;
+- GRIDJACK `DEMO SPIN ENERGY` bank;
 - independent `SPIN` and `ROUTE POWER` controls;
-- explicit opt-in, CPU cap and immediate revoke;
+- explicit compute consent, CPU cap and immediate revoke;
 - six replaceable compute route classes;
-- route arming feedback (`READY`, preview receipt, selected provider path, consent CTA);
-- simulated compute receipts;
-- optional GRIDJACK/JACKPOT `DEMO SPIN ENERGY` bank with manual consumption only;
-- neutral staggered reel physics with visual momentum and reel-by-reel landings;
-- fixed spin-stop timing that does **not** depend on outcome, near-miss state, compute route or wagering history.
+- route arming feedback and simulated receipts.
 
 No real-money gambling or real provider workload is performed by the public page.
 
-## Polish layer inherited from the two specialized children
+## Cascade engine
 
-HELIOS now generalizes the strongest presentation patterns seen in `SSlot` and `DIVINE_REALM` without inheriting their legacy outcome-shaping logic:
-
-- `LOCAL DEMO ACTIVITY` ticker;
-- optional WebAudio sound feedback, OFF by default;
-- `MODE MATRIX` modal with mode profile, symbols and line count;
-- win classification bands: `STABLE`, `PULSE`, `RADIANT`, `SOLAR FLARE`;
-- animated win overlay;
-- SVG win-trace over winning cells;
-- session `STREAK` and `BEST WIN` counters;
-- visual core-symbol alignment events with **no payout or compute effect**;
-- mode-aware cosmic ambience;
-- functional x1/x4/x16/x64 win-band rail.
-
-The implementation lives in [`helios-polish.js`](helios-polish.js). It observes the public game state but does not own RNG, payouts, routing or provider settlement.
-
-### Game profiles are not compute routes
-
-The game-mode selector changes only the demo game presentation/profile:
+HELIOS now uses an actual post-win tumble loop:
 
 ```text
-HELIOS   → balanced three-line demo profile
-DIVINE   → radiant five-line demo profile
-GRIDJACK → treasury nine-line demo profile
-CUSTOM   → buyer-configurable three-path demo profile
+paid line
+   ↓
+highlight paid cells
+   ↓
+remove paid symbols
+   ↓
+survivors fall
+   ↓
+new random symbols enter from above
+   ↓
+re-evaluate
+   ↓
+if another win → next multiplier
 ```
 
-It does **not** change compute destination, compute rate, provider allocation or receipt rules.
+Multiplier ladder:
 
 ```text
-GAME MODE ───────→ demo symbols / paylines / payout scale
-
-COMPUTE ROUTE ───→ ProviderManifest / Adapter / Verifier / Sink
-
-GAME MODE ⟂ COMPUTE ROUTE
+1st paid cascade → x1
+2nd paid cascade → x4
+3rd paid cascade → x16
+4th+ paid cascade → x64
 ```
 
-The enabled modes and default mode are exposed in [`config/helios.public.json`](config/helios.public.json).
+The full cascade chain is included in the spin's demo payout and therefore in `LAST PAID WIN`.
 
-## Demo Spin Energy boundary
+The cascade engine does **not** read compute route, compute units, provider receipt or compute contribution when generating game outcomes.
 
-The public demo can show compute-time accumulation as a separate non-cash entitlement:
+## Demo Spin Energy
+
+GRIDJACK can accumulate separate demo-only spin entitlements while **any configured HELIOS compute route** is actively streaming with explicit consent:
 
 ```text
-GRIDJACK + eligible route + explicit compute consent
-                    ↓
-             demo compute time
-                    ↓
-           DEMO SPIN ENERGY BANK
-                    ↓
-           manual ENERGY SPIN
-                    ↓
-       DEMO_ENERGY_REWARD_ONLY
+GRIDJACK
+   +
+MARKET / SCIENCE / JACKPOT / DATA CENTER / OPERATOR / CUSTOM
+   +
+explicit consent + ROUTE POWER
+            ↓
+      active compute timer
+            ↓
+       every 30 seconds
+            ↓
+      +1 DEMO SPIN ENERGY
+            ↓
+          bank max 3
 ```
 
-This mechanism is deliberately separated from production wagering:
+This is deliberately a public-demo mechanic:
 
 ```text
-compute -> automatic real wager/free spin    FORBIDDEN BY DEFAULT
-compute -> gambling balance                  FORBIDDEN
 Spin Energy -> cashout                       FORBIDDEN
+Spin Energy -> automatic wagering balance   FORBIDDEN
 Spin Energy bank -> autoplay                 FORBIDDEN
+compute -> production real-money free spin  FORBIDDEN BY DEFAULT
 ```
+
+## Solar Corona
+
+HELIOS mode has its own identity feature:
+
+```text
+3+ ☀ on settled HELIOS grid
+        ↓
+SOLAR CORONA BONUS
+        ↓
+8-ray multiplier wheel
+        ↓
+SOLAR_BONUS_BANK
+```
+
+The Solar Corona is demo-only and has no compute or route effect.
 
 ## Ecosystem
 
@@ -136,28 +148,22 @@ JANUS HELIOS
                 fixed SHARED MINING-POOL / JACKPOT child
 ```
 
-- [`DIVINE_REALM`](https://github.com/Hawkar-usls/DIVINE_REALM) keeps the research/public-good product identity.
-- [`SSlot`](https://github.com/Hawkar-usls/SSlot) keeps the shared mining-pool / Compute Treasury / jackpot identity.
-- HELIOS alone is the buyer-facing universal redirectable station.
+- [`DIVINE_REALM`](https://github.com/Hawkar-usls/DIVINE_REALM) remains the research/public-good specialization.
+- [`SSlot`](https://github.com/Hawkar-usls/SSlot) remains the shared mining-pool / Compute Treasury / jackpot specialization.
+- HELIOS is the configurable buyer-facing parent asset.
 
-Canonical machine-readable family contract: [`.janus/HELIOS_ECOSYSTEM.json`](.janus/HELIOS_ECOSYSTEM.json).
+Canonical family contract: [`.janus/HELIOS_ECOSYSTEM.json`](.janus/HELIOS_ECOSYSTEM.json).
 
-## Reference routes
+## Reference compute routes
 
 | Route | Example use | Task class | Default sink |
 |---|---|---|---|
 | Science | research / public-good Requestor | `SCIENCE_WORK_UNIT` | `IMPACT_LEDGER` |
 | Shared Jackpot Pool | mining / verified pool revenue | `POW_SHARE` / economic compute | `COMPUTE_TREASURY` |
-| Compute Marketplace | Golem or another market | `ECONOMIC_COMPUTE_JOB` | player compute value + treasury |
+| Compute Marketplace | Golem or another approved market | `ECONOMIC_COMPUTE_JOB` | player compute value + treasury |
 | Data Center | batch / render / analytics / HPC | `GENERAL_COMPUTE_JOB` | audited contract sink |
 | Operator | buyer-owned approved workload | `GENERAL_COMPUTE_JOB` | audited contract sink |
 | Custom | future provider unknown today | `GENERAL_COMPUTE_JOB` | audited contract sink |
-
-See [`providers/REFERENCE_ROUTES.json`](providers/REFERENCE_ROUTES.json).
-
-## Why `GENERAL_COMPUTE_JOB` exists
-
-HELIOS must not force an unknown future workload to pretend it is science, mining or a crypto market. `GENERAL_COMPUTE_JOB` is the neutral container for admissible rendering, analytics, simulation, astronomy pipelines, internal batch work, data-center jobs or future provider classes.
 
 ## Replaceable production pieces
 
@@ -179,41 +185,31 @@ compute -> RNG                     FORBIDDEN
 compute -> RTP                     FORBIDDEN
 compute -> win probability         FORBIDDEN
 compute -> bet size                FORBIDDEN
-compute -> production free spins   FORBIDDEN BY DEFAULT
 compute -> personal jackpot weight FORBIDDEN
 spin frequency -> compute rate     FORBIDDEN
 browser -> provider private secret FORBIDDEN
 unverified receipt -> ledger value FORBIDDEN
 ```
 
-Compute is OFF by default, requires explicit opt-in and must support immediate revocation.
+Compute is OFF by default, requires explicit opt-in and supports immediate revocation.
 
 ## Current implementation
 
-- [`index.html`](index.html) — web-first live public slot demo and HELIOS cosmic UI;
-- [`helios.js`](helios.js) — public controller with game profiles, route arming, Spin Energy, win tracking, bounded auto-spin and neutral staggered reels;
-- [`helios-polish.js`](helios-polish.js) — generalized presentation layer inspired by both specialized children;
-- [`config/helios.public.json`](config/helios.public.json) — buyer-facing public configuration for branding, routes, modes and demo Spin Energy policy;
+- [`index.html`](index.html) — live public HELIOS surface;
+- [`helios.js`](helios.js) — game core, cascades, multiplier ladder, route arming and Spin Energy;
+- [`helios-polish.js`](helios-polish.js) — observer/presentation layer;
+- [`helios-bonus.js`](helios-bonus.js) — Solar Corona feature;
+- [`config/helios.public.json`](config/helios.public.json) — public buyer-facing configuration;
 - [`src/helios-router.js`](src/helios-router.js) — provider-agnostic routing core;
-- [`tests/helios-router.test.mjs`](tests/helios-router.test.mjs) — routing invariants;
-- [`tests/public-surface-invariants.test.mjs`](tests/public-surface-invariants.test.mjs) — public-surface and family invariants;
-- [`tests/polish-invariants.test.mjs`](tests/polish-invariants.test.mjs) — polish and route-feedback invariants;
-- [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — architecture;
-- [`.janus/HELIOS_ECOSYSTEM.json`](.janus/HELIOS_ECOSYSTEM.json) — ecosystem contract;
-- [`BUYER_HANDOFF_SPEC.json`](BUYER_HANDOFF_SPEC.json) — buyer configuration boundary;
+- [`tests/cascade-energy-invariants.test.mjs`](tests/cascade-energy-invariants.test.mjs) — cascade/Spin Energy invariants;
+- [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — canonical architecture;
 - [`PROJECT_STATUS.json`](PROJECT_STATUS.json) — maturity and open gates.
 
-The test suites exist but are not claimed green until a real runner/CI result records that state.
-
-## Production reality
-
-HELIOS is an architecture and public evaluation prototype. Each real provider still needs compatibility/admission review for CPU/GPU/runtime, network/data volume, privacy, verification, abuse/security, energy/thermal policy, settlement/accounting and jurisdiction/platform constraints.
-
-These constraints belong to the **provider adapter**, not to the HELIOS identity.
+`helios.js` v1.6.0 has passed a local Node syntax check for the exact committed blob. The complete repository test suite is **not** claimed green until a full runner/CI execution records that result.
 
 ## Licensing
 
-This repository is **source-available for evaluation, not open source**. Production, commercial, OEM, white-label, platform, hosted or other commercial use requires a separate written agreement.
+This repository is **source-available for evaluation, not open source**. Production, commercial, OEM, white-label, hosted, casino/platform or other commercial use requires a separate written agreement.
 
 - [`LICENSE.md`](LICENSE.md)
 - [`IP_NOTICE.md`](IP_NOTICE.md)
