@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v2",
+  "schema": "janus.helios.architecture.v3",
   "project": "Janus-HELIOS",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -23,9 +23,24 @@
     "required_provider_components": ["PROVIDER_MANIFEST", "SERVER_OR_LOCAL_AGENT_ADAPTER", "AUTHORITATIVE_RECEIPT_VERIFIER", "AUDITED_SINK_POLICY"]
   },
   "game_surface": {
+    "visual_theme": "HELIOS_COSMIC_STATION_NATIVE_CSS_SCENE",
     "reel_layout": "5x3",
     "spin_animation": "NEUTRAL_STAGGERED_REEL_CASCADE",
+    "win_deck": ["LAST_WIN", "TOTAL_WINS", "TOTAL_SPINS"],
+    "bounded_auto_spin": "10_DEMO_SPINS_MAX_PER_ACTIVATION",
+    "game_modes": {
+      "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE",
+      "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE",
+      "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE",
+      "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE"
+    },
+    "game_mode_may_change_demo_symbols": true,
+    "game_mode_may_change_demo_paylines": true,
+    "game_mode_may_change_demo_payout_scale": true,
+    "game_mode_may_change_compute_route": false,
+    "game_mode_may_change_compute_rate": false,
     "reel_stop_timing_depends_on_outcome": false,
+    "reel_stop_timing_depends_on_near_miss": false,
     "reel_stop_timing_depends_on_compute_route": false,
     "spin_can_start_compute": false,
     "spin_can_accelerate_compute": false,
