@@ -15,11 +15,23 @@
     "immediate_revoke": true
   },
   "game_modes": [
-    {"key": "helios", "label": "HELIOS", "enabled": true, "role": "UNIVERSAL_CORE_PROFILE"},
-    {"key": "divine", "label": "DIVINE", "enabled": true, "role": "RADIANT_FIVE_LINE_PROFILE"},
-    {"key": "gridjack", "label": "GRIDJACK", "enabled": true, "role": "TREASURY_NINE_LINE_PROFILE"},
-    {"key": "custom", "label": "CUSTOM", "enabled": true, "role": "BUYER_CONFIGURABLE_PROFILE"}
+    {"key": "helios", "label": "HELIOS", "enabled": true, "role": "UNIVERSAL_CORE_PROFILE", "supports_demo_spin_energy": false},
+    {"key": "divine", "label": "DIVINE", "enabled": true, "role": "RADIANT_FIVE_LINE_PROFILE", "supports_demo_spin_energy": false},
+    {"key": "gridjack", "label": "GRIDJACK", "enabled": true, "role": "TREASURY_NINE_LINE_PROFILE", "supports_demo_spin_energy": true},
+    {"key": "custom", "label": "CUSTOM", "enabled": true, "role": "BUYER_CONFIGURABLE_PROFILE", "supports_demo_spin_energy": false}
   ],
+  "demo_spin_energy": {
+    "enabled": true,
+    "seconds_per_spin": 30,
+    "max_bank": 3,
+    "eligible_game_modes": ["gridjack"],
+    "eligible_routes": ["jackpot"],
+    "reward_ledger": "DEMO_ENERGY_REWARD_ONLY",
+    "real_money_value": false,
+    "automatic_wager_conversion": false,
+    "auto_play_from_bank": false,
+    "note": "Public demo only. Active eligible compute may accumulate non-cash demo spins. Production compute value must not automatically become wagers, free spins, gambling balance or better gambling terms."
+  },
   "routes": [
     {
       "key": "market",
