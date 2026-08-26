@@ -24,9 +24,19 @@ assert.match(polish, /visual event only/);
 assert.match(polish, /DEMO GAME PROFILE ONLY/);
 assert.match(polish, /They do not select compute routes/);
 
-// Native Windows/Chromium select popup must not render light text on a light menu.
-assert.match(polish, /select\.bet\{color-scheme:dark!important/);
-assert.match(polish, /select\.bet option,select\.bet optgroup\{background:#0b1117!important;color:#f4f7f8!important\}/);
+// Do not depend on Windows/Chromium native select-popup theming.
+assert.match(polish, /function buildBetPicker\(\)/);
+assert.match(polish, /helios-native-bet/);
+assert.match(polish, /helios-bet-menu/);
+assert.match(polish, /helios-bet-option/);
+assert.match(polish, /select\.dispatchEvent\(new Event\('change'/);
+
+// LAST WIN means last non-zero payout, not merely the most recent spin result.
+assert.match(polish, /let lastTotalWins/);
+assert.match(polish, /let lastNonZeroWin/);
+assert.match(polish, /function currentSpinWin\(\)/);
+assert.match(polish, /function persistLastWin\(\)/);
+assert.match(polish, /if\(lastNonZeroWin>0\) el\.textContent=lastNonZeroWin\.toFixed\(2\)/);
 
 assert.match(core, /READY · CONSENT OFF/);
 assert.match(core, /ROUTE ARMED/);
