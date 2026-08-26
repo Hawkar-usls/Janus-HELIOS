@@ -1,0 +1,43 @@
+{
+  "schema_id": "hawkar.project-status.v2",
+  "project": "Janus-HELIOS",
+  "public_branding": "JANUS HELIOS — One Core. Any Destination.",
+  "repository": "https://github.com/Hawkar-usls/Janus-HELIOS",
+  "portfolio_class": "amorphous_compute_routing_slot_asset",
+  "last_reviewed": "2026-08-26",
+  "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
+  "completion_status": "UNIVERSAL_ROUTING_SLOT_FOUNDATION",
+  "telegram_webapp_integration": true,
+  "github_pages_entry": "index.html",
+  "real_money_gambling_enabled": false,
+  "game_value_storage": "LOCAL_DEMO_ONLY",
+  "compute_receipts": "SIMULATED_IN_PUBLIC_PAGE",
+  "standalone_router_core": "src/helios-router.js",
+  "route_catalog": "providers/REFERENCE_ROUTES.json",
+  "route_classes": ["SCIENCE", "PUBLIC_GOOD", "MARKETPLACE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"],
+  "task_types": ["SCIENCE_WORK_UNIT", "GENERAL_COMPUTE_JOB", "ECONOMIC_COMPUTE_JOB", "POW_SHARE"],
+  "specialized_children": {
+    "DIVINE_REALM": "SCIENCE_PUBLIC_GOOD_DEFAULT",
+    "SSlot": "SHARED_MINING_POOL_JACKPOT_DEFAULT"
+  },
+  "compute_off_by_default": true,
+  "explicit_opt_in_required": true,
+  "immediate_revoke_required": true,
+  "compute_scheduled_by_spin_frequency": false,
+  "rng_compute_independence_required": true,
+  "browser_provider_secrets_allowed": false,
+  "unverified_receipt_ledger_value": 0,
+  "commercial_evaluation_license": true,
+  "production_readiness": "NOT_ESTABLISHED",
+  "open_gates": [
+    "EXECUTE_ROUTER_TEST_SUITE",
+    "SIGNED_PROVIDER_MANIFEST_MODEL",
+    "SERVER_SIDE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
+    "REAL_PROVIDER_ADAPTER",
+    "REAL_PROVIDER_RECEIPT_VERIFICATION",
+    "ENERGY_THERMAL_TELEMETRY",
+    "INDEPENDENT_SECURITY_PRIVACY_LEGAL_REVIEW",
+    "NON_MONEY_PILOT"
+  ],
+  "commercial_or_production_use_requires_separate_written_agreement": true
+}
