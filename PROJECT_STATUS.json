@@ -1,12 +1,12 @@
 {
-  "schema_id": "hawkar.project-status.v7",
+  "schema_id": "hawkar.project-status.v8",
   "project": "Janus-HELIOS",
   "public_branding": "JANUS HELIOS — One Core. Any Destination.",
   "repository": "https://github.com/Hawkar-usls/Janus-HELIOS",
   "portfolio_class": "universal_configurable_compute_routing_slot_asset",
   "last_reviewed": "2026-08-26",
   "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
-  "completion_status": "LIVE_POLISHED_MULTI_MODE_ROUTING_SLOT_WITH_ROUTE_ARMING_SPIN_ENERGY_OBSERVER_UX_CUSTOM_BET_PICKER_AND_PERSISTENT_LAST_WIN",
+  "completion_status": "LIVE_POLISHED_MULTI_MODE_ROUTING_SLOT_WITH_ROUTE_ARMING_SPIN_ENERGY_SOLAR_CORONA_OBSERVER_UX_CUSTOM_BET_PICKER_AND_PERSISTENT_LAST_WIN",
   "delivery_model": "WEB_FIRST_UNIVERSAL_ASSET",
   "telegram_webapp_integration": false,
   "telegram_required": false,
@@ -55,6 +55,23 @@
     "game_math_authority": "NONE",
     "compute_authority": "NONE"
   },
+  "solar_corona_bonus": {
+    "module": "helios-bonus.js",
+    "enabled": true,
+    "eligible_game_mode": "HELIOS",
+    "trigger": "THREE_OR_MORE_SUN_SYMBOLS_ON_SETTLED_GRID",
+    "trigger_symbol": "☀",
+    "trigger_count": 3,
+    "multipliers": [2, 3, 4, 5, 8, 10, 16, 25],
+    "visual_form": "EIGHT_RAY_SOLAR_CORONA",
+    "reward_ledger": "SOLAR_BONUS_BANK",
+    "reward_added_to_wagering_balance": false,
+    "real_money_value": false,
+    "auto_spin_pauses_on_bonus": true,
+    "compute_effect": "NONE",
+    "rng_effect": "NONE",
+    "route_effect": "NONE"
+  },
   "intentionally_not_inherited_from_legacy_children": [
     "OUTCOME_DEPENDENT_REEL_TEASER",
     "NEAR_MISS_DELAY",
@@ -78,7 +95,7 @@
     "production_compute_to_free_spin_conversion": "FORBIDDEN_BY_DEFAULT_PENDING_SEPARATE_LEGAL_AND_RESPONSIBLE_GAMING_REVIEW"
   },
   "game_modes": {
-    "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE",
+    "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_SOLAR_CORONA_BONUS",
     "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE",
     "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_DEMO_SPIN_ENERGY_SUPPORT",
     "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE"
@@ -108,7 +125,8 @@
   "router_test_suite_present": true,
   "public_surface_ecosystem_test_suite_present": true,
   "polish_test_suite_present": true,
-  "polish_script_syntax_check": "REQUIRES_REEXECUTION_AFTER_LATEST_UI_FIX",
+  "solar_corona_test_suite_present": true,
+  "public_script_syntax_check": "REQUIRES_REEXECUTION_AFTER_SOLAR_CORONA_ADDITION",
   "full_test_suite_execution_status": "OPEN_NOT_CLAIMED_PASS",
   "commercial_evaluation_license": true,
   "production_readiness": "NOT_ESTABLISHED",
