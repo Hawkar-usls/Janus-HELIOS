@@ -1,13 +1,16 @@
 {
-  "schema": "janus.helios.architecture.v1",
+  "schema": "janus.helios.architecture.v2",
   "project": "Janus-HELIOS",
-  "version": "1.0.0",
-  "role": "AMORPHOUS_COMPUTE_ROUTING_SLOT_ASSET",
+  "version": "1.1.0",
+  "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
+  "delivery_model": "WEB_FIRST_UNIVERSAL",
+  "telegram_required": false,
   "position_in_family": {
     "parent_asset": "Janus-HELIOS",
+    "canonical_ecosystem_manifest": ".janus/HELIOS_ECOSYSTEM.json",
     "specialized_reference_surfaces": {
-      "DIVINE_REALM": "SCIENCE_PUBLIC_GOOD_DEFAULT",
-      "SSlot": "SHARED_MINING_POOL_JACKPOT_DEFAULT"
+      "DIVINE_REALM": "FIXED_SCIENCE_PUBLIC_GOOD_CHILD",
+      "SSlot": "FIXED_SHARED_MINING_POOL_JACKPOT_CHILD"
     }
   },
   "prime_invariant": "COMPUTE_ROUTE_IS_REPLACEABLE_BUT_GAME_MATH_AUTHORITY_IS_NOT",
@@ -15,59 +18,26 @@
     "source": "EXPLICITLY_CONSENTED_DEVICE_OR_OPERATOR_COMPUTE",
     "scheduler_basis": ["CONSENT", "DEVICE_POLICY", "PROVIDER_CAPACITY", "WORKLOAD_ADMISSION"],
     "game_event_weighting": "FORBIDDEN",
-    "route_classes": [
-      "SCIENCE",
-      "PUBLIC_GOOD",
-      "MARKETPLACE",
-      "TREASURY",
-      "DATACENTER",
-      "OPERATOR",
-      "CUSTOM"
-    ],
-    "task_types": [
-      "SCIENCE_WORK_UNIT",
-      "GENERAL_COMPUTE_JOB",
-      "ECONOMIC_COMPUTE_JOB",
-      "POW_SHARE"
-    ],
-    "required_provider_components": [
-      "PROVIDER_MANIFEST",
-      "SERVER_OR_LOCAL_AGENT_ADAPTER",
-      "AUTHORITATIVE_RECEIPT_VERIFIER",
-      "AUDITED_SINK_POLICY"
-    ]
+    "route_classes": ["SCIENCE", "PUBLIC_GOOD", "MARKETPLACE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"],
+    "task_types": ["SCIENCE_WORK_UNIT", "GENERAL_COMPUTE_JOB", "ECONOMIC_COMPUTE_JOB", "POW_SHARE"],
+    "required_provider_components": ["PROVIDER_MANIFEST", "SERVER_OR_LOCAL_AGENT_ADAPTER", "AUTHORITATIVE_RECEIPT_VERIFIER", "AUDITED_SINK_POLICY"]
+  },
+  "game_surface": {
+    "reel_layout": "5x3",
+    "spin_animation": "NEUTRAL_STAGGERED_REEL_CASCADE",
+    "reel_stop_timing_depends_on_outcome": false,
+    "reel_stop_timing_depends_on_compute_route": false,
+    "spin_can_start_compute": false,
+    "spin_can_accelerate_compute": false,
+    "spin_can_weight_compute": false
   },
   "reference_destinations": [
-    {
-      "id": "science",
-      "example": "research requestor / public-good project",
-      "default_sink": "IMPACT_LEDGER"
-    },
-    {
-      "id": "jackpot_pool",
-      "example": "verified mining/pool revenue",
-      "default_sink": "COMPUTE_TREASURY"
-    },
-    {
-      "id": "marketplace",
-      "example": "Golem or another approved compute market",
-      "default_sink": "PLAYER_COMPUTE_EARNINGS_LEDGER_PLUS_COMPUTE_TREASURY"
-    },
-    {
-      "id": "datacenter",
-      "example": "buyer-selected data-center/cloud workload",
-      "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"
-    },
-    {
-      "id": "operator",
-      "example": "approved buyer-owned batch workload",
-      "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"
-    },
-    {
-      "id": "custom",
-      "example": "future admissible workload unknown at design time",
-      "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"
-    }
+    {"id": "science", "example": "research requestor / public-good project", "default_sink": "IMPACT_LEDGER"},
+    {"id": "jackpot_pool", "example": "verified mining/pool revenue", "default_sink": "COMPUTE_TREASURY"},
+    {"id": "marketplace", "example": "Golem or another approved compute market", "default_sink": "PLAYER_COMPUTE_EARNINGS_LEDGER_PLUS_COMPUTE_TREASURY"},
+    {"id": "datacenter", "example": "buyer-selected data-center/cloud workload", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"},
+    {"id": "operator", "example": "approved buyer-owned batch workload", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"},
+    {"id": "custom", "example": "future admissible workload unknown at design time", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"}
   ],
   "immutable_boundaries": [
     "COMPUTE_OFF_BY_DEFAULT",
