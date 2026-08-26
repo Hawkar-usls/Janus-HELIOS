@@ -2,7 +2,7 @@
 
 ## One sentence
 
-**HELIOS is a configurable slot-shaped compute-routing asset: one game surface, one consent layer, and replaceable destinations for useful computation.**
+**HELIOS is a web-first configurable slot-shaped compute-routing asset: one consent layer, one universal router, and replaceable destinations for useful computation.**
 
 ## The product
 
@@ -30,26 +30,33 @@ Reference destinations included in the public demo:
 
 - **Science / Public Good** — research Requestor → accepted work → Impact Ledger;
 - **Shared Mining Pool / Jackpot** — accepted shares/revenue → Compute Treasury;
-- **Compute Marketplace** — Golem or another approved market → verified settlement → player compute earnings / treasury;
+- **Compute Marketplace** — Golem or another approved market → verified settlement → player compute value / treasury;
 - **Data Center / Cloud** — general batch, rendering, analytics, HPC or other admitted workload;
 - **Operator Workload** — private buyer-owned task behind an approved gateway;
 - **Custom** — a future provider/workload not known when HELIOS was built.
 
-## Product family
+## Three-repository ecosystem
 
-HELIOS is the configurable parent asset.
+HELIOS is the only universal route-switchable parent asset.
 
 ```text
 JANUS HELIOS
-   ├─ DIVINE_REALM → science/public-good default
-   └─ SSlot         → shared mining-pool/jackpot default
+   universal configurable parent
+          │
+          ├── DIVINE_REALM
+          │     fixed SCIENCE / PUBLIC-GOOD child
+          │
+          └── SSlot
+                fixed SHARED MINING-POOL / JACKPOT child
 ```
 
-Those two projects remain specialized demonstrations of two predefined directions. HELIOS exists for buyers who need the direction itself to be replaceable.
+`DIVINE_REALM` and `SSlot` inherit the HELIOS consent/fairness/routing contract but intentionally **do not** expose universal route switching in their public product identity.
 
-## What the buyer changes
+Canonical family contract: [`.janus/HELIOS_ECOSYSTEM.json`](.janus/HELIOS_ECOSYSTEM.json).
 
-A commercial integration can replace:
+## What the buyer changes in HELIOS
+
+A commercial HELIOS integration can replace:
 
 - provider manifests;
 - gateway endpoint mapping;
@@ -63,9 +70,9 @@ A commercial integration can replace:
 
 The slot mathematics do not need to be rewritten merely because the compute destination changes.
 
-## What the buyer cannot change through ordinary compute configuration
+If the buyer wants the fixed science product, use/customize `DIVINE_REALM` inside the Science role. If the buyer wants the fixed pooled Treasury/jackpot product, use/customize `SSlot` inside the Treasury role.
 
-HELIOS reserves these boundaries:
+## What the buyer cannot change through ordinary compute configuration
 
 ```text
 compute -> RNG                     FORBIDDEN
@@ -79,41 +86,40 @@ browser -> provider private secret FORBIDDEN
 unverified receipt -> ledger value FORBIDDEN
 ```
 
+## Web-first delivery
+
+HELIOS does not require Telegram. The public asset is ordinary web software and can be hosted on GitHub Pages, an operator site, a white-label frontend or another approved delivery surface.
+
+The specialized children may retain Telegram/WebApp delivery where useful; that is a presentation choice, not a HELIOS dependency.
+
+## Slot dynamics
+
+The HELIOS public slot uses neutral staggered reel stops to create real motion and impact. Stop timing depends on reel index only — not on win/loss state, near-miss state, selected compute route or wagering history.
+
+`SPIN` and `ROUTE POWER` remain independent controls.
+
 ## Why this may matter to different buyers
 
 ### Casino / aggregator
-
 One reusable compute integration can support multiple branded games and multiple destinations without coupling provider logic to certified game math.
 
 ### Small business
-
 A branded HELIOS instance can route voluntary compute to an approved internal/general workload or third-party compute market without requiring the business to invent a new game client.
 
 ### Data center / cloud provider
-
 HELIOS can act as a consented edge-compute acquisition and visualization surface for workloads that are technically suitable for distribution and independently verifiable.
 
 ### Distributed-compute / crypto project
-
 A network such as Golem can potentially receive a new opt-in provider/onboarding surface; another project can implement its own manifest, adapter and receipt verifier.
 
 ### Research organization
-
-HELIOS can expose a science-first route where a real workload owner retains scientific authority and only accepted, verified work enters the impact ledger.
+The specialized `DIVINE_REALM` child provides the science/public-good reference lane where a real workload owner retains scientific authority and only accepted work enters the Impact Ledger.
 
 ## Demo vs production
 
 The public GitHub Pages slot uses simulated game credits and simulated compute receipts. It does **not** claim that real Golem, mining, data-center or research workloads are currently executed by the browser page.
 
-Production requires, at minimum:
-
-1. real provider admission;
-2. server/local-agent adapter;
-3. authoritative receipt verification and anti-replay;
-4. workload and data-security review;
-5. energy/thermal policy;
-6. settlement/accounting review where money or crypto is involved;
-7. independent gambling/platform/privacy/legal review where regulated gaming is involved.
+Production requires real provider admission, a server/local-agent adapter, authoritative receipt verification/anti-replay, workload/data-security review, energy/thermal policy, settlement/accounting review where applicable, and independent legal/platform/privacy/regulatory review.
 
 ## Commercial boundary
 
