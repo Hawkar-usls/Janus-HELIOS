@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v9",
+  "schema": "janus.helios.architecture.v10",
   "project": "Janus-HELIOS",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -63,24 +63,29 @@
     "may_change_compute_route": false,
     "may_change_compute_rate": false,
     "may_change_provider_receipt": false,
-    "features": [
-      "LOCAL_DEMO_ACTIVITY_TICKER",
-      "MODE_MATRIX",
-      "OPTIONAL_WEBAUDIO_SOUND_OFF_BY_DEFAULT",
-      "WIN_OVERLAY",
-      "SVG_WIN_TRACE",
-      "SESSION_STREAK_AND_BEST_WIN",
-      "MODE_AWARE_COSMIC_AMBIENCE",
-      "VISUAL_CORE_ALIGNMENT_EVENT_NO_REWARD"
-    ],
-    "explicit_non_inheritance": [
-      "OUTCOME_DEPENDENT_REEL_TEASER",
-      "NEAR_MISS_DELAY",
-      "UNREVIEWED_REAL_MONEY_FEATURE_BUY",
-      "OUTCOME_SHAPING",
-      "POOL_DEPENDENT_PERSONAL_OUTCOME",
-      "COMPUTE_DEPENDENT_GAME_EFFECT"
-    ]
+    "features": ["LOCAL_DEMO_ACTIVITY_TICKER", "MODE_MATRIX", "OPTIONAL_WEBAUDIO_SOUND_OFF_BY_DEFAULT", "WIN_OVERLAY", "SVG_WIN_TRACE", "SESSION_STREAK_AND_BEST_WIN", "MODE_AWARE_COSMIC_AMBIENCE", "VISUAL_CORE_ALIGNMENT_EVENT_NO_REWARD"],
+    "explicit_non_inheritance": ["OUTCOME_DEPENDENT_REEL_TEASER", "NEAR_MISS_DELAY", "UNREVIEWED_REAL_MONEY_FEATURE_BUY", "OUTCOME_SHAPING", "POOL_DEPENDENT_PERSONAL_OUTCOME", "COMPUTE_DEPENDENT_GAME_EFFECT"]
+  },
+  "miner_profile": {
+    "module": "helios-profile.js",
+    "classification": "LOCAL_DEMO_MINER_OPERATOR_DASHBOARD",
+    "surface": "MY_HELIOS",
+    "persistent_demo_storage": "LOCAL_STORAGE_JANUS_HELIOS_DEMO_PROFILE_V1",
+    "sections": ["OVERVIEW", "WORK_HISTORY", "LIVE_OFFERS", "NOTIFICATIONS"],
+    "receipt_history_fields": ["RECEIPT_ID", "TIMESTAMP", "ROUTE_CLASS", "TASK_TYPE", "COMPUTE_UNITS", "ASSET", "SINK", "DEMO_PERSONAL_VALUE", "DEMO_EXTERNAL_VALUE_OR_IMPACT"],
+    "session_tracking": true,
+    "route_aggregation": true,
+    "lucky_notification_inbox": true,
+    "spin_energy_statistics": true,
+    "offer_board": {
+      "public_demo_mode": "SIMULATED_REALTIME_MARKET_BOARD",
+      "refresh_seconds": 15,
+      "represents_real_external_prices": false,
+      "production_requires_live_provider_api": true,
+      "production_requires_signed_provider_manifest": true,
+      "production_requires_settlement_verification": true
+    },
+    "purpose": "Demonstrate the miner/operator side of HELIOS: where compute was routed, when it worked, what verified value or impact it produced, and what current workload offers are available."
   },
   "procedural_audio": {
     "module": "helios-music.js",
@@ -128,8 +133,12 @@
   "lucky_contribution": {
     "module": "helios-lucky.js",
     "classification": "VERIFIED_COMPUTE_CONTRIBUTION_RECOGNITION_LAYER",
-    "public_demo_mode": "SIMULATED_ONLY",
-    "production_authority": "AUTHORITATIVE_PROVIDER_OR_RESEARCH_RECEIPT_ONLY",
+    "public_demo_mode": "VERY_RARE_SIMULATED_AUTO_EVENT_PLUS_PROFILE_SHOWCASE_TRIGGER",
+    "public_demo_probability_per_receipt": 0.005,
+    "notification_surface": "HELIOS_PROFILE",
+    "full_screen_game_overlay": false,
+    "production_authority": "AUTHORITATIVE_PROVIDER_OR_RESEARCH_SIGNIFICANCE_RECEIPT_ONLY",
+    "production_selection_model": "SIGNIFICANCE_RULE_NOT_BROWSER_RANDOM_PROBABILITY",
     "browser_may_self_verify": false,
     "route_semantics": {
       "MARKETPLACE_OR_TREASURY": "LUCKY_HASH",
@@ -194,6 +203,12 @@
     {"id": "operator", "example": "approved buyer-owned batch workload", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"},
     {"id": "custom", "example": "future admissible workload unknown at design time", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"}
   ],
+  "planned_partner_outreach": {
+    "NiceHash": {
+      "status": "WAIT_UNTIL_MINER_DEMO_READY",
+      "reason": "HELIOS now has a miner-profile/offer-board direction relevant to marketplace/pool operators, but outreach should wait until the demo surface is manually validated and the provider integration pitch is concrete."
+    }
+  },
   "immutable_boundaries": [
     "COMPUTE_OFF_BY_DEFAULT",
     "EXPLICIT_OPT_IN",
@@ -215,7 +230,9 @@
     "PROCEDURAL_AUDIO_CANNOT_ADAPT_TO_LOSS_STREAK_NEAR_MISS_WAGERING_HISTORY_OR_PLAYER_VULNERABILITY",
     "LUCKY_CONTRIBUTION_REQUIRES_AUTHORITATIVE_PROOF_IN_PRODUCTION",
     "LUCKY_CONTRIBUTION_CANNOT_CHANGE_GAME_ODDS_OR_PERSONAL_JACKPOT_WEIGHT",
+    "PROFILE_OFFER_BOARD_CANNOT_CLAIM_LIVE_EXTERNAL_PRICES_WITHOUT_PROVIDER_API",
+    "PROFILE_HISTORY_CANNOT_CLAIM_PRODUCTION_EARNINGS_WITHOUT_AUTHORITATIVE_RECEIPTS",
     "REAL_MONEY_BONUS_BUY_IS_NOT_ENABLED_BY_PUBLIC_DEMO"
   ],
-  "production_gate": "BLOCKED_PENDING_REAL_ADAPTERS_VERIFICATION_AUTHORITATIVE_LUCKY_PROOF_AND_INDEPENDENT_REVIEW"
+  "production_gate": "BLOCKED_PENDING_REAL_ADAPTERS_PROVIDER_APIS_VERIFICATION_AUTHORITATIVE_LUCKY_PROOF_AND_INDEPENDENT_REVIEW"
 }
