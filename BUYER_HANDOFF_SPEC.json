@@ -1,7 +1,17 @@
 {
-  "schema": "janus.helios.buyer-handoff.v1",
+  "schema": "janus.helios.buyer-handoff.v2",
   "product": "JANUS HELIOS",
+  "ecosystem": "JANUS_HELIOS_ECOSYSTEM",
   "purpose": "Make HELIOS reconfigurable for a licensed buyer without rewriting slot/game mathematics.",
+  "delivery_model": {
+    "web_first": true,
+    "telegram_required": false,
+    "allowed_host_examples": ["GITHUB_PAGES", "OPERATOR_WEB", "WHITE_LABEL_WEB", "APP_WEBVIEW", "OTHER_APPROVED_FRONTEND"]
+  },
+  "specialized_children": {
+    "Hawkar-usls/DIVINE_REALM": "FIXED_SCIENCE_PUBLIC_GOOD_CHILD",
+    "Hawkar-usls/SSlot": "FIXED_SHARED_MINING_POOL_JACKPOT_CHILD"
+  },
   "public_buyer_editable": [
     "config/helios.public.json.branding",
     "config/helios.public.json.resource_policy_within_product_caps",
@@ -49,6 +59,7 @@
     "UNVERIFIED_RECEIPT_HAS_ZERO_LEDGER_VALUE"
   ],
   "integration_unit": "PROVIDER_MANIFEST_PLUS_ADAPTER_PLUS_VERIFIER_PLUS_AUDITED_SINK",
+  "specialized_child_rule": "If the buyer wants a fixed science product use DIVINE_REALM; if the buyer wants a fixed pooled Treasury/jackpot product use SSlot; HELIOS remains the universal redirectable asset.",
   "production_admission_gate": [
     "PROVIDER_IDENTITY",
     "SIGNED_MANIFEST",
