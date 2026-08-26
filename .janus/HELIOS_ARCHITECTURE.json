@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v3",
+  "schema": "janus.helios.architecture.v4",
   "project": "Janus-HELIOS",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -31,7 +31,7 @@
     "game_modes": {
       "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE",
       "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE",
-      "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE",
+      "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_OPTIONAL_DEMO_SPIN_ENERGY",
       "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE"
     },
     "game_mode_may_change_demo_symbols": true,
@@ -45,6 +45,22 @@
     "spin_can_start_compute": false,
     "spin_can_accelerate_compute": false,
     "spin_can_weight_compute": false
+  },
+  "demo_spin_energy": {
+    "classification": "NON_WAGERING_PUBLIC_DEMO_MECHANIC",
+    "default_supporting_mode": "GRIDJACK",
+    "default_eligible_route": "JACKPOT_POOL",
+    "accrual_source": "ACTIVE_ELIGIBLE_SIMULATED_COMPUTE_TIME",
+    "spin_bank": true,
+    "manual_consumption_only": true,
+    "auto_play_from_bank": false,
+    "reward_ledger": "DEMO_ENERGY_REWARD_ONLY",
+    "reward_added_to_wagering_balance": false,
+    "real_money_value": false,
+    "cashout": false,
+    "automatic_wager_conversion": false,
+    "production_equivalent_enabled": false,
+    "production_rule": "COMPUTE_MUST_NOT_AUTOMATICALLY_CREATE_REAL_MONEY_WAGERS_FREE_SPINS_OR_GAMBLING_BALANCE"
   },
   "reference_destinations": [
     {"id": "science", "example": "research requestor / public-good project", "default_sink": "IMPACT_LEDGER"},
@@ -65,7 +81,9 @@
     "COMPUTE_CANNOT_CHANGE_RTP",
     "COMPUTE_CANNOT_CHANGE_WIN_PROBABILITY",
     "COMPUTE_CANNOT_CHANGE_BET_SIZE",
-    "COMPUTE_CANNOT_CHANGE_FREE_SPINS",
+    "COMPUTE_CANNOT_AUTOMATICALLY_CREATE_PRODUCTION_WAGERS_OR_FREE_SPINS",
+    "DEMO_SPIN_ENERGY_HAS_NO_REAL_MONEY_OR_WAGERING_VALUE",
+    "DEMO_SPIN_ENERGY_CANNOT_AUTOPLAY_FROM_BANK",
     "COMPUTE_CANNOT_CHANGE_PERSONAL_JACKPOT_WEIGHT",
     "COMPUTE_SCHEDULING_INDEPENDENT_FROM_SPIN_FREQUENCY"
   ],
