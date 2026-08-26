@@ -11,19 +11,19 @@
   const GAME_MODES = {
     helios: {
       key:'helios', icon:'☀', name:'HELIOS', short:'HEL', subtitle:'Universal Core', summary:'Universal Core · balanced demo profile',
-      payoutScale:1,
+      payoutScale:1, supportsDemoSpinEnergy:false,
       paylines:[[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2]],
       symbols:[['☀',1.60],['⬡',1.30],['◈',1.10],['⚙',.90],['✦',.72],['∆',.52],['◇',.36]]
     },
     divine: {
       key:'divine', icon:'✦', name:'DIVINE', short:'DIV', subtitle:'Radiant Lattice', summary:'Radiant Lattice · five-line demo profile',
-      payoutScale:.58,
+      payoutScale:.58, supportsDemoSpinEnergy:false,
       paylines:[[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2]],
       symbols:[['✦',1.60],['☼',1.30],['◇',1.10],['△',.90],['❖',.72],['✧',.52],['⬡',.36]]
     },
     gridjack: {
-      key:'gridjack', icon:'◈', name:'GRIDJACK', short:'GRD', subtitle:'Treasury Pulse', summary:'Treasury Pulse · nine-line demo profile',
-      payoutScale:.34,
+      key:'gridjack', icon:'◈', name:'GRIDJACK', short:'GRD', subtitle:'Treasury Pulse', summary:'Treasury Pulse · nine-line demo profile · supports demo Spin Energy',
+      payoutScale:.34, supportsDemoSpinEnergy:true,
       paylines:[
         [0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],
         [0,0,1,2,2],[2,2,1,0,0],[1,0,1,2,1],[1,2,1,0,1]
@@ -32,10 +32,22 @@
     },
     custom: {
       key:'custom', icon:'⚙', name:'CUSTOM', short:'CUS', subtitle:'Builder Profile', summary:'Builder Profile · three configurable demo paths',
-      payoutScale:.82,
+      payoutScale:.82, supportsDemoSpinEnergy:false,
       paylines:[[1,1,1,1,1],[0,0,1,2,2],[2,2,1,0,0]],
       symbols:[['⚙',1.60],['⌘',1.30],['⧉',1.10],['⧫',.90],['◌',.72],['◇',.52],['⬡',.36]]
     }
+  };
+
+  const DEFAULT_SPIN_ENERGY_POLICY = {
+    enabled:true,
+    seconds_per_spin:30,
+    max_bank:3,
+    eligible_game_modes:['gridjack'],
+    eligible_routes:['jackpot'],
+    reward_ledger:'DEMO_ENERGY_REWARD_ONLY',
+    real_money_value:false,
+    automatic_wager_conversion:false,
+    auto_play_from_bank:false
   };
 
   const $ = id => document.getElementById(id);
@@ -46,6 +58,7 @@
   let routeKey = 'market';
   let enabledModeKeys = Object.keys(GAME_MODES);
   let gameModeKey = 'helios';
+  let computeActive = false;
   let computeTimer = null;
   let computeUnits = 0;
   let receiptNo = 0;
@@ -55,6 +68,11 @@
   let totalSpins = 0;
   let autoRemaining = 0;
   let autoTimer = null;
+  let spinEnergyPolicy = {...DEFAULT_SPIN_ENERGY_POLICY};
+  let spinEnergySeconds = 0;
+  let spinBank = 0;
+  let energyRewardUnits = 0;
+  let energyTimer = null;
 
   function secureIndex(max){
     const a = new Uint32Array(1);
@@ -65,6 +83,7 @@
 
   function currentMode(){ return GAME_MODES[gameModeKey] || GAME_MODES.helios; }
   function currentSymbols(){ return currentMode().symbols.map(([s,v]) => ({s,v})); }
+  function currentRoute(){ return routeMap.get(routeKey) || null; }
 
   function setBranding(config){
     const b = config?.branding || {};
@@ -89,6 +108,19 @@
     if (allowed.length) enabledModeKeys = [...new Set(allowed)];
     const requested = config?.branding?.default_game_mode;
     if (requested && enabledModeKeys.includes(requested)) gameModeKey = requested;
+
+    const p = config?.demo_spin_energy || {};
+    spinEnergyPolicy = {
+      ...DEFAULT_SPIN_ENERGY_POLICY,
+      ...p,
+      seconds_per_spin:Math.max(10, Number(p.seconds_per_spin || DEFAULT_SPIN_ENERGY_POLICY.seconds_per_spin)),
+      max_bank:Math.max(1, Math.min(10, Number(p.max_bank || DEFAULT_SPIN_ENERGY_POLICY.max_bank))),
+      eligible_game_modes:Array.isArray(p.eligible_game_modes) ? p.eligible_game_modes.filter(k=>GAME_MODES[k]) : DEFAULT_SPIN_ENERGY_POLICY.eligible_game_modes,
+      eligible_routes:Array.isArray(p.eligible_routes) ? p.eligible_routes : DEFAULT_SPIN_ENERGY_POLICY.eligible_routes,
+      real_money_value:false,
+      automatic_wager_conversion:false,
+      auto_play_from_bank:false
+    };
   }
 
   async function loadConfig(){
@@ -110,6 +142,7 @@
       routeKey = 'market';
       enabledModeKeys = Object.keys(GAME_MODES);
       gameModeKey = 'helios';
+      spinEnergyPolicy = {...DEFAULT_SPIN_ENERGY_POLICY};
       $('config-state').textContent = 'FALLBACK CONFIG';
       $('sys-config').textContent = 'Fallback';
     }
@@ -173,6 +206,7 @@
     $('mode-short').textContent=mode.short;
     $('mode-lines').textContent=`${mode.paylines.length}L`;
     if(!initial) buildReels();
+    renderSpinEnergy();
   }
 
   function buildRoutes(){
@@ -192,28 +226,88 @@
       b.onclick=()=>selectRoute(r.key);
       grid.appendChild(b);
     });
-    selectRoute(routeKey);
+    selectRoute(routeKey, {initial:true});
   }
 
-  function selectRoute(key){
-    if(computeTimer){ alert('Stop compute before changing the route.'); return; }
+  function routePreview(r){
+    return {
+      product:'JANUS_HELIOS',
+      mode:'ROUTE_PREVIEW',
+      route_selected:r.key,
+      provider_route:r.route_class,
+      task_type:r.task_type,
+      expected_proof:r.demo_proof_kind,
+      sink:r.sink,
+      next_step:'GRANT_EXPLICIT_CONSENT_THEN_ROUTE_POWER',
+      game_event_weighting:'FORBIDDEN',
+      game_effect:'NONE'
+    };
+  }
+
+  function updatePowerCTA(){
+    const r=currentRoute();
+    if(!r) return;
+    if(computeActive){
+      $('power-on').disabled=true;
+      $('power-on').textContent=`STREAMING · ${r.short || r.name}`;
+      return;
+    }
+    const allowed=$('consent').checked;
+    $('power-on').disabled=!allowed;
+    $('power-on').textContent=allowed ? `⚡ ROUTE POWER · ${r.short || r.name}` : `SELECTED · ${r.short || r.name} · GRANT CONSENT`;
+  }
+
+  function selectRoute(key,{initial=false}={}){
+    if(computeActive){ alert('Stop compute before changing the route.'); return; }
     const r = routeMap.get(key);
     if (!r) return;
     routeKey=key;
     [...$('route-grid').children].forEach(x=>x.classList.toggle('active',x.dataset.route===key));
     $('selected-route').textContent=r.short || r.name;
     $('route-path').textContent=String(r.path || '');
+    $('compute-state').textContent='READY · CONSENT OFF';
+    $('compute-state').className='solar';
+    $('receipt-status').textContent='ROUTE ARMED';
+    $('receipt').textContent=JSON.stringify(routePreview(r),null,2);
+    const sysRouter=$('sys-router');
+    if(sysRouter) sysRouter.textContent=`Armed · ${r.short || r.name}`;
+    $('core').classList.remove('armed');
+    void $('core').offsetWidth;
+    $('core').classList.add('armed');
+    setTimeout(()=>$('core').classList.remove('armed'),700);
+    updatePowerCTA();
+    renderSpinEnergy();
+    if(!initial){
+      const active=[...$('route-grid').children].find(x=>x.dataset.route===key);
+      active?.classList.add('route-pulse');
+      setTimeout(()=>active?.classList.remove('route-pulse'),520);
+    }
+  }
+
+  function demoSpinEnergyMeta(){
+    return {
+      enabled:Boolean(spinEnergyPolicy.enabled),
+      eligible_mode:spinEnergyPolicy.eligible_game_modes.includes(gameModeKey),
+      eligible_route:spinEnergyPolicy.eligible_routes.includes(routeKey),
+      bank:spinBank,
+      progress_seconds:spinEnergySeconds,
+      seconds_per_spin:spinEnergyPolicy.seconds_per_spin,
+      reward_ledger:'DEMO_ENERGY_REWARD_ONLY',
+      real_money_value:false,
+      automatic_wager_conversion:false,
+      auto_play_from_bank:false
+    };
   }
 
   function renderReceipt(){
-    const r=routeMap.get(routeKey);
+    const r=currentRoute();
     if(!r) return;
     receiptNo++;
     computeUnits += .25;
     $('compute-units').textContent=computeUnits.toFixed(2);
     const out={
       product:'JANUS_HELIOS',
-      router_version:'1.0.0',
+      router_version:'1.1.0',
       mode:'SIMULATION',
       receipt_id:`helios_demo_${String(receiptNo).padStart(5,'0')}`,
       provider_route:r.route_class,
@@ -224,44 +318,59 @@
       asset:r.demo_asset,
       sink:r.sink,
       demo_allocation:{player_ratio:Number(r.demo_player_ratio || 0),shared_ratio:Number(r.demo_shared_ratio ?? 1)},
+      demo_spin_energy:demoSpinEnergyMeta(),
       scheduling_basis:'CONSENT_DEVICE_POLICY_PROVIDER_CAPACITY_AND_WORKLOAD_ADMISSION',
       game_event_weighting:'FORBIDDEN',
       game_effect:'NONE',
       timestamp:new Date().toISOString()
     };
     $('receipt').textContent=JSON.stringify(out,null,2);
-    $('receipt-status').textContent='SIMULATED / VISIBLE';
+    $('receipt-status').textContent='SIMULATED / STREAMING';
   }
 
   function startCompute(){
     if(!$('consent').checked){ alert('Explicit compute consent is required.'); return; }
-    if(computeTimer) return;
+    if(computeActive) return;
+    computeActive=true;
     $('compute-state').textContent='ACTIVE';
     $('compute-state').className='ok';
     $('core').classList.add('active');
-    $('power-on').disabled=true;
     $('power-off').disabled=false;
     $('cpu').disabled=true;
     $('consent').disabled=true;
     [...$('route-grid').children].forEach(x=>x.disabled=true);
     $('health-value').textContent='93%';
+    const sysRouter=$('sys-router');
+    if(sysRouter) sysRouter.textContent='Streaming';
+    updatePowerCTA();
     renderReceipt();
     computeTimer=setInterval(renderReceipt,6000);
+    startEnergyClock();
   }
 
   function stopCompute(){
+    computeActive=false;
     if(computeTimer) clearInterval(computeTimer);
     computeTimer=null;
-    $('compute-state').textContent='OFF / REVOKED';
-    $('compute-state').className='';
+    stopEnergyClock();
     $('core').classList.remove('active');
-    $('power-on').disabled=false;
     $('power-off').disabled=true;
     $('cpu').disabled=false;
     $('consent').disabled=false;
     $('consent').checked=false;
     [...$('route-grid').children].forEach(x=>x.disabled=false);
     $('health-value').textContent='87%';
+    const r=currentRoute();
+    $('compute-state').textContent='READY · CONSENT OFF';
+    $('compute-state').className='solar';
+    if(r){
+      $('receipt-status').textContent='ROUTE ARMED';
+      $('receipt').textContent=JSON.stringify(routePreview(r),null,2);
+      const sysRouter=$('sys-router');
+      if(sysRouter) sysRouter.textContent=`Armed · ${r.short || r.name}`;
+    }
+    updatePowerCTA();
+    renderSpinEnergy();
   }
 
   function buildOutcome(){
@@ -291,8 +400,8 @@
         win += bet * base * countFactor * mode.payoutScale;
         for(let col=0;col<count;col++){
           const row=line[col];
-          const key=`${col}:${row}`;
-          if(!hitKeys.has(key)){ hitKeys.add(key); hits.push([col,row]); }
+          const hitKey=`${col}:${row}`;
+          if(!hitKeys.has(hitKey)){ hitKeys.add(hitKey); hits.push([col,row]); }
         }
       }
     }
@@ -352,11 +461,13 @@
     setTimeout(()=>reel.classList.remove('reel-stop'),280);
   }
 
-  function renderGameState(lastWin=0){
+  function renderGameState(lastWin=0,source='balance'){
     $('balance').textContent=balance.toFixed(2);
     $('last-win-value').textContent=lastWin.toFixed(2);
     $('total-wins').textContent=totalWins.toFixed(2);
     $('total-spins').textContent=String(totalSpins);
+    const label=$('last-win-card')?.querySelector('em');
+    if(label) label.textContent=source==='energy' ? 'DEMO ENERGY REWARD' : 'HELIOS UNITS';
   }
 
   function stopAuto(){
@@ -370,24 +481,28 @@
   function scheduleNextAuto(){
     if(autoRemaining<=0){ stopAuto(); return; }
     $('auto-spin').textContent=`STOP AUTO · ${autoRemaining}`;
-    autoTimer=setTimeout(()=>spin({fromAuto:true}),650);
+    autoTimer=setTimeout(()=>spin({fromAuto:true,source:'balance'}),650);
   }
 
-  async function spin({fromAuto=false}={}){
+  async function spin({fromAuto=false,source='balance'}={}){
     if(spinning) return;
+    const isEnergy=source==='energy';
     const bet=Number($('bet').value);
-    if(balance<bet){
+    if(!isEnergy && balance<bet){
       $('last-win-value').textContent='0.00';
       stopAuto();
       return;
     }
+    if(isEnergy && !currentMode().supportsDemoSpinEnergy) return;
 
     const outcome=buildOutcome();
     spinning=true;
-    balance-=bet;
-    renderGameState(0);
+    if(!isEnergy) balance-=bet;
+    renderGameState(0,isEnergy?'energy':'balance');
     $('spin').disabled=true;
     $('bet').disabled=true;
+    const energyButton=$('energy-spin');
+    if(energyButton) energyButton.disabled=true;
     [...$('game-modes').children].forEach(x=>x.disabled=true);
     $('reels').classList.add('spinning');
 
@@ -397,11 +512,12 @@
 
     $('reels').classList.remove('spinning');
     const result=evaluate(outcome,bet);
-    balance+=result.win;
+    if(isEnergy) energyRewardUnits+=result.win;
+    else balance+=result.win;
     totalSpins++;
     totalWins+=result.win;
     result.hits.forEach(([c,r])=>window.__heliosCells[c][r].classList.add('hit'));
-    renderGameState(result.win);
+    renderGameState(result.win,isEnergy?'energy':'balance');
 
     const winCard=$('last-win-card');
     winCard.classList.remove('win');
@@ -416,6 +532,7 @@
     $('spin').disabled=false;
     $('bet').disabled=false;
     [...$('game-modes').children].forEach(x=>x.disabled=false);
+    renderSpinEnergy();
 
     if(autoRemaining>0){
       autoRemaining--;
@@ -432,7 +549,108 @@
     autoRemaining=10;
     $('auto-spin').classList.add('active');
     $('auto-spin').textContent='STOP AUTO · 10';
-    spin({fromAuto:true});
+    spin({fromAuto:true,source:'balance'});
+  }
+
+  function modeSupportsEnergy(){
+    return Boolean(currentMode().supportsDemoSpinEnergy && spinEnergyPolicy.eligible_game_modes.includes(gameModeKey));
+  }
+
+  function routeSupportsEnergy(){
+    return spinEnergyPolicy.eligible_routes.includes(routeKey);
+  }
+
+  function canAccrueSpinEnergy(){
+    return Boolean(spinEnergyPolicy.enabled && computeActive && modeSupportsEnergy() && routeSupportsEnergy());
+  }
+
+  function ensureEnergyUI(){
+    if($('spin-energy-panel')) return;
+    const style=document.createElement('style');
+    style.textContent=`
+      .core.armed{animation:armedPulse .7s ease}.route.route-pulse{animation:routePulse .52s ease}
+      .spin-energy-panel{display:grid;grid-template-columns:1fr 86px;gap:8px;align-items:center;border:1px solid #3b4a54;background:linear-gradient(90deg,#081019ee,#0b130dcc);border-radius:11px;padding:9px 10px;margin:7px 0 9px;box-shadow:inset 0 0 18px #95ff9a08}
+      .spin-energy-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.spin-energy-head b{font-size:9px;color:#95ff9a;letter-spacing:.08em}.spin-energy-head span{font:10px ui-monospace,SFMono-Regular,Consolas,monospace;color:#e8edf1}
+      .spin-energy-status{font-size:7px;color:#83919b;margin-top:3px}.spin-energy-track{height:5px;border-radius:999px;background:#03070a;overflow:hidden;margin-top:6px;border:1px solid #24313a}.spin-energy-bar{height:100%;width:0;background:linear-gradient(90deg,#55d96f,#b7ff78);box-shadow:0 0 10px #95ff9a55;transition:width .25s}
+      .energy-spin-btn{height:100%;min-height:46px;border:1px solid #396341;border-radius:9px;background:#102019;color:#95ff9a;font-size:8px;font-weight:900;line-height:1.25}.energy-spin-btn:not(:disabled){box-shadow:0 0 16px #95ff9a1f}.energy-spin-btn small{display:block;color:#819289;font-size:6px;margin-top:3px}.energy-ledger{font-size:7px;color:#708078;margin-top:4px}
+      @keyframes armedPulse{0%{box-shadow:0 0 25px #ffb84c33}45%{box-shadow:0 0 52px #ffcc6577,0 0 90px #ff9f1c22}100%{box-shadow:0 0 25px #ffb84c33}}
+      @keyframes routePulse{0%{transform:none}45%{transform:translateY(-2px);box-shadow:0 0 24px #ffbb4244}100%{transform:none}}
+    `;
+    document.head.appendChild(style);
+
+    const panel=document.createElement('section');
+    panel.id='spin-energy-panel';
+    panel.className='spin-energy-panel';
+    panel.innerHTML=`
+      <div>
+        <div class="spin-energy-head"><b>◈ DEMO SPIN ENERGY</b><span><strong id="spin-bank">0</strong> BANK · <strong id="spin-energy-countdown">--:--</strong></span></div>
+        <div id="spin-energy-status" class="spin-energy-status">GRIDJACK + JACKPOT route can accumulate demo-only spins while compute is active.</div>
+        <div class="spin-energy-track"><div id="spin-energy-bar" class="spin-energy-bar"></div></div>
+        <div class="energy-ledger">Energy rewards → DEMO_ENERGY_REWARD_ONLY · no cash value · no automatic wagering conversion · no bank autoplay.</div>
+      </div>
+      <button id="energy-spin" class="energy-spin-btn" type="button" disabled>ENERGY SPIN<small id="energy-reward">REWARD 0.00</small></button>`;
+    const note=document.querySelector('.mode-note');
+    note?.after(panel);
+    $('energy-spin').onclick=useEnergySpin;
+  }
+
+  function formatCountdown(seconds){
+    const s=Math.max(0,Math.ceil(seconds));
+    return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }
+
+  function renderSpinEnergy(){
+    if(!$('spin-energy-panel')) return;
+    const threshold=spinEnergyPolicy.seconds_per_spin;
+    const remaining=spinBank>=spinEnergyPolicy.max_bank ? 0 : threshold-spinEnergySeconds;
+    $('spin-bank').textContent=String(spinBank);
+    $('spin-energy-countdown').textContent=spinBank>=spinEnergyPolicy.max_bank ? 'FULL' : formatCountdown(remaining);
+    $('spin-energy-bar').style.width=`${Math.min(100,(spinEnergySeconds/threshold)*100)}%`;
+    $('energy-reward').textContent=`REWARD ${energyRewardUnits.toFixed(2)}`;
+
+    let status='Paused.';
+    if(!spinEnergyPolicy.enabled) status='Disabled by public config.';
+    else if(!modeSupportsEnergy()) status='Select GRIDJACK (or another configured supporting mode) to accrue/use Spin Energy.';
+    else if(!routeSupportsEnergy()) status='Select JACKPOT POOL (or another configured eligible route), then grant consent.';
+    else if(!computeActive) status='Route is eligible. Grant consent and ROUTE POWER to start the timer.';
+    else if(spinBank>=spinEnergyPolicy.max_bank) status=`Bank full (${spinEnergyPolicy.max_bank}). Compute may continue, but no more demo spins accrue until one is used.`;
+    else status=`Accumulating verified demo compute time · next demo spin in ${formatCountdown(remaining)}.`;
+    $('spin-energy-status').textContent=status;
+
+    const canUse=spinBank>0 && modeSupportsEnergy() && !spinning;
+    $('energy-spin').disabled=!canUse;
+    $('energy-spin').firstChild.textContent=canUse ? `ENERGY SPIN ×${spinBank}` : 'ENERGY SPIN';
+  }
+
+  function tickSpinEnergy(){
+    if(!canAccrueSpinEnergy()){ renderSpinEnergy(); return; }
+    if(spinBank>=spinEnergyPolicy.max_bank){ renderSpinEnergy(); return; }
+    spinEnergySeconds++;
+    if(spinEnergySeconds>=spinEnergyPolicy.seconds_per_spin){
+      spinEnergySeconds=0;
+      spinBank=Math.min(spinEnergyPolicy.max_bank,spinBank+1);
+      if(navigator.vibrate) navigator.vibrate([8,20,8]);
+    }
+    renderSpinEnergy();
+  }
+
+  function startEnergyClock(){
+    stopEnergyClock();
+    energyTimer=setInterval(tickSpinEnergy,1000);
+    renderSpinEnergy();
+  }
+
+  function stopEnergyClock(){
+    if(energyTimer) clearInterval(energyTimer);
+    energyTimer=null;
+  }
+
+  function useEnergySpin(){
+    if(spinning || spinBank<=0 || !modeSupportsEnergy()) return;
+    stopAuto();
+    spinBank--;
+    renderSpinEnergy();
+    spin({source:'energy'});
   }
 
   function bindKeyboard(){
@@ -441,20 +659,23 @@
       const tag=document.activeElement?.tagName;
       if(['INPUT','SELECT','BUTTON','TEXTAREA'].includes(tag)) return;
       e.preventDefault();
-      spin();
+      spin({source:'balance'});
     });
   }
 
   async function init(){
     await loadConfig();
+    ensureEnergyUI();
     buildReels();
     buildGameModes();
     buildRoutes();
     renderGameState(0);
+    renderSpinEnergy();
     $('cpu').oninput=()=> $('cpu-label').textContent=$('cpu').value+'%';
+    $('consent').onchange=updatePowerCTA;
     $('power-on').onclick=startCompute;
     $('power-off').onclick=stopCompute;
-    $('spin').onclick=()=>spin();
+    $('spin').onclick=()=>spin({source:'balance'});
     $('auto-spin').onclick=toggleAuto;
     bindKeyboard();
   }
