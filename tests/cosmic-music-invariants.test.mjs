@@ -9,7 +9,6 @@ const [music, config, html, docs] = await Promise.all([
 ]);
 
 const cfg = JSON.parse(config).procedural_audio;
-
 assert.equal(cfg.enabled, true);
 assert.equal(cfg.default_on, false);
 assert.equal(cfg.engine, 'WEB_AUDIO_MODE_ROUTE_EVENT_GENERATIVE_V3');
@@ -23,20 +22,14 @@ assert.equal(cfg.affects_compute_route, false);
 assert.equal(cfg.external_audio_assets_required, false);
 assert.match(cfg.architecture_inspiration, /NERDMINER_V2/);
 
-for (const layer of ['SOLAR_PULSE','SUB_BASS','ORBITAL_BASS','ARPEGGIATOR','COSMIC_PAD','STARFIELD_BELLS','COMPUTE_DRONE','EVENT_FILLS']) {
-  assert.ok(cfg.layers.includes(layer), `missing layer ${layer}`);
-}
-for (const route of ['MARKET','SCIENCE','TREASURY','DC','OPERATOR','CUSTOM']) {
-  assert.ok(cfg.route_profiles[route], `missing route profile ${route}`);
-}
+for (const layer of ['SOLAR_PULSE','SUB_BASS','ORBITAL_BASS','ARPEGGIATOR','COSMIC_PAD','STARFIELD_BELLS','COMPUTE_DRONE','EVENT_FILLS']) assert.ok(cfg.layers.includes(layer), `missing layer ${layer}`);
+for (const route of ['MARKET','SCIENCE','TREASURY','DC','OPERATOR','CUSTOM']) assert.ok(cfg.route_profiles[route], `missing route profile ${route}`);
+for (const event of ['BONUS_SESSION_START','BONUS_SPIN','BONUS_SESSION_COMPLETE']) assert.ok(cfg.event_inputs.includes(event), `missing music event ${event}`);
 assert.equal(cfg.profiles.helios.name, 'D LYDIAN ORBIT');
 assert.equal(cfg.profiles.divine.name, 'A LYDIAN AETHER');
 assert.equal(cfg.profiles.gridjack.name, 'E DORIAN PULSE');
 assert.equal(cfg.profiles.custom.name, 'C# VOID MINOR');
-
-for (const forbidden of ['BET_SIZE','LOSS_STREAK','NEAR_MISS','WAGERING_HISTORY','PLAYER_VULNERABILITY']) {
-  assert.ok(cfg.forbidden_adaptation_inputs.includes(forbidden));
-}
+for (const forbidden of ['BET_SIZE','LOSS_STREAK','NEAR_MISS','WAGERING_HISTORY','PLAYER_VULNERABILITY']) assert.ok(cfg.forbidden_adaptation_inputs.includes(forbidden));
 
 assert.match(music, /function scheduleTransportStep/);
 assert.match(music, /function schedulerTick/);
@@ -53,14 +46,17 @@ assert.match(music, /helios:solar-corona/);
 assert.match(music, /helios:spin-energy-earned/);
 assert.match(music, /helios:lucky-contribution/);
 assert.match(music, /helios:bonus-buy-start/);
-assert.match(music, /helios-lucky\.js/);
+assert.match(music, /helios:bonus-session-start/);
+assert.match(music, /helios:bonus-spin/);
+assert.match(music, /helios:bonus-session-complete/);
+assert.match(music, /bonusSessionActive/);
 assert.match(music, /computeActive/);
 assert.equal(music.includes("$('bet')"), false);
 assert.equal(/lossStreak|nearMiss|wageringHistory|playerVulnerability/i.test(music), false);
 
-assert.match(html, /helios-music\.js\?v=/);
+assert.match(html, /helios-music\.js\?v=3\.1\.0/);
 assert.match(html, /LIVE GENERATIVE MUSIC/);
 assert.match(docs, /NerdMiner_v2/);
 assert.match(docs, /No NerdMiner source code is copied/);
 
-console.log('HELIOS mode-route-event generative music invariants: PASS');
+console.log('HELIOS mode-route-event-bonus generative music invariants: PASS');
