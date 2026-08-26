@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v5",
+  "schema": "janus.helios.architecture.v6",
   "project": "Janus-HELIOS",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -25,14 +25,18 @@
   "game_surface": {
     "visual_theme": "HELIOS_COSMIC_STATION_NATIVE_CSS_SCENE",
     "reel_layout": "5x3",
-    "spin_animation": "NEUTRAL_STAGGERED_REEL_CASCADE",
-    "win_deck": ["LAST_WIN", "TOTAL_WINS", "TOTAL_SPINS"],
+    "initial_spin_animation": "NEUTRAL_STAGGERED_REELS",
+    "post_win_mechanic": "TUMBLE_CASCADE",
+    "cascade_sequence": "REMOVE_PAID_SYMBOLS_THEN_GRAVITY_THEN_RANDOM_REFILL_THEN_REEVALUATE",
+    "cascade_multiplier_ladder": [1, 4, 16, 64],
+    "cascade_max_steps": 8,
+    "win_deck": ["LAST_PAID_WIN", "TOTAL_WINS", "TOTAL_SPINS"],
     "bounded_auto_spin": "10_DEMO_SPINS_MAX_PER_ACTIVATION",
     "game_modes": {
-      "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE",
-      "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE",
-      "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_OPTIONAL_DEMO_SPIN_ENERGY",
-      "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE"
+      "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_CASCADES_AND_SOLAR_CORONA",
+      "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE_WITH_CASCADES",
+      "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_CASCADES_AND_DEMO_SPIN_ENERGY",
+      "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE_WITH_CASCADES"
     },
     "game_mode_may_change_demo_symbols": true,
     "game_mode_may_change_demo_paylines": true,
@@ -42,6 +46,9 @@
     "reel_stop_timing_depends_on_outcome": false,
     "reel_stop_timing_depends_on_near_miss": false,
     "reel_stop_timing_depends_on_compute_route": false,
+    "cascade_rng_reads_compute_state": false,
+    "cascade_rng_reads_compute_route": false,
+    "cascade_rng_reads_compute_units": false,
     "spin_can_start_compute": false,
     "spin_can_accelerate_compute": false,
     "spin_can_weight_compute": false
@@ -62,7 +69,6 @@
       "OPTIONAL_WEBAUDIO_SOUND_OFF_BY_DEFAULT",
       "WIN_OVERLAY",
       "SVG_WIN_TRACE",
-      "FUNCTIONAL_WIN_BAND_RAIL",
       "SESSION_STREAK_AND_BEST_WIN",
       "MODE_AWARE_COSMIC_AMBIENCE",
       "VISUAL_CORE_ALIGNMENT_EVENT_NO_REWARD"
@@ -78,9 +84,12 @@
   },
   "demo_spin_energy": {
     "classification": "NON_WAGERING_PUBLIC_DEMO_MECHANIC",
-    "default_supporting_mode": "GRIDJACK",
-    "default_eligible_route": "JACKPOT_POOL",
+    "supporting_mode": "GRIDJACK",
+    "eligible_routes": ["MARKETPLACE", "SCIENCE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"],
+    "eligibility_rule": "SUPPORTING_MODE_PLUS_ANY_CONFIGURED_ACTIVE_ROUTE_PLUS_EXPLICIT_CONSENT",
     "accrual_source": "ACTIVE_ELIGIBLE_SIMULATED_COMPUTE_TIME",
+    "seconds_per_spin": 30,
+    "max_bank": 3,
     "spin_bank": true,
     "manual_consumption_only": true,
     "auto_play_from_bank": false,
@@ -91,6 +100,15 @@
     "automatic_wager_conversion": false,
     "production_equivalent_enabled": false,
     "production_rule": "COMPUTE_MUST_NOT_AUTOMATICALLY_CREATE_REAL_MONEY_WAGERS_FREE_SPINS_OR_GAMBLING_BALANCE"
+  },
+  "solar_corona_bonus": {
+    "classification": "HELIOS_DEMO_IDENTITY_FEATURE",
+    "eligible_mode": "HELIOS",
+    "trigger": "THREE_OR_MORE_SUN_SYMBOLS_ON_SETTLED_GRID",
+    "reward_ledger": "SOLAR_BONUS_BANK",
+    "real_money_value": false,
+    "compute_effect": "NONE",
+    "route_effect": "NONE"
   },
   "reference_destinations": [
     {"id": "science", "example": "research requestor / public-good project", "default_sink": "IMPACT_LEDGER"},
