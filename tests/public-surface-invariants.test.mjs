@@ -10,7 +10,6 @@ const [html, controller, configText, ecosystem] = await Promise.all([
 
 assert.equal(html.includes('telegram.org/js/telegram-web-app.js'), false, 'HELIOS must be web-first and Telegram-independent');
 assert.equal(controller.includes('Telegram.WebApp'), false, 'HELIOS controller must not require Telegram');
-
 assert.match(html, /class="cosmos"/);
 assert.match(html, /class="sun"/);
 assert.match(html, /class="station"/);
@@ -38,8 +37,8 @@ assert.match(controller, /ROUTE ARMED/);
 assert.match(controller, /DEMO_ENERGY_REWARD_ONLY/);
 assert.match(controller, /automatic_wager_conversion:false/);
 assert.match(controller, /auto_play_from_bank:false/);
-assert.match(controller, /if\(isEnergy\) energyRewardUnits\+=result\.win;/);
-assert.match(controller, /else balance\+=result\.win;/);
+assert.match(controller, /if\(isEnergy\) energyRewardUnits=round2\(energyRewardUnits\+spinWin\)/);
+assert.match(controller, /else balance=round2\(balance\+spinWin\)/);
 
 const config = JSON.parse(configText);
 assert.equal(config.branding.default_game_mode, 'helios');
@@ -49,7 +48,7 @@ assert.equal(config.demo_spin_energy.enabled, true);
 assert.equal(config.demo_spin_energy.seconds_per_spin, 30);
 assert.equal(config.demo_spin_energy.max_bank, 3);
 assert.deepEqual(config.demo_spin_energy.eligible_game_modes, ['gridjack']);
-assert.deepEqual(config.demo_spin_energy.eligible_routes, ['jackpot']);
+assert.deepEqual(config.demo_spin_energy.eligible_routes, ['market','science','jackpot','datacenter','operator','custom']);
 assert.equal(config.demo_spin_energy.real_money_value, false);
 assert.equal(config.demo_spin_energy.automatic_wager_conversion, false);
 assert.equal(config.demo_spin_energy.auto_play_from_bank, false);
@@ -59,7 +58,6 @@ assert.equal(eco.canonical_parent.repository, 'Hawkar-usls/Janus-HELIOS');
 assert.equal(eco.canonical_parent.route_switching, true);
 assert.equal(eco.canonical_parent.telegram_required, false);
 assert.equal(eco.specialized_children.length, 2);
-
 const science = eco.specialized_children.find(x => x.repository === 'Hawkar-usls/DIVINE_REALM');
 const jackpot = eco.specialized_children.find(x => x.repository === 'Hawkar-usls/SSlot');
 assert.equal(science.fixed_route_class, 'SCIENCE');
