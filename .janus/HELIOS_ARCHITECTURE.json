@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v8",
+  "schema": "janus.helios.architecture.v9",
   "project": "Janus-HELIOS",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -33,7 +33,7 @@
     "win_deck": ["LAST_PAID_WIN", "TOTAL_WINS", "TOTAL_SPINS"],
     "bounded_auto_spin": "10_DEMO_SPINS_MAX_PER_ACTIVATION",
     "game_modes": {
-      "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_CASCADES_SOLAR_CORONA_AND_D_LYDIAN_AUDIO",
+      "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_CASCADES_SOLAR_CORONA_DEMO_BONUS_BUY_AND_D_LYDIAN_AUDIO",
       "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE_WITH_CASCADES_AND_A_LYDIAN_AUDIO",
       "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_CASCADES_DEMO_SPIN_ENERGY_AND_E_DORIAN_AUDIO",
       "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE_WITH_CASCADES_AND_C_SHARP_VOID_AUDIO"
@@ -76,7 +76,7 @@
     "explicit_non_inheritance": [
       "OUTCOME_DEPENDENT_REEL_TEASER",
       "NEAR_MISS_DELAY",
-      "FEATURE_BUY",
+      "UNREVIEWED_REAL_MONEY_FEATURE_BUY",
       "OUTCOME_SHAPING",
       "POOL_DEPENDENT_PERSONAL_OUTCOME",
       "COMPUTE_DEPENDENT_GAME_EFFECT"
@@ -84,21 +84,39 @@
   },
   "procedural_audio": {
     "module": "helios-music.js",
-    "classification": "LIVE_GENERATIVE_PRESENTATION_SEQUENCER",
-    "engine": "WEB_AUDIO_LIVE_SEQUENCER_V2",
+    "music_engine_version": "3.0.0",
+    "classification": "LIVE_MODE_ROUTE_EVENT_GENERATIVE_PRESENTATION_SEQUENCER",
+    "engine": "WEB_AUDIO_MODE_ROUTE_EVENT_GENERATIVE_V3",
     "default_state": "OFF_UNTIL_EXPLICIT_AUDIO_GESTURE",
     "architecture_inspiration": "NERDMINER_V2_TASK_SEPARATION_NO_SOURCE_CODE_COPIED",
-    "transport_model": "16_STEP_4_4_LOOKAHEAD_SCHEDULER_INDEPENDENT_FROM_GAME_AND_COMPUTE_LOOPS",
+    "transport_model": "SESSION_SEEDED_16_STEP_4_4_LOOKAHEAD_SCHEDULER_INDEPENDENT_FROM_GAME_AND_COMPUTE_LOOPS",
     "progression_degrees": [0, 4, 5, 3],
     "continuous_layers": ["SOLAR_PULSE", "SUB_BASS", "ORBITAL_BASS", "ARPEGGIATOR", "COSMIC_PAD", "STARFIELD_BELLS", "COMPUTE_DRONE", "EVENT_FILLS"],
-    "profiles": {
+    "mode_profiles": {
       "HELIOS": "D_LYDIAN_ORBIT",
       "DIVINE": "A_LYDIAN_AETHER",
       "GRIDJACK": "E_DORIAN_PULSE",
       "CUSTOM": "C_SHARP_VOID_MINOR"
     },
-    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "ROUTE_CHANGE", "COMPUTE_STATE"],
-    "event_role": "MODULATE_ARRANGEMENT_DENSITY_REGISTER_AND_FILLS_OVER_CONTINUOUS_TRANSPORT",
+    "route_profiles": {
+      "MARKET": "MARKET_EXCHANGE",
+      "SCIENCE": "SCIENCE_AETHER",
+      "TREASURY": "TREASURY_ENGINE",
+      "DC": "DATA_CENTER_CLOCK",
+      "OPERATOR": "OPERATOR_LINK",
+      "CUSTOM": "CUSTOM_VOID"
+    },
+    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "LUCKY_CONTRIBUTION", "BONUS_BUY", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "event_role": "MODULATE_TEMPO_ARRANGEMENT_DENSITY_REGISTER_TIMBRE_AND_FILLS_OVER_CONTINUOUS_TRANSPORT",
+    "temporary_tempo_delta_bpm": {
+      "CASCADE_X1": 3,
+      "CASCADE_X4": 7,
+      "CASCADE_X16": 12,
+      "CASCADE_X64": 18,
+      "SOLAR_CORONA": 18,
+      "LUCKY_CONTRIBUTION": 12,
+      "BONUS_BUY": 10
+    },
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "external_audio_assets_required": false,
     "may_change_rng": false,
@@ -106,6 +124,26 @@
     "may_change_rtp": false,
     "may_change_compute_route": false,
     "may_change_compute_rate": false
+  },
+  "lucky_contribution": {
+    "module": "helios-lucky.js",
+    "classification": "VERIFIED_COMPUTE_CONTRIBUTION_RECOGNITION_LAYER",
+    "public_demo_mode": "SIMULATED_ONLY",
+    "production_authority": "AUTHORITATIVE_PROVIDER_OR_RESEARCH_RECEIPT_ONLY",
+    "browser_may_self_verify": false,
+    "route_semantics": {
+      "MARKETPLACE_OR_TREASURY": "LUCKY_HASH",
+      "SCIENCE_OR_PUBLIC_GOOD": "IMPACT_HIT",
+      "DATACENTER_OPERATOR_OR_CUSTOM": "GOLDEN_TASK"
+    },
+    "reward_ledger": "LUCKY_CONTRIBUTION_LEDGER",
+    "real_money_value_in_public_demo": false,
+    "wagering_value": false,
+    "may_change_rng": false,
+    "may_change_rtp": false,
+    "may_change_bonus_probability": false,
+    "may_change_personal_jackpot_weight": false,
+    "may_trigger_presentation_music": true
   },
   "demo_spin_energy": {
     "classification": "NON_WAGERING_PUBLIC_DEMO_MECHANIC",
@@ -135,6 +173,19 @@
     "compute_effect": "NONE",
     "route_effect": "NONE"
   },
+  "demo_bonus_buy": {
+    "classification": "PUBLIC_CAPABILITY_DEMO_ONLY",
+    "eligible_mode": "HELIOS",
+    "feature": "SOLAR_CORONA",
+    "cost_multiplier_of_demo_bet": 50,
+    "purchase_currency": "DEMO_PRESENTATION_UNITS",
+    "reward_ledger": "SOLAR_BONUS_BANK",
+    "real_money_value": false,
+    "production_enabled": false,
+    "compute_effect": "NONE",
+    "route_effect": "NONE",
+    "production_rule": "SEPARATE_REGULATORY_PLATFORM_RESPONSIBLE_GAMING_AND_GAME_MATH_REVIEW_REQUIRED"
+  },
   "reference_destinations": [
     {"id": "science", "example": "research requestor / public-good project", "default_sink": "IMPACT_LEDGER"},
     {"id": "jackpot_pool", "example": "verified mining/pool revenue", "default_sink": "COMPUTE_TREASURY"},
@@ -161,7 +212,10 @@
     "COMPUTE_SCHEDULING_INDEPENDENT_FROM_SPIN_FREQUENCY",
     "PRESENTATION_LAYER_HAS_NO_RNG_PAYOUT_OR_COMPUTE_AUTHORITY",
     "PROCEDURAL_AUDIO_HAS_NO_RNG_PAYOUT_RTP_OR_COMPUTE_AUTHORITY",
-    "PROCEDURAL_AUDIO_CANNOT_ADAPT_TO_LOSS_STREAK_NEAR_MISS_WAGERING_HISTORY_OR_PLAYER_VULNERABILITY"
+    "PROCEDURAL_AUDIO_CANNOT_ADAPT_TO_LOSS_STREAK_NEAR_MISS_WAGERING_HISTORY_OR_PLAYER_VULNERABILITY",
+    "LUCKY_CONTRIBUTION_REQUIRES_AUTHORITATIVE_PROOF_IN_PRODUCTION",
+    "LUCKY_CONTRIBUTION_CANNOT_CHANGE_GAME_ODDS_OR_PERSONAL_JACKPOT_WEIGHT",
+    "REAL_MONEY_BONUS_BUY_IS_NOT_ENABLED_BY_PUBLIC_DEMO"
   ],
-  "production_gate": "BLOCKED_PENDING_REAL_ADAPTERS_VERIFICATION_AND_INDEPENDENT_REVIEW"
+  "production_gate": "BLOCKED_PENDING_REAL_ADAPTERS_VERIFICATION_AUTHORITATIVE_LUCKY_PROOF_AND_INDEPENDENT_REVIEW"
 }
