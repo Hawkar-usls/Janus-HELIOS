@@ -12,13 +12,19 @@ const cfg = JSON.parse(config).procedural_audio;
 
 assert.equal(cfg.enabled, true);
 assert.equal(cfg.default_on, false);
-assert.equal(cfg.engine, 'WEB_AUDIO_EVENT_GENERATIVE');
+assert.equal(cfg.engine, 'WEB_AUDIO_LIVE_SEQUENCER_V2');
+assert.equal(cfg.transport_division, '1/16');
+assert.equal(cfg.master_gain, 0.30);
 assert.equal(cfg.presentation_only, true);
 assert.equal(cfg.affects_rng, false);
 assert.equal(cfg.affects_payout, false);
 assert.equal(cfg.affects_compute_route, false);
 assert.equal(cfg.external_audio_assets_required, false);
 assert.match(cfg.architecture_inspiration, /NERDMINER_V2/);
+
+for (const layer of ['SOLAR_PULSE','SUB_BASS','ORBITAL_BASS','ARPEGGIATOR','COSMIC_PAD','STARFIELD_BELLS','COMPUTE_DRONE','EVENT_FILLS']) {
+  assert.ok(cfg.layers.includes(layer));
+}
 
 assert.equal(cfg.profiles.helios.name, 'D LYDIAN ORBIT');
 assert.equal(cfg.profiles.divine.name, 'A LYDIAN AETHER');
@@ -29,22 +35,28 @@ for (const forbidden of ['BET_SIZE','LOSS_STREAK','NEAR_MISS','WAGERING_HISTORY'
   assert.ok(cfg.forbidden_adaptation_inputs.includes(forbidden));
 }
 
-assert.match(music, /AudioContext/);
-assert.match(music, /createOscillator/);
-assert.match(music, /createConvolver/);
+assert.match(music, /function scheduleTransportStep/);
+assert.match(music, /function schedulerTick/);
+assert.match(music, /function kick/);
+assert.match(music, /function noiseHit/);
+assert.match(music, /function pad/);
+assert.match(music, /function bell/);
+assert.match(music, /PROGRESSION = \[0,4,5,3\]/);
+assert.match(music, /\/4;/);
 assert.match(music, /helios:cascade/);
 assert.match(music, /helios:spin-complete/);
 assert.match(music, /helios:solar-corona/);
 assert.match(music, /helios:spin-energy-earned/);
-assert.match(music, /data-game-mode/);
-assert.match(music, /selected-route/);
-assert.match(music, /compute-state/);
+assert.match(music, /computeActive/);
+assert.match(music, /boostBars/);
+assert.match(music, /solarBars/);
+assert.match(music, /fillSteps/);
 assert.equal(music.includes("$('bet')"), false);
 assert.equal(/lossStreak|nearMiss|wageringHistory|playerVulnerability/i.test(music), false);
 
-assert.match(html, /helios-music\.js\?v=1\.0\.0/);
-assert.match(html, /EVENT-GENERATED AUDIO/);
+assert.match(html, /helios-music\.js\?v=2\.0\.0/);
+assert.match(html, /LIVE GENERATIVE MUSIC/);
 assert.match(docs, /NerdMiner_v2/);
 assert.match(docs, /No NerdMiner source code is copied/);
 
-console.log('HELIOS cosmic procedural music invariants: PASS');
+console.log('HELIOS live generative music invariants: PASS');
