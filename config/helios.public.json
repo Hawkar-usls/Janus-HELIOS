@@ -32,6 +32,19 @@
     "auto_play_from_bank": false,
     "note": "Public demo only. Active eligible compute may accumulate non-cash demo spins. Production compute value must not automatically become wagers, free spins, gambling balance or better gambling terms."
   },
+  "demo_solar_corona": {
+    "enabled": true,
+    "eligible_game_modes": ["helios"],
+    "trigger_symbol": "☀",
+    "trigger_count": 3,
+    "multipliers": [2, 3, 4, 5, 8, 10, 16, 25],
+    "reward_ledger": "SOLAR_BONUS_BANK",
+    "real_money_value": false,
+    "affects_compute": false,
+    "affects_rng": false,
+    "affects_route": false,
+    "note": "HELIOS identity bonus. Three or more sun symbols on the settled HELIOS grid ignite the Solar Corona. The selected multiplier rewards a separate demo-only Solar Bonus Bank and never changes compute routing, resource allocation or production wagering value."
+  },
   "routes": [
     {
       "key": "market",
