@@ -1,129 +1,138 @@
-# HELIOS Cosmic Synth Engine
+# HELIOS Cosmic Synth Engine v3
 
 ## Purpose
 
-`helios-music.js` is a local WebAudio **live generative sequencer** for JANUS HELIOS.
+`helios-music.js` is a local WebAudio generative soundtrack engine for JANUS HELIOS.
 
-It does **not** play a pre-rendered song and it is no longer just a sparse event-SFX layer. After the user explicitly enables `COSMIC AUDIO`, a 16-step musical transport runs continuously and generates an evolving cosmic arrangement. HELIOS events reshape that arrangement in real time.
+It does **not** play a pre-rendered song. After the user explicitly enables audio, HELIOS runs a continuous 16-step musical transport. The current game mode defines tonal DNA, the selected compute route changes arrangement character, a session seed creates local variation, and neutral game/system events temporarily reshape tempo, density, register, timbre and fills.
 
 ```text
-16-STEP TRANSPORT
-      ↓
-SOLAR PULSE + BASS + ARP + PAD + STARFIELD
-      ↓
-HELIOS EVENT MODULATION
-      ↓
-WEB AUDIO SYNTH GRAPH
-      ↓
-LIVE GENERATED MUSIC
+GAME MODE ───────┐
+COMPUTE ROUTE ───┤
+SESSION SEED ────┤
+GAME/UI EVENTS ──┤
+                 ▼
+        MODE + ROUTE + EVENT REACTOR
+                 ↓
+      16-STEP LOOKAHEAD TRANSPORT
+                 ↓
+          WEB AUDIO SYNTH GRAPH
+                 ↓
+        LIVE GENERATED COSMIC MUSIC
 ```
 
 ## NerdMiner_v2 inspiration
 
 Architecture inspiration: `BitMaker-hub/NerdMiner_v2`.
 
-NerdMiner is not a beat maker or music engine. It is an ESP32 miner. The useful design principle is its separation of concurrent responsibilities: monitor, Stratum work, mining workers and a responsive main loop are kept as distinct tasks.
+NerdMiner is not a beat maker or music engine. It is an ESP32 solo miner. The useful design principle is separation of concurrent responsibilities: monitoring, network work intake, mining workers and a responsive main loop are distinct tasks.
 
-HELIOS generalizes that idea for browser audio:
+HELIOS generalizes that principle for browser audio:
 
 ```text
 NerdMiner concept         HELIOS audio analogue
-----------------------    ---------------------------------
-Monitor task              synth / UI status observer
-Stratum task              event intake / state changes
-Miner workers             independent musical layers
+----------------------    ---------------------------------------
+Monitor task              UI / synth status observer
+Stratum work intake       HELIOS event / state intake
+Miner workers             oscillator / percussion / pad voices
 responsive main loop      slot + router remain independent
 ```
 
 No NerdMiner source code is copied into HELIOS. The reference project is MIT licensed; the use here is architectural inspiration only.
 
-Reference:
-- https://github.com/BitMaker-hub/NerdMiner_v2
+## Continuous layers
 
-## Sequencer architecture
+The v3 engine continuously composes with:
 
-The transport runs in 4/4 with sixteenth-note scheduling and look-ahead timing.
+- `SOLAR_PULSE`
+- `SUB_BASS`
+- `ORBITAL_BASS`
+- `ARPEGGIATOR`
+- `COSMIC_PAD`
+- `STARFIELD_BELLS`
+- `COMPUTE_DRONE`
+- `EVENT_FILLS`
 
-Default continuous layers:
+The result is a running composition rather than a collection of one-shot SFX.
 
-- `SOLAR_PULSE` — synthesized kick/pulse anchor;
-- `SUB_BASS` / `ORBITAL_BASS` — low harmonic motion;
-- `ARPEGGIATOR` — mode-specific melodic sequence;
-- `COSMIC_PAD` — long harmonic field following the progression;
-- `STARFIELD_BELLS` — sparse high-frequency spatial accents;
-- `COMPUTE_DRONE` — quiet low pulse while compute is ACTIVE;
-- `EVENT_FILLS` — temporary phrases injected by HELIOS events.
+## Tonal mode identities
 
-Default harmonic progression uses modal scale degrees:
-
-```text
-0 → 4 → 5 → 3
-```
-
-The sequence repeats structurally while note selection, register, event fills and active layers change over time.
-
-## Event inputs
-
-The synth may react to:
-
-- game mode changes;
-- manual spin start;
-- paid cascade events;
-- settled paid win presence;
-- Solar Corona bonus;
-- demo Spin Energy earned;
-- compute route changes;
-- compute ACTIVE/OFF state.
-
-These are presentation events only.
-
-## Tonal identities
-
-| HELIOS profile | Tonal identity | Default BPM | Character |
+| Game mode | Tonal DNA | Base BPM | Character |
 | --- | --- | ---: | --- |
-| HELIOS | D Lydian Orbit | 66 | luminous / orbital |
+| HELIOS | D Lydian Orbit | 66 | luminous / retro orbital |
 | DIVINE | A Lydian Aether | 60 | airy / radiant |
 | GRIDJACK | E Dorian Pulse | 78 | mechanical / treasury pulse |
 | CUSTOM | C# Void Minor | 70 | darker builder-space |
 
-All profiles are generated from oscillator voices, envelopes, noise percussion, filtering, stereo placement, delay and synthetic convolution ambience.
+## Route identities
 
-## Interaction mapping
+The selected compute route does not affect game RNG, but it does change the presentation soundtrack.
+
+| Route | Audio identity | Effect examples |
+| --- | --- | --- |
+| MARKET | Market Exchange | brighter arp, +4 BPM baseline |
+| SCIENCE | Science Aether | more starfield, less bass, -2 BPM |
+| TREASURY | Treasury Engine | heavy pulse/bass, +8 BPM |
+| DC | Data Center Clock | mechanical pulse, +2 BPM |
+| OPERATOR | Operator Link | dense low engine, +5 BPM |
+| CUSTOM | Custom Void | balanced / buyer-configurable |
+
+This makes `GRIDJACK + TREASURY` musically different from `GRIDJACK + SCIENCE` while preserving the same game mode.
+
+## Session uniqueness
+
+Each browser session receives a random session seed. The sequencer uses it to vary optional kick placements, arpeggio mutations, starfield notes and progression rotation.
+
+This does not make the music cryptographically unique in the strict mathematical sense, but it prevents the public demo from behaving like a fixed looping audio file and makes repeated sessions audibly different.
+
+## Event interaction
+
+Events modify the running composition instead of replacing it.
 
 ```text
 SPIN
-→ ignition fill enters the running sequencer
+→ ignition fill
 
 CASCADE x1
-→ temporary harmonic/arp energy increase
+→ temporary +3 BPM + arrangement boost
 
 CASCADE x4
-→ denser fill + higher register
+→ temporary +7 BPM + denser/higher arp
 
 CASCADE x16
-→ extended high-register phrase
+→ temporary +12 BPM + extended fill
 
 CASCADE x64
-→ maximum cascade layer / solar-flare register
+→ temporary +18 BPM + highest cascade layer
 
 SOLAR CORONA
-→ four-bar climax with widened chord voices and dense upper layer
+→ multi-bar solar climax +18 BPM
+
+LUCKY CONTRIBUTION
+→ celebratory multi-bar layer +12 BPM
+
+DEMO BONUS BUY
+→ transition / feature-entry layer +10 BPM
 
 SPIN ENERGY EARNED
-→ high bell triad over the running beat
+→ high bell phrase
 
 ROUTE CHANGE
-→ navigation tone
+→ navigation tone + route arrangement switch
 
 COMPUTE ACTIVE
-→ low engine pulse joins the arrangement
+→ low route-specific engine drone joins the music
 ```
 
-Events modify the **music arrangement**, not the slot outcome.
+## Lucky Contribution audio
+
+`helios-lucky.js` dispatches `helios:lucky-contribution` when the public demo simulates a significant accepted compute contribution.
+
+The music engine treats this as a presentation event only: it can celebrate the contribution with tempo, fills and harmony, but cannot modify gambling odds or compute settlement.
 
 ## Safety / fairness boundary
 
-The music engine intentionally does not use:
+The synth intentionally does **not** use:
 
 - bet size;
 - loss streak;
@@ -131,8 +140,6 @@ The music engine intentionally does not use:
 - wagering history;
 - player vulnerability or inferred psychology;
 - compute volume as a game-odds signal.
-
-The soundtrack must not become a hidden player-conditioning or outcome-shaping system.
 
 ```text
 MUSIC → RNG       NONE
@@ -142,16 +149,26 @@ MUSIC → ROUTE     NONE
 MUSIC → COMPUTE   NONE
 ```
 
-## Browser behaviour
+Music may represent the state of the system. It is not an authority over that system.
+
+## Browser behavior
 
 Audio is OFF by default. The WebAudio graph is created/resumed only after an explicit user interaction with the audio toggle, respecting browser autoplay restrictions.
 
-The scheduler uses short look-ahead windows rather than blocking timers. When the page becomes hidden, transport scheduling stops and the master output fades; when the page becomes visible again, the transport resumes from a fresh timing anchor.
-
-No external audio file or streaming audio service is required.
+When the page becomes hidden, the scheduler pauses and the master output fades to silence. No external audio file or streaming audio service is required.
 
 ## Public configuration
 
 See `config/helios.public.json` → `procedural_audio`.
 
-A buyer may change tonal roots, scales, motifs, BPM and presentation gain without modifying the slot/router core, subject to the immutable fairness boundary above.
+A buyer may configure:
+
+- mode roots/scales/motifs/BPM;
+- route BPM offsets;
+- route rhythmic density;
+- bass/arp/starfield density;
+- filter bias;
+- compute drone strength;
+- presentation gain.
+
+The immutable fairness boundary remains unchanged.
