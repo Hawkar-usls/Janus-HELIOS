@@ -54,20 +54,28 @@
     "affects_compute": false,
     "affects_rng": false,
     "affects_route": false,
-    "note": "HELIOS identity bonus. Three or more sun symbols on the settled HELIOS grid ignite the Solar Corona. The selected multiplier rewards a separate demo-only Solar Bonus Bank and never changes compute routing, resource allocation or production wagering value."
+    "note": "Natural HELIOS identity event. Three or more sun symbols on a settled non-bonus HELIOS grid ignite the Solar Corona wheel. This event remains separate from the purchased Solar Free Spins session and never changes compute routing."
   },
   "demo_bonus_buy": {
     "enabled": true,
     "eligible_game_modes": ["helios"],
-    "feature": "SOLAR_CORONA",
+    "feature": "SOLAR_CORONA_FREE_SPINS",
     "cost_multiplier_of_demo_bet": 50,
     "purchase_currency": "DEMO_PRESENTATION_UNITS",
+    "free_spins_count": 10,
+    "retrigger_symbol": "☀",
+    "retrigger_count": 3,
+    "retrigger_spins": 2,
+    "max_total_spins": 16,
+    "inter_spin_delay_ms": 650,
+    "bonus_session_ledger": "DEMO_SOLAR_FREE_SPINS",
+    "winnings_settle_to_demo_balance": true,
     "reward_ledger": "SOLAR_BONUS_BANK",
     "real_money_value": false,
     "production_enabled": false,
     "affects_compute": false,
     "affects_compute_route": false,
-    "note": "Public capability demo only. A production real-money feature-buy implementation is disabled and would require separate jurisdiction, platform, responsible-gaming and game-math review."
+    "note": "Public capability demo only. Buying Corona starts 10 automatic free spins using the same independent game RNG and cascade system. Three or more suns during the bonus retrigger +2 spins up to 16 total. Some sessions may pay little and others may become large through normal cascades; there is no compute-dependent outcome shaping. Production real-money feature buy remains disabled pending separate jurisdiction, platform, responsible-gaming and game-math review."
   },
   "demo_lucky_contribution": {
     "enabled": true,
@@ -133,7 +141,7 @@
       "OPERATOR": {"name": "OPERATOR LINK", "bpm_delta": 5, "degree_shift": 2, "pulse_density": 0.76, "bass_density": 0.84, "arp_density": 0.72, "star_density": 0.34, "filter_bias": 120, "drone_gain": 0.028},
       "CUSTOM": {"name": "CUSTOM VOID", "bpm_delta": 0, "degree_shift": 5, "pulse_density": 0.58, "bass_density": 0.62, "arp_density": 0.77, "star_density": 0.58, "filter_bias": 300, "drone_gain": 0.020}
     },
-    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "LUCKY_CONTRIBUTION", "BONUS_BUY", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "LUCKY_CONTRIBUTION", "BONUS_BUY", "BONUS_SESSION_START", "BONUS_SPIN", "BONUS_SESSION_COMPLETE", "ROUTE_CHANGE", "COMPUTE_STATE"],
     "event_tempo_behavior": {
       "CASCADE_X1": "+3 BPM temporary",
       "CASCADE_X4": "+7 BPM temporary",
@@ -141,7 +149,8 @@
       "CASCADE_X64": "+18 BPM temporary",
       "SOLAR_CORONA": "+18 BPM for several bars",
       "LUCKY_CONTRIBUTION": "+12 BPM for several bars",
-      "BONUS_BUY": "+10 BPM temporary"
+      "BONUS_BUY": "+10 BPM transition",
+      "BONUS_SESSION": "+12 BPM sustained while Solar Free Spins are active"
     },
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "presentation_only": true,
@@ -149,7 +158,7 @@
     "affects_payout": false,
     "affects_compute_route": false,
     "external_audio_assets_required": false,
-    "note": "A unique session-seeded 16-step cosmic composition is generated locally with WebAudio. Game mode defines tonal DNA, compute route defines arrangement character, and neutral game/system events temporarily reshape tempo, density, register and fills. Music never reads loss streaks, near-misses, wagering history, player vulnerability or bet size."
+    "note": "A unique session-seeded 16-step cosmic composition is generated locally with WebAudio. Game mode defines tonal DNA, compute route defines arrangement character, and neutral game/system events temporarily reshape tempo, density, register and fills. Solar Free Spins now keep the arrangement in a sustained bonus state and each bonus spin/retrigger reshapes the live sequence. Music never reads loss streaks, near-misses, wagering history, player vulnerability or bet size."
   },
   "routes": [
     {
