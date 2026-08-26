@@ -25,12 +25,23 @@
     "seconds_per_spin": 30,
     "max_bank": 3,
     "eligible_game_modes": ["gridjack"],
-    "eligible_routes": ["jackpot"],
+    "eligible_routes": ["market", "science", "jackpot", "datacenter", "operator", "custom"],
     "reward_ledger": "DEMO_ENERGY_REWARD_ONLY",
     "real_money_value": false,
     "automatic_wager_conversion": false,
     "auto_play_from_bank": false,
-    "note": "Public demo only. Active eligible compute may accumulate non-cash demo spins. Production compute value must not automatically become wagers, free spins, gambling balance or better gambling terms."
+    "note": "Public demo only. In GRIDJACK, any configured active compute route may accumulate non-cash demo spins. Production compute value must not automatically become wagers, free spins, gambling balance or better gambling terms."
+  },
+  "demo_cascades": {
+    "enabled": true,
+    "eligible_game_modes": ["helios", "divine", "gridjack", "custom"],
+    "multiplier_ladder": [1, 4, 16, 64],
+    "max_cascades": 8,
+    "collapse_ms": 260,
+    "refill_ms": 340,
+    "affects_compute": false,
+    "compute_effect": "NONE",
+    "note": "A paid line removes its winning symbols, surviving symbols fall, new symbols enter from above, and the grid is evaluated again. Successful consecutive cascades climb x1 → x4 → x16 → x64. The cascade engine never reads compute route, compute units, provider receipt or player compute contribution when generating outcomes."
   },
   "demo_solar_corona": {
     "enabled": true,
