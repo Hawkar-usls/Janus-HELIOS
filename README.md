@@ -50,11 +50,30 @@ The live page now includes:
 - independent `SPIN` and `ROUTE POWER` controls;
 - explicit opt-in, CPU cap and immediate revoke;
 - six replaceable compute route classes;
+- route arming feedback (`READY`, preview receipt, selected provider path, consent CTA);
 - simulated compute receipts;
+- optional GRIDJACK/JACKPOT `DEMO SPIN ENERGY` bank with manual consumption only;
 - neutral staggered reel physics with visual momentum and reel-by-reel landings;
 - fixed spin-stop timing that does **not** depend on outcome, near-miss state, compute route or wagering history.
 
 No real-money gambling or real provider workload is performed by the public page.
+
+## Polish layer inherited from the two specialized children
+
+HELIOS now generalizes the strongest presentation patterns seen in `SSlot` and `DIVINE_REALM` without inheriting their legacy outcome-shaping logic:
+
+- `LOCAL DEMO ACTIVITY` ticker;
+- optional WebAudio sound feedback, OFF by default;
+- `MODE MATRIX` modal with mode profile, symbols and line count;
+- win classification bands: `STABLE`, `PULSE`, `RADIANT`, `SOLAR FLARE`;
+- animated win overlay;
+- SVG win-trace over winning cells;
+- session `STREAK` and `BEST WIN` counters;
+- visual core-symbol alignment events with **no payout or compute effect**;
+- mode-aware cosmic ambience;
+- functional x1/x4/x16/x64 win-band rail.
+
+The implementation lives in [`helios-polish.js`](helios-polish.js). It observes the public game state but does not own RNG, payouts, routing or provider settlement.
 
 ### Game profiles are not compute routes
 
@@ -78,6 +97,31 @@ GAME MODE ⟂ COMPUTE ROUTE
 ```
 
 The enabled modes and default mode are exposed in [`config/helios.public.json`](config/helios.public.json).
+
+## Demo Spin Energy boundary
+
+The public demo can show compute-time accumulation as a separate non-cash entitlement:
+
+```text
+GRIDJACK + eligible route + explicit compute consent
+                    ↓
+             demo compute time
+                    ↓
+           DEMO SPIN ENERGY BANK
+                    ↓
+           manual ENERGY SPIN
+                    ↓
+       DEMO_ENERGY_REWARD_ONLY
+```
+
+This mechanism is deliberately separated from production wagering:
+
+```text
+compute -> automatic real wager/free spin    FORBIDDEN BY DEFAULT
+compute -> gambling balance                  FORBIDDEN
+Spin Energy -> cashout                       FORBIDDEN
+Spin Energy bank -> autoplay                 FORBIDDEN
+```
 
 ## Ecosystem
 
@@ -135,7 +179,7 @@ compute -> RNG                     FORBIDDEN
 compute -> RTP                     FORBIDDEN
 compute -> win probability         FORBIDDEN
 compute -> bet size                FORBIDDEN
-compute -> free spins              FORBIDDEN
+compute -> production free spins   FORBIDDEN BY DEFAULT
 compute -> personal jackpot weight FORBIDDEN
 spin frequency -> compute rate     FORBIDDEN
 browser -> provider private secret FORBIDDEN
@@ -147,10 +191,13 @@ Compute is OFF by default, requires explicit opt-in and must support immediate r
 ## Current implementation
 
 - [`index.html`](index.html) — web-first live public slot demo and HELIOS cosmic UI;
-- [`helios.js`](helios.js) — public controller with game profiles, win tracking, bounded auto-spin and neutral staggered reels;
-- [`config/helios.public.json`](config/helios.public.json) — buyer-facing public configuration for branding, routes and enabled game modes;
+- [`helios.js`](helios.js) — public controller with game profiles, route arming, Spin Energy, win tracking, bounded auto-spin and neutral staggered reels;
+- [`helios-polish.js`](helios-polish.js) — generalized presentation layer inspired by both specialized children;
+- [`config/helios.public.json`](config/helios.public.json) — buyer-facing public configuration for branding, routes, modes and demo Spin Energy policy;
 - [`src/helios-router.js`](src/helios-router.js) — provider-agnostic routing core;
 - [`tests/helios-router.test.mjs`](tests/helios-router.test.mjs) — routing invariants;
+- [`tests/public-surface-invariants.test.mjs`](tests/public-surface-invariants.test.mjs) — public-surface and family invariants;
+- [`tests/polish-invariants.test.mjs`](tests/polish-invariants.test.mjs) — polish and route-feedback invariants;
 - [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — architecture;
 - [`.janus/HELIOS_ECOSYSTEM.json`](.janus/HELIOS_ECOSYSTEM.json) — ecosystem contract;
 - [`BUYER_HANDOFF_SPEC.json`](BUYER_HANDOFF_SPEC.json) — buyer configuration boundary;
