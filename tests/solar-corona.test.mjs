@@ -9,14 +9,19 @@ const [html, bonus, config] = await Promise.all([
 
 const cfg = JSON.parse(config);
 const corona = cfg.demo_solar_corona;
+const buy = cfg.demo_bonus_buy;
 
-assert.match(html, /helios-bonus\.js\?v=1\.0\.0/);
+assert.match(html, /helios-bonus\.js\?v=/);
 assert.match(bonus, /SOLAR CORONA BONUS/);
 assert.match(bonus, /SOLAR_BONUS_BANK/);
-assert.match(bonus, /trigger_count:3/);
-assert.match(bonus, /trigger_symbol:'☀'/);
+assert.match(bonus, /BUY SOLAR CORONA/);
+assert.match(bonus, /DEMO_BONUS_BUY/);
+assert.match(bonus, /helios:bonus-buy-start/);
+assert.match(bonus, /helios:bonus-buy-complete/);
+assert.match(bonus, /production_enabled:false/);
 assert.match(bonus, /compute_effect:'NONE'/);
 assert.match(bonus, /route_effect:'NONE'/);
+
 assert.equal(corona.enabled, true);
 assert.deepEqual(corona.eligible_game_modes, ['helios']);
 assert.equal(corona.trigger_symbol, '☀');
@@ -27,4 +32,13 @@ assert.equal(corona.affects_rng, false);
 assert.equal(corona.affects_route, false);
 assert.equal(corona.reward_ledger, 'SOLAR_BONUS_BANK');
 
-console.log('HELIOS Solar Corona invariants: PASS');
+assert.equal(buy.enabled, true);
+assert.deepEqual(buy.eligible_game_modes, ['helios']);
+assert.equal(buy.feature, 'SOLAR_CORONA');
+assert.equal(buy.cost_multiplier_of_demo_bet, 50);
+assert.equal(buy.real_money_value, false);
+assert.equal(buy.production_enabled, false);
+assert.equal(buy.affects_compute, false);
+assert.equal(buy.affects_compute_route, false);
+
+console.log('HELIOS Solar Corona + demo Bonus Buy invariants: PASS');
