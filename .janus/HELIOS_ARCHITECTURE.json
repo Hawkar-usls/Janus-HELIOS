@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v4",
+  "schema": "janus.helios.architecture.v5",
   "project": "Janus-HELIOS",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -46,6 +46,36 @@
     "spin_can_accelerate_compute": false,
     "spin_can_weight_compute": false
   },
+  "presentation_layer": {
+    "module": "helios-polish.js",
+    "authority": "OBSERVE_AND_RENDER_ONLY",
+    "source_inspiration": ["SSlot", "DIVINE_REALM"],
+    "may_change_rng": false,
+    "may_change_payout": false,
+    "may_change_game_mode_math": false,
+    "may_change_compute_route": false,
+    "may_change_compute_rate": false,
+    "may_change_provider_receipt": false,
+    "features": [
+      "LOCAL_DEMO_ACTIVITY_TICKER",
+      "MODE_MATRIX",
+      "OPTIONAL_WEBAUDIO_SOUND_OFF_BY_DEFAULT",
+      "WIN_OVERLAY",
+      "SVG_WIN_TRACE",
+      "FUNCTIONAL_WIN_BAND_RAIL",
+      "SESSION_STREAK_AND_BEST_WIN",
+      "MODE_AWARE_COSMIC_AMBIENCE",
+      "VISUAL_CORE_ALIGNMENT_EVENT_NO_REWARD"
+    ],
+    "explicit_non_inheritance": [
+      "OUTCOME_DEPENDENT_REEL_TEASER",
+      "NEAR_MISS_DELAY",
+      "FEATURE_BUY",
+      "OUTCOME_SHAPING",
+      "POOL_DEPENDENT_PERSONAL_OUTCOME",
+      "COMPUTE_DEPENDENT_GAME_EFFECT"
+    ]
+  },
   "demo_spin_energy": {
     "classification": "NON_WAGERING_PUBLIC_DEMO_MECHANIC",
     "default_supporting_mode": "GRIDJACK",
@@ -85,7 +115,8 @@
     "DEMO_SPIN_ENERGY_HAS_NO_REAL_MONEY_OR_WAGERING_VALUE",
     "DEMO_SPIN_ENERGY_CANNOT_AUTOPLAY_FROM_BANK",
     "COMPUTE_CANNOT_CHANGE_PERSONAL_JACKPOT_WEIGHT",
-    "COMPUTE_SCHEDULING_INDEPENDENT_FROM_SPIN_FREQUENCY"
+    "COMPUTE_SCHEDULING_INDEPENDENT_FROM_SPIN_FREQUENCY",
+    "PRESENTATION_LAYER_HAS_NO_RNG_PAYOUT_OR_COMPUTE_AUTHORITY"
   ],
   "production_gate": "BLOCKED_PENDING_REAL_ADAPTERS_VERIFICATION_AND_INDEPENDENT_REVIEW"
 }
