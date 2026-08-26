@@ -10,6 +10,17 @@
     html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
     body{overflow-x:hidden;overscroll-behavior-x:none;}
     button,[role="button"],input,select{touch-action:manipulation;}
+    .game-panel.impact{animation:mobileMachineImpact .24s cubic-bezier(.2,.8,.3,1)}
+    .game-panel.win-impact{box-shadow:0 0 0 1px #8f6b2a,0 0 44px #ffc95c2d,var(--shadow)}
+    .reel-spinning{animation:mobileReelFloat .11s linear infinite alternate}.reel-stop{animation:mobileReelStop .28s cubic-bezier(.2,.9,.25,1.35)}
+    .cell.spin{filter:blur(1.4px);transform:translateY(2px);opacity:.72}
+    .solar-particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--mode);box-shadow:0 0 7px var(--mode);animation:mobileParticle .62s ease-out forwards;z-index:5;pointer-events:none}
+    .last-win-card.win{animation:mobileWinPop .72s ease}.auto-btn.active{border-color:#735821;color:var(--solar);box-shadow:0 0 16px #ffc24b14}
+    @keyframes mobileReelFloat{from{transform:translateY(-3px)}to{transform:translateY(3px)}}
+    @keyframes mobileReelStop{0%{transform:translateY(-10px) scaleY(1.02)}65%{transform:translateY(4px) scaleY(.98)}100%{transform:none}}
+    @keyframes mobileMachineImpact{0%{transform:none}35%{transform:translateY(3px)}70%{transform:translateY(-1px)}100%{transform:none}}
+    @keyframes mobileParticle{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}
+    @keyframes mobileWinPop{0%{transform:scale(.98)}32%{transform:scale(1.035);box-shadow:0 0 24px var(--mode-soft)}100%{transform:none}}
 
     @supports(height:100dvh){
       .profile-drawer{height:100dvh!important;}
