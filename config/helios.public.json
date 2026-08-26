@@ -3,7 +3,7 @@
   "branding": {
     "product_name": "JANUS HELIOS",
     "station_name": "HELIOS STATION",
-    "tagline": "ONE CORE · ANY DESTINATION",
+    "tagline": "ONE CORE. ANY DESTINATION",
     "default_route": "market",
     "default_game_mode": "helios"
   },
@@ -55,6 +55,29 @@
     "affects_rng": false,
     "affects_route": false,
     "note": "HELIOS identity bonus. Three or more sun symbols on the settled HELIOS grid ignite the Solar Corona. The selected multiplier rewards a separate demo-only Solar Bonus Bank and never changes compute routing, resource allocation or production wagering value."
+  },
+  "procedural_audio": {
+    "enabled": true,
+    "default_on": false,
+    "engine": "WEB_AUDIO_EVENT_GENERATIVE",
+    "architecture_inspiration": "NERDMINER_V2_INDEPENDENT_TASK_SEPARATION_NO_SOURCE_CODE_COPIED",
+    "master_gain": 0.085,
+    "scheduler_ms": 25,
+    "lookahead_seconds": 0.12,
+    "profiles": {
+      "helios": {"name": "D LYDIAN ORBIT", "root_midi": 50, "scale": [0, 2, 4, 6, 7, 9, 11], "motif": [0, 4, 2, 5, 1, 6, 4, 2], "bpm": 66, "wave": "sine"},
+      "divine": {"name": "A LYDIAN AETHER", "root_midi": 57, "scale": [0, 2, 4, 6, 7, 9, 11], "motif": [0, 2, 5, 4, 1, 6, 3, 5], "bpm": 60, "wave": "triangle"},
+      "gridjack": {"name": "E DORIAN PULSE", "root_midi": 40, "scale": [0, 2, 3, 5, 7, 9, 10], "motif": [0, 4, 2, 6, 1, 5, 3, 4], "bpm": 78, "wave": "triangle"},
+      "custom": {"name": "C# VOID MINOR", "root_midi": 49, "scale": [0, 3, 5, 7, 10], "motif": [0, 3, 1, 4, 2, 3, 0, 4], "bpm": 70, "wave": "sine"}
+    },
+    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
+    "presentation_only": true,
+    "affects_rng": false,
+    "affects_payout": false,
+    "affects_compute_route": false,
+    "external_audio_assets_required": false,
+    "note": "Procedural cosmic music is generated locally with WebAudio after explicit SOUND/COSMIC AUDIO activation. It reacts to neutral game and interface events but does not adapt to losses, bet size, near-miss state, wagering history or player vulnerability."
   },
   "routes": [
     {
