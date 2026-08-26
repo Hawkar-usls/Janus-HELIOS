@@ -3,7 +3,7 @@
   "branding": {
     "product_name": "JANUS HELIOS",
     "station_name": "HELIOS STATION",
-    "tagline": "ONE CORE. ANY DESTINATION",
+    "tagline": "ONE CORE. ANY DESTINATION.",
     "default_route": "market",
     "default_game_mode": "helios"
   },
@@ -56,16 +56,51 @@
     "affects_route": false,
     "note": "HELIOS identity bonus. Three or more sun symbols on the settled HELIOS grid ignite the Solar Corona. The selected multiplier rewards a separate demo-only Solar Bonus Bank and never changes compute routing, resource allocation or production wagering value."
   },
+  "demo_bonus_buy": {
+    "enabled": true,
+    "eligible_game_modes": ["helios"],
+    "feature": "SOLAR_CORONA",
+    "cost_multiplier_of_demo_bet": 50,
+    "purchase_currency": "DEMO_PRESENTATION_UNITS",
+    "reward_ledger": "SOLAR_BONUS_BANK",
+    "real_money_value": false,
+    "production_enabled": false,
+    "affects_compute": false,
+    "affects_compute_route": false,
+    "note": "Public capability demo only. A production real-money feature-buy implementation is disabled and would require separate jurisdiction, platform, responsible-gaming and game-math review."
+  },
+  "demo_lucky_contribution": {
+    "enabled": true,
+    "demo_probability_per_receipt": 0.12,
+    "eligible_route_classes": ["MARKETPLACE", "TREASURY", "SCIENCE", "PUBLIC_GOOD", "DATACENTER", "OPERATOR", "CUSTOM"],
+    "demo_reward_units": 1,
+    "reward_ledger": "LUCKY_CONTRIBUTION_LEDGER",
+    "real_money_value": false,
+    "wagering_value": false,
+    "production_requires_authoritative_receipt": true,
+    "production_browser_self_verification": false,
+    "route_labels": {
+      "MARKETPLACE": "LUCKY HASH",
+      "TREASURY": "LUCKY HASH",
+      "SCIENCE": "IMPACT HIT",
+      "PUBLIC_GOOD": "IMPACT HIT",
+      "DATACENTER": "GOLDEN TASK",
+      "OPERATOR": "GOLDEN TASK",
+      "CUSTOM": "GOLDEN TASK"
+    },
+    "note": "The public page simulates significant compute contributions for presentation. Production rewards may only originate from an authoritative provider/research verifier receipt. Recognition must not change RNG, RTP, bonus probability, bet size or personal jackpot weight."
+  },
   "procedural_audio": {
     "enabled": true,
     "default_on": false,
-    "engine": "WEB_AUDIO_LIVE_SEQUENCER_V2",
+    "engine": "WEB_AUDIO_MODE_ROUTE_EVENT_GENERATIVE_V3",
     "architecture_inspiration": "NERDMINER_V2_INDEPENDENT_TASK_SEPARATION_NO_SOURCE_CODE_COPIED",
     "master_gain": 0.30,
     "scheduler_ms": 25,
     "lookahead_seconds": 0.14,
     "transport_division": "1/16",
     "progression_degrees": [0, 4, 5, 3],
+    "unique_session_seed": true,
     "layers": ["SOLAR_PULSE", "SUB_BASS", "ORBITAL_BASS", "ARPEGGIATOR", "COSMIC_PAD", "STARFIELD_BELLS", "COMPUTE_DRONE", "EVENT_FILLS"],
     "profiles": {
       "helios": {"name": "D LYDIAN ORBIT", "root_midi": 50, "scale": [0, 2, 4, 6, 7, 9, 11], "motif": [0, 4, 2, 5, 1, 6, 4, 2], "bpm": 66, "wave": "sine"},
@@ -73,14 +108,31 @@
       "gridjack": {"name": "E DORIAN PULSE", "root_midi": 40, "scale": [0, 2, 3, 5, 7, 9, 10], "motif": [0, 4, 2, 6, 1, 5, 3, 4], "bpm": 78, "wave": "triangle"},
       "custom": {"name": "C# VOID MINOR", "root_midi": 49, "scale": [0, 3, 5, 7, 10], "motif": [0, 3, 1, 4, 2, 3, 0, 4], "bpm": 70, "wave": "sine"}
     },
-    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "route_profiles": {
+      "MARKET": {"name": "MARKET EXCHANGE", "bpm_delta": 4, "degree_shift": 1, "pulse_density": 0.72, "bass_density": 0.72, "arp_density": 0.82, "star_density": 0.42, "filter_bias": 450, "drone_gain": 0.020},
+      "SCIENCE": {"name": "SCIENCE AETHER", "bpm_delta": -2, "degree_shift": 3, "pulse_density": 0.42, "bass_density": 0.45, "arp_density": 0.68, "star_density": 0.78, "filter_bias": 900, "drone_gain": 0.014},
+      "TREASURY": {"name": "TREASURY ENGINE", "bpm_delta": 8, "degree_shift": 0, "pulse_density": 0.92, "bass_density": 0.94, "arp_density": 0.66, "star_density": 0.26, "filter_bias": -250, "drone_gain": 0.030},
+      "DC": {"name": "DATA CENTER CLOCK", "bpm_delta": 2, "degree_shift": 4, "pulse_density": 0.82, "bass_density": 0.80, "arp_density": 0.55, "star_density": 0.30, "filter_bias": -100, "drone_gain": 0.026},
+      "OPERATOR": {"name": "OPERATOR LINK", "bpm_delta": 5, "degree_shift": 2, "pulse_density": 0.76, "bass_density": 0.84, "arp_density": 0.72, "star_density": 0.34, "filter_bias": 120, "drone_gain": 0.028},
+      "CUSTOM": {"name": "CUSTOM VOID", "bpm_delta": 0, "degree_shift": 5, "pulse_density": 0.58, "bass_density": 0.62, "arp_density": 0.77, "star_density": 0.58, "filter_bias": 300, "drone_gain": 0.020}
+    },
+    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "LUCKY_CONTRIBUTION", "BONUS_BUY", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "event_tempo_behavior": {
+      "CASCADE_X1": "+3 BPM temporary",
+      "CASCADE_X4": "+7 BPM temporary",
+      "CASCADE_X16": "+12 BPM temporary",
+      "CASCADE_X64": "+18 BPM temporary",
+      "SOLAR_CORONA": "+18 BPM for several bars",
+      "LUCKY_CONTRIBUTION": "+12 BPM for several bars",
+      "BONUS_BUY": "+10 BPM temporary"
+    },
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "presentation_only": true,
     "affects_rng": false,
     "affects_payout": false,
     "affects_compute_route": false,
     "external_audio_assets_required": false,
-    "note": "Live 16-step procedural cosmic music is generated locally with WebAudio after explicit COSMIC AUDIO activation. Bass, pulse, arp, pad and starfield layers run continuously; neutral HELIOS events reshape arrangement density and register without reading bet size, loss streaks, near-misses, wagering history or player vulnerability."
+    "note": "A unique session-seeded 16-step cosmic composition is generated locally with WebAudio. Game mode defines tonal DNA, compute route defines arrangement character, and neutral game/system events temporarily reshape tempo, density, register and fills. Music never reads loss streaks, near-misses, wagering history, player vulnerability or bet size."
   },
   "routes": [
     {
