@@ -1,0 +1,88 @@
+{
+  "schema": "janus.helios.architecture.v1",
+  "project": "Janus-HELIOS",
+  "version": "1.0.0",
+  "role": "AMORPHOUS_COMPUTE_ROUTING_SLOT_ASSET",
+  "position_in_family": {
+    "parent_asset": "Janus-HELIOS",
+    "specialized_reference_surfaces": {
+      "DIVINE_REALM": "SCIENCE_PUBLIC_GOOD_DEFAULT",
+      "SSlot": "SHARED_MINING_POOL_JACKPOT_DEFAULT"
+    }
+  },
+  "prime_invariant": "COMPUTE_ROUTE_IS_REPLACEABLE_BUT_GAME_MATH_AUTHORITY_IS_NOT",
+  "routing_model": {
+    "source": "EXPLICITLY_CONSENTED_DEVICE_OR_OPERATOR_COMPUTE",
+    "scheduler_basis": ["CONSENT", "DEVICE_POLICY", "PROVIDER_CAPACITY", "WORKLOAD_ADMISSION"],
+    "game_event_weighting": "FORBIDDEN",
+    "route_classes": [
+      "SCIENCE",
+      "PUBLIC_GOOD",
+      "MARKETPLACE",
+      "TREASURY",
+      "DATACENTER",
+      "OPERATOR",
+      "CUSTOM"
+    ],
+    "task_types": [
+      "SCIENCE_WORK_UNIT",
+      "GENERAL_COMPUTE_JOB",
+      "ECONOMIC_COMPUTE_JOB",
+      "POW_SHARE"
+    ],
+    "required_provider_components": [
+      "PROVIDER_MANIFEST",
+      "SERVER_OR_LOCAL_AGENT_ADAPTER",
+      "AUTHORITATIVE_RECEIPT_VERIFIER",
+      "AUDITED_SINK_POLICY"
+    ]
+  },
+  "reference_destinations": [
+    {
+      "id": "science",
+      "example": "research requestor / public-good project",
+      "default_sink": "IMPACT_LEDGER"
+    },
+    {
+      "id": "jackpot_pool",
+      "example": "verified mining/pool revenue",
+      "default_sink": "COMPUTE_TREASURY"
+    },
+    {
+      "id": "marketplace",
+      "example": "Golem or another approved compute market",
+      "default_sink": "PLAYER_COMPUTE_EARNINGS_LEDGER_PLUS_COMPUTE_TREASURY"
+    },
+    {
+      "id": "datacenter",
+      "example": "buyer-selected data-center/cloud workload",
+      "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"
+    },
+    {
+      "id": "operator",
+      "example": "approved buyer-owned batch workload",
+      "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"
+    },
+    {
+      "id": "custom",
+      "example": "future admissible workload unknown at design time",
+      "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"
+    }
+  ],
+  "immutable_boundaries": [
+    "COMPUTE_OFF_BY_DEFAULT",
+    "EXPLICIT_OPT_IN",
+    "IMMEDIATE_REVOKE",
+    "RESOURCE_CAPS_VISIBLE",
+    "NO_HIDDEN_PROVIDER_SECRETS_IN_BROWSER",
+    "UNVERIFIED_RECEIPT_HAS_ZERO_LEDGER_VALUE",
+    "COMPUTE_CANNOT_CHANGE_RNG",
+    "COMPUTE_CANNOT_CHANGE_RTP",
+    "COMPUTE_CANNOT_CHANGE_WIN_PROBABILITY",
+    "COMPUTE_CANNOT_CHANGE_BET_SIZE",
+    "COMPUTE_CANNOT_CHANGE_FREE_SPINS",
+    "COMPUTE_CANNOT_CHANGE_PERSONAL_JACKPOT_WEIGHT",
+    "COMPUTE_SCHEDULING_INDEPENDENT_FROM_SPIN_FREQUENCY"
+  ],
+  "production_gate": "BLOCKED_PENDING_REAL_ADAPTERS_VERIFICATION_AND_INDEPENDENT_REVIEW"
+}
