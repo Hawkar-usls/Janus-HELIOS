@@ -7,7 +7,8 @@ const [html, core, polish] = await Promise.all([
   readFile(new URL('../helios-polish.js', import.meta.url), 'utf8')
 ]);
 
-assert.match(html, /<script src="\.\/helios-polish\.js"><\/script>/);
+assert.match(html, /<script src="\.\/helios\.js\?v=1\.4\.0"><\/script>/);
+assert.match(html, /<script src="\.\/helios-polish\.js\?v=1\.4\.0"><\/script>/);
 assert.equal(polish.includes('Telegram.WebApp'), false);
 assert.equal(polish.includes('telegram.org'), false);
 
