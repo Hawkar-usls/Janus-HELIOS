@@ -38,18 +38,46 @@ The buyer decides where the compute stream goes.
 
 **GitHub Pages:** https://hawkar-usls.github.io/Janus-HELIOS/
 
-The page demonstrates:
+The live page now includes:
 
 - a HELIOS-specific 5×3 slot interface;
-- a visible central compute core;
+- a native CSS cosmic/solar-station background with a sun, orbital station, orbit field, stars and planetary horizon;
+- a visible central HELIOS compute core;
+- a dedicated `LAST WIN` deck plus `TOTAL WINS` and `TOTAL SPINS`;
+- four game profiles: `HELIOS`, `DIVINE`, `GRIDJACK`, `CUSTOM`;
+- mode-specific symbol sets, paylines and demo payout scaling;
+- bounded `AUTO ×10` demo spins;
 - independent `SPIN` and `ROUTE POWER` controls;
 - explicit opt-in, CPU cap and immediate revoke;
-- six replaceable route classes;
-- simulated receipts;
-- neutral staggered reel physics with real visual momentum and reel-by-reel landings;
+- six replaceable compute route classes;
+- simulated compute receipts;
+- neutral staggered reel physics with visual momentum and reel-by-reel landings;
 - fixed spin-stop timing that does **not** depend on outcome, near-miss state, compute route or wagering history.
 
 No real-money gambling or real provider workload is performed by the public page.
+
+### Game profiles are not compute routes
+
+The game-mode selector changes only the demo game presentation/profile:
+
+```text
+HELIOS   → balanced three-line demo profile
+DIVINE   → radiant five-line demo profile
+GRIDJACK → treasury nine-line demo profile
+CUSTOM   → buyer-configurable three-path demo profile
+```
+
+It does **not** change compute destination, compute rate, provider allocation or receipt rules.
+
+```text
+GAME MODE ───────→ demo symbols / paylines / payout scale
+
+COMPUTE ROUTE ───→ ProviderManifest / Adapter / Verifier / Sink
+
+GAME MODE ⟂ COMPUTE ROUTE
+```
+
+The enabled modes and default mode are exposed in [`config/helios.public.json`](config/helios.public.json).
 
 ## Ecosystem
 
@@ -118,9 +146,9 @@ Compute is OFF by default, requires explicit opt-in and must support immediate r
 
 ## Current implementation
 
-- [`index.html`](index.html) — web-first live public slot demo;
-- [`helios.js`](helios.js) — public controller with neutral cascading reel animation;
-- [`config/helios.public.json`](config/helios.public.json) — buyer-facing public configuration;
+- [`index.html`](index.html) — web-first live public slot demo and HELIOS cosmic UI;
+- [`helios.js`](helios.js) — public controller with game profiles, win tracking, bounded auto-spin and neutral staggered reels;
+- [`config/helios.public.json`](config/helios.public.json) — buyer-facing public configuration for branding, routes and enabled game modes;
 - [`src/helios-router.js`](src/helios-router.js) — provider-agnostic routing core;
 - [`tests/helios-router.test.mjs`](tests/helios-router.test.mjs) — routing invariants;
 - [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — architecture;
@@ -128,7 +156,7 @@ Compute is OFF by default, requires explicit opt-in and must support immediate r
 - [`BUYER_HANDOFF_SPEC.json`](BUYER_HANDOFF_SPEC.json) — buyer configuration boundary;
 - [`PROJECT_STATUS.json`](PROJECT_STATUS.json) — maturity and open gates.
 
-The router test suite exists but is not claimed green until a real runner/CI result records that state.
+The test suites exist but are not claimed green until a real runner/CI result records that state.
 
 ## Production reality
 
