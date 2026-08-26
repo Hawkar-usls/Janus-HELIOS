@@ -71,14 +71,17 @@
   },
   "demo_lucky_contribution": {
     "enabled": true,
-    "demo_probability_per_receipt": 0.12,
+    "demo_probability_per_receipt": 0.005,
+    "showcase_manual_trigger": true,
     "eligible_route_classes": ["MARKETPLACE", "TREASURY", "SCIENCE", "PUBLIC_GOOD", "DATACENTER", "OPERATOR", "CUSTOM"],
     "demo_reward_units": 1,
     "reward_ledger": "LUCKY_CONTRIBUTION_LEDGER",
+    "notification_surface": "HELIOS_PROFILE",
     "real_money_value": false,
     "wagering_value": false,
     "production_requires_authoritative_receipt": true,
     "production_browser_self_verification": false,
+    "production_selection_model": "AUTHORITATIVE_SIGNIFICANCE_RULE_NOT_BROWSER_PROBABILITY",
     "route_labels": {
       "MARKETPLACE": "LUCKY HASH",
       "TREASURY": "LUCKY HASH",
@@ -88,7 +91,21 @@
       "OPERATOR": "GOLDEN TASK",
       "CUSTOM": "GOLDEN TASK"
     },
-    "note": "The public page simulates significant compute contributions for presentation. Production rewards may only originate from an authoritative provider/research verifier receipt. Recognition must not change RNG, RTP, bonus probability, bet size or personal jackpot weight."
+    "note": "Public auto-showcase probability is intentionally low (0.5% per simulated receipt) because Lucky Contribution represents a rare event. The profile includes an explicit showcase control so a buyer can inspect the capability without making the normal event common. Production recognition must originate from an authoritative provider/research significance rule and receipt, never browser probability."
+  },
+  "profile_dashboard": {
+    "enabled": true,
+    "storage": "LOCAL_DEMO_PROFILE_V1",
+    "history_source": "SIMULATED_COMPUTE_RECEIPTS",
+    "offers_mode": "SIMULATED_REALTIME_MARKET_BOARD",
+    "offers_refresh_seconds": 15,
+    "max_history_items": 120,
+    "max_notifications": 80,
+    "show_lucky_showcase_control": true,
+    "production_offers_require_live_provider_api": true,
+    "production_history_requires_authoritative_receipts": true,
+    "sections": ["OVERVIEW", "WORK_HISTORY", "LIVE_OFFERS", "NOTIFICATIONS"],
+    "note": "The demo profile tracks where the device worked, when, compute units, estimated demo personal/external value, Lucky Contributions and Spin Energy. Offer cards update in real time but are simulated until provider APIs are connected."
   },
   "procedural_audio": {
     "enabled": true,
