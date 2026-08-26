@@ -1,12 +1,13 @@
 {
-  "schema_id": "hawkar.project-status.v11",
+  "schema_id": "hawkar.project-status.v12",
   "project": "Janus-HELIOS",
+  "project_version": "1.9.0",
   "public_branding": "JANUS HELIOS — One Core. Any Destination.",
   "repository": "https://github.com/Hawkar-usls/Janus-HELIOS",
   "portfolio_class": "universal_configurable_compute_routing_slot_asset",
   "last_reviewed": "2026-08-26",
   "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
-  "completion_status": "LIVE_POLISHED_MULTI_MODE_ROUTING_SLOT_WITH_REAL_CASCADES_X1_X4_X16_X64_ROUTE_WIDE_GRIDJACK_SPIN_ENERGY_SOLAR_CORONA_AND_LIVE_GENERATIVE_COSMIC_SEQUENCER",
+  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_CASCADES_X1_X4_X16_X64_SPIN_ENERGY_SOLAR_CORONA_DEMO_BONUS_BUY_LUCKY_CONTRIBUTION_AND_MODE_ROUTE_EVENT_GENERATIVE_MUSIC",
   "delivery_model": "WEB_FIRST_UNIVERSAL_ASSET",
   "telegram_webapp_integration": false,
   "telegram_required": false,
@@ -68,10 +69,12 @@
   },
   "procedural_audio": {
     "module": "helios-music.js",
-    "engine": "WEB_AUDIO_LIVE_SEQUENCER_V2",
+    "music_engine_version": "3.0.0",
+    "engine": "WEB_AUDIO_MODE_ROUTE_EVENT_GENERATIVE_V3",
     "transport": "16_STEP_4_4_LOOKAHEAD_SCHEDULER",
     "default_state": "OFF_REQUIRES_USER_GESTURE",
     "architecture_inspiration": "BITMAKER_HUB_NERDMINER_V2_INDEPENDENT_TASK_SEPARATION_NO_CODE_COPIED",
+    "unique_session_seed": true,
     "continuous_layers": ["SOLAR_PULSE", "SUB_BASS", "ORBITAL_BASS", "ARPEGGIATOR", "COSMIC_PAD", "STARFIELD_BELLS", "COMPUTE_DRONE", "EVENT_FILLS"],
     "progression_degrees": [0, 4, 5, 3],
     "tonal_profiles": {
@@ -80,14 +83,25 @@
       "GRIDJACK": "E_DORIAN_PULSE_78_BPM",
       "CUSTOM": "C_SHARP_VOID_MINOR_70_BPM"
     },
-    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "ROUTE_CHANGE", "COMPUTE_STATE"],
-    "event_behavior": "RESHAPE_ARRANGEMENT_DENSITY_REGISTER_AND_FILLS_OVER_RUNNING_TRANSPORT",
+    "route_profiles": ["MARKET_EXCHANGE", "SCIENCE_AETHER", "TREASURY_ENGINE", "DATA_CENTER_CLOCK", "OPERATOR_LINK", "CUSTOM_VOID"],
+    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "LUCKY_CONTRIBUTION", "BONUS_BUY", "ROUTE_CHANGE", "COMPUTE_STATE"],
+    "event_behavior": "RESHAPE_TEMPO_ARRANGEMENT_DENSITY_REGISTER_TIMBRE_AND_FILLS_OVER_RUNNING_TRANSPORT",
+    "temporary_tempo_ladder": {
+      "CASCADE_X1": 3,
+      "CASCADE_X4": 7,
+      "CASCADE_X16": 12,
+      "CASCADE_X64": 18,
+      "SOLAR_CORONA": 18,
+      "LUCKY_CONTRIBUTION": 12,
+      "BONUS_BUY": 10
+    },
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "external_audio_assets_required": false,
     "presentation_only": true,
     "rng_effect": "NONE",
     "payout_effect": "NONE",
-    "compute_route_effect": "NONE"
+    "compute_route_effect": "NONE",
+    "manual_validation": "V2_CONTINUOUS_GENERATIVE_MUSIC_CONFIRMED_BY_USER; V3_ROUTE_EVENT_VARIATION_AWAITS_POST_DEPLOY_USER_CHECK"
   },
   "solar_corona_bonus": {
     "module": "helios-bonus.js",
@@ -106,10 +120,44 @@
     "rng_effect": "NONE",
     "route_effect": "NONE"
   },
+  "demo_bonus_buy": {
+    "enabled": true,
+    "eligible_mode": "HELIOS",
+    "feature": "SOLAR_CORONA",
+    "cost_multiplier_of_demo_bet": 50,
+    "purchase_currency": "DEMO_PRESENTATION_UNITS",
+    "reward_ledger": "SOLAR_BONUS_BANK",
+    "real_money_value": false,
+    "production_enabled": false,
+    "compute_effect": "NONE",
+    "route_effect": "NONE",
+    "production_rule": "REAL_MONEY_FEATURE_BUY_REQUIRES_SEPARATE_JURISDICTION_PLATFORM_RESPONSIBLE_GAMING_AND_GAME_MATH_REVIEW"
+  },
+  "lucky_contribution": {
+    "module": "helios-lucky.js",
+    "enabled_in_public_demo": true,
+    "demo_probability_per_simulated_receipt": 0.12,
+    "route_labels": {
+      "MARKETPLACE_OR_TREASURY": "LUCKY_HASH",
+      "SCIENCE_OR_PUBLIC_GOOD": "IMPACT_HIT",
+      "OTHER_APPROVED_ROUTE": "GOLDEN_TASK"
+    },
+    "reward_ledger": "LUCKY_CONTRIBUTION_LEDGER",
+    "demo_reward_units": 1,
+    "real_money_value": false,
+    "wagering_value": false,
+    "production_requires_authoritative_provider_or_research_receipt": true,
+    "browser_self_verification": false,
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "personal_jackpot_weight_effect": "NONE",
+    "music_event": "LUCKY_CONTRIBUTION_CLIMAX"
+  },
   "intentionally_not_inherited_from_legacy_children": [
     "OUTCOME_DEPENDENT_REEL_TEASER",
     "NEAR_MISS_DELAY",
-    "FEATURE_BUY",
+    "UNREVIEWED_REAL_MONEY_FEATURE_BUY",
     "OUTCOME_SHAPING",
     "POOL_DEPENDENT_PERSONAL_OUTCOME",
     "COMPUTE_DEPENDENT_GAME_EFFECT"
@@ -128,10 +176,11 @@
     "reward_added_to_wagering_balance": false,
     "real_money_value": false,
     "automatic_wager_conversion": false,
+    "manual_validation": "CONFIRMED_WORKING_BY_USER",
     "production_compute_to_free_spin_conversion": "FORBIDDEN_BY_DEFAULT_PENDING_SEPARATE_LEGAL_AND_RESPONSIBLE_GAMING_REVIEW"
   },
   "game_modes": {
-    "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_SOLAR_CORONA_BONUS_CASCADES_AND_D_LYDIAN_GENERATIVE_AUDIO",
+    "HELIOS": "BALANCED_THREE_LINE_DEMO_PROFILE_WITH_SOLAR_CORONA_BONUS_BUY_CASCADES_AND_D_LYDIAN_GENERATIVE_AUDIO",
     "DIVINE": "RADIANT_FIVE_LINE_DEMO_PROFILE_WITH_CASCADES_AND_A_LYDIAN_GENERATIVE_AUDIO",
     "GRIDJACK": "TREASURY_NINE_LINE_DEMO_PROFILE_WITH_CASCADES_SPIN_ENERGY_AND_E_DORIAN_GENERATIVE_AUDIO",
     "CUSTOM": "BUYER_CONFIGURABLE_THREE_PATH_DEMO_PROFILE_WITH_CASCADES_AND_C_SHARP_VOID_GENERATIVE_AUDIO"
@@ -164,18 +213,23 @@
   "solar_corona_test_suite_present": true,
   "cascade_energy_test_suite_present": true,
   "cosmic_music_test_suite_present": true,
+  "lucky_contribution_test_suite_present": true,
   "helios_core_blob_sha": "5649974c404b8c4311aaad09b4349c99b9b6e2c2",
   "helios_core_syntax_check": "PASS_LOCAL_NODE_CHECK_EXACT_BLOB",
-  "cosmic_music_v2_syntax_check": "REQUIRES_EXECUTION",
+  "music_v3_bonus_buy_lucky_syntax_check": "REQUIRES_EXECUTION",
   "full_test_suite_execution_status": "OPEN_NOT_CLAIMED_PASS",
   "commercial_evaluation_license": true,
   "production_readiness": "NOT_ESTABLISHED",
   "open_gates": [
     "EXECUTE_FULL_TEST_SUITE",
+    "USER_VALIDATE_MUSIC_V3_ROUTE_AND_EVENT_VARIATION",
+    "USER_VALIDATE_DEMO_BONUS_BUY",
+    "USER_VALIDATE_LUCKY_CONTRIBUTION_EVENT",
     "SIGNED_PROVIDER_MANIFEST_MODEL",
     "SERVER_SIDE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
     "REAL_PROVIDER_ADAPTER",
     "REAL_PROVIDER_RECEIPT_VERIFICATION",
+    "AUTHORITATIVE_LUCKY_CONTRIBUTION_PROOF_SCHEMA",
     "ENERGY_THERMAL_TELEMETRY",
     "INDEPENDENT_SECURITY_PRIVACY_LEGAL_REVIEW",
     "NON_MONEY_PILOT"
