@@ -1,0 +1,64 @@
+{
+  "schema": "janus.helios.buyer-handoff.v1",
+  "product": "JANUS HELIOS",
+  "purpose": "Make HELIOS reconfigurable for a licensed buyer without rewriting slot/game mathematics.",
+  "public_buyer_editable": [
+    "config/helios.public.json.branding",
+    "config/helios.public.json.resource_policy_within_product_caps",
+    "config/helios.public.json.routes",
+    "default_route",
+    "route_display_order",
+    "demo_value_presentation"
+  ],
+  "production_replaceable": [
+    "provider_manifests",
+    "gateway_alias_to_endpoint_mapping",
+    "provider_allowlist",
+    "workload_class_allowlist",
+    "provider_public_verification_keys",
+    "routing_plan_and_capacity_weights",
+    "receipt_verifier",
+    "impact_treasury_or_contract_sink",
+    "player_compute_value_policy_where_applicable",
+    "regional_policy",
+    "branding_and_game_theme"
+  ],
+  "server_private_only": [
+    "provider_credentials",
+    "wallet_private_material",
+    "yagna_app_key",
+    "api_secrets",
+    "settlement_secrets",
+    "anti_fraud_rules",
+    "anti_replay_state",
+    "private_partner_pricing",
+    "private_workload_payloads"
+  ],
+  "immutable_compute_game_boundary": [
+    "COMPUTE_OFF_BY_DEFAULT",
+    "EXPLICIT_OPT_IN",
+    "IMMEDIATE_REVOKE",
+    "COMPUTE_SCHEDULER_INDEPENDENT_FROM_SPIN_FREQUENCY",
+    "COMPUTE_CANNOT_CHANGE_RNG",
+    "COMPUTE_CANNOT_CHANGE_RTP",
+    "COMPUTE_CANNOT_CHANGE_WIN_PROBABILITY",
+    "COMPUTE_CANNOT_CHANGE_BET_SIZE",
+    "COMPUTE_CANNOT_CHANGE_FREE_SPINS",
+    "COMPUTE_CANNOT_CHANGE_PERSONAL_JACKPOT_WEIGHT",
+    "BROWSER_PROVIDER_SECRETS_FORBIDDEN",
+    "UNVERIFIED_RECEIPT_HAS_ZERO_LEDGER_VALUE"
+  ],
+  "integration_unit": "PROVIDER_MANIFEST_PLUS_ADAPTER_PLUS_VERIFIER_PLUS_AUDITED_SINK",
+  "production_admission_gate": [
+    "PROVIDER_IDENTITY",
+    "SIGNED_MANIFEST",
+    "TERMS_AND_LICENSE",
+    "WORKLOAD_COMPATIBILITY",
+    "SECURITY_REVIEW",
+    "PRIVACY_REVIEW",
+    "RECEIPT_VERIFICATION",
+    "SETTLEMENT_ACCOUNTING_IF_APPLICABLE",
+    "ENERGY_THERMAL_POLICY",
+    "LEGAL_REGULATORY_PLATFORM_REVIEW"
+  ]
+}
