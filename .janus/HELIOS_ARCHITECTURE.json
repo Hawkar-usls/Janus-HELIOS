@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v10",
+  "schema": "janus.helios.architecture.v11",
   "project": "Janus-HELIOS",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -63,8 +63,43 @@
     "may_change_compute_route": false,
     "may_change_compute_rate": false,
     "may_change_provider_receipt": false,
-    "features": ["LOCAL_DEMO_ACTIVITY_TICKER", "MODE_MATRIX", "OPTIONAL_WEBAUDIO_SOUND_OFF_BY_DEFAULT", "WIN_OVERLAY", "SVG_WIN_TRACE", "SESSION_STREAK_AND_BEST_WIN", "MODE_AWARE_COSMIC_AMBIENCE", "VISUAL_CORE_ALIGNMENT_EVENT_NO_REWARD"],
-    "explicit_non_inheritance": ["OUTCOME_DEPENDENT_REEL_TEASER", "NEAR_MISS_DELAY", "UNREVIEWED_REAL_MONEY_FEATURE_BUY", "OUTCOME_SHAPING", "POOL_DEPENDENT_PERSONAL_OUTCOME", "COMPUTE_DEPENDENT_GAME_EFFECT"]
+    "features": ["LOCAL_DEMO_ACTIVITY_TICKER", "MODE_MATRIX", "OPTIONAL_WEBAUDIO_SOUND_OFF_BY_DEFAULT", "WIN_OVERLAY", "SVG_WIN_TRACE", "SESSION_STREAK_AND_BEST_WIN", "MODE_AWARE_COSMIC_AMBIENCE", "VISUAL_CORE_ALIGNMENT_EVENT_NO_REWARD"]
+  },
+  "mobile_showcase_layer": {
+    "module": "helios-mobile.js",
+    "classification": "RESPONSIVE_PRESENTATION_ONLY",
+    "purpose": "FIRST_CONTACT_EMAIL_LINK_MUST_RENDER_CREDIBLY_ON_IPHONE_AND_ANDROID_WITHOUT_SEPARATE_MOBILE_BUILD",
+    "targets": ["IPHONE_SAFARI", "ANDROID_CHROMIUM", "MOBILE_EMAIL_WEBVIEW", "PHONE_LANDSCAPE"],
+    "viewport_fit_cover": true,
+    "safe_area_insets": true,
+    "dynamic_viewport_height": "100DVH_WHERE_SUPPORTED",
+    "minimum_coarse_pointer_target_px": 44,
+    "breakpoints": {
+      "TABLET_OR_SMALL_DESKTOP": 900,
+      "PHONE": 640,
+      "NARROW_PHONE": 390,
+      "LANDSCAPE_PHONE_MAX_HEIGHT": 520
+    },
+    "responsive_rules": [
+      "NO_HORIZONTAL_PAGE_OVERFLOW",
+      "GAME_AND_ROUTER_STACK_ON_PHONE",
+      "REELS_SHRINK_WITHOUT_CHANGING_5X3_TOPOLOGY",
+      "ROUTE_CARDS_REMAIN_TOUCHABLE",
+      "SPIN_BECOMES_PRIMARY_FULL_WIDTH_ACTION",
+      "PROFILE_DRAWER_BECOMES_FULL_WIDTH",
+      "PROFILE_TABS_REMAIN_TOUCHABLE",
+      "SOLAR_CORONA_FITS_PHONE_VIEWPORT",
+      "SPIN_ENERGY_AND_BONUS_BUY_STACK_VERTICALLY",
+      "RECEIPT_PANE_SCROLLS_INDEPENDENTLY",
+      "SAFE_AREA_PADDING_FOR_NOTCH_HOME_INDICATOR"
+    ],
+    "may_change_rng": false,
+    "may_change_payout": false,
+    "may_change_rtp": false,
+    "may_change_game_mode_math": false,
+    "may_change_compute_route": false,
+    "may_change_compute_rate": false,
+    "may_change_provider_receipt": false
   },
   "miner_profile": {
     "module": "helios-profile.js",
@@ -84,8 +119,7 @@
       "production_requires_live_provider_api": true,
       "production_requires_signed_provider_manifest": true,
       "production_requires_settlement_verification": true
-    },
-    "purpose": "Demonstrate the miner/operator side of HELIOS: where compute was routed, when it worked, what verified value or impact it produced, and what current workload offers are available."
+    }
   },
   "procedural_audio": {
     "module": "helios-music.js",
@@ -113,15 +147,6 @@
     },
     "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "LUCKY_CONTRIBUTION", "BONUS_BUY", "ROUTE_CHANGE", "COMPUTE_STATE"],
     "event_role": "MODULATE_TEMPO_ARRANGEMENT_DENSITY_REGISTER_TIMBRE_AND_FILLS_OVER_CONTINUOUS_TRANSPORT",
-    "temporary_tempo_delta_bpm": {
-      "CASCADE_X1": 3,
-      "CASCADE_X4": 7,
-      "CASCADE_X16": 12,
-      "CASCADE_X64": 18,
-      "SOLAR_CORONA": 18,
-      "LUCKY_CONTRIBUTION": 12,
-      "BONUS_BUY": 10
-    },
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "external_audio_assets_required": false,
     "may_change_rng": false,
@@ -158,20 +183,14 @@
     "classification": "NON_WAGERING_PUBLIC_DEMO_MECHANIC",
     "supporting_mode": "GRIDJACK",
     "eligible_routes": ["MARKETPLACE", "SCIENCE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"],
-    "eligibility_rule": "SUPPORTING_MODE_PLUS_ANY_CONFIGURED_ACTIVE_ROUTE_PLUS_EXPLICIT_CONSENT",
-    "accrual_source": "ACTIVE_ELIGIBLE_SIMULATED_COMPUTE_TIME",
     "seconds_per_spin": 30,
     "max_bank": 3,
-    "spin_bank": true,
     "manual_consumption_only": true,
     "auto_play_from_bank": false,
     "reward_ledger": "DEMO_ENERGY_REWARD_ONLY",
-    "reward_added_to_wagering_balance": false,
     "real_money_value": false,
-    "cashout": false,
     "automatic_wager_conversion": false,
-    "production_equivalent_enabled": false,
-    "production_rule": "COMPUTE_MUST_NOT_AUTOMATICALLY_CREATE_REAL_MONEY_WAGERS_FREE_SPINS_OR_GAMBLING_BALANCE"
+    "production_equivalent_enabled": false
   },
   "solar_corona_bonus": {
     "classification": "HELIOS_DEMO_IDENTITY_FEATURE",
@@ -192,21 +211,12 @@
     "real_money_value": false,
     "production_enabled": false,
     "compute_effect": "NONE",
-    "route_effect": "NONE",
-    "production_rule": "SEPARATE_REGULATORY_PLATFORM_RESPONSIBLE_GAMING_AND_GAME_MATH_REVIEW_REQUIRED"
+    "route_effect": "NONE"
   },
-  "reference_destinations": [
-    {"id": "science", "example": "research requestor / public-good project", "default_sink": "IMPACT_LEDGER"},
-    {"id": "jackpot_pool", "example": "verified mining/pool revenue", "default_sink": "COMPUTE_TREASURY"},
-    {"id": "marketplace", "example": "Golem or another approved compute market", "default_sink": "PLAYER_COMPUTE_EARNINGS_LEDGER_PLUS_COMPUTE_TREASURY"},
-    {"id": "datacenter", "example": "buyer-selected data-center/cloud workload", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"},
-    {"id": "operator", "example": "approved buyer-owned batch workload", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"},
-    {"id": "custom", "example": "future admissible workload unknown at design time", "default_sink": "CONTRACT_DEFINED_AUDITED_SINK"}
-  ],
   "planned_partner_outreach": {
     "NiceHash": {
       "status": "WAIT_UNTIL_MINER_DEMO_READY",
-      "reason": "HELIOS now has a miner-profile/offer-board direction relevant to marketplace/pool operators, but outreach should wait until the demo surface is manually validated and the provider integration pitch is concrete."
+      "reason": "HELIOS miner profile and offer-board direction is relevant, but outreach waits for manual demo validation and a concrete provider integration proposal."
     }
   },
   "immutable_boundaries": [
@@ -226,6 +236,7 @@
     "COMPUTE_CANNOT_CHANGE_PERSONAL_JACKPOT_WEIGHT",
     "COMPUTE_SCHEDULING_INDEPENDENT_FROM_SPIN_FREQUENCY",
     "PRESENTATION_LAYER_HAS_NO_RNG_PAYOUT_OR_COMPUTE_AUTHORITY",
+    "MOBILE_SHOWCASE_LAYER_HAS_NO_RNG_PAYOUT_OR_COMPUTE_AUTHORITY",
     "PROCEDURAL_AUDIO_HAS_NO_RNG_PAYOUT_RTP_OR_COMPUTE_AUTHORITY",
     "PROCEDURAL_AUDIO_CANNOT_ADAPT_TO_LOSS_STREAK_NEAR_MISS_WAGERING_HISTORY_OR_PLAYER_VULNERABILITY",
     "LUCKY_CONTRIBUTION_REQUIRES_AUTHORITATIVE_PROOF_IN_PRODUCTION",
