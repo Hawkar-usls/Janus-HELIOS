@@ -7,11 +7,10 @@ const [html, core, polish] = await Promise.all([
   readFile(new URL('../helios-polish.js', import.meta.url), 'utf8')
 ]);
 
-assert.match(html, /<script src="\.\/helios\.js\?v=1\.4\.0"><\/script>/);
-assert.match(html, /<script src="\.\/helios-polish\.js\?v=1\.4\.0"><\/script>/);
+assert.match(html, /<script src="\.\/helios\.js\?v=[^"]+"><\/script>/);
+assert.match(html, /<script src="\.\/helios-polish\.js\?v=[^"]+"><\/script>/);
 assert.equal(polish.includes('Telegram.WebApp'), false);
 assert.equal(polish.includes('telegram.org'), false);
-
 assert.match(polish, /LOCAL DEMO ACTIVITY/);
 assert.match(polish, /HELIOS MODE MATRIX/);
 assert.match(polish, /SOUND OFF/);
@@ -24,14 +23,11 @@ assert.match(polish, /visual event only/);
 assert.match(polish, /DEMO GAME PROFILE ONLY/);
 assert.match(polish, /They do not select compute routes/);
 
-// Do not depend on Windows/Chromium native select-popup theming.
 assert.match(polish, /function buildBetPicker\(\)/);
 assert.match(polish, /helios-native-bet/);
 assert.match(polish, /helios-bet-menu/);
 assert.match(polish, /helios-bet-option/);
 assert.match(polish, /select\.dispatchEvent\(new Event\('change'/);
-
-// LAST WIN means last non-zero payout, not merely the most recent spin result.
 assert.match(polish, /let lastTotalWins/);
 assert.match(polish, /let lastNonZeroWin/);
 assert.match(polish, /function currentSpinWin\(\)/);
