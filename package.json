@@ -1,0 +1,13 @@
+{
+  "name": "@janus/helios-routing-asset",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "JANUS HELIOS provider-agnostic compute routing asset and public slot demo.",
+  "scripts": {
+    "test": "node tests/helios-router.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
