@@ -2,20 +2,20 @@
 
 ## Purpose
 
-`helios-music.js` is a local WebAudio procedural soundtrack engine for JANUS HELIOS.
+`helios-music.js` is a local WebAudio **live generative sequencer** for JANUS HELIOS.
 
-It does **not** play a pre-rendered song. A low-cost musical transport continuously generates a cosmic harmonic bed after the user explicitly enables audio, while HELIOS events add or transform musical phrases.
+It does **not** play a pre-rendered song and it is no longer just a sparse event-SFX layer. After the user explicitly enables `COSMIC AUDIO`, a 16-step musical transport runs continuously and generates an evolving cosmic arrangement. HELIOS events reshape that arrangement in real time.
 
 ```text
-GAME / UI EVENTS
+16-STEP TRANSPORT
       ↓
-COSMIC EVENT REACTOR
+SOLAR PULSE + BASS + ARP + PAD + STARFIELD
       ↓
-HARMONIC PROFILE + TRANSPORT
+HELIOS EVENT MODULATION
       ↓
 WEB AUDIO SYNTH GRAPH
       ↓
-LIVE GENERATED SOUND
+LIVE GENERATED MUSIC
 ```
 
 ## NerdMiner_v2 inspiration
@@ -28,10 +28,10 @@ HELIOS generalizes that idea for browser audio:
 
 ```text
 NerdMiner concept         HELIOS audio analogue
-----------------------    -------------------------------
-Monitor task              UI / synth status observer
+----------------------    ---------------------------------
+Monitor task              synth / UI status observer
 Stratum task              event intake / state changes
-Miner workers             procedural note/chord voices
+Miner workers             independent musical layers
 responsive main loop      slot + router remain independent
 ```
 
@@ -40,6 +40,28 @@ No NerdMiner source code is copied into HELIOS. The reference project is MIT lic
 Reference:
 - https://github.com/BitMaker-hub/NerdMiner_v2
 
+## Sequencer architecture
+
+The transport runs in 4/4 with sixteenth-note scheduling and look-ahead timing.
+
+Default continuous layers:
+
+- `SOLAR_PULSE` — synthesized kick/pulse anchor;
+- `SUB_BASS` / `ORBITAL_BASS` — low harmonic motion;
+- `ARPEGGIATOR` — mode-specific melodic sequence;
+- `COSMIC_PAD` — long harmonic field following the progression;
+- `STARFIELD_BELLS` — sparse high-frequency spatial accents;
+- `COMPUTE_DRONE` — quiet low pulse while compute is ACTIVE;
+- `EVENT_FILLS` — temporary phrases injected by HELIOS events.
+
+Default harmonic progression uses modal scale degrees:
+
+```text
+0 → 4 → 5 → 3
+```
+
+The sequence repeats structurally while note selection, register, event fills and active layers change over time.
+
 ## Event inputs
 
 The synth may react to:
@@ -47,7 +69,7 @@ The synth may react to:
 - game mode changes;
 - manual spin start;
 - paid cascade events;
-- settled paid win presence (not amount-driven intensity);
+- settled paid win presence;
 - Solar Corona bonus;
 - demo Spin Energy earned;
 - compute route changes;
@@ -57,8 +79,6 @@ These are presentation events only.
 
 ## Tonal identities
 
-Default public profiles:
-
 | HELIOS profile | Tonal identity | Default BPM | Character |
 | --- | --- | ---: | --- |
 | HELIOS | D Lydian Orbit | 66 | luminous / orbital |
@@ -66,34 +86,40 @@ Default public profiles:
 | GRIDJACK | E Dorian Pulse | 78 | mechanical / treasury pulse |
 | CUSTOM | C# Void Minor | 70 | darker builder-space |
 
-All profiles are generated from oscillator voices, envelopes, filtering, delay and synthetic convolution ambience.
+All profiles are generated from oscillator voices, envelopes, noise percussion, filtering, stereo placement, delay and synthetic convolution ambience.
 
 ## Interaction mapping
 
 ```text
 SPIN
-→ short ignition motif
+→ ignition fill enters the running sequencer
 
 CASCADE x1
-→ base harmonic accent
+→ temporary harmonic/arp energy increase
 
-CASCADE x4 / x16 / x64
-→ progressively higher register and denser accent
+CASCADE x4
+→ denser fill + higher register
+
+CASCADE x16
+→ extended high-register phrase
+
+CASCADE x64
+→ maximum cascade layer / solar-flare register
 
 SOLAR CORONA
-→ wide luminous four-note corona chord
+→ four-bar climax with widened chord voices and dense upper layer
 
 SPIN ENERGY EARNED
-→ high bell triad
+→ high bell triad over the running beat
 
 ROUTE CHANGE
-→ navigation ping
+→ navigation tone
 
 COMPUTE ACTIVE
-→ low engine pulse joins the ambient transport
+→ low engine pulse joins the arrangement
 ```
 
-The compute-state pulse is an audio visualization only. Compute activity does not modify slot RNG, payout, RTP, cascade probability or bonus probability.
+Events modify the **music arrangement**, not the slot outcome.
 
 ## Safety / fairness boundary
 
@@ -120,7 +146,9 @@ MUSIC → COMPUTE   NONE
 
 Audio is OFF by default. The WebAudio graph is created/resumed only after an explicit user interaction with the audio toggle, respecting browser autoplay restrictions.
 
-When the page becomes hidden, the master output fades to silence. No external audio file or streaming audio service is required.
+The scheduler uses short look-ahead windows rather than blocking timers. When the page becomes hidden, transport scheduling stops and the master output fades; when the page becomes visible again, the transport resumes from a fresh timing anchor.
+
+No external audio file or streaming audio service is required.
 
 ## Public configuration
 
