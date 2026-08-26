@@ -1,11 +1,11 @@
 {
   "name": "@janus/helios-routing-asset",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "type": "module",
   "description": "JANUS HELIOS web-first universal compute-routing slot asset and three-repository ecosystem parent.",
   "scripts": {
-    "test": "node tests/helios-router.test.mjs && node tests/public-surface-invariants.test.mjs && node tests/polish-invariants.test.mjs && node tests/solar-corona.test.mjs",
+    "test": "node tests/helios-router.test.mjs && node tests/public-surface-invariants.test.mjs && node tests/polish-invariants.test.mjs && node tests/solar-corona.test.mjs && node tests/cascade-energy-invariants.test.mjs",
     "check:public": "node --check helios.js && node --check helios-polish.js && node --check helios-bonus.js"
   },
   "engines": {
