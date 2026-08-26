@@ -9,6 +9,8 @@
   "completion_status": "UNIVERSAL_ROUTING_SLOT_FOUNDATION",
   "telegram_webapp_integration": true,
   "github_pages_entry": "index.html",
+  "github_pages_enabled": false,
+  "github_pages_activation_required": "Settings -> Pages -> Deploy from branch -> main / root",
   "real_money_gambling_enabled": false,
   "game_value_storage": "LOCAL_DEMO_ONLY",
   "compute_receipts": "SIMULATED_IN_PUBLIC_PAGE",
@@ -30,6 +32,7 @@
   "commercial_evaluation_license": true,
   "production_readiness": "NOT_ESTABLISHED",
   "open_gates": [
+    "ENABLE_GITHUB_PAGES",
     "EXECUTE_ROUTER_TEST_SUITE",
     "SIGNED_PROVIDER_MANIFEST_MODEL",
     "SERVER_SIDE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
