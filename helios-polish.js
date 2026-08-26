@@ -33,9 +33,13 @@
   let bestWin = 0;
   let winStreak = 0;
   let lastSpinCount = Number($('total-spins')?.textContent || 0);
+  let lastTotalWins = Number($('total-wins')?.textContent || 0);
+  let lastNonZeroWin = Number($('last-win-value')?.textContent || 0);
   let lastRoute = $('selected-route')?.textContent || 'MARKET';
   let lastComputeState = $('compute-state')?.textContent || 'OFF';
   let lastMode = document.body.dataset.gameMode || 'helios';
+  let betMenu = null;
+  let betButton = null;
 
   function injectStyles(){
     const style = document.createElement('style');
@@ -49,11 +53,10 @@
       .game-tools{display:flex;gap:6px;align-items:center;justify-content:flex-end;margin:4px 0 6px;flex-wrap:wrap}.game-tool{border:1px solid #2d3943;background:#070d12;color:#92a0aa;border-radius:8px;padding:5px 8px;font-size:7px;font-weight:850;letter-spacing:.06em}.game-tool:hover{border-color:#56636c;color:#dbe2e6}.game-tool.active{border-color:var(--mode);color:var(--mode);box-shadow:0 0 12px var(--mode-soft)}
       .session-mini{margin-right:auto;display:flex;gap:5px}.session-chip{border:1px solid #26323b;background:#060b0f;border-radius:8px;padding:4px 7px;color:#7e8b95;font:7px ui-monospace,SFMono-Regular,Consolas,monospace}.session-chip b{color:#cbd4da;margin-left:3px}
 
-      /* Native select popups are OS/Chromium UI. Force the BET control into a dark color scheme so options remain readable before hover. */
-      select.bet{color-scheme:dark!important;background-color:#070c11!important;color:#f4f7f8!important;border-radius:6px!important;accent-color:var(--solar)}
-      select.bet option,select.bet optgroup{background:#0b1117!important;color:#f4f7f8!important}
-      select.bet option:checked{background:#1f6fd6!important;color:#fff!important}
-      select.bet:focus{outline:1px solid var(--mode);outline-offset:1px}
+      /* HELIOS owns the visible BET picker. The native select remains only as the game-state source of truth. */
+      select.bet.helios-native-bet{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;clip-path:inset(50%)!important}
+      .helios-bet-picker{display:inline-flex;align-items:center;min-width:78px}.helios-bet-button{width:78px;border:1px solid #30404b;border-radius:7px;background:linear-gradient(180deg,#111a22,#080d12);color:#f5f7f8;padding:5px 8px;display:flex;align-items:center;justify-content:space-between;gap:9px;font:900 14px/1 ui-monospace,SFMono-Regular,Consolas,monospace;box-shadow:inset 0 1px #ffffff08;outline:none}.helios-bet-button:hover,.helios-bet-button[aria-expanded="true"]{border-color:var(--mode);box-shadow:0 0 14px var(--mode-soft)}.helios-bet-button:disabled{opacity:.42;cursor:not-allowed}.helios-bet-caret{font-size:9px;color:#8fa0aa;transition:transform .15s}.helios-bet-button[aria-expanded="true"] .helios-bet-caret{transform:rotate(180deg)}
+      .helios-bet-menu{position:fixed;z-index:900;display:none;min-width:96px;padding:5px;border:1px solid #3a4852;border-radius:9px;background:#070d12;box-shadow:0 20px 55px #000d,0 0 22px var(--mode-soft);backdrop-filter:blur(14px)}.helios-bet-menu.open{display:grid;gap:3px}.helios-bet-option{border:1px solid transparent;border-radius:6px;background:#0b1218;color:#eef3f5;padding:7px 9px;text-align:left;font:850 12px ui-monospace,SFMono-Regular,Consolas,monospace}.helios-bet-option:hover,.helios-bet-option:focus{border-color:#40515c;background:#111c24;outline:none}.helios-bet-option.selected{border-color:var(--mode);background:var(--mode-soft);color:#fff3c5}
 
       .helios-overlay{position:fixed;z-index:500;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .18s}.helios-overlay.show{opacity:1}.helios-overlay-card{min-width:260px;padding:18px 26px;text-align:center;border:1px solid var(--mode);border-radius:16px;background:radial-gradient(circle at 50% 0,var(--mode-soft),#05090df5 65%);box-shadow:0 0 50px var(--mode-soft),0 30px 100px #000d;transform:scale(.94);transition:transform .22s}.helios-overlay.show .helios-overlay-card{transform:scale(1)}.helios-overlay-kicker{font-size:8px;letter-spacing:.22em;color:var(--mode);font-weight:900}.helios-overlay-value{font:900 42px/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:#ffe18b;text-shadow:0 0 24px var(--mode-soft);margin:6px 0}.helios-overlay-sub{font-size:8px;color:#8997a1;letter-spacing:.08em}
 
@@ -94,7 +97,7 @@
   }
 
   function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   }
 
   function buildTools(){
@@ -109,6 +112,96 @@
     q('.mode-strip')?.before(tools);
     $('mode-matrix-btn').onclick=openModeMatrix;
     $('sound-toggle').onclick=toggleSound;
+  }
+
+  function closeBetMenu(){
+    if(!betMenu || !betButton) return;
+    betMenu.classList.remove('open');
+    betButton.setAttribute('aria-expanded','false');
+  }
+
+  function positionBetMenu(){
+    if(!betMenu || !betButton || !betMenu.classList.contains('open')) return;
+    const r=betButton.getBoundingClientRect();
+    const width=Math.max(96,r.width);
+    betMenu.style.width=`${width}px`;
+    betMenu.style.left=`${Math.min(window.innerWidth-width-8,Math.max(8,r.left))}px`;
+    const menuHeight=betMenu.offsetHeight || 180;
+    const below=r.bottom+5;
+    const above=r.top-menuHeight-5;
+    betMenu.style.top=`${below+menuHeight<window.innerHeight-8 ? below : Math.max(8,above)}px`;
+  }
+
+  function buildBetPicker(){
+    const select=$('bet');
+    if(!select || $('helios-bet-button')) return;
+    select.classList.add('helios-native-bet');
+    select.tabIndex=-1;
+    select.setAttribute('aria-hidden','true');
+
+    const host=document.createElement('div');
+    host.className='helios-bet-picker';
+    betButton=document.createElement('button');
+    betButton.id='helios-bet-button';
+    betButton.type='button';
+    betButton.className='helios-bet-button';
+    betButton.setAttribute('aria-haspopup','listbox');
+    betButton.setAttribute('aria-expanded','false');
+    betButton.innerHTML='<span class="helios-bet-value"></span><span class="helios-bet-caret">▼</span>';
+    host.appendChild(betButton);
+    select.before(host);
+
+    betMenu=document.createElement('div');
+    betMenu.id='helios-bet-menu';
+    betMenu.className='helios-bet-menu';
+    betMenu.setAttribute('role','listbox');
+    document.body.appendChild(betMenu);
+
+    const sync=()=>{
+      const value=String(select.value);
+      betButton.querySelector('.helios-bet-value').textContent=Number(value).toFixed(2);
+      betButton.disabled=select.disabled;
+      qa('#helios-bet-menu .helios-bet-option').forEach(x=>x.classList.toggle('selected',x.dataset.value===value));
+      if(select.disabled) closeBetMenu();
+    };
+
+    [...select.options].forEach(opt=>{
+      const item=document.createElement('button');
+      item.type='button';
+      item.className='helios-bet-option';
+      item.dataset.value=opt.value;
+      item.setAttribute('role','option');
+      item.textContent=Number(opt.value).toFixed(2);
+      item.onclick=()=>{
+        if(select.disabled) return;
+        select.value=opt.value;
+        select.dispatchEvent(new Event('input',{bubbles:true}));
+        select.dispatchEvent(new Event('change',{bubbles:true}));
+        sync();
+        closeBetMenu();
+        betButton.focus();
+      };
+      betMenu.appendChild(item);
+    });
+
+    betButton.onclick=e=>{
+      e.stopPropagation();
+      if(select.disabled) return;
+      const opening=!betMenu.classList.contains('open');
+      closeBetMenu();
+      if(opening){
+        betMenu.classList.add('open');
+        betButton.setAttribute('aria-expanded','true');
+        positionBetMenu();
+      }
+    };
+    betMenu.addEventListener('click',e=>e.stopPropagation());
+    document.addEventListener('click',closeBetMenu);
+    window.addEventListener('resize',closeBetMenu);
+    window.addEventListener('scroll',closeBetMenu,{passive:true});
+    select.addEventListener('change',sync);
+    new MutationObserver(sync).observe(select,{attributes:true,attributeFilter:['disabled']});
+    sync();
   }
 
   function buildOverlay(){
@@ -244,10 +337,29 @@
     }
   }
 
+  function currentSpinWin(){
+    const now=Number($('total-wins')?.textContent || 0);
+    const delta=Math.max(0,Math.round((now-lastTotalWins)*100)/100);
+    lastTotalWins=now;
+    return delta;
+  }
+
+  function persistLastWin(){
+    const el=$('last-win-value');
+    if(!el) return;
+    const now=Number(el.textContent || 0);
+    if(now>0){
+      lastNonZeroWin=now;
+      return;
+    }
+    if(lastNonZeroWin>0) el.textContent=lastNonZeroWin.toFixed(2);
+  }
+
   function onSpinSettled(){
-    const win=Number($('last-win-value')?.textContent || 0);
+    const win=currentSpinWin();
     const bet=Number($('bet')?.value || 0.1);
     if(win>0){
+      lastNonZeroWin=win;
       winStreak++; bestWin=Math.max(bestWin,win);
       const cls=classifyWin(win,bet);
       showOverlay(cls.name,win.toFixed(2),`${modeMeta().name} · DEMO UNITS`,1100);
@@ -261,6 +373,7 @@
     if($('session-best')) $('session-best').textContent=bestWin.toFixed(2);
     updateEnergyRail(win,bet);
     scanAlignment();
+    persistLastWin();
   }
 
   function observeCore(){
@@ -269,6 +382,13 @@
       const now=Number(spins.textContent||0);
       if(now!==lastSpinCount){ lastSpinCount=now; onSpinSettled(); }
     }).observe(spins,{childList:true,characterData:true,subtree:true});
+
+    const lastWin=$('last-win-value');
+    if(lastWin) new MutationObserver(()=>{
+      const now=Number(lastWin.textContent||0);
+      if(now>0) lastNonZeroWin=now;
+      else if(lastNonZeroWin>0) queueMicrotask(persistLastWin);
+    }).observe(lastWin,{childList:true,characterData:true,subtree:true});
 
     const route=$('selected-route');
     if(route) new MutationObserver(()=>{
@@ -301,17 +421,17 @@
 
   function bindKeyboard(){
     window.addEventListener('keydown',e=>{
-      if(e.key==='Escape') closeModeMatrix();
+      if(e.key==='Escape'){ closeModeMatrix(); closeBetMenu(); }
       if(e.key.toLowerCase()==='m' && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName)) openModeMatrix();
     });
   }
 
   function init(){
     if($('helios-polish-styles')) return;
-    injectStyles(); buildTicker(); buildTools(); buildOverlay(); buildModal(); enhanceSystemStatus();
+    injectStyles(); buildTicker(); buildTools(); buildBetPicker(); buildOverlay(); buildModal(); enhanceSystemStatus();
     updateEnergyRail(0,Number($('bet')?.value||.1));
     observeCore(); bindUIAudio(); bindKeyboard(); renderModeMatrix();
-    pushActivity('polish layer: ticker · mode matrix · win trace · audio ready');
+    pushActivity('polish layer: ticker · mode matrix · custom bet picker · persistent last win · win trace · audio ready');
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true});
