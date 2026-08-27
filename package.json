@@ -1,6 +1,6 @@
 {
   "name": "@janus/helios-routing-asset",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "private": true,
   "type": "module",
   "description": "JANUS HELIOS web-first universal compute-routing slot asset with a HELIOS-native desktop compute fabric, safe desktop agent runtime, bounded adaptive policy plane, dual-stream safety guard and presentation-only dual-stream director.",
@@ -11,7 +11,7 @@
     "audit:sbom:declared": "node tools/build-declared-sbom.mjs",
     "audit:preflight": "node tools/due-diligence-preflight.mjs",
     "audit:preflight:strict": "node tools/due-diligence-preflight.mjs --strict",
-    "audit:buyer": "npm run check:public && npm test && npm run audit:secrets && npm run audit:sbom:declared && npm run audit:preflight",
+    "audit:buyer": "npm run check:public && npm test && npm run audit:secrets && npm run audit:sbom:declared && npm run audit:preflight:strict",
     "closing:manifest": "node tools/build-closing-manifest.mjs --strict"
   },
   "engines": {
