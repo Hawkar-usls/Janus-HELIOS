@@ -11,6 +11,8 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `.janus/HELIOS_SWARM_DISPATCHER.json`
 - `docs/SWARM_DISPATCHER.md`
 - `docs/COMMERCIAL_THESIS.md`
+- `docs/GAME_MATH_AND_REGULATORY_BOUNDARY.md`
+- `docs/PUBLIC_PRIVATE_PRODUCTION_BOUNDARY.md`
 
 ## B. Commercial / buyer integration
 
@@ -38,16 +40,21 @@ This index is the recommended starting point for a serious acquisition/licensing
 
 - `docs/RELEASE_AND_HASHING.md`
 - `docs/CI_AND_RELEASE_EVIDENCE.md`
+- `docs/CHANGE_CONTROL_AND_CLOSING_FREEZE.md`
 - `legal/ACCEPTANCE_AND_HANDOVER.md`
 - `legal/CLOSING_CHECKLIST.md`
 - `legal/SELLER_DISCLOSURE_SCHEDULE_TEMPLATE.md`
 - `legal/TRANSITION_SUPPORT_SCOPE.md`
 
-## F. Security / source / tests
+## F. Security / privacy / source / tests
 
 - `SECURITY.md`
+- `docs/THREAT_MODEL.md`
+- `docs/PRIVACY_DATA_FLOW.md`
+- `.github/CODEOWNERS`
 - `.github/workflows/helios-integrity.yml`
 - `tools/build-closing-manifest.mjs`
+- `tools/build-declared-sbom.mjs`
 - `tools/due-diligence-preflight.mjs`
 - `tools/secret-scan.mjs`
 - `src/helios-router.js`
@@ -55,9 +62,18 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `package.json`
 - `tests/`
 
+## G. Machine-generated buyer evidence
+
+The integrity workflow produces, for each exact successful commit:
+
+- `artifacts/closing-manifest.json` — exact commit/tree/tracked-file SHA-256 identity record;
+- `artifacts/declared-sbom.cdx.json` — CycloneDX-formatted inventory of dependencies declared in `package.json`.
+
+The declared SBOM is intentionally labelled **DECLARED_PACKAGE_JSON_DEPENDENCIES_ONLY**. It is not represented as an independent scanner and does not replace a closing-time automated SBOM/licence scan capable of finding vendored, undeclared, generated, browser-loaded, operating-system or other external components.
+
 ## Current reproducible evidence
 
-`docs/CI_AND_RELEASE_EVIDENCE.md` records an exact GitHub Actions integrity run and closing-manifest artifact for a specific immutable commit. That evidence applies only to the commit named there. Every later closing candidate must be re-run and re-manifested.
+`docs/CI_AND_RELEASE_EVIDENCE.md` records exact GitHub Actions integrity evidence for a specific immutable commit. That evidence applies only to the commit named there. Every later closing candidate must be re-run, re-scanned as agreed, and re-manifested.
 
 ## Missing closing artifacts — expected only during a real transaction
 
@@ -67,7 +83,7 @@ The following should **not** be fabricated in advance. They are produced for the
 - seller identity/authority documents;
 - completed and signed Seller Disclosure Schedule;
 - independent/automated SBOM and licence scan report for the final snapshot;
-- independent security report if required by the transaction;
+- independent security/privacy report if required by the transaction;
 - full integrity/test execution evidence on the exact final closing commit;
 - closing commit/tree/file hash manifest preserved outside temporary CI retention;
 - signed release/tag or equivalent cryptographic attestation if agreed;
