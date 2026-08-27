@@ -5,7 +5,7 @@
 
 ![Status](https://img.shields.io/badge/status-active%20public%20prototype-2ea043)
 ![Class](https://img.shields.io/badge/class-gameplay%20%2B%20compute%20routing-8250df)
-![Version](https://img.shields.io/badge/version-1.12.0-d29922)
+![Version](https://img.shields.io/badge/version-1.14.0-d29922)
 ![Mobile](https://img.shields.io/badge/mobile-iPhone%20%2F%20Android-1f8fbc)
 ![Real Money](https://img.shields.io/badge/real--money-disabled-b62324)
 
@@ -39,8 +39,8 @@ HELIOS currently demonstrates:
 - `HELIOS / DIVINE / GRIDJACK / CUSTOM` profiles;
 - tumble cascades with `x1 → x4 → x16 → x64`;
 - natural `SOLAR CORONA` wheel from 3+ suns;
-- **true purchased `SOLAR FREE SPINS` bonus session**;
-- 10 automatic bonus spins with `3+ ☀ → +2` retriggers, capped at 16 total spins;
+- **tiered purchased `SOLAR FREE SPINS` bonus sessions**;
+- explicit per-purchase price review and consent;
 - GRIDJACK `DEMO SPIN ENERGY`;
 - mode + route + event + bonus-session generative WebAudio;
 - six replaceable compute routes with explicit consent/revoke;
@@ -52,7 +52,7 @@ No real-money gambling and no real production provider workload are performed by
 
 ## Solar feature family
 
-HELIOS now deliberately separates two different things that used to be conflated.
+HELIOS deliberately separates the natural Solar identity event from a purchased free-spins session.
 
 ### Natural Solar Corona
 
@@ -70,29 +70,49 @@ SOLAR_BONUS_BANK
 
 This is a natural identity event and is independent from compute routing.
 
-### Purchased Solar Free Spins — the actual “bonus feature”
+### Purchased Solar Free Spins — tiered demo flow
 
-`BUY SOLAR CORONA BONUS · DEMO` now buys a real auto-running bonus session rather than one wheel spin:
+The purchase path is now explicit and event-driven:
 
 ```text
-BUY BONUS
-   ↓
-50× current demo BET presentation cost
-   ↓
-10 SOLAR FREE SPINS
-   ↓
-normal HELIOS RNG + normal cascades
-   ↓
-x1 → x4 → x16 → x64 within each spin
-   ↓
-3+ ☀ during bonus → +2 FREE SPINS
-   ↓
-maximum 16 total spins
-   ↓
-BONUS COMPLETE → total bonus win
+CHOOSE BONUS
+    ↓
+SELECT TIER
+    ↓
+REVIEW EXACT COST + RULES
+    ↓
+EXPLICIT CONSENT
+    ↓
+BONUS CORE RE-CALCULATES PRICE
+    ↓
+AUTHORIZED SOLAR FREE-SPINS SESSION
 ```
 
-The session has its own HUD showing `SPINS LEFT`, `BONUS WIN` and the current bonus event. Spins run automatically. A session may pay very little or may grow large through ordinary wins/cascades; there is no forced-win or forced-scatter code and no near-miss shaping.
+The public demo exposes three tiers:
+
+| Tier | Demo cost | Starting spins | 3+ ☀ retrigger | Max spins |
+|---|---:|---:|---:|---:|
+| Standard Corona | `50× BET` | 10 | +2 | 16 |
+| Radiant Corona | `100× BET` | 12 | +2 | 20 |
+| Solar Flare | `175× BET` | 15 | +3 | 24 |
+
+Higher tiers buy **more free-spin opportunities and a larger disclosed natural-sun retrigger budget**. They do not guarantee a win and do not use compute activity, player history, loss streaks or personalized outcome shaping.
+
+The previous synthetic re-click bridge between the confirmation modal and bonus core was removed. `helios-bonus-confirm.js` now emits an authorization event, and `helios-bonus.js` independently validates the selected tier, current BET, exact price and available demo balance before anything is deducted.
+
+```text
+helios:bonus-buy-request
+          ↓
+review / consent
+          ↓
+helios:bonus-buy-authorized
+          ↓
+core validation
+          ↓
+bonus session
+```
+
+Every purchased session still uses the normal HELIOS game RNG and cascade engine. The session HUD shows `SPINS LEFT`, `BONUS WIN` and the current event, and the free spins run automatically.
 
 The public prototype currently bridges bonus spins into the existing core spin path and refunds each bonus stake in the presentation layer so the sequence behaves as free spins. A production implementation should promote `BONUS` into a first-class game-core spin source before regulated deployment.
 
@@ -257,7 +277,9 @@ simulated offers -> real-price claim FORBIDDEN
 - [`index.html`](index.html) — live responsive Pages surface;
 - [`helios.js`](helios.js) — game core, cascades, routing and Spin Energy;
 - [`helios-polish.js`](helios-polish.js) — presentation observer layer;
-- [`helios-bonus.js`](helios-bonus.js) — natural Corona wheel + purchased Solar Free Spins;
+- [`helios-bonus.js`](helios-bonus.js) — natural Corona wheel + tiered purchased Solar Free Spins;
+- [`helios-bonus-confirm.js`](helios-bonus-confirm.js) — tier selection, exact-price review and explicit per-purchase authorization;
+- [`helios-slot-ux.js`](helios-slot-ux.js) — BET stepper, Game Guide, tiered bonus guide and Win Focus;
 - [`helios-music.js`](helios-music.js) — procedural music v3.1 with bonus-session state;
 - [`helios-lucky.js`](helios-lucky.js) — rare contribution recognition;
 - [`helios-profile.js`](helios-profile.js) — miner/operator profile and simulated offer board;
@@ -266,9 +288,9 @@ simulated offers -> real-price claim FORBIDDEN
 - [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — canonical architecture;
 - [`PROJECT_STATUS.json`](PROJECT_STATUS.json) — maturity and open gates.
 
-Project package version: `1.12.0`.
+Project package version: `1.14.0`.
 
-Invariant tests now cover the 10-spin bonus loop, sun retrigger, total-spin cap and bonus-session music events. Historical stale assumptions about old cache versions and Jackpot-only Spin Energy were also removed. The complete current suite is still **not claimed green** until a real runner executes it.
+Invariant tests cover the event-driven purchase contract, explicit consent, tier definitions, free-spins loop, sun retrigger, total-spin caps and bonus-session music events. The complete current suite is still **not claimed green** until a real runner executes it.
 
 ## Partner direction
 
