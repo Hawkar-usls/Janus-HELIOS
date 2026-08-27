@@ -24,6 +24,7 @@ const REQUIRED = [
   '.janus/HELIOS_ARCHITECTURE.json','.janus/HELIOS_DUE_DILIGENCE.json',
   '.janus/HELIOS_DESKTOP_FABRIC.json','.janus/HELIOS_ADAPTIVE_POLICY.json',
   '.janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json','.janus/HELIOS_DUAL_STREAM_DIRECTOR.json',
+  '.janus/HELIOS_STELLAR_NAVIGATOR.json',
   '.janus/HELIOS_BUYER_CRITIC_AUDIT_2026-08-27.json',
   '.github/CODEOWNERS','.github/workflows/helios-integrity.yml',
   'legal/PURCHASED_ASSETS_SCHEDULE.md','legal/EXCLUDED_ASSETS_SCHEDULE.md',
@@ -33,15 +34,15 @@ const REQUIRED = [
   'docs/RELEASE_AND_HASHING.md','docs/CI_AND_RELEASE_EVIDENCE.md',
   'docs/CHANGE_CONTROL_AND_CLOSING_FREEZE.md','docs/DATA_ROOM_INDEX.md',
   'docs/DESKTOP_FABRIC.md','docs/ADAPTIVE_POLICY_PLANE.md',
-  'docs/DUAL_STREAM_SAFETY_GUARD.md','docs/DUAL_STREAM_DIRECTOR.md',
+  'docs/DUAL_STREAM_SAFETY_GUARD.md','docs/DUAL_STREAM_DIRECTOR.md','docs/STELLAR_NAVIGATOR.md',
   'docs/GAME_MATH_AND_REGULATORY_BOUNDARY.md','docs/THREAT_MODEL.md','docs/PRIVACY_DATA_FLOW.md',
-  'index.html','helios.js','helios-bonus.js','helios-bonus-confirm.js','helios-mobile.js','helios-dual-stream-director.js',
+  'index.html','helios.js','helios-bonus.js','helios-bonus-confirm.js','helios-mobile.js','helios-dual-stream-director.js','helios-stellar-nav.js',
   'src/helios-router.js','src/helios-desktop-fabric.js','src/helios-desktop-agent.js',
   'src/helios-adaptive-policy.js','src/helios-dual-stream-guard.js',
   'tests/bonus-buy-consent-invariants.test.mjs','tests/desktop-fabric-invariants.test.mjs',
   'tests/desktop-agent-invariants.test.mjs','tests/adaptive-policy-invariants.test.mjs',
   'tests/dual-stream-safety-invariants.test.mjs','tests/dual-stream-director-invariants.test.mjs',
-  'tests/due-diligence-invariants.test.mjs','tools/build-closing-manifest.mjs',
+  'tests/stellar-navigator-invariants.test.mjs','tests/due-diligence-invariants.test.mjs','tools/build-closing-manifest.mjs',
   'tools/build-declared-sbom.mjs','tools/secret-scan.mjs','package.json'
 ];
 for(const path of REQUIRED) check(await exists(path),`present: ${path}`,`missing required diligence artifact: ${path}`);
@@ -53,17 +54,19 @@ const REMOVED_LEGACY = [
 for(const path of REMOVED_LEGACY) check(!(await exists(path)),`legacy active path absent: ${path}`,`legacy Buzz-derived path returned to active snapshot: ${path}`);
 
 const [
-  pkg,status,architecture,handoff,dd,fabric,adaptive,safety,director,critic,
-  license,ipNotice,thirdParty,readme,indexHtml,bonusConfirm,mobileSource,directorSource,
+  pkg,status,architecture,handoff,dd,fabric,adaptive,safety,director,stellar,critic,
+  license,ipNotice,thirdParty,readme,indexHtml,bonusConfirm,mobileSource,directorSource,stellarSource,stellarDocs,
   fabricSource,agentSource,adaptiveSource,safetySource,workflow,security,threatModel,gameMath,
   purchased,excluded,provenance,guardrails,acceptance,support,changeControl,codeowners,ciEvidence
 ] = await Promise.all([
   json('package.json'),json('PROJECT_STATUS.json'),json('.janus/HELIOS_ARCHITECTURE.json'),
   json('BUYER_HANDOFF_SPEC.json'),json('.janus/HELIOS_DUE_DILIGENCE.json'),json('.janus/HELIOS_DESKTOP_FABRIC.json'),
   json('.janus/HELIOS_ADAPTIVE_POLICY.json'),json('.janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json'),
-  json('.janus/HELIOS_DUAL_STREAM_DIRECTOR.json'),json('.janus/HELIOS_BUYER_CRITIC_AUDIT_2026-08-27.json'),
+  json('.janus/HELIOS_DUAL_STREAM_DIRECTOR.json'),json('.janus/HELIOS_STELLAR_NAVIGATOR.json'),
+  json('.janus/HELIOS_BUYER_CRITIC_AUDIT_2026-08-27.json'),
   text('LICENSE.md'),text('IP_NOTICE.md'),text('THIRD_PARTY_NOTICES.md'),text('README.md'),
   text('index.html'),text('helios-bonus-confirm.js'),text('helios-mobile.js'),text('helios-dual-stream-director.js'),
+  text('helios-stellar-nav.js'),text('docs/STELLAR_NAVIGATOR.md'),
   text('src/helios-desktop-fabric.js'),text('src/helios-desktop-agent.js'),text('src/helios-adaptive-policy.js'),
   text('src/helios-dual-stream-guard.js'),text('.github/workflows/helios-integrity.yml'),text('SECURITY.md'),
   text('docs/THREAT_MODEL.md'),text('docs/GAME_MATH_AND_REGULATORY_BOUNDARY.md'),
@@ -90,6 +93,8 @@ check(/source-available/i.test(license)&&/not an open-source license/i.test(lice
 check(/commercial/i.test(license)&&/separate written agreement/i.test(license),'commercial rights require written agreement','commercial-use boundary missing');
 check(/No patent status is claimed/i.test(ipNotice),'patent status not overstated','patent status overclaim');
 check(/SBOM/i.test(thirdParty),'third-party register contains SBOM gate','third-party SBOM gate missing');
+check(/wisnc\/stellar-map/.test(thirdParty)&&/design-study reference only/i.test(thirdParty),'stellar-map reference is disclosed as design study','stellar-map provenance boundary missing');
+check(/no repository `LICENSE` file was found/i.test(stellarDocs),'stellar-map missing-licence observation disclosed','stellar-map licence observation missing');
 check(handoff.transaction_boundary?.default_scope==='HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED','handoff defaults HELIOS-only','handoff scope too broad');
 check(handoff.transaction_boundary?.specialized_children_included_by_default===false,'child repos excluded by default','child repo transaction scope unsafe');
 check(handoff.transaction_boundary?.future_inventions_included_by_default===false,'future inventions excluded by default','future invention scope unsafe');
@@ -99,6 +104,7 @@ check(/future/i.test(excluded)&&/know-how/i.test(excluded),'future work/know-how
 check(/exact/i.test(purchased)&&/commit/i.test(purchased),'purchased schedule anchors exact snapshot','purchased schedule lacks exact snapshot anchor');
 check(/AI-assisted development disclosure/i.test(provenance),'AI assistance disclosed','AI assistance disclosure missing');
 check(/Historical licence boundary/i.test(provenance),'historical swarm licence boundary disclosed','historical licence boundary hidden');
+check(/HELIOS Stellar Navigator \/ external design-study boundary/i.test(provenance),'stellar navigation provenance disclosed','stellar navigation provenance missing');
 check(dd.provenance?.buzz_lineage?.historical_mit_retroactively_revoked===false,'historical MIT rights not falsely revoked','historical MIT treatment inaccurate');
 check(dd.provenance?.helios_native_architecture?.central_multigateway_resource_router_attributed_to_buzz===false,'central HELIOS architecture not misattributed to Buzz','central architecture provenance drift');
 check(/escrow/i.test(guardrails)&&/credentials/i.test(guardrails),'transaction guardrails cover funds/credentials','transaction guardrails incomplete');
@@ -180,6 +186,22 @@ check(!/director-(?:resolution|divergence) \.reel[,\{]/.test(directorSource)&&!/
 check(!/getElementById\(['"]bet['"]\)/.test(directorSource)&&!/getElementById\(['"]balance['"]\)/.test(directorSource),'Director does not read bet/balance controls','Director reads wager/balance input');
 check(!/Math\.random\(/.test(directorSource)&&!/crypto\.getRandomValues/.test(directorSource),'Director is not a second RNG','Director introduced random authority');
 
+// Stellar Navigator authority / provenance / runtime isolation.
+check(stellar.classification==='PRESENTATION_ONLY_ASTRONOMY_INSPIRED_STELLAR_NAVIGATION_BACKGROUND','stellar navigator classification explicit','stellar navigator classification drift');
+check(stellar.authority?.rng_effect==='NONE'&&stellar.authority?.rtp_effect==='NONE'&&stellar.authority?.payout_effect==='NONE','stellar navigator has no game-math authority','stellar navigator game authority leak');
+check(stellar.authority?.compute_routing_effect==='NONE'&&stellar.authority?.provider_selection_effect==='NONE','stellar navigator has no compute authority','stellar navigator compute authority leak');
+check(stellar.rendering?.network_requests===false&&stellar.rendering?.external_runtime_dependency===false,'stellar navigator is local/no-network','stellar navigator external runtime dependency');
+check(stellar.external_reference_provenance?.source_code_copied===false&&stellar.external_reference_provenance?.star_catalog_copied===false&&stellar.external_reference_provenance?.images_or_assets_copied===false,'stellar-map material not copied','stellar-map copy boundary weakened');
+check(architecture.stellar_navigation?.stellar_map_reference_use==='DESIGN_STUDY_ONLY_NO_CODE_DATA_OR_ASSET_IMPORT','canonical architecture records design-study-only boundary','stellar-map architecture provenance drift');
+check(/id="helios-stellar-nav-script"[^>]+helios-stellar-nav\.js\?v=1\.0\.0/.test(indexHtml),'index explicitly loads Stellar Navigator v1.0.0','stellar navigator loader/version drift');
+check(/prefers-reduced-motion/.test(stellarSource),'stellar navigator supports reduced motion','stellar reduced-motion boundary missing');
+check(/buildSyntheticSky/.test(stellarSource)&&/const BRIGHT_STAR_ANCHORS/.test(stellarSource),'stellar navigator contains HELIOS sky model','stellar sky model missing');
+check(!/\bfetch\s*\(/.test(stellarSource)&&!/XMLHttpRequest/.test(stellarSource)&&!/WebSocket/.test(stellarSource),'stellar navigator has no network primitive','stellar navigator network primitive detected');
+check(!/Math\.random\s*\(/.test(stellarSource),'stellar navigator deep field is deterministic','stellar navigator non-deterministic random path');
+check(!/getElementById\(['"]bet['"]\)/.test(stellarSource)&&!/getElementById\(['"]balance['"]\)/.test(stellarSource),'stellar navigator does not read bet/balance','stellar navigator reads wager/balance input');
+check(!/loss_streak|near_miss|problem_gambling_label|inferred_vulnerability/i.test(stellarSource),'stellar navigator does not profile gambling vulnerability','stellar navigator vulnerability/retention input detected');
+check(/astronomy-inspired, not a scientific star catalogue/i.test(stellarDocs),'stellar navigator scientific-claim boundary explicit','stellar scientific-claim boundary missing');
+
 // Security docs / CI / supply-chain.
 check(/Desktop Fabric/i.test(security)&&/Desktop Agent/i.test(security),'security policy describes active compute plane','security policy stale');
 check(/Adaptive-policy truth-core erosion/i.test(threatModel),'threat model covers adaptive truth erosion','adaptive threat missing');
@@ -202,6 +224,8 @@ const depCount=Object.keys(pkg.dependencies||{}).length+Object.keys(pkg.devDepen
 check(depCount===0,'package currently declares zero npm dependencies',`package declares ${depCount} dependencies; third-party/SBOM review required`,{warning:true});
 check(pkg.engines?.node==='>=24','Node 24 baseline explicit','Node engine baseline drift');
 check(/audit:preflight:strict/.test(pkg.scripts?.['audit:buyer']||''),'npm buyer audit uses strict preflight','npm buyer audit not strict');
+check(/stellar-navigator-invariants\.test\.mjs/.test(pkg.scripts?.test||''),'stellar navigator invariants wired into full test suite','stellar navigator test missing from npm test');
+check(/node --check helios-stellar-nav\.js/.test(pkg.scripts?.['check:public']||''),'stellar navigator syntax wired into public check','stellar navigator missing from public syntax check');
 
 // Clean exact snapshot.
 try{
