@@ -165,21 +165,5 @@
   else applyInputMode();
   coarse?.addEventListener?.('change', applyInputMode);
 
-  // Consent gate is presentation-only and intercepts Bonus Buy before the existing game feature runs.
-  if (!document.getElementById('helios-bonus-confirm-script')) {
-    const confirmation = document.createElement('script');
-    confirmation.id = 'helios-bonus-confirm-script';
-    confirmation.src = './helios-bonus-confirm.js?v=1.0.0';
-    confirmation.defer = true;
-    document.head.appendChild(confirmation);
-  }
-
-  // Presentation-only dual-stream director. It reads settled public game events but has no game-math authority.
-  if (!document.getElementById('helios-dual-stream-director-script')) {
-    const director = document.createElement('script');
-    director.id = 'helios-dual-stream-director-script';
-    director.src = './helios-dual-stream-director.js?v=1.0.0';
-    director.defer = true;
-    document.head.appendChild(director);
-  }
+  // This module owns responsive/mobile presentation only. Feature scripts are loaded explicitly by index.html.
 })();
