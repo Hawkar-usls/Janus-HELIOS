@@ -2,11 +2,14 @@
   'use strict';
 
   const VERSION = '1.1.0';
+  const PATCH_LEVEL = 'SMOOTH_FLOW_1';
   const DEG = Math.PI / 180;
   const TAU = Math.PI * 2;
   const MAX_DPR = 1.5;
   const TARGET_FPS = 30;
   const FRAME_MS = 1000 / TARGET_FPS;
+  const STAR_ALPHA_SMOOTH_MS = 1250;
+  const EDGE_FADE_PX = 72;
   const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)') || null;
 
   // Rounded bright-star facts used as visual orientation anchors only.
@@ -34,7 +37,7 @@
     w:0, h:0, dpr:1,
     ra:18.2*15*DEG, dec:18*DEG, fov:78*DEG,
     driftRa:0, driftDec:0,
-    lastTs:0, lastDraw:0, raf:0,
+    lastTs:0, lastDraw:0, lastRenderTs:0, raf:0,
     visible:true,
     reducedMotion:Boolean(motionQuery?.matches),
     stars:[], anchors:[], firstFrame:false
@@ -47,6 +50,7 @@
   const norm=(v)=>{const m=Math.hypot(v.x,v.y,v.z)||1;return{x:v.x/m,y:v.y/m,z:v.z/m};};
   const vectorFromRaDec=(ra,dec)=>{const c=Math.cos(dec);return{x:c*Math.cos(ra),y:c*Math.sin(ra),z:Math.sin(dec)};};
   const hash01=(n)=>{const x=Math.sin(n*12.9898+78.233)*43758.5453123;return x-Math.floor(x);};
+  const smoothstep=(edge0,edge1,x)=>{const t=clamp((x-edge0)/(edge1-edge0),0,1);return t*t*(3-2*t);};
 
   function spectralColor(type,alpha=1){
     const rgb={O:[166,184,255],B:[184,200,255],A:[214,222,255],F:[248,247,255],G:[255,241,213],K:[255,205,150],M:[255,158,108]}[type]||[236,241,255];
@@ -65,13 +69,25 @@
       const h=hash01(i+101);
       const mag=3.0+Math.pow(h,1.55)*3.5;
       const spectral=['B','A','F','G','K','M'][Math.floor(hash01(i+701)*6)%6];
-      stars.push({v,mag,spectral,realAnchor:false,twinkle:hash01(i+1301)*TAU});
+      stars.push({
+        v,mag,spectral,realAnchor:false,twinkle:hash01(i+1301)*TAU,
+        twinkleSpeed:.00012+hash01(i+1601)*.00012,
+        twinkleAmp:.010+hash01(i+1901)*.014,
+        displayAlpha:null
+      });
     }
     return stars;
   }
 
   function buildAnchorVectors(){
-    return BRIGHT_STAR_ANCHORS.map(s=>({...s,v:vectorFromRaDec(s.ra,s.dec),twinkle:hash01(s.ra*100+s.dec*10)*TAU}));
+    return BRIGHT_STAR_ANCHORS.map((s,i)=>({
+      ...s,
+      v:vectorFromRaDec(s.ra,s.dec),
+      twinkle:hash01(s.ra*100+s.dec*10)*TAU,
+      twinkleSpeed:.00008+hash01(i+2301)*.00008,
+      twinkleAmp:.004+hash01(i+2601)*.007,
+      displayAlpha:null
+    }));
   }
 
   function ensureCanvas(){
@@ -97,10 +113,35 @@
     const style=document.createElement('style');
     style.id='helios-stellar-nav-styles';
     style.textContent=`
-      .helios-stellar-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.90;filter:saturate(.92) contrast(1.02)}
-      .cosmos.stellar-active:before{opacity:0!important;transition:opacity .55s ease}
-      .cosmos>.sun,.cosmos>.orbit-field,.cosmos>.planet-horizon{position:absolute;z-index:1}
-      @media(prefers-reduced-motion:reduce){.helios-stellar-canvas{opacity:.78}}
+      .helios-stellar-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;filter:saturate(.92) contrast(1.02);transition:opacity 2.4s cubic-bezier(.22,.61,.36,1)}
+      .cosmos.stellar-active .helios-stellar-canvas{opacity:.88}
+      .cosmos:before{transition:opacity 2.4s cubic-bezier(.22,.61,.36,1)!important}
+      .cosmos.stellar-active:before{opacity:0!important}
+      .cosmos>.sun,.cosmos>.orbit-field,.cosmos>.planet-horizon{position:absolute;z-index:1;filter:hue-rotate(0deg) saturate(1) brightness(1);will-change:filter}
+      .cosmos.stellar-active>.sun{animation:helios-stellar-sun-flow 28s ease-in-out infinite alternate}
+      .cosmos.stellar-active>.planet-horizon{animation:helios-stellar-planet-flow 36s ease-in-out -7s infinite alternate}
+      .cosmos.stellar-active>.orbit-field{animation:helios-stellar-orbit-flow 42s ease-in-out -13s infinite alternate}
+      @keyframes helios-stellar-sun-flow{
+        0%{filter:hue-rotate(0deg) saturate(1) brightness(1)}
+        45%{filter:hue-rotate(2.2deg) saturate(1.018) brightness(1.018)}
+        100%{filter:hue-rotate(-1.8deg) saturate(.992) brightness(.988)}
+      }
+      @keyframes helios-stellar-planet-flow{
+        0%{filter:hue-rotate(0deg) saturate(1) brightness(1)}
+        48%{filter:hue-rotate(-3.2deg) saturate(1.025) brightness(1.014)}
+        100%{filter:hue-rotate(2.6deg) saturate(.985) brightness(.992)}
+      }
+      @keyframes helios-stellar-orbit-flow{
+        0%{filter:hue-rotate(0deg) saturate(1) brightness(1)}
+        50%{filter:hue-rotate(2deg) saturate(1.02) brightness(1.01)}
+        100%{filter:hue-rotate(-2deg) saturate(.99) brightness(.995)}
+      }
+      @media(prefers-reduced-motion:reduce){
+        .helios-stellar-canvas{opacity:0;transition:opacity .35s ease}
+        .cosmos.stellar-active .helios-stellar-canvas{opacity:.78}
+        .cosmos:before{transition:opacity .35s ease!important}
+        .cosmos.stellar-active>.sun,.cosmos.stellar-active>.planet-horizon,.cosmos.stellar-active>.orbit-field{animation:none!important;filter:hue-rotate(0deg) saturate(1) brightness(1)!important}
+      }
     `;
     document.head.appendChild(style);
   }
@@ -127,11 +168,11 @@
 
   function project(v,b){
     const depth=dot(v,b.fwd);
-    if(depth<=.06)return null;
+    if(depth<=.035)return null;
     const focal=(state.h*.5)/Math.tan(state.fov*.5);
     const x=state.w*.5+focal*(dot(v,b.right)/depth);
     const y=state.h*.5-focal*(dot(v,b.up)/depth);
-    if(x<-24||x>state.w+24||y<-24||y>state.h+24)return null;
+    if(x<-EDGE_FADE_PX||x>state.w+EDGE_FADE_PX||y<-EDGE_FADE_PX||y>state.h+EDGE_FADE_PX)return null;
     return {x,y,depth};
   }
 
@@ -143,25 +184,43 @@
     ctx.fillStyle=g;ctx.fillRect(0,0,state.w,state.h);
   }
 
-  function drawStar(ctx,star,p,ts){
+  function drawStar(ctx,star,p,ts,renderDt){
     const bright=star.realAnchor?clamp(1.15-(star.mag+1.5)*.10,.52,1):clamp((6.8-star.mag)/4.1,.10,.66);
-    const twinkle=1+(state.reducedMotion?0:Math.sin(ts*.0008+star.twinkle)*.045);
-    const alpha=clamp(bright*twinkle,.08,1);
+    const twinkle=state.reducedMotion?1:1+Math.sin(ts*star.twinkleSpeed+star.twinkle)*star.twinkleAmp;
+    const edgeDistance=Math.min(p.x,p.y,state.w-p.x,state.h-p.y);
+    const edgeFade=smoothstep(-8,EDGE_FADE_PX,edgeDistance);
+    const depthFade=smoothstep(.035,.16,p.depth);
+    const targetAlpha=clamp(bright*twinkle*edgeFade*depthFade,0,1);
+    if(star.displayAlpha===null||!Number.isFinite(star.displayAlpha))star.displayAlpha=targetAlpha;
+    else{
+      const response=state.reducedMotion?1:1-Math.exp(-Math.max(1,renderDt)/STAR_ALPHA_SMOOTH_MS);
+      star.displayAlpha+=(targetAlpha-star.displayAlpha)*response;
+    }
+    const alpha=clamp(star.displayAlpha,0,1);
+    if(alpha<.004)return;
     const radius=star.realAnchor?clamp(2.55-star.mag*.38,1.0,3.0):(star.mag<4.2?1.0:.60);
     ctx.beginPath();ctx.arc(p.x,p.y,radius,0,TAU);ctx.fillStyle=spectralColor(star.spectral,alpha);ctx.fill();
     if(star.realAnchor&&star.mag<.7){
-      ctx.beginPath();ctx.arc(p.x,p.y,radius*3.0,0,TAU);ctx.fillStyle=spectralColor(star.spectral,.050);ctx.fill();
+      ctx.beginPath();ctx.arc(p.x,p.y,radius*3.0,0,TAU);ctx.fillStyle=spectralColor(star.spectral,alpha*.052);ctx.fill();
     }
   }
 
   function render(ts){
     const ctx=state.ctx;if(!ctx||!state.w||!state.h)return;
+    const renderDt=state.lastRenderTs?Math.min(250,ts-state.lastRenderTs):FRAME_MS;
+    state.lastRenderTs=ts;
     ctx.setTransform(state.dpr,0,0,state.dpr,0,0);
     ctx.clearRect(0,0,state.w,state.h);
     drawHaze(ctx);
     const b=basis();
-    for(const star of state.stars){const p=project(star.v,b);if(p)drawStar(ctx,star,p,ts);}
-    for(const star of state.anchors){const p=project(star.v,b);if(p)drawStar(ctx,star,p,ts);}
+    for(const star of state.stars){
+      const p=project(star.v,b);
+      if(p)drawStar(ctx,star,p,ts,renderDt);else star.displayAlpha=0;
+    }
+    for(const star of state.anchors){
+      const p=project(star.v,b);
+      if(p)drawStar(ctx,star,p,ts,renderDt);else star.displayAlpha=0;
+    }
     if(!state.firstFrame){
       state.firstFrame=true;
       state.cosmos?.classList.add('stellar-active');
@@ -188,10 +247,12 @@
 
   function bindLifecycle(){
     addEventListener('resize',resize,{passive:true});
-    document.addEventListener('visibilitychange',()=>{state.visible=!document.hidden;state.lastTs=0;});
+    document.addEventListener('visibilitychange',()=>{state.visible=!document.hidden;state.lastTs=0;state.lastRenderTs=0;});
     motionQuery?.addEventListener?.('change',e=>{
       state.reducedMotion=Boolean(e.matches);
       if(state.reducedMotion){state.driftRa=0;state.driftDec=0;state.ra=18.2*15*DEG;state.dec=18*DEG;}
+      for(const star of [...state.stars,...state.anchors])star.displayAlpha=null;
+      state.lastRenderTs=0;
       render(performance.now());
     });
   }
@@ -208,8 +269,10 @@
     state.raf=requestAnimationFrame(tick);
     window.HELIOS_STELLAR_NAVIGATOR=Object.freeze({
       version:VERSION,
+      patch:PATCH_LEVEL,
       getState:()=>({
         version:VERSION,
+        patch:PATCH_LEVEL,
         mode:'PASSIVE_BACKGROUND_ONLY',
         ra_rad:state.ra,
         dec_rad:state.dec,
@@ -217,6 +280,8 @@
         reduced_motion:state.reducedMotion,
         synthetic_star_count:state.stars.length,
         real_anchor_count:state.anchors.length,
+        brightness_smoothing_ms:STAR_ALPHA_SMOOTH_MS,
+        background_body_color_flow:true,
         presentation_only:true,
         gameplay_input_count:0,
         rng_effect:'NONE',
@@ -225,7 +290,7 @@
         compute_routing_effect:'NONE'
       })
     });
-    dispatchEvent(new CustomEvent('helios:stellar-ready',{detail:{version:VERSION,presentation_only:true,passive_background_only:true,scientific_catalog:false,external_code_imported:false}}));
+    dispatchEvent(new CustomEvent('helios:stellar-ready',{detail:{version:VERSION,patch:PATCH_LEVEL,presentation_only:true,passive_background_only:true,brightness_smoothed:true,background_body_color_flow:true,scientific_catalog:false,external_code_imported:false}}));
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
