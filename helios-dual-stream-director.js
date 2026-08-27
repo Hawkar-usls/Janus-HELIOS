@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const DIRECTOR_VERSION = '1.0.0';
+  const DIRECTOR_VERSION = '1.1.0';
   const RHO = 1.20;
   const MAX_DIVERGENCE = 1 / RHO;
   const MOTIFS = Object.freeze(['ORBITAL_SHEAR','GRID_BREATHE','SOLAR_FOLD','SIGNAL_TILT']);
@@ -9,6 +9,7 @@
     'fear','anger','despair','sadness','inferred_vulnerability','problem_gambling_label',
     'loss_streak','near_miss','wager_history','bet_size','balance_pressure'
   ]);
+  const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)') || null;
 
   const state = {
     C:0,
@@ -25,7 +26,7 @@
     phaseTimer:null,
     settleTimer:null,
     active:false,
-    reducedMotion:Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)
+    reducedMotion:Boolean(motionQuery?.matches)
   };
 
   const clamp=(n,min=0,max=1)=>Math.max(min,Math.min(max,Number(n)||0));
@@ -37,22 +38,34 @@
     style.id='helios-dual-stream-director-styles';
     style.textContent=`
       :root{--director-c:0;--director-l:.28;--director-shift:0px;--director-skew:0deg;--director-glow:0px}
+      .helios-director-stage{position:relative;min-width:0;width:100%;border-radius:13px;transform-origin:50% 50%;will-change:transform,filter;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease}.helios-director-stage>.reels{width:100%}
       #helios-director-note{position:absolute;z-index:24;left:50%;top:10px;transform:translateX(-50%);pointer-events:none;opacity:0;min-width:180px;max-width:82%;padding:5px 9px;border:1px solid #705522;border-radius:999px;background:#060a0ed9;box-shadow:0 0 var(--director-glow) #ffc24b44;color:#aeb8be;text-align:center;font:800 7px/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.10em;transition:opacity .16s,transform .22s,border-color .22s,color .22s}
       #helios-director-note.show{opacity:1;transform:translateX(-50%) translateY(1px)}
       #helios-director-note.divergence{border-color:#bf7f31;color:#ffd178}
       #helios-director-note.resolution{border-color:#5e8290;color:#a9e6ff}
-      body.director-divergence .reels{transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;filter:saturate(calc(1 + var(--director-c)*.34)) contrast(calc(1 + var(--director-c)*.10));box-shadow:inset 0 10px 24px #000a,0 0 calc(24px + var(--director-c)*20px) var(--mode-soft)}
-      body.director-divergence.director-motif-orbital-shear .reels{transform:translateX(var(--director-shift)) skewX(var(--director-skew))}
-      body.director-divergence.director-motif-grid-breathe .reels{transform:scale(calc(1 + var(--director-c)*.012))}
-      body.director-divergence.director-motif-solar-fold .reel:nth-child(odd){transform:translateY(calc(var(--director-c)*-4px))}body.director-divergence.director-motif-solar-fold .reel:nth-child(even){transform:translateY(calc(var(--director-c)*4px))}
-      body.director-divergence.director-motif-signal-tilt .reel:nth-child(1),body.director-divergence.director-motif-signal-tilt .reel:nth-child(5){transform:rotate(calc(var(--director-c)*-1deg))}body.director-divergence.director-motif-signal-tilt .reel:nth-child(2),body.director-divergence.director-motif-signal-tilt .reel:nth-child(4){transform:rotate(calc(var(--director-c)*1deg))}
-      body.director-divergence .reel,body.director-divergence .cell{transition:transform .18s ease,filter .18s ease}
-      body.director-resolution .reels,body.director-resolution .reel,body.director-resolution .cell{transition:transform calc(.34s + var(--director-l)*.45s) cubic-bezier(.16,.84,.34,1),filter .28s ease,box-shadow .30s ease;transform:none!important;filter:none!important}
-      body.director-resolution .reels{box-shadow:inset 0 10px 24px #000a,0 0 calc(20px + var(--director-l)*28px) var(--mode-soft)}
-      body.director-resolution .core{box-shadow:0 0 calc(24px + var(--director-l)*26px) #ffcb6555,0 0 calc(42px + var(--director-l)*46px) #ff9f1c18,inset 0 0 34px #ffe1a633}
-      @media(prefers-reduced-motion:reduce){body.director-divergence .reels,body.director-divergence .reel,body.director-divergence .cell,body.director-resolution .reels,body.director-resolution .reel,body.director-resolution .cell{transform:none!important;transition:filter .18s ease,box-shadow .18s ease!important}#helios-director-note{transition:opacity .12s!important}}
+      body.director-divergence .helios-director-stage{filter:saturate(calc(1 + var(--director-c)*.34)) contrast(calc(1 + var(--director-c)*.10));box-shadow:0 0 calc(12px + var(--director-c)*20px) var(--mode-soft)}
+      body.director-divergence.director-motif-orbital-shear .helios-director-stage{transform:translateX(var(--director-shift)) skewX(var(--director-skew))}
+      body.director-divergence.director-motif-grid-breathe .helios-director-stage{transform:scale(calc(1 + var(--director-c)*.012))}
+      body.director-divergence.director-motif-solar-fold .helios-director-stage{transform:perspective(560px) rotateX(calc(var(--director-c)*1.4deg)) scale(calc(1 + var(--director-c)*.006))}
+      body.director-divergence.director-motif-signal-tilt .helios-director-stage{transform:rotate(calc(var(--director-c)*.75deg)) translateY(calc(var(--director-c)*-2px))}
+      body.director-resolution .helios-director-stage{transition:transform calc(.34s + var(--director-l)*.45s) cubic-bezier(.16,.84,.34,1),filter .28s ease,box-shadow .30s ease;transform:none;filter:none;box-shadow:0 0 calc(10px + var(--director-l)*26px) var(--mode-soft)}
+      body.director-resolution .core{filter:drop-shadow(0 0 calc(8px + var(--director-l)*14px) #ffcb6555)}
+      @media(prefers-reduced-motion:reduce){.helios-director-stage,body.director-divergence .helios-director-stage,body.director-resolution .helios-director-stage{transform:none!important;transition:filter .18s ease,box-shadow .18s ease!important}#helios-director-note{transition:opacity .12s!important}}
     `;
     document.head.appendChild(style);
+  }
+
+  function buildStage(){
+    const reels=$('reels');
+    if(!reels)return null;
+    if(reels.parentElement?.id==='helios-director-stage')return reels.parentElement;
+    const stage=document.createElement('div');
+    stage.id='helios-director-stage';
+    stage.className='helios-director-stage';
+    stage.setAttribute('aria-label','HELIOS presentation director stage');
+    reels.parentNode?.insertBefore(stage,reels);
+    stage.appendChild(reels);
+    return stage;
   }
 
   function buildNote(){
@@ -154,14 +167,14 @@
   function cue({signature,novelty=.25,stress=.10,label='HELIOS DEVIATION'}={}){
     if(!signature)return;
     if(state.active)forceSettle();
-    state.eventCount+=1;computeStreams({signature,novelty,stress});state.motif=chooseMotif(signature);remember(signature);state.active=true;state.phase='DIVERGENCE';
-    const motifClass=`director-motif-${state.motif.toLowerCase().replaceAll('_','-')}`;clearClasses();document.body.classList.add('director-divergence',motifClass);showNote('divergence',`${label} · DIVERGENCE ${(state.C*100).toFixed(0)}%`);divergenceAccent();emitState(signature,'DIVERGENCE');
+    state.eventCount+=1;computeStreams({signature:String(signature),novelty:clamp(novelty),stress:clamp(stress)});state.motif=chooseMotif(String(signature));remember(String(signature));state.active=true;state.phase='DIVERGENCE';
+    const motifClass=`director-motif-${state.motif.toLowerCase().replaceAll('_','-')}`;clearClasses();document.body.classList.add('director-divergence',motifClass);showNote('divergence',`${String(label)} · DIVERGENCE ${(state.C*100).toFixed(0)}%`);divergenceAccent();emitState(String(signature),'DIVERGENCE');
     const divergenceMs=state.reducedMotion?90:Math.round(150+state.C*300);
     state.phaseTimer=setTimeout(()=>{
-      clearClasses();document.body.classList.add('director-resolution');state.phase='RESOLUTION';showNote('resolution',`VECTOR RESOLVED · ${(state.L*100).toFixed(0)}%`);resolutionAccent();emitState(signature,'RESOLUTION');
+      clearClasses();document.body.classList.add('director-resolution');state.phase='RESOLUTION';showNote('resolution',`VECTOR RESOLVED · ${(state.L*100).toFixed(0)}%`);resolutionAccent();emitState(String(signature),'RESOLUTION');
       const resolutionMs=state.reducedMotion?180:Math.round(420+state.L*480);
       state.settleTimer=setTimeout(()=>{
-        clearClasses();state.phase='SETTLED';state.active=false;state.C*=.55;state.P*=.45;state.L=Math.max(.24,state.L*.72);setVars();const note=buildNote();if(note)note.className='';emitState(signature,'SETTLED');
+        clearClasses();state.phase='SETTLED';state.active=false;state.C*=.55;state.P*=.45;state.L=Math.max(.24,state.L*.72);setVars();const note=buildNote();if(note)note.className='';emitState(String(signature),'SETTLED');
       },resolutionMs);
     },divergenceMs);
   }
@@ -179,9 +192,10 @@
     let mode=document.body.dataset.gameMode||'helios';
     new MutationObserver(()=>{const next=document.body.dataset.gameMode||'helios';if(next!==mode){mode=next;cue({signature:`MODE_${next}`,novelty:.38,stress:.14,label:'MODE GEOMETRY SHIFT'});}}).observe(document.body,{attributes:true,attributeFilter:['data-game-mode']});
     const route=$('selected-route');if(route){let previous=route.textContent.trim();new MutationObserver(()=>{const next=route.textContent.trim();if(next&&next!==previous){previous=next;cue({signature:`ROUTE_${next}`,novelty:.34,stress:.12,label:'ROUTE VECTOR SHIFT'});}}).observe(route,{childList:true,characterData:true,subtree:true});}
+    motionQuery?.addEventListener?.('change',e=>{state.reducedMotion=Boolean(e.matches);if(state.reducedMotion&&state.active)forceSettle();});
   }
 
-  function init(){injectStyles();buildNote();setVars();bindEvents();window.HELIOS_DUAL_STREAM_DIRECTOR=Object.freeze({version:DIRECTOR_VERSION,getState:()=>({...state,recent:[...state.recent],audioCtx:undefined,audioMaster:undefined,phaseTimer:undefined,settleTimer:undefined}),cue});window.dispatchEvent(new CustomEvent('helios:director-ready',{detail:{version:DIRECTOR_VERSION,presentation_only:true,forbidden_player_inputs:FORBIDDEN_PLAYER_INPUTS}}));}
+  function init(){injectStyles();buildStage();buildNote();setVars();bindEvents();window.HELIOS_DUAL_STREAM_DIRECTOR=Object.freeze({version:DIRECTOR_VERSION,getState:()=>({...state,recent:[...state.recent],audioCtx:undefined,audioMaster:undefined,phaseTimer:undefined,settleTimer:undefined}),cue});window.dispatchEvent(new CustomEvent('helios:director-ready',{detail:{version:DIRECTOR_VERSION,presentation_only:true,forbidden_player_inputs:FORBIDDEN_PLAYER_INPUTS}}));}
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
