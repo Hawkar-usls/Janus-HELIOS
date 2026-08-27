@@ -1,6 +1,6 @@
 {
   "schema": "janus.helios.buyer-critic-audit.v1",
-  "artifact_id": "JANUS-HELIOS-BUYER-CRITIC-AUDIT-2026-08-27-v1.0",
+  "artifact_id": "JANUS-HELIOS-BUYER-CRITIC-AUDIT-2026-08-27-v1.1",
   "audit_posture": "HOSTILE_BUT_FAIR_BUYER_TECHNICAL_DILIGENCE",
   "project_target": "Hawkar-usls/Janus-HELIOS",
   "product_snapshot_version": "1.16.0",
@@ -43,7 +43,7 @@
       "finding": "BUYER_PREFLIGHT_WAS_TOO_NARROW",
       "severity_before_fix": "HIGH",
       "problem": "Due-diligence preflight checked desktop fabric/agent but did not inspect Adaptive Policy, Dual-Stream Safety, Director loader/authority or canonical architecture synchronization.",
-      "remediation": "Strict preflight now requires and validates all active authority planes, bonus tiers, explicit loaders, workflow hardening and security-document synchronization.",
+      "remediation": "Strict preflight now validates all active authority planes, exact bonus tiers, explicit loaders, DOM-injection boundaries, workflow hardening, transaction scope and security-document synchronization.",
       "regression_gate": "tools/due-diligence-preflight.mjs --strict"
     },
     {
@@ -69,6 +69,22 @@
       "problem": "A repository document labelled latest evidence can never recursively contain the run ID/digest created after its own commit without generating another commit.",
       "remediation": "CI_AND_RELEASE_EVIDENCE records immutable baseline evidence and defines external exact-SHA run/artifact preservation as the authoritative closing process.",
       "regression_gate": "strict preflight verifies exact-snapshot/non-certification semantics"
+    },
+    {
+      "id": "BC-09",
+      "finding": "CI_ARTIFACT_ACTION_RUNTIME_DEBT",
+      "severity_before_fix": "LOW_MEDIUM",
+      "problem": "Pinned actions/upload-artifact v4 still used the deprecated Node 20 action runtime and GitHub emitted a forced Node 24 migration warning.",
+      "remediation": "Pinned upload-artifact to official v7.0.1 commit 043fb46d1a93c77aae656e7c1c64a875d1fc6a0a whose action.yml declares node24.",
+      "regression_gate": "strict preflight verifies the exact immutable action SHA"
+    },
+    {
+      "id": "BC-10",
+      "finding": "BONUS_DYNAMIC_METADATA_DOM_INJECTION_SURFACE",
+      "severity_before_fix": "HIGH_IF_CONFIG_BECOMES_REMOTE",
+      "problem": "Bonus tier names were interpolated into innerHTML and externally supplied tier IDs were interpolated into a querySelector expression. Current repository-controlled demo config limited exploitability, but this was not acceptable for buyer-configurable/remote production evolution.",
+      "remediation": "Bonus Confirmation v2.3 normalizes tier IDs/text, renders dynamic tier metadata using textContent/DOM nodes, renders dynamic wheel result using replaceChildren, and removes dynamic selector interpolation.",
+      "regression_gate": "tests/bonus-buy-consent-invariants.test.mjs + strict preflight"
     }
   ],
   "open_external_or_production_gates": [
@@ -115,6 +131,12 @@
       "finding": "INDEPENDENT_SECURITY_PRIVACY_LICENSE_LEGAL_REVIEW_NOT_COMPLETE",
       "status": "OPEN_CLOSING_GATE",
       "required_action": "Perform exact-snapshot independent reviews appropriate to transaction/deployment."
+    },
+    {
+      "id": "BC-EXT-08",
+      "finding": "PUBLIC_DEMO_RNG_IS_NOT_A_CERTIFIED_REGULATED_RNG_PACKAGE",
+      "status": "OPEN_REGULATED_GAME_GATE",
+      "required_action": "For real-money deployment define the authoritative production RNG interface, formal game mathematics, simulations and jurisdiction/test-lab certification on the exact production snapshot."
     }
   ],
   "non_claims": {
@@ -126,6 +148,6 @@
     "branch_protection_claimed_enabled": false,
     "signed_release_claimed": false
   },
-  "buyer_conclusion_if_repository_integrity_passes": "REPOSITORY_LEVEL_ARCHITECTURE_AND_DILIGENCE_PACKAGE_MATERIALLY_HARDENED; REMAINING MATERIAL RISKS ARE PRIMARILY EXPLICIT HOST_LEVEL_CLOSING_CONTROLS_AND_REAL_PRODUCTION_PROVIDER_PILOT_VALIDATION, NOT HIDDEN DOCUMENTATION_DRIFT.",
-  "invariant": "FIX_WHAT_THE_REPOSITORY_CAN_PROVE; DISCLOSE_WHAT_REQUIRES_EXTERNAL_EVIDENCE; NEVER CONVERT AN OPEN GATE INTO A PAPER PASS."
+  "buyer_conclusion_if_repository_integrity_passes": "REPOSITORY_LEVEL_ARCHITECTURE_AND_DILIGENCE_PACKAGE_MATERIALLY_HARDENED; REMAINING MATERIAL RISKS ARE PRIMARILY EXPLICIT HOST_LEVEL_CLOSING_CONTROLS, REGULATED_GAME_CERTIFICATION AND REAL_PRODUCTION_PROVIDER_PILOT_VALIDATION, NOT HIDDEN DOCUMENTATION_OR_PRESENTATION_AUTHORITY_DRIFT.",
+  "invariant": "FIX_WHAT_THE_REPOSITORY_CAN PROVE; DISCLOSE_WHAT_REQUIRES_EXTERNAL_EVIDENCE; NEVER CONVERT AN OPEN GATE INTO A PAPER PASS."
 }
