@@ -2,7 +2,7 @@
   'use strict';
 
   const VERSION = '1.1.0';
-  const PATCH_LEVEL = 'SMOOTH_FLOW_BLACK_HOLE_1';
+  const PATCH_LEVEL = 'SMOOTH_FLOW_BLACK_HOLE_DYSON_1';
   const DEG = Math.PI / 180;
   const TAU = Math.PI * 2;
   const MAX_DPR = 1.5;
@@ -33,7 +33,7 @@
   })));
 
   const state = {
-    canvas:null, ctx:null, cosmos:null,
+    canvas:null, ctx:null, cosmos:null, dyson:null,
     w:0, h:0, dpr:1,
     ra:18.2*15*DEG, dec:18*DEG, fov:78*DEG,
     driftRa:0, driftDec:0,
@@ -108,6 +108,21 @@
     return true;
   }
 
+  function ensureDysonSphere(){
+    const cosmos=state.cosmos||document.querySelector('.cosmos');
+    if(!cosmos)return null;
+    let sphere=cosmos.querySelector('.helios-dyson-sphere');
+    if(!sphere){
+      sphere=document.createElement('div');
+      sphere.className='helios-dyson-sphere';
+      sphere.setAttribute('aria-hidden','true');
+      const blackHole=cosmos.querySelector('.planet-horizon');
+      if(blackHole)cosmos.insertBefore(sphere,blackHole);else cosmos.appendChild(sphere);
+    }
+    state.dyson=sphere;
+    return sphere;
+  }
+
   function injectStyles(){
     if(document.getElementById('helios-stellar-nav-styles'))return;
     const style=document.createElement('style');
@@ -117,10 +132,60 @@
       .cosmos.stellar-active .helios-stellar-canvas{opacity:.88}
       .cosmos:before{transition:opacity 2.4s cubic-bezier(.22,.61,.36,1)!important}
       .cosmos.stellar-active:before{opacity:0!important}
-      .cosmos>.sun,.cosmos>.orbit-field,.cosmos>.planet-horizon{position:absolute;z-index:1;filter:hue-rotate(0deg) saturate(1) brightness(1);will-change:filter}
+      .cosmos>.sun,.cosmos>.orbit-field,.cosmos>.planet-horizon,.cosmos>.helios-dyson-sphere{position:absolute;z-index:1;pointer-events:none}
+      .cosmos>.sun,.cosmos>.orbit-field,.cosmos>.planet-horizon{filter:hue-rotate(0deg) saturate(1) brightness(1);will-change:filter}
 
-      /* Lower-right decorative planet becomes a centered event-horizon black-hole body.
-         It stays behind .shell (z-index 2), so the lower cards visually sit over the arc. */
+      /* Passive Dyson-swarm / lattice sphere behind the left HELIOS slot panel.
+         Viewport anchoring keeps Stellar independent from gameplay DOM. */
+      .cosmos>.helios-dyson-sphere{
+        width:clamp(500px,37vw,720px);
+        height:clamp(500px,37vw,720px);
+        left:35.5%;
+        top:49%;
+        transform:translate(-50%,-50%) rotate(-7deg);
+        border-radius:50%;
+        opacity:.56;
+        isolation:isolate;
+        overflow:visible;
+        border:1px solid rgba(255,205,103,.25);
+        background:
+          radial-gradient(circle at 50% 50%,rgba(255,255,232,.98) 0 1.6%,rgba(255,228,124,.94) 2.2%,rgba(255,178,47,.74) 4.8%,rgba(255,142,21,.28) 8.5%,rgba(255,180,54,.08) 15%,transparent 24%),
+          radial-gradient(circle at 39% 34%,rgba(255,220,130,.10) 0 13%,transparent 39%),
+          radial-gradient(circle at 62% 68%,transparent 0 43%,rgba(0,0,0,.24) 63%,rgba(0,0,0,.72) 91%,rgba(0,0,0,.82) 100%),
+          repeating-conic-gradient(from 11deg,rgba(255,211,117,.23) 0 1.05deg,rgba(255,188,59,.05) 1.15deg 2deg,transparent 2.1deg 7.2deg),
+          repeating-radial-gradient(circle at 50% 50%,transparent 0 30px,rgba(255,216,130,.11) 31px 32px,transparent 33px 61px);
+        box-shadow:
+          0 0 30px rgba(255,178,50,.10),
+          0 0 110px rgba(255,147,26,.08),
+          inset 28px -24px 72px rgba(0,0,0,.52),
+          inset -18px 14px 58px rgba(255,196,79,.07);
+        filter:saturate(1.08) brightness(.96);
+        will-change:filter;
+      }
+      .cosmos>.helios-dyson-sphere::before{
+        content:"";
+        position:absolute;
+        left:5%;right:5%;top:30%;height:38%;
+        border-radius:50%;
+        border:1px solid rgba(255,214,128,.46);
+        box-shadow:0 0 12px rgba(255,178,55,.16),inset 0 0 12px rgba(255,203,100,.09);
+        transform:rotate(18deg) scaleY(.34);
+        opacity:.72;
+        animation:helios-dyson-ring-a 54s linear infinite;
+      }
+      .cosmos>.helios-dyson-sphere::after{
+        content:"";
+        position:absolute;
+        left:10%;right:10%;top:18%;height:64%;
+        border-radius:50%;
+        border:1px solid rgba(146,183,232,.28);
+        box-shadow:0 0 11px rgba(115,151,213,.12),inset 0 0 16px rgba(255,205,105,.05);
+        transform:rotate(-31deg) scaleY(.52);
+        opacity:.64;
+        animation:helios-dyson-ring-b 71s linear infinite reverse;
+      }
+
+      /* Centered lower event-horizon black-hole body. */
       .cosmos>.planet-horizon{
         width:clamp(920px,76vw,1560px)!important;
         height:clamp(315px,27vw,510px)!important;
@@ -174,6 +239,7 @@
       .cosmos.stellar-active>.sun{animation:helios-stellar-sun-flow 28s ease-in-out infinite alternate}
       .cosmos.stellar-active>.planet-horizon{animation:helios-stellar-blackhole-flow 36s ease-in-out -7s infinite alternate}
       .cosmos.stellar-active>.orbit-field{animation:helios-stellar-orbit-flow 42s ease-in-out -13s infinite alternate}
+      .cosmos.stellar-active>.helios-dyson-sphere{animation:helios-dyson-breathe 32s ease-in-out -9s infinite alternate}
       @keyframes helios-stellar-sun-flow{
         0%{filter:hue-rotate(0deg) saturate(1) brightness(1)}
         45%{filter:hue-rotate(2.2deg) saturate(1.018) brightness(1.018)}
@@ -189,15 +255,33 @@
         50%{filter:hue-rotate(2deg) saturate(1.02) brightness(1.01)}
         100%{filter:hue-rotate(-2deg) saturate(.99) brightness(.995)}
       }
+      @keyframes helios-dyson-breathe{
+        0%{filter:hue-rotate(-1deg) saturate(1.04) brightness(.94)}
+        48%{filter:hue-rotate(1.5deg) saturate(1.10) brightness(1.01)}
+        100%{filter:hue-rotate(-1.4deg) saturate(1.06) brightness(.97)}
+      }
+      @keyframes helios-dyson-ring-a{
+        from{transform:rotate(18deg) scaleY(.34)}
+        to{transform:rotate(378deg) scaleY(.34)}
+      }
+      @keyframes helios-dyson-ring-b{
+        from{transform:rotate(-31deg) scaleY(.52)}
+        to{transform:rotate(329deg) scaleY(.52)}
+      }
+      @media(max-width:980px){
+        .cosmos>.helios-dyson-sphere{left:50%;top:38%;width:660px;height:660px;opacity:.40}
+      }
       @media(max-width:720px){
         .cosmos>.planet-horizon{width:980px!important;height:330px!important;bottom:-238px!important}
         .cosmos>.planet-horizon::after{left:12%;right:12%;opacity:.56}
+        .cosmos>.helios-dyson-sphere{top:34%;width:560px;height:560px;opacity:.28}
       }
       @media(prefers-reduced-motion:reduce){
         .helios-stellar-canvas{opacity:0;transition:opacity .35s ease}
         .cosmos.stellar-active .helios-stellar-canvas{opacity:.78}
         .cosmos:before{transition:opacity .35s ease!important}
-        .cosmos.stellar-active>.sun,.cosmos.stellar-active>.planet-horizon,.cosmos.stellar-active>.orbit-field{animation:none!important;filter:hue-rotate(0deg) saturate(1) brightness(1)!important}
+        .cosmos.stellar-active>.sun,.cosmos.stellar-active>.planet-horizon,.cosmos.stellar-active>.orbit-field,.cosmos.stellar-active>.helios-dyson-sphere{animation:none!important;filter:hue-rotate(0deg) saturate(1) brightness(1)!important}
+        .cosmos>.helios-dyson-sphere::before,.cosmos>.helios-dyson-sphere::after{animation:none!important}
       }
     `;
     document.head.appendChild(style);
@@ -316,6 +400,7 @@
 
   function init(){
     if(!ensureCanvas())return; // static CSS star field remains as fallback
+    ensureDysonSphere();
     injectStyles();
     resize();
     const area=Math.max(1,state.w*state.h);
@@ -342,6 +427,9 @@
         central_black_hole:true,
         event_horizon_visible:true,
         mercury_reflection:true,
+        dyson_sphere_present:Boolean(state.dyson),
+        dyson_visual_type:'PARTIAL_SWARM_LATTICE',
+        dyson_gameplay_authority:'NONE',
         presentation_only:true,
         gameplay_input_count:0,
         rng_effect:'NONE',
@@ -350,7 +438,7 @@
         compute_routing_effect:'NONE'
       })
     });
-    dispatchEvent(new CustomEvent('helios:stellar-ready',{detail:{version:VERSION,patch:PATCH_LEVEL,presentation_only:true,passive_background_only:true,brightness_smoothed:true,background_body_color_flow:true,central_black_hole:true,event_horizon_visible:true,mercury_reflection:true,scientific_catalog:false,external_code_imported:false}}));
+    dispatchEvent(new CustomEvent('helios:stellar-ready',{detail:{version:VERSION,patch:PATCH_LEVEL,presentation_only:true,passive_background_only:true,brightness_smoothed:true,background_body_color_flow:true,central_black_hole:true,event_horizon_visible:true,mercury_reflection:true,dyson_sphere_present:Boolean(state.dyson),dyson_visual_type:'PARTIAL_SWARM_LATTICE',scientific_catalog:false,external_code_imported:false}}));
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
