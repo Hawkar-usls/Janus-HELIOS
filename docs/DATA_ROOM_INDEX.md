@@ -10,8 +10,10 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `.janus/HELIOS_ECOSYSTEM.json`
 - `.janus/HELIOS_DESKTOP_FABRIC.json`
 - `.janus/HELIOS_ADAPTIVE_POLICY.json`
+- `.janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json`
 - `docs/DESKTOP_FABRIC.md`
 - `docs/ADAPTIVE_POLICY_PLANE.md`
+- `docs/DUAL_STREAM_SAFETY_GUARD.md`
 - `docs/COMMERCIAL_THESIS.md`
 - `docs/GAME_MATH_AND_REGULATORY_BOUNDARY.md`
 - `docs/PUBLIC_PRIVATE_PRODUCTION_BOUNDARY.md`
@@ -63,9 +65,11 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `src/helios-desktop-fabric.js`
 - `src/helios-desktop-agent.js`
 - `src/helios-adaptive-policy.js`
+- `src/helios-dual-stream-guard.js`
 - `tests/desktop-fabric-invariants.test.mjs`
 - `tests/desktop-agent-invariants.test.mjs`
 - `tests/adaptive-policy-invariants.test.mjs`
+- `tests/dual-stream-safety-invariants.test.mjs`
 - `package.json`
 - `tests/`
 
@@ -83,6 +87,8 @@ src/helios-desktop-agent.js
 The buyer preflight fails if the removed Buzz-derived dispatcher, contract, documentation or invariant test is silently reintroduced as an active path.
 
 The optional adaptive policy plane is also HELIOS-native source. Its generalized policy design is conceptually inspired by resource/learning discipline seen in the separate JANUS Zim Geek firmware, but it does not import or runtime-depend on Zim or `janus-distributed-ai-swarm`. That relationship is disclosed in `.janus/HELIOS_ADAPTIVE_POLICY.json` and `legal/BACKGROUND_IP_AND_PROVENANCE.md`.
+
+The Dual-Stream Safety Guard is likewise a HELIOS-native engineering adaptation of a mathematical/control pattern recorded in the seller-controlled `janus-meta-registry`. HELIOS does not import the registry artifact as executable code and does not use its emotional-state variables for player profiling. The active mapping is `change/optimization pressure ↔ safety reserve`, with explicit player-vulnerability inputs forbidden. See `.janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json` and `docs/DUAL_STREAM_SAFETY_GUARD.md`.
 
 ## H. Machine-generated buyer evidence
 
