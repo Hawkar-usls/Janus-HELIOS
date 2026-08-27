@@ -164,4 +164,13 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyInputMode, {once:true});
   else applyInputMode();
   coarse?.addEventListener?.('change', applyInputMode);
+
+  // Consent gate is presentation-only and intercepts Bonus Buy before the existing game feature runs.
+  if (!document.getElementById('helios-bonus-confirm-script')) {
+    const confirmation = document.createElement('script');
+    confirmation.id = 'helios-bonus-confirm-script';
+    confirmation.src = './helios-bonus-confirm.js?v=1.0.0';
+    confirmation.defer = true;
+    document.head.appendChild(confirmation);
+  }
 })();
