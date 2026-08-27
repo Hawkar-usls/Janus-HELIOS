@@ -21,6 +21,11 @@ assert.match(ux, /reels\.win-focus/);
 assert.match(ux, /select\.value=options\[next\]\.value/);
 assert.match(ux, /dispatchEvent\(new Event\('change'/);
 
+// The parent control grid must reserve enough room for the tactile +/- stepper and force it to stay inside the BET card.
+assert.match(html, /grid-template-columns:180px minmax\(0,1fr\) 118px/);
+assert.match(html, /\.betbox \.helios-bet-stepper\{grid-template-columns:28px minmax\(0,1fr\) 28px!important/);
+assert.match(html, /\.betbox \.helios-bet-picker,\.betbox \.helios-bet-button\{min-width:0!important;width:100%!important\}/);
+
 // Guide must expose the current demo boundary and compute/game separation.
 assert.match(ux, /Gameplay and compute remain independent/);
 assert.match(ux, /do not improve RNG, RTP, paylines, cascades or bonus probability/);
@@ -29,4 +34,4 @@ assert.match(ux, /not a certified real-money game math package/);
 // This layer is presentation/control ergonomics only: no RNG or payout mutation APIs.
 assert.equal(/Math\.random\(|crypto\.getRandomValues|totalWins\s*=|balance\s*=/.test(ux), false);
 
-console.log('HELIOS triad-derived slot UX invariants: PASS');
+console.log('HELIOS triad-derived slot UX + compact BET control invariants: PASS');
