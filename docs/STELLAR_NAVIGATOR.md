@@ -6,7 +6,7 @@ The goal is visual depth and navigational continuity, not scientific-planetarium
 
 ## Current recovery phase
 
-Version `1.1.0` remains deliberately **PASSIVE BACKGROUND ONLY**. The current `SMOOTH_FLOW_BLACK_HOLE_1` patch changes only background presentation; it does not add gameplay inputs.
+Version `1.1.0` remains deliberately **PASSIVE BACKGROUND ONLY**. The current `SMOOTH_FLOW_BLACK_HOLE_DYSON_1` patch changes only background presentation; it does not add gameplay inputs.
 
 ```text
 AUTONOMOUS SLOW DRIFT
@@ -28,7 +28,7 @@ RNG / RTP / PAYTABLE / BET / BONUS ODDS
       HELIOS STELLAR NAVIGATOR
                 │
                 ▼
-        CANVAS BACKGROUND ONLY
+        BACKGROUND ONLY
 ```
 
 ## Sky composition
@@ -51,7 +51,7 @@ This means the current HELIOS background is **astronomy-inspired, not a scientif
 
 ## Smooth-flow presentation patch
 
-`SMOOTH_FLOW_BLACK_HOLE_1` keeps the exposure fixes from `SMOOTH_FLOW_1` and adds a purely decorative lower black-hole treatment.
+`SMOOTH_FLOW_BLACK_HOLE_DYSON_1` keeps the exposure fixes from `SMOOTH_FLOW_1`, the centered lower black-hole treatment, and adds a purely decorative Dyson-swarm/lattice sphere behind the slot.
 
 The background uses three smoothing layers:
 
@@ -63,7 +63,7 @@ Bright anchor stars twinkle more slowly and with lower amplitude than the synthe
 
 ### Background body colour flow
 
-The decorative Sun, lower black-hole body and orbit field never jump directly between colour states. They use long-period, low-amplitude, continuously interpolated `filter` animations with independent durations/phases.
+The decorative Sun, lower black-hole body, orbit field and Dyson sphere never jump directly between colour states. They use long-period, low-amplitude, continuously interpolated `filter` animations with independent durations/phases.
 
 In practice the colour movement is intentionally subtle: only a few degrees of hue rotation plus very small saturation/brightness movement over tens of seconds. The objective is a slow atmospheric colour **flow**, not a visible mode switch or disco effect.
 
@@ -83,6 +83,24 @@ The former lower-right decorative `planet-horizon` is now restyled at runtime as
 
 This is a visual black-hole treatment, not a scientific simulation of general-relativistic ray tracing.
 
+## Dyson sphere behind the slot
+
+The central-left slot area now has a passive Dyson-inspired structure behind it. The intent is symbolic: HELIOS appears to sit in front of a large energy-harvesting megastructure without the structure becoming part of the game itself.
+
+The implementation is intentionally closer to a **partial Dyson swarm / lattice sphere** than to an opaque solid shell:
+
+- a warm stellar core sits at the geometric center;
+- repeated radial/conic collector bands form a metallic lattice around it;
+- two independent elliptical ring paths rotate very slowly to suggest orbital collector swarms;
+- the sphere is anchored to about `35.5%` of desktop viewport width, matching the visual center of the left slot panel without querying the slot DOM;
+- below the single-column breakpoint it moves to `50%` so the visual remains centered on the stacked layout;
+- the sphere stays at `z-index:1`, behind `.shell` at `z-index:2`;
+- it uses only native CSS gradients and the existing local JavaScript module: no image, WebGL, network request or external asset is added;
+- `prefers-reduced-motion` disables its ring rotation and colour breathing;
+- it reads no spin, cascade, bonus, route, wager, balance, RNG, RTP or compute state.
+
+The Dyson presentation is science-fiction visual language, not a claim that the page simulates a physically complete Dyson sphere.
+
 ## Fail-closed presentation fallback
 
 The old static CSS star field remains visible until the Stellar canvas completes its first successful frame. Only then does `.cosmos.stellar-active` begin the crossfade.
@@ -91,7 +109,7 @@ Therefore a missing/failed Stellar script should degrade to the static backgroun
 
 ## Performance envelope
 
-- Canvas 2D, no WebGL requirement;
+- Canvas 2D for the star sphere plus CSS-only decorative bodies;
 - target draw cadence: 30 FPS;
 - device-pixel-ratio capped at `1.5`;
 - synthetic star count scales with viewport area and is bounded;
