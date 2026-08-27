@@ -1,0 +1,119 @@
+{
+  "schema_id": "janus.helios.triad-audit.v1",
+  "captured_at": "2026-08-27T08:45:00+03:00",
+  "focus": "HELIOS_SALES_DEMO_PARITY_AND_DIFFERENTIATION",
+  "compared_products": {
+    "HELIOS": "UNIVERSAL_CONFIGURABLE_PARENT",
+    "SSlot": "TREASURY_SHARED_POOL_CHILD",
+    "DIVINE_REALM": "SCIENCE_PUBLIC_GOOD_CHILD"
+  },
+  "evidence_summary": {
+    "SSlot_strengths_observed": [
+      "TACTILE_BET_MINUS_PLUS",
+      "EXPLICIT_WINNER_VS_DIMMED_NONWINNER_VISUAL_LANGUAGE",
+      "TICKER",
+      "BONUS_COUNTER",
+      "WILD_AND_SCATTER_VOCABULARY",
+      "MODAL_GAME_SURFACES",
+      "THEMED_HAPTIC_OR_IMPACT_FEEDBACK"
+    ],
+    "DIVINE_strengths_observed": [
+      "TACTILE_BET_MINUS_PLUS",
+      "EXPLICIT_WINNER_VS_DIMMED_NONWINNER_VISUAL_LANGUAGE",
+      "TICKER",
+      "BONUS_COUNTER",
+      "WILD_AND_SCATTER_VOCABULARY",
+      "MODAL_GAME_SURFACES",
+      "THEMED_HAPTIC_OR_IMPACT_FEEDBACK"
+    ],
+    "HELIOS_already_stronger": [
+      "UNIVERSAL_ROUTE_SWITCHING",
+      "CONFIGURABLE_PROVIDER_MODEL",
+      "MY_HELIOS_PROFILE_AND_WORK_HISTORY",
+      "SIMULATED_LIVE_OFFER_BOARD",
+      "RARE_LUCKY_CONTRIBUTION_PROFILE_EVENT",
+      "TRUE_PURCHASED_SOLAR_FREE_SPINS",
+      "EXPLICIT_BONUS_PURCHASE_REVIEW_AND_CONSENT",
+      "TUMBLE_CASCADES_X1_X4_X16_X64",
+      "GRIDJACK_SPIN_ENERGY",
+      "MODE_ROUTE_EVENT_SESSION_GENERATIVE_MUSIC",
+      "JANUS_WORLD_MATRIX",
+      "MOBILE_FIRST_SALES_SHOWCASE",
+      "COMPUTE_GAME_AUTHORITY_FIREWALL"
+    ]
+  },
+  "promoted_this_pass": [
+    {
+      "primitive": "BET_STEPPER_MINUS_PLUS",
+      "module": "helios-slot-ux.js",
+      "status": "IMPLEMENTED",
+      "reason": "Restores tactile one-step wager control while preserving the canonical hidden select as the single bet authority."
+    },
+    {
+      "primitive": "GAME_GUIDE_AND_DYNAMIC_PAYTABLE",
+      "module": "helios-slot-ux.js",
+      "status": "IMPLEMENTED",
+      "reason": "HELIOS now has enough mechanics that a buyer/player needs one transparent current-mode rules surface."
+    },
+    {
+      "primitive": "WIN_FOCUS",
+      "module": "helios-slot-ux.js",
+      "status": "IMPLEMENTED",
+      "reason": "Dim non-winning cells while paid hit cells and SVG trace stay emphasized. Presentation only."
+    }
+  ],
+  "not_promoted": [
+    {
+      "primitive": "TELEGRAM_DEPENDENCY",
+      "decision": "KEEP_CHILD_SPECIFIC",
+      "reason": "HELIOS is web-first and must open cleanly from a sales email on arbitrary browsers."
+    },
+    {
+      "primitive": "WALLET_DEPOSIT_WITHDRAWAL_UI",
+      "decision": "DO_NOT_PROMOTE_TO_PUBLIC_HELIOS_DEMO",
+      "reason": "Public HELIOS uses demo presentation units and should not imply a live cashier or financial rail."
+    },
+    {
+      "primitive": "LEGACY_FORCED_SCATTER_OR_TEASER_LOGIC",
+      "decision": "FORBIDDEN_GENERALIZATION",
+      "reason": "Outcome-shaping and near-miss timing are outside the HELIOS fairness contract."
+    }
+  ],
+  "remaining_real_gaps": [
+    {
+      "gap": "TRUE_WILD_SUBSTITUTION_IN_CORE_MATH",
+      "priority": "P1",
+      "status": "NOT_IMPLEMENTED",
+      "reason": "Children expose familiar Wild vocabulary, but HELIOS core currently evaluates exact left-to-right symbol equality. Do not label a symbol WILD until substitution exists in game math and tests."
+    },
+    {
+      "gap": "EXPLICIT_SCATTER_ROLE_FOR_NON_HELIOS_PROFILES",
+      "priority": "P2",
+      "status": "NOT_IMPLEMENTED",
+      "reason": "HELIOS has the Solar Corona trigger, while DIVINE/GRIDJACK/CUSTOM do not yet expose distinct scatter/feature symbols."
+    },
+    {
+      "gap": "BONUS_AS_FIRST_CLASS_GAME_CORE_SPIN_SOURCE",
+      "priority": "P1",
+      "status": "OPEN",
+      "reason": "Purchased free spins currently bridge into the existing balance-source spin core and refund bonus stakes in the presentation layer."
+    },
+    {
+      "gap": "FULL_CURRENT_TEST_SUITE_EXECUTION",
+      "priority": "P0",
+      "status": "OPEN_NOT_CLAIMED_PASS"
+    },
+    {
+      "gap": "BUYER_CONFIGURATOR",
+      "priority": "P1",
+      "status": "PLANNED",
+      "reason": "A partner should be able to configure branding, route, workload, music identity and presentation without reading source."
+    },
+    {
+      "gap": "REAL_PROVIDER_ADAPTER_AND_AUTHORITATIVE_RECEIPTS",
+      "priority": "P0_FOR_PRODUCTION_PILOT",
+      "status": "NOT_CONNECTED"
+    }
+  ],
+  "invariant": "Promote universal safe primitives into HELIOS, preserve child identity, and never generalize legacy outcome-shaping, hidden compute, fake financial rails or compute-to-game coupling."
+}
