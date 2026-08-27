@@ -12,10 +12,12 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `.janus/HELIOS_ADAPTIVE_POLICY.json`
 - `.janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json`
 - `.janus/HELIOS_DUAL_STREAM_DIRECTOR.json`
+- `.janus/HELIOS_STELLAR_NAVIGATOR.json`
 - `docs/DESKTOP_FABRIC.md`
 - `docs/ADAPTIVE_POLICY_PLANE.md`
 - `docs/DUAL_STREAM_SAFETY_GUARD.md`
 - `docs/DUAL_STREAM_DIRECTOR.md`
+- `docs/STELLAR_NAVIGATOR.md`
 - `docs/COMMERCIAL_THESIS.md`
 - `docs/GAME_MATH_AND_REGULATORY_BOUNDARY.md`
 - `docs/PUBLIC_PRIVATE_PRODUCTION_BOUNDARY.md`
@@ -72,11 +74,13 @@ The Buyer Critic Audit records repository-level criticisms that were actually fo
 - `src/helios-adaptive-policy.js`
 - `src/helios-dual-stream-guard.js`
 - `helios-dual-stream-director.js`
+- `helios-stellar-nav.js`
 - `tests/desktop-fabric-invariants.test.mjs`
 - `tests/desktop-agent-invariants.test.mjs`
 - `tests/adaptive-policy-invariants.test.mjs`
 - `tests/dual-stream-safety-invariants.test.mjs`
 - `tests/dual-stream-director-invariants.test.mjs`
+- `tests/stellar-navigator-invariants.test.mjs`
 - `tests/due-diligence-invariants.test.mjs`
 - `package.json`
 - `tests/`
@@ -101,6 +105,8 @@ The Adaptive Policy Plane is HELIOS-native source. Its generalized design is con
 The Dual-Stream Safety Guard is a HELIOS-native engineering adaptation of a mathematical/control pattern recorded in the seller-controlled `janus-meta-registry`. HELIOS does not import the registry artifact as executable code and does not use its emotional-state variables for player profiling. The active mapping is `change/optimization pressure ↔ safety reserve`, with player-vulnerability inputs forbidden.
 
 The presentation-only Dual-Stream Director maps the same conceptual pattern into `DIVERGENCE ↔ RESOLUTION` choreography. It is not an emotional classifier and cannot change RNG, RTP, stake, paytable, bonus probability, compute routing or provider selection. Director v1.1 owns only a dedicated wrapper transform; feature loading is explicit in `index.html`, not hidden in the mobile layer.
+
+The Stellar Navigator is an independent HELIOS presentation implementation. `wisnc/stellar-map` was reviewed only as a design reference. Because no root `LICENSE` file was found during the 2026-08-27 review, no source code, star catalogue, constellation/Messier data, screenshots or assets from that repository are incorporated. The HELIOS sky uses manually curated rounded bright-star facts plus a deterministic synthetic deep field and is explicitly not marketed as a scientific planetarium.
 
 ## H. Machine-generated buyer evidence
 
