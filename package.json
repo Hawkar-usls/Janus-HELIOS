@@ -1,12 +1,12 @@
 {
   "name": "@janus/helios-routing-asset",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "private": true,
   "type": "module",
   "description": "JANUS HELIOS web-first universal compute-routing slot asset and three-repository ecosystem parent.",
   "scripts": {
-    "test": "node tests/helios-router.test.mjs && node tests/public-surface-invariants.test.mjs && node tests/polish-invariants.test.mjs && node tests/solar-corona.test.mjs && node tests/cascade-energy-invariants.test.mjs && node tests/cosmic-music-invariants.test.mjs && node tests/lucky-contribution-invariants.test.mjs && node tests/profile-dashboard-invariants.test.mjs && node tests/mobile-showcase-invariants.test.mjs",
-    "check:public": "node --check helios.js && node --check helios-polish.js && node --check helios-bonus.js && node --check helios-music.js && node --check helios-lucky.js && node --check helios-profile.js && node --check helios-mobile.js"
+    "test": "node tests/helios-router.test.mjs && node tests/public-surface-invariants.test.mjs && node tests/polish-invariants.test.mjs && node tests/solar-corona.test.mjs && node tests/cascade-energy-invariants.test.mjs && node tests/cosmic-music-invariants.test.mjs && node tests/lucky-contribution-invariants.test.mjs && node tests/profile-dashboard-invariants.test.mjs && node tests/mobile-showcase-invariants.test.mjs && node tests/janus-world-matrix-invariants.test.mjs",
+    "check:public": "node --check helios.js && node --check helios-polish.js && node --check helios-bonus.js && node --check helios-music.js && node --check helios-lucky.js && node --check helios-profile.js && node --check helios-janus-worlds.js && node --check helios-mobile.js"
   },
   "engines": {
     "node": ">=18"
