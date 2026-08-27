@@ -122,11 +122,11 @@
       /* Lower-right decorative planet becomes a centered event-horizon black-hole body.
          It stays behind .shell (z-index 2), so the lower cards visually sit over the arc. */
       .cosmos>.planet-horizon{
-        width:clamp(700px,58vw,1180px)!important;
-        height:clamp(280px,23vw,430px)!important;
+        width:clamp(920px,76vw,1560px)!important;
+        height:clamp(315px,27vw,510px)!important;
         left:50%!important;
         right:auto!important;
-        bottom:clamp(-300px,-15vw,-205px)!important;
+        bottom:clamp(-300px,-13vw,-188px)!important;
         transform:translateX(-50%);
         border-radius:50%;
         overflow:visible;
@@ -146,7 +146,7 @@
       .cosmos>.planet-horizon::before{
         content:"";
         position:absolute;
-        inset:-8px -12px -18px;
+        inset:-10px -18px -22px;
         border-radius:50%;
         border-top:2px solid rgba(235,243,255,.72);
         border-left:1px solid rgba(124,148,199,.08);
@@ -162,7 +162,7 @@
       .cosmos>.planet-horizon::after{
         content:"";
         position:absolute;
-        left:8%;right:8%;top:-17px;height:44px;
+        left:5%;right:5%;top:-21px;height:52px;
         border-radius:50%;
         background:radial-gradient(ellipse at 50% 58%,rgba(255,255,255,.38) 0 2%,rgba(181,198,232,.20) 9%,rgba(98,122,178,.09) 31%,transparent 68%);
         filter:blur(5px);
@@ -190,8 +190,8 @@
         100%{filter:hue-rotate(-2deg) saturate(.99) brightness(.995)}
       }
       @media(max-width:720px){
-        .cosmos>.planet-horizon{width:820px!important;height:300px!important;bottom:-225px!important}
-        .cosmos>.planet-horizon::after{left:14%;right:14%;opacity:.56}
+        .cosmos>.planet-horizon{width:980px!important;height:330px!important;bottom:-238px!important}
+        .cosmos>.planet-horizon::after{left:12%;right:12%;opacity:.56}
       }
       @media(prefers-reduced-motion:reduce){
         .helios-stellar-canvas{opacity:0;transition:opacity .35s ease}
