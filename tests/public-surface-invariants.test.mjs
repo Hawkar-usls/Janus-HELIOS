@@ -13,7 +13,8 @@ assert.equal(html.includes('telegram.org/js/telegram-web-app.js'), false, 'HELIO
 assert.equal(controller.includes('Telegram.WebApp'), false, 'HELIOS controller must not require Telegram');
 assert.match(html, /class="cosmos"/);
 assert.match(html, /class="sun"/);
-assert.match(html, /class="station"/);
+assert.doesNotMatch(html, /<div class="station"/);
+assert.match(html, /\.station\{display:none!important\}/);
 assert.match(html, /id="last-win-value"/);
 assert.match(html, /id="total-wins"/);
 assert.match(html, /id="total-spins"/);
