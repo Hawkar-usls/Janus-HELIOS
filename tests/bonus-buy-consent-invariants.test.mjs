@@ -10,7 +10,8 @@ const [html, confirm, bonus, config] = await Promise.all([
 const cfg = JSON.parse(config);
 const buy = cfg.demo_bonus_buy;
 
-assert.match(html, /helios-bonus\.js\?v=1\.4\.0/);
+// The rescue snapshot deliberately keeps the user-verified working 1.3 bonus presentation.
+assert.match(html, /helios-bonus\.js\?v=1\.3\.0/);
 assert.match(html, /id="helios-bonus-confirm-script"/);
 assert.match(html, /helios-bonus-confirm\.js\?v=2\.3\.0/);
 assert.match(confirm, /BONUS_CONFIRM_VERSION = '2\.3\.0'/);
@@ -63,13 +64,19 @@ const animateEnd = confirm.indexOf('async function confirmPurchase');
 const animateBody = confirm.slice(animateStart, animateEnd);
 assert.equal(animateBody.includes("overlay.classList.remove('show')"), false, 'purchase wheel must not close before core activation handoff');
 
-assert.match(bonus, /BONUS_ENGINE_VERSION='1\.4\.0'/);
+// Price authority stays in the bonus core. Purchased free spins reuse the proven tactile
+// normal-spin path, then presentation-adjust the displayed stake so the free-spin session remains free.
 assert.match(bonus, /helios:bonus-buy-request/);
 assert.match(bonus, /helios:bonus-buy-authorized/);
 assert.match(bonus, /PRICE_OR_BET_CHANGED/);
 assert.match(bonus, /explicit_confirmation_required/);
-assert.match(bonus, /first_class_bonus_core_source:true/);
-assert.match(bonus, /stake_refund_bridge:false/);
+assert.match(bonus, /async function runPurchasedFreeSpins\(cost, tier\)/);
+assert.match(bonus, /const done = waitForSpinComplete\(\)/);
+assert.match(bonus, /\$\('spin'\)\.click\(\)/);
+assert.match(bonus, /displayOffset = round2\(displayOffset - currentBet\(\)\)/);
+assert.match(bonus, /purchase_currency: 'DEMO_PRESENTATION_UNITS'/);
+assert.match(bonus, /real_money_value: false/);
+assert.match(bonus, /compute_effect: 'NONE'/);
 
 assert.equal(buy.explicit_confirmation_required, true);
 assert.equal(buy.tier_selection_required, true);
@@ -81,4 +88,4 @@ assert.deepEqual(buy.tiers.map(x=>x.id), ['standard','radiant','solar_flare']);
 assert.deepEqual(buy.tiers.map(x=>x.cost_multiplier_of_demo_bet), [50,100,175]);
 assert.deepEqual(buy.tiers.map(x=>x.free_spins_count), [10,12,15]);
 
-console.log('HELIOS Bonus Buy seamless activation + DOM-injection boundary invariants: PASS');
+console.log('HELIOS rescued Bonus Buy seamless activation + DOM-injection boundary invariants: PASS');
