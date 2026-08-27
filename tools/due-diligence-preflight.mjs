@@ -47,8 +47,11 @@ const required = [
   'docs/DATA_ROOM_INDEX.md',
   'docs/DESKTOP_FABRIC.md',
   'src/helios-desktop-fabric.js',
+  'src/helios-desktop-agent.js',
   'tests/desktop-fabric-invariants.test.mjs',
+  'tests/desktop-agent-invariants.test.mjs',
   'tools/build-closing-manifest.mjs',
+  'tools/build-declared-sbom.mjs',
   'tools/secret-scan.mjs'
 ];
 
@@ -67,13 +70,13 @@ for (const path of removedLegacyActivePaths) {
 const [
   license, ipNotice, thirdParty, statusText, handoffText, ddText, fabricText,
   purchased, excluded, provenance, guardrails, acceptance, support,
-  changeControl, codeowners, ciEvidence, packageText
+  changeControl, codeowners, ciEvidence, packageText, fabricSource, agentSource
 ] = await Promise.all([
   text('LICENSE.md'), text('IP_NOTICE.md'), text('THIRD_PARTY_NOTICES.md'), text('PROJECT_STATUS.json'),
   text('BUYER_HANDOFF_SPEC.json'), text('.janus/HELIOS_DUE_DILIGENCE.json'), text('.janus/HELIOS_DESKTOP_FABRIC.json'),
   text('legal/PURCHASED_ASSETS_SCHEDULE.md'), text('legal/EXCLUDED_ASSETS_SCHEDULE.md'), text('legal/BACKGROUND_IP_AND_PROVENANCE.md'), text('legal/TRANSACTION_GUARDRAILS.md'),
   text('legal/ACCEPTANCE_AND_HANDOVER.md'), text('legal/TRANSITION_SUPPORT_SCOPE.md'), text('docs/CHANGE_CONTROL_AND_CLOSING_FREEZE.md'),
-  text('.github/CODEOWNERS'), text('docs/CI_AND_RELEASE_EVIDENCE.md'), text('package.json')
+  text('.github/CODEOWNERS'), text('docs/CI_AND_RELEASE_EVIDENCE.md'), text('package.json'), text('src/helios-desktop-fabric.js'), text('src/helios-desktop-agent.js')
 ]);
 
 const status = JSON.parse(statusText);
@@ -107,7 +110,16 @@ check(fabric.lineage?.active_dependency_on_janus_distributed_ai_swarm === false,
 check(fabric.lineage?.active_dependency_on_buzz_esp32_code === false, 'desktop fabric contract excludes active Buzz code dependency', 'desktop fabric contract has active Buzz code dependency');
 check(fabric.target_hardware?.desktop_class === true && fabric.target_hardware?.esp32_required === false, 'desktop hardware target is explicit', 'desktop fabric hardware target is ambiguous');
 check(fabric.game_boundary?.game_event_weighting === 'FORBIDDEN' && fabric.game_boundary?.game_effect === 'NONE', 'desktop fabric preserves game/compute authority separation', 'desktop fabric game/compute authority boundary weakened');
+check(fabric.scheduler?.head_of_line_blocking_by_unschedulable_resource_class_prevented === true, 'unschedulable work cannot head-of-line block runnable work', 'desktop scheduler fairness contract missing');
+check(fabric.receipt_provenance?.verified_agent_id_per_slice === true, 'receipt contract records verified agent provenance per slice', 'verified agent provenance missing from receipt contract');
+check(fabric.desktop_agent?.controller_budget_may_exceed_local_user_policy === false, 'controller cannot widen local desktop resource policy', 'desktop agent controller/local policy boundary is unsafe or missing');
+check(fabric.desktop_agent?.lease_expiry_rechecked_locally === true, 'desktop agent rechecks lease expiry locally', 'desktop agent does not declare local lease-expiry enforcement');
 check(fabric.production_claim_boundary?.production_ready === false, 'desktop fabric does not falsely claim production readiness', 'desktop fabric falsely claims production readiness');
+check(/selectDispatchableSlice/.test(fabricSource), 'scheduler selects a dispatchable slice rather than blindly selecting queue head', 'scheduler implementation may reintroduce head-of-line blocking');
+check(/verified_agent_id/.test(fabricSource), 'fabric implementation persists verified agent identity', 'fabric implementation lacks verified agent provenance');
+check(/CONTROLLER_.*BUDGET_EXCEEDS_AGENT_POLICY/.test(agentSource), 'agent runtime fails closed on widened controller budgets', 'agent runtime lacks controller-budget fail-closed checks');
+check(/ASSIGNMENT_LEASE_EXPIRED/.test(agentSource), 'agent runtime rejects expired assignments locally', 'agent runtime lacks local assignment-expiry check');
+check(!/child_process/.test(agentSource) && !/execFile|spawn\(|eval\(/.test(agentSource), 'active desktop agent has no generic process-execution primitive', 'desktop agent introduces generic process execution into active runtime');
 
 check(/DIVINE_REALM/i.test(excluded) && /SSlot/i.test(excluded), 'specialized child repos excluded by default', 'child-repository exclusion is incomplete');
 check(/future/i.test(excluded) && /know-how/i.test(excluded), 'future inventions / general know-how are addressed', 'future inventions or know-how exclusion unclear');
