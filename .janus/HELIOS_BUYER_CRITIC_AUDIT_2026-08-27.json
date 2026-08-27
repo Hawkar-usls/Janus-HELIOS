@@ -1,0 +1,131 @@
+{
+  "schema": "janus.helios.buyer-critic-audit.v1",
+  "artifact_id": "JANUS-HELIOS-BUYER-CRITIC-AUDIT-2026-08-27-v1.0",
+  "audit_posture": "HOSTILE_BUT_FAIR_BUYER_TECHNICAL_DILIGENCE",
+  "project_target": "Hawkar-usls/Janus-HELIOS",
+  "product_snapshot_version": "1.16.0",
+  "purpose": "Record concrete buyer-side criticisms, repository-level remediations and external gates without converting open risks into false PASS claims.",
+  "fixed_findings": [
+    {
+      "id": "BC-01",
+      "finding": "HIDDEN_FEATURE_LOADER_COUPLING",
+      "severity_before_fix": "HIGH",
+      "problem": "helios-mobile.js dynamically loaded feature scripts, including a stale bonus-confirm fallback, creating duplicate-version and hidden dependency risk.",
+      "remediation": "index.html is now the authoritative explicit loader for Bonus Confirmation and Dual-Stream Director; helios-mobile.js owns responsive presentation only.",
+      "regression_gate": "tests/mobile-showcase-invariants.test.mjs + tests/dual-stream-director-invariants.test.mjs"
+    },
+    {
+      "id": "BC-02",
+      "finding": "PRESENTATION_DIRECTOR_TRANSFORM_AUTHORITY_COLLISION",
+      "severity_before_fix": "HIGH",
+      "problem": "Director resolution CSS could neutralize reel/cell transforms used by core/mobile presentation.",
+      "remediation": "Director v1.1 owns a dedicated helios-director-stage wrapper transform and does not override reel/cell transforms.",
+      "regression_gate": "tests/dual-stream-director-invariants.test.mjs"
+    },
+    {
+      "id": "BC-03",
+      "finding": "CANONICAL_ARCHITECTURE_DRIFT",
+      "severity_before_fix": "HIGH",
+      "problem": "HELIOS_ARCHITECTURE still described project 1.12 and an obsolete single-tier purchased bonus while active product had tiered bonus, desktop fabric, adaptive/safety and Director layers.",
+      "remediation": "Canonical architecture advanced to schema v16 / project 1.16.0 and records current bonus, desktop, adaptive, safety, Director and production gates.",
+      "regression_gate": "strict due-diligence preflight checks architecture/package/status synchronization and current tier values"
+    },
+    {
+      "id": "BC-04",
+      "finding": "PROJECT_STATUS_AND_README_DRIFT",
+      "severity_before_fix": "MEDIUM_HIGH",
+      "problem": "Status/test inventory and README did not describe the full active policy/presentation architecture and referenced older integrity evidence as if it were current context.",
+      "remediation": "PROJECT_STATUS v21 and README 1.16 explicitly list active modules, current authority boundaries and commit-scoped evidence semantics.",
+      "regression_gate": "tests/due-diligence-invariants.test.mjs + strict preflight"
+    },
+    {
+      "id": "BC-05",
+      "finding": "BUYER_PREFLIGHT_WAS_TOO_NARROW",
+      "severity_before_fix": "HIGH",
+      "problem": "Due-diligence preflight checked desktop fabric/agent but did not inspect Adaptive Policy, Dual-Stream Safety, Director loader/authority or canonical architecture synchronization.",
+      "remediation": "Strict preflight now requires and validates all active authority planes, bonus tiers, explicit loaders, workflow hardening and security-document synchronization.",
+      "regression_gate": "tools/due-diligence-preflight.mjs --strict"
+    },
+    {
+      "id": "BC-06",
+      "finding": "CI_USED_NON_STRICT_BUYER_PREFLIGHT",
+      "severity_before_fix": "MEDIUM_HIGH",
+      "problem": "HELIOS Integrity executed non-strict preflight even though a strict mode existed.",
+      "remediation": "Workflow and npm audit:buyer use audit:preflight:strict.",
+      "regression_gate": "tests/due-diligence-invariants.test.mjs checks workflow command"
+    },
+    {
+      "id": "BC-07",
+      "finding": "THREAT_MODEL_REFERENCED_REMOVED_SWARM_IMPLEMENTATION",
+      "severity_before_fix": "HIGH",
+      "problem": "Security documentation named removed helios-swarm-dispatcher as an active control and omitted new adaptive/safety/presentation threat classes.",
+      "remediation": "Threat Model and SECURITY now use Desktop Fabric/Agent trust boundaries and explicitly cover policy truth erosion, stale/forged safety evidence and Director authority/retention leakage.",
+      "regression_gate": "strict preflight + due-diligence invariants"
+    },
+    {
+      "id": "BC-08",
+      "finding": "CI_EVIDENCE_SELF_REFERENCE_RISK",
+      "severity_before_fix": "MEDIUM",
+      "problem": "A repository document labelled latest evidence can never recursively contain the run ID/digest created after its own commit without generating another commit.",
+      "remediation": "CI_AND_RELEASE_EVIDENCE records immutable baseline evidence and defines external exact-SHA run/artifact preservation as the authoritative closing process.",
+      "regression_gate": "strict preflight verifies exact-snapshot/non-certification semantics"
+    }
+  ],
+  "open_external_or_production_gates": [
+    {
+      "id": "BC-EXT-01",
+      "finding": "MAIN_BRANCH_NOT_PROTECTED",
+      "status": "OPEN_EXTERNAL_SETTING",
+      "evidence": "GitHub branch API reported protected=false during 2026-08-27 audit",
+      "required_action": "Enable branch protection/ruleset requiring HELIOS Integrity before closing or establish equivalent transaction freeze/change-control procedure."
+    },
+    {
+      "id": "BC-EXT-02",
+      "finding": "NO_REPOSITORY_RULESET",
+      "status": "OPEN_EXTERNAL_SETTING",
+      "evidence": "GitHub repository rulesets endpoint returned an empty set during 2026-08-27 audit",
+      "required_action": "Create and validate host-level ruleset before definitive closing."
+    },
+    {
+      "id": "BC-EXT-03",
+      "finding": "UNSIGNED_CURRENT_COMMITS",
+      "status": "OPEN_CLOSING_GATE",
+      "required_action": "Use signed release/tag or equivalent cryptographic attestation for final closing snapshot if agreed."
+    },
+    {
+      "id": "BC-EXT-04",
+      "finding": "FIRST_CLASS_BONUS_CORE_SOURCE_NOT_IMPLEMENTED",
+      "status": "OPEN_PRODUCT_GATE",
+      "required_action": "Replace presentation-layer stake-refund bridge before regulated production deployment."
+    },
+    {
+      "id": "BC-EXT-05",
+      "finding": "REAL_PROVIDER_AND_DURABLE_MULTI_HOST_PLANE_NOT_VALIDATED",
+      "status": "OPEN_PRODUCTION_GATE",
+      "required_action": "Connect real provider adapter, authenticated agent transport, durable lease/replay state and authoritative receipt verification."
+    },
+    {
+      "id": "BC-EXT-06",
+      "finding": "REAL_UNIT_ECONOMICS_NOT_MEASURED",
+      "status": "OPEN_VALIDATION_GATE",
+      "required_action": "Run non-money sponsor/provider pilot and measure throughput, latency, failure/retry/verifier-reject rates, device-hours, watt-hours and cost/value per verified work unit."
+    },
+    {
+      "id": "BC-EXT-07",
+      "finding": "INDEPENDENT_SECURITY_PRIVACY_LICENSE_LEGAL_REVIEW_NOT_COMPLETE",
+      "status": "OPEN_CLOSING_GATE",
+      "required_action": "Perform exact-snapshot independent reviews appropriate to transaction/deployment."
+    }
+  ],
+  "non_claims": {
+    "production_ready": false,
+    "security_certified": false,
+    "regulated_game_certified": false,
+    "profitability_proven": false,
+    "patented_or_patent_pending_claimed": false,
+    "branch_protection_claimed_enabled": false,
+    "signed_release_claimed": false
+  },
+  "buyer_conclusion_if_repository_integrity_passes": "REPOSITORY_LEVEL_ARCHITECTURE_AND_DILIGENCE_PACKAGE_MATERIALLY_HARDENED; REMAINING MATERIAL RISKS ARE PRIMARILY EXPLICIT HOST_LEVEL_CLOSING_CONTROLS_AND_REAL_PRODUCTION_PROVIDER_PILOT_VALIDATION, NOT HIDDEN DOCUMENTATION_DRIFT.",
+  "invariant": "FIX_WHAT_THE_REPOSITORY_CAN_PROVE; DISCLOSE_WHAT_REQUIRES_EXTERNAL_EVIDENCE; NEVER CONVERT AN OPEN GATE INTO A PAPER PASS."
+}
