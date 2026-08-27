@@ -1,6 +1,7 @@
 (() => {
   'use strict';
 
+  const BONUS_CONFIRM_VERSION = '2.3.0';
   const $ = id => document.getElementById(id);
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const DEFAULT_TIERS = [
@@ -20,12 +21,24 @@
   const tierById = id => tiers.find(x=>x.id===id) || tiers[0] || DEFAULT_TIERS[0];
   const selectedTier = () => tierById(selectedTierId);
   const currentCost = () => round2(currentBet() * Number(selectedTier().cost_multiplier_of_demo_bet || 50));
+  const safeText = (value,fallback='',max=96) => String(value ?? fallback).replace(/[\u0000-\u001f\u007f]/g,' ').trim().slice(0,max) || String(fallback).slice(0,max);
+  const safeTierId = (value,fallback) => {
+    const normalized=String(value ?? fallback ?? '').trim().replace(/[^A-Za-z0-9_.-]/g,'_').slice(0,64);
+    return normalized || String(fallback || 'tier').replace(/[^A-Za-z0-9_.-]/g,'_').slice(0,64) || 'tier';
+  };
+
+  function setResult(result,primary,secondary){
+    if(!result)return;
+    const small=document.createElement('small');
+    small.textContent=safeText(secondary,'',128);
+    result.replaceChildren(document.createTextNode(safeText(primary,'',64)),small);
+  }
 
   function normalizeTier(raw, fallback, i){
     const f = fallback || DEFAULT_TIERS[Math.min(i,DEFAULT_TIERS.length-1)] || DEFAULT_TIERS[0];
     return {
-      id:String(raw?.id || f.id || `tier_${i+1}`),
-      name:String(raw?.name || f.name || `BONUS TIER ${i+1}`),
+      id:safeTierId(raw?.id,f.id || `tier_${i+1}`),
+      name:safeText(raw?.name,f.name || `BONUS TIER ${i+1}`,80),
       cost_multiplier_of_demo_bet:Math.max(1,Math.min(500,Number(raw?.cost_multiplier_of_demo_bet ?? f.cost_multiplier_of_demo_bet ?? 50))),
       free_spins_count:Math.max(3,Math.min(30,Number(raw?.free_spins_count ?? f.free_spins_count ?? 10))),
       retrigger_spins:Math.max(1,Math.min(8,Number(raw?.retrigger_spins ?? f.retrigger_spins ?? 2))),
@@ -65,11 +78,15 @@
   }
 
   function renderTiers(){
-    const host=$('bonus-tier-grid');if(!host)return;host.innerHTML='';
+    const host=$('bonus-tier-grid');if(!host)return;host.replaceChildren();
     tiers.forEach(tier=>{
       const btn=document.createElement('button');btn.type='button';btn.className='bonus-tier-card';btn.dataset.tier=tier.id;
       const cost=round2(currentBet()*tier.cost_multiplier_of_demo_bet);
-      btn.innerHTML=`<b>${tier.name}</b><strong>${tier.cost_multiplier_of_demo_bet}× BET</strong><span>${tier.free_spins_count} free spins · 3+ ☀ gives +${tier.retrigger_spins} · max ${tier.max_total_spins}</span><small>${cost.toFixed(2)} DEMO UNITS</small>`;
+      const name=document.createElement('b');name.textContent=tier.name;
+      const price=document.createElement('strong');price.textContent=`${tier.cost_multiplier_of_demo_bet}× BET`;
+      const rules=document.createElement('span');rules.textContent=`${tier.free_spins_count} free spins · 3+ ☀ gives +${tier.retrigger_spins} · max ${tier.max_total_spins}`;
+      const demoCost=document.createElement('small');demoCost.textContent=`${cost.toFixed(2)} DEMO UNITS`;
+      btn.append(name,price,rules,demoCost);
       btn.addEventListener('click',()=>selectTier(tier.id));host.appendChild(btn);
     });
     syncSelection();
@@ -96,7 +113,7 @@
     const overlay=$('bonus-confirm-overlay');if(!overlay)return;lastFocused=document.activeElement;
     if(Array.isArray(detail.tiers)&&detail.tiers.length){const incoming=detail.tiers.slice(0,6).map((x,i)=>normalizeTier(x,DEFAULT_TIERS[i],i));if(incoming.length)tiers=incoming;}
     if(!tiers.some(x=>x.id===selectedTierId))selectedTierId=tiers[0]?.id||'standard';
-    renderTiers();const c=$('bonus-confirm-consent');if(c)c.checked=false;updateConfirmState();overlay.hidden=false;overlay.setAttribute('aria-hidden','false');document.body.classList.add('bonus-confirm-open');setTimeout(()=>document.querySelector(`.bonus-tier-card[data-tier="${selectedTierId}"]`)?.focus(),30);
+    renderTiers();const c=$('bonus-confirm-consent');if(c)c.checked=false;updateConfirmState();overlay.hidden=false;overlay.setAttribute('aria-hidden','false');document.body.classList.add('bonus-confirm-open');const target=[...document.querySelectorAll('.bonus-tier-card')].find(x=>x.dataset.tier===selectedTierId);setTimeout(()=>target?.focus(),30);
   }
 
   function closeDialog(emitCancel=false){
@@ -138,17 +155,18 @@
       values[selected]=award;
     }
     const oldLabels=rays.map(x=>x.textContent);
+    const tierName=safeText(detail.tier_name,'BONUS TIER',80);
 
     rays.forEach((ray,i)=>{
       ray.classList.remove('selected');
       ray.textContent=`${values[i%values.length]} FS`;
     });
     title.textContent='SOLAR CORONA ACTIVATION';
-    sub.textContent=`${detail.tier_name||'BONUS TIER'} · AUTHORIZED · CORONA SPIN`;
-    result.innerHTML='IGNITING…<small>FREE-SPIN AWARD ACTIVATION</small>';
+    sub.textContent=`${tierName} · AUTHORIZED · CORONA SPIN`;
+    setResult(result,'IGNITING…','FREE-SPIN AWARD ACTIVATION');
     overlay.classList.add('show');
 
-    window.dispatchEvent(new CustomEvent('helios:bonus-wheel-start',{detail:{...detail,presentation_only:true,rng_effect:'NONE',compute_effect:'NONE'}}));
+    window.dispatchEvent(new CustomEvent('helios:bonus-wheel-start',{detail:{...detail,tier_name:tierName,presentation_only:true,rng_effect:'NONE',compute_effect:'NONE'}}));
 
     const angle=(360/rays.length)*selected;
     pointer.style.transition='none';
@@ -159,10 +177,10 @@
 
     await sleep(1900);
     rays[selected]?.classList.add('selected');
-    result.innerHTML=`${award} FREE SPINS<small>${detail.tier_name||'SELECTED TIER'} · TIER AWARD · VISUAL ACTIVATION</small>`;
+    setResult(result,`${award} FREE SPINS`,`${tierName} · TIER AWARD · VISUAL ACTIVATION`);
     if(navigator.vibrate)navigator.vibrate([16,28,16,28,38]);
 
-    window.dispatchEvent(new CustomEvent('helios:bonus-wheel-complete',{detail:{...detail,spins_awarded:award,presentation_only:true,rng_effect:'NONE',compute_effect:'NONE'}}));
+    window.dispatchEvent(new CustomEvent('helios:bonus-wheel-complete',{detail:{...detail,tier_name:tierName,spins_awarded:award,presentation_only:true,rng_effect:'NONE',compute_effect:'NONE'}}));
 
     // Keep this exact overlay visible. The bonus core immediately reuses it for the
     // purchased-session activation message, so there is no close → reopen flash.
@@ -184,6 +202,6 @@
 
   function keyHandler(e){const overlay=$('bonus-confirm-overlay');if(!overlay||overlay.hidden)return;if(e.key==='Escape'){e.preventDefault();closeDialog(true);}}
 
-  function init(){injectStyles();buildUI();window.addEventListener('helios:bonus-buy-request',e=>openDialog(e.detail||{}));document.addEventListener('keydown',keyHandler,true);}
+  function init(){injectStyles();buildUI();window.addEventListener('helios:bonus-buy-request',e=>openDialog(e.detail||{}));document.addEventListener('keydown',keyHandler,true);window.dispatchEvent(new CustomEvent('helios:bonus-confirm-ready',{detail:{version:BONUS_CONFIRM_VERSION,dynamic_tier_html:false}}));}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
