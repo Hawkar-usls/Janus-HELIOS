@@ -5,7 +5,7 @@
   const DEFAULT_POLICY = {
     enabled:true,
     samples:256,
-    porta_entropy_threshold:0.93,
+    porta_entropy_threshold:0.90,
     presentation_only:true,
     affects_rng:false,
     affects_payout:false,
@@ -84,13 +84,15 @@
     }
     const fm=mean(flux),dm=mean(drift),tm=mean(turbulence),rm=mean(resonance);
     const spread=(sd(flux,fm)+sd(drift,dm)+sd(turbulence,tm)+sd(resonance,rm))/4;
-    const entropy=clamp((spread/.24)*.58 + ((tm+Math.abs(fm-dm)+Math.abs(rm-.5))/2.5)*.42,0,1);
+    const structural=clamp((spread/.20)*.55 + ((tm+Math.abs(fm-dm)+Math.abs(rm-.5))/2.2)*.20 + energy*.08,0,.72);
+    const phaseDivergence=unit(base^0xd1b54a35)*.32;
+    const entropy=clamp(structural+phaseDivergence,0,1);
     const label=worldLabel({flux:fm,drift:dm,turbulence:tm,resonance:rm,entropy});
     const out={
       engine:'JANUS_WORLD_MATRIX',formula:'RESPICIENS_ET_PROSPICIENS',event,sequence:state.sequence,samples:N,
       mode:modeKey(),route:routeKey(),
       centroid:{flux:+fm.toFixed(4),drift:+dm.toFixed(4),turbulence:+tm.toFixed(4),resonance:+rm.toFixed(4)},
-      entropy:+entropy.toFixed(4),world:label,
+      entropy:+entropy.toFixed(4),phase_divergence:+phaseDivergence.toFixed(4),world:label,
       presentation_only:true,rng_effect:'NONE',payout_effect:'NONE',rtp_effect:'NONE',compute_effect:'NONE',route_effect:'NONE',weapon_domain:false
     };
     state.last=out;applyWorld(out);return out;
