@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 
 const [
   license,
@@ -9,6 +9,8 @@ const [
   contributing,
   handoffText,
   ddText,
+  fabricText,
+  statusText,
   purchased,
   excluded,
   provenance,
@@ -25,6 +27,8 @@ const [
   readFile(new URL('../CONTRIBUTING.md', import.meta.url), 'utf8'),
   readFile(new URL('../BUYER_HANDOFF_SPEC.json', import.meta.url), 'utf8'),
   readFile(new URL('../.janus/HELIOS_DUE_DILIGENCE.json', import.meta.url), 'utf8'),
+  readFile(new URL('../.janus/HELIOS_DESKTOP_FABRIC.json', import.meta.url), 'utf8'),
+  readFile(new URL('../PROJECT_STATUS.json', import.meta.url), 'utf8'),
   readFile(new URL('../legal/PURCHASED_ASSETS_SCHEDULE.md', import.meta.url), 'utf8'),
   readFile(new URL('../legal/EXCLUDED_ASSETS_SCHEDULE.md', import.meta.url), 'utf8'),
   readFile(new URL('../legal/BACKGROUND_IP_AND_PROVENANCE.md', import.meta.url), 'utf8'),
@@ -37,6 +41,8 @@ const [
 
 const handoff = JSON.parse(handoffText);
 const dd = JSON.parse(ddText);
+const fabric = JSON.parse(fabricText);
+const status = JSON.parse(statusText);
 const pkg = JSON.parse(pkgText);
 
 assert.match(license, /source-available evaluation license/i);
@@ -60,11 +66,41 @@ assert.equal(handoff.legal_status_boundary.patent_status_claimed, false);
 assert.equal(dd.provenance.buzz_lineage.historical_mit_retroactively_revoked, false);
 assert.equal(dd.provenance.buzz_lineage.current_license, 'JANUS_DISTRIBUTED_AI_SWARM_SOURCE_AVAILABLE_EVALUATION_LICENSE_V1_1');
 assert.equal(dd.provenance.buzz_lineage.entire_source_repository_transferred_by_default, false);
+assert.equal(dd.provenance.buzz_lineage.historical_removed_helios_dispatcher_disclosed, true);
+assert.equal(dd.provenance.helios_native_architecture.central_multigateway_resource_router_attributed_to_buzz, false);
+assert.equal(dd.provenance.helios_native_architecture.active_dependency_on_janus_distributed_ai_swarm, false);
+assert.equal(dd.provenance.helios_native_architecture.active_dependency_on_buzz_esp32_firmware, false);
 assert.equal(dd.third_party.closing_sbom_scan_required, true);
 assert.equal(dd.acceptance.subjective_commercial_satisfaction_allowed_as_default, false);
 assert.equal(dd.acceptance.profitability_is_acceptance_condition, false);
 assert.equal(dd.transaction_guardrails.seller_personal_credentials_are_delivery_item, false);
 assert.equal(dd.production_truth.production_profitability_validated, false);
+
+assert.equal(fabric.lineage.active_dependency_on_janus_distributed_ai_swarm, false);
+assert.equal(fabric.lineage.active_dependency_on_buzz_esp32_code, false);
+assert.equal(fabric.target_hardware.desktop_class, true);
+assert.equal(fabric.target_hardware.esp32_required, false);
+assert.deepEqual(fabric.scheduler.resource_class_placement, ['CPU', 'GPU', 'HYBRID']);
+assert.equal(fabric.game_boundary.game_event_weighting, 'FORBIDDEN');
+assert.equal(fabric.game_boundary.game_effect, 'NONE');
+assert.equal(fabric.production_claim_boundary.production_ready, false);
+
+assert.equal(status.project_version, pkg.version);
+assert.equal(status.desktop_fabric.module, 'src/helios-desktop-fabric.js');
+assert.equal(status.swarm_dispatcher, undefined);
+assert.equal(status.production_readiness, 'NOT_ESTABLISHED');
+
+const removedActivePaths = [
+  '../src/helios-swarm-dispatcher.js',
+  '../.janus/HELIOS_SWARM_DISPATCHER.json',
+  '../docs/SWARM_DISPATCHER.md',
+  './swarm-dispatcher-invariants.test.mjs'
+];
+for (const relative of removedActivePaths) {
+  let exists = true;
+  try { await access(new URL(relative, import.meta.url)); } catch { exists = false; }
+  assert.equal(exists, false, `legacy active path must remain absent: ${relative}`);
+}
 
 assert.match(purchased, /exact/i);
 assert.match(purchased, /commit/i);
@@ -74,6 +110,7 @@ assert.match(excluded, /future/i);
 assert.match(excluded, /know-how/i);
 assert.match(provenance, /AI-assisted development disclosure/i);
 assert.match(provenance, /Historical licence boundary/i);
+assert.match(provenance, /Active HELIOS Desktop Fabric v2 boundary/i);
 assert.match(guardrails, /escrow/i);
 assert.match(guardrails, /personal/i);
 assert.match(acceptance, /objective/i);
@@ -86,5 +123,6 @@ assert.equal(pkg.dependencies, undefined);
 assert.equal(pkg.devDependencies, undefined);
 assert.equal(typeof pkg.scripts['audit:preflight'], 'string');
 assert.equal(typeof pkg.scripts['closing:manifest'], 'string');
+assert.equal(pkg.engines.node, '>=24');
 
-console.log('HELIOS acquisition / provenance / due-diligence invariants: PASS');
+console.log('HELIOS acquisition / provenance / desktop-fabric due-diligence invariants: PASS');
