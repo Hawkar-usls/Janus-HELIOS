@@ -119,13 +119,34 @@ That conceptual relationship is **disclosed rather than hidden**, but the active
 
 The adaptive layer is also deliberately weaker in authority than the Desktop Agent truth layer. It may choose only among predeclared safe policy arms and may tighten optional side-work budgets. It may not change artifact identity, task type, verifier, signatures, secrets, game RNG/RTP or local user safety limits.
 
+## HELIOS Stellar Navigator / external design-study boundary
+
+The active public presentation also contains:
+
+- `helios-stellar-nav.js`;
+- `.janus/HELIOS_STELLAR_NAVIGATOR.json`;
+- `docs/STELLAR_NAVIGATOR.md`;
+- `tests/stellar-navigator-invariants.test.mjs`.
+
+The external repository `wisnc/stellar-map` was inspected as a visual/design reference for an offline planetarium-like sky. During the 2026-08-27 review, no repository root `LICENSE` file was found.
+
+Accordingly, HELIOS did **not** import that repository's source code, generated star catalogues, constellation/Messier data, screenshots, BMP/PNG assets or other files. The active Stellar Navigator is maintained as an independently written HELIOS JavaScript implementation.
+
+The implementation uses general rendering/astronomical ideas observed during the design study — spherical star vectors, perspective camera projection, apparent-brightness styling, spectral colour hints and camera easing — but the source expression is HELIOS-native.
+
+Its small bright-star anchor list consists of manually curated rounded astronomical facts used for visual orientation. The faint field is deterministic synthetic geometry. The module therefore does not claim to reproduce `stellar-map`, HYG, Stellarium or another scientific star catalogue.
+
+This design-reference relationship must remain visible in diligence so a future contributor does not silently copy external source/data/assets into the active HELIOS snapshot.
+
 ### What this does and does not claim
 
 This separation is **not** represented as a magical erasure of Git history or of historical MIT grants. A buyer can inspect the historical repository record.
 
-It also does not claim exclusive ownership of broad distributed-systems or adaptive-systems ideas such as heartbeats, queues, leases, retries, worker pools, scheduling, fencing tokens, bounded bandits, canary throttling or self-testing before optimization. The transaction value lies in the concrete HELIOS implementation, product architecture, maintained versions, documentation, tests, integration work, brand assets and any separately protected rights.
+It also does not claim exclusive ownership of broad distributed-systems, adaptive-systems, astronomy or rendering ideas such as heartbeats, queues, leases, retries, worker pools, scheduling, fencing tokens, bounded bandits, canary throttling, self-testing before optimization, spherical coordinates, perspective projection, magnitude-based visual brightness or camera easing. The transaction value lies in the concrete HELIOS implementation, product architecture, maintained versions, documentation, tests, integration work, brand assets and any separately protected rights.
 
 If a future closing snapshot re-introduces source copied/adapted from an historical MIT-covered swarm revision, the applicable MIT notice must remain with that covered material. If source from later source-available swarm revisions is incorporated, the definitive agreement must expressly address the required background-IP licence or assignment.
+
+If a future visual contributor wants to import `stellar-map` or any other third-party catalogue/source/assets, that material must first receive an explicit compatible licence review and then be recorded in `THIRD_PARTY_NOTICES.md` and the closing SBOM/provenance package.
 
 ## Specialized child repositories
 
@@ -138,6 +159,7 @@ At the current audited repository snapshot:
 - `package.json` declares no npm runtime or development dependencies;
 - the public page uses system font stacks rather than bundled proprietary font files;
 - provider integrations in the public demo are configuration/contracts, not bundled proprietary provider SDKs;
+- `helios-stellar-nav.js` has no external runtime/network dependency and imports no third-party sky asset;
 - third-party/open-source material, if introduced later, must be recorded in `THIRD_PARTY_NOTICES.md` before a closing snapshot.
 
 This is not a substitute for an automated SBOM/license scan at closing.
@@ -155,7 +177,8 @@ Before signing a definitive IP Assignment, complete a contribution provenance re
 7. background repositories materially incorporated into the closing snapshot;
 8. the exact historical/current licence boundary for any incorporated swarm material;
 9. confirmation that the closing snapshot's active desktop fabric/agent does not silently re-introduce removed Buzz/ESP32 source;
-10. confirmation that the adaptive policy module remains a HELIOS-native implementation and does not silently import Zim/swarm source.
+10. confirmation that the adaptive policy module remains a HELIOS-native implementation and does not silently import Zim/swarm source;
+11. confirmation that the Stellar Navigator remains an independent HELIOS implementation and does not silently import unlicensed external code/catalogues/assets.
 
 For each non-seller contributor with copyrightable material not already covered by a compatible inbound licence, obtain an assignment or sufficient licence before closing.
 
