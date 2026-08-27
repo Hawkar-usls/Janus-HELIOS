@@ -1,18 +1,20 @@
 {
   "schema": "janus.helios.stellar_navigator.v1",
   "module": "helios-stellar-nav.js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "classification": "PRESENTATION_ONLY_ASTRONOMY_INSPIRED_STELLAR_NAVIGATION_BACKGROUND",
-  "purpose": "Replace the tiled decorative star pattern with a deterministic moving sky sphere that reacts to presentation events without acquiring game or compute authority.",
+  "purpose": "Replace the tiled decorative star pattern with a deterministic passive moving sky sphere while keeping all gameplay, bonus and compute surfaces untouched.",
+  "deployment_phase": "PASSIVE_BACKGROUND_ONLY",
   "rendering": {
     "surface": "CANVAS_2D",
-    "projection": "HELIOS_NATIVE_EQUIRECTANGULAR_STAR_VECTORS_TO_PERSPECTIVE_CAMERA",
+    "projection": "HELIOS_NATIVE_STAR_VECTORS_TO_PERSPECTIVE_CAMERA",
     "target_fps": 30,
     "max_device_pixel_ratio": 1.5,
     "visibility_pause": true,
     "reduced_motion_supported": true,
     "network_requests": false,
-    "external_runtime_dependency": false
+    "external_runtime_dependency": false,
+    "fallback": "STATIC_CSS_STAR_FIELD_REMAINS_UNTIL_FIRST_SUCCESSFUL_CANVAS_FRAME"
   },
   "sky_model": {
     "bright_anchor_class": "MANUALLY_CURATED_ROUNDED_ASTRONOMICAL_FACTS",
@@ -23,17 +25,18 @@
     "external_catalog_imported": false,
     "external_images_or_assets_imported": false
   },
-  "interaction_inputs": [
-    "SPIN_BUTTON_PRESENTATION_IMPULSE",
-    "AUTO_BUTTON_PRESENTATION_IMPULSE",
-    "CASCADE_EVENT",
-    "BONUS_WHEEL_START_COMPLETE",
-    "BONUS_SESSION_START_COMPLETE",
-    "DUAL_STREAM_DIRECTOR_PRESENTATION_STATE",
-    "GAME_MODE_PRESENTATION_CHANGE",
-    "COMPUTE_ROUTE_PRESENTATION_CHANGE"
+  "interaction_inputs": [],
+  "passive_motion": [
+    "SLOW_DETERMINISTIC_RA_DRIFT",
+    "BOUNDED_DEC_OSCILLATION",
+    "NO_GAME_EVENT_REACTIVITY_IN_V1_1"
   ],
   "forbidden_authority_inputs": [
+    "SPIN_BUTTON",
+    "CASCADE_EVENT",
+    "BONUS_EVENT",
+    "GAME_MODE",
+    "COMPUTE_ROUTE",
     "BET_SIZE",
     "BALANCE",
     "LOSS_STREAK",
@@ -72,10 +75,13 @@
   },
   "buyer_invariants": [
     "STELLAR_NAVIGATOR_IS_PRESENTATION_ONLY",
+    "PASSIVE_BACKGROUND_ONLY_IN_CURRENT_PHASE",
+    "NO_GAME_OR_BONUS_DOM_COUPLING",
     "NO_EXTERNAL_NETWORK_OR_RUNTIME_DEPENDENCY",
     "NO_UNLICENSED_STELLAR_MAP_CODE_DATA_OR_ASSETS_IN_ACTIVE_SNAPSHOT",
     "NO_GAME_MATH_OR_COMPUTE_AUTHORITY",
     "REDUCED_MOTION_REMAINS_FUNCTIONAL",
+    "STATIC_FALLBACK_REMAINS_IF_STELLAR_FAILS",
     "CURRENT_SKY_IS_NOT_MARKETED_AS_A_SCIENTIFIC_PLANETARIUM"
   ]
 }
