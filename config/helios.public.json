@@ -60,22 +60,55 @@
     "enabled": true,
     "eligible_game_modes": ["helios"],
     "feature": "SOLAR_CORONA_FREE_SPINS",
-    "cost_multiplier_of_demo_bet": 50,
     "purchase_currency": "DEMO_PRESENTATION_UNITS",
-    "free_spins_count": 10,
     "retrigger_symbol": "☀",
     "retrigger_count": 3,
-    "retrigger_spins": 2,
-    "max_total_spins": 16,
     "inter_spin_delay_ms": 650,
     "bonus_session_ledger": "DEMO_SOLAR_FREE_SPINS",
     "winnings_settle_to_demo_balance": true,
     "reward_ledger": "SOLAR_BONUS_BANK",
+    "explicit_confirmation_required": true,
+    "tier_selection_required": true,
+    "tiers": [
+      {
+        "id": "standard",
+        "name": "STANDARD CORONA",
+        "cost_multiplier_of_demo_bet": 50,
+        "free_spins_count": 10,
+        "retrigger_spins": 2,
+        "max_total_spins": 16,
+        "extra_retrigger_chance": 0,
+        "extra_retrigger_spins": 0,
+        "description": "Classic Solar Free Spins demo tier."
+      },
+      {
+        "id": "radiant",
+        "name": "RADIANT CORONA",
+        "cost_multiplier_of_demo_bet": 100,
+        "free_spins_count": 12,
+        "retrigger_spins": 2,
+        "max_total_spins": 20,
+        "extra_retrigger_chance": 0,
+        "extra_retrigger_spins": 0,
+        "description": "Higher-priced demo tier with more starting spins and a larger total-spin ceiling."
+      },
+      {
+        "id": "solar_flare",
+        "name": "SOLAR FLARE",
+        "cost_multiplier_of_demo_bet": 175,
+        "free_spins_count": 15,
+        "retrigger_spins": 3,
+        "max_total_spins": 24,
+        "extra_retrigger_chance": 0,
+        "extra_retrigger_spins": 0,
+        "description": "Premium demo tier with the most starting spins and the strongest disclosed natural-sun retrigger budget."
+      }
+    ],
     "real_money_value": false,
     "production_enabled": false,
     "affects_compute": false,
     "affects_compute_route": false,
-    "note": "Public capability demo only. Buying Corona starts 10 automatic free spins using the same independent game RNG and cascade system. Three or more suns during the bonus retrigger +2 spins up to 16 total. Some sessions may pay little and others may become large through normal cascades; there is no compute-dependent outcome shaping. Production real-money feature buy remains disabled pending separate jurisdiction, platform, responsible-gaming and game-math review."
+    "note": "Public capability demo only. Bonus purchase is event-driven: request -> tier review -> explicit consent -> core authorization -> free-spins session. Higher tiers buy more free-spin opportunities and larger disclosed natural retrigger budgets; they do not guarantee a win and do not use hidden personalized outcome shaping. Production real-money feature buy remains disabled pending separate jurisdiction, platform, responsible-gaming and game-math review."
   },
   "demo_lucky_contribution": {
     "enabled": true,
