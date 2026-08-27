@@ -37,7 +37,7 @@
   });
 
   const ROUTE_OFFSETS = Object.freeze({
-    MARKETPLACE:[5,2],SCIENCE:[-7,5],TREASURY:[9,-4],DATACENTER:[-4,-6],OPERATOR:[3,7],CUSTOM:[-9,1],MARKET:[5,2]
+    MARKETPLACE:[5,2],MARKET:[5,2],SCIENCE:[-7,5],TREASURY:[9,-4],DATACENTER:[-4,-6],DC:[-4,-6],OPERATOR:[3,7],CUSTOM:[-9,1]
   });
 
   const state = {
@@ -65,6 +65,7 @@
     return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
   }
 
+  // Deterministic Fibonacci-sphere deep field: even spherical coverage without tiled CSS clustering.
   function buildSyntheticSky(count){
     const stars=[];
     const golden=Math.PI*(3-Math.sqrt(5));
