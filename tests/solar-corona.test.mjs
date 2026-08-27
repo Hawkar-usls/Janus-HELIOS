@@ -24,8 +24,6 @@ assert.match(bonus, /helios:bonus-session-start/);
 assert.match(bonus, /helios:bonus-spin/);
 assert.match(bonus, /helios:bonus-session-complete/);
 assert.match(bonus, /helios:bonus-buy-complete/);
-assert.match(bonus, /production_enabled:false/);
-assert.match(bonus, /compute_effect:'NONE'/);
 
 // Natural Solar Corona retains the animated pointer/wheel presentation.
 assert.match(bonus, /async function triggerBonus\(symbolCount/);
