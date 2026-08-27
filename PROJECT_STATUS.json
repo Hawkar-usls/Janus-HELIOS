@@ -1,13 +1,13 @@
 {
-  "schema_id": "hawkar.project-status.v16",
+  "schema_id": "hawkar.project-status.v17",
   "project": "Janus-HELIOS",
-  "project_version": "1.13.0",
+  "project_version": "1.14.0",
   "public_branding": "JANUS HELIOS — One Core. Any Destination.",
   "repository": "https://github.com/Hawkar-usls/Janus-HELIOS",
   "portfolio_class": "universal_configurable_compute_routing_slot_asset",
   "last_reviewed": "2026-08-27",
   "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
-  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_MOBILE_SHOWCASE_CASCADES_SPIN_ENERGY_NATURAL_SOLAR_CORONA_TRUE_PURCHASED_SOLAR_FREE_SPINS_RARE_PROFILE_LUCKY_CONTRIBUTION_GENERATIVE_MUSIC_MINER_PROFILE_AND_JANUS_WORLD_MATRIX",
+  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_MOBILE_SHOWCASE_CASCADES_SPIN_ENERGY_NATURAL_SOLAR_CORONA_TIERED_PURCHASED_SOLAR_FREE_SPINS_RARE_PROFILE_LUCKY_CONTRIBUTION_GENERATIVE_MUSIC_MINER_PROFILE_AND_JANUS_WORLD_MATRIX",
   "delivery_model": "WEB_FIRST_UNIVERSAL_ASSET",
   "github_pages_url": "https://hawkar-usls.github.io/Janus-HELIOS/",
   "github_pages_source": "main/root",
@@ -61,23 +61,30 @@
     "route_effect": "NONE"
   },
   "purchased_solar_free_spins": {
-    "module": "helios-bonus.js",
-    "classification": "TRUE_AUTO_FREE_SPINS_PUBLIC_CAPABILITY_DEMO",
+    "core_module": "helios-bonus.js",
+    "confirmation_module": "helios-bonus-confirm.js",
+    "classification": "TIERED_AUTO_FREE_SPINS_PUBLIC_CAPABILITY_DEMO",
     "feature": "SOLAR_CORONA_FREE_SPINS",
     "eligible_mode": "HELIOS",
     "purchase_currency": "DEMO_PRESENTATION_UNITS",
-    "cost_multiplier_of_demo_bet": 50,
-    "base_free_spins": 10,
+    "purchase_contract": "REQUEST_TO_REVIEW_TO_EXPLICIT_CONSENT_TO_CORE_AUTHORIZATION",
+    "request_event": "helios:bonus-buy-request",
+    "authorization_event": "helios:bonus-buy-authorized",
+    "synthetic_click_bridge": false,
+    "explicit_confirmation_required": true,
+    "core_recalculates_price_before_debit": true,
+    "tiers": [
+      {"id": "standard", "cost_bet_multiplier": 50, "base_free_spins": 10, "sun_retrigger_spins": 2, "max_total_spins": 16},
+      {"id": "radiant", "cost_bet_multiplier": 100, "base_free_spins": 12, "sun_retrigger_spins": 2, "max_total_spins": 20},
+      {"id": "solar_flare", "cost_bet_multiplier": 175, "base_free_spins": 15, "sun_retrigger_spins": 3, "max_total_spins": 24}
+    ],
+    "tier_value_model": "HIGHER_TIER_BUYS_MORE_FREE_SPIN_OPPORTUNITIES_AND_LARGER_DISCLOSED_NATURAL_RETRIGGER_BUDGET",
+    "guaranteed_win_by_tier": false,
     "automatic_spin_loop": true,
     "uses_existing_standard_game_rng": true,
     "uses_existing_cascade_engine": true,
     "cascade_multiplier_ladder": [1, 4, 16, 64],
-    "retrigger": {
-      "symbol": "☀",
-      "count": 3,
-      "extra_spins": 2,
-      "max_total_spins": 16
-    },
+    "retrigger_symbol": "☀",
     "inter_spin_delay_ms": 650,
     "session_hud": ["SPINS_LEFT", "BONUS_WIN", "CURRENT_EVENT"],
     "session_events": ["helios:bonus-session-start", "helios:bonus-spin", "helios:bonus-session-complete"],
@@ -86,13 +93,14 @@
     "forced_win_logic": false,
     "forced_scatter_logic": false,
     "near_miss_shaping": false,
+    "personalized_outcome_shaping": false,
     "compute_dependent_outcome_shaping": false,
     "real_money_value": false,
     "production_enabled": false,
     "compute_effect": "NONE",
     "route_effect": "NONE",
-    "implementation_note": "Current public prototype bridges into the existing balance-source spin core and refunds each bonus stake in the presentation layer. A production implementation should promote BONUS to a first-class game-core spin source rather than rely on this presentation bridge.",
-    "manual_validation": "AWAITS_POST_DEPLOY_USER_CHECK"
+    "implementation_note": "The confirmation bug caused by re-clicking the original Bonus Buy button was removed. Purchase now uses a direct event authorization contract. The current public prototype still bridges into the balance-source spin core and refunds each bonus stake in the presentation layer; production should promote BONUS to a first-class game-core spin source.",
+    "manual_validation": "AWAITS_USER_CHECK_OF_TIER_SELECTION_CONFIRM_CLOSE_AND_SESSION_START"
   },
   "procedural_audio": {
     "module": "helios-music.js",
@@ -164,6 +172,14 @@
     "janus_porta_mobile_safe": true,
     "manual_validation": "AWAITS_USER_CHECK_ON_REAL_MOBILE_DEVICE_OR_EMULATION"
   },
+  "slot_ux": {
+    "module": "helios-slot-ux.js",
+    "bet_stepper_minus_plus": true,
+    "dynamic_game_guide": true,
+    "tiered_bonus_pricing_in_game_guide": true,
+    "win_focus_dim_nonwinners": true,
+    "presentation_authority_only": true
+  },
   "compute_boundaries": {
     "compute_off_by_default": true,
     "explicit_opt_in_required": true,
@@ -176,9 +192,8 @@
     "browser_provider_secrets_allowed": false,
     "unverified_receipt_ledger_value": 0
   },
-  "test_suites_present": ["ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX"],
+  "test_suites_present": ["ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX"],
   "full_test_suite_execution_status": "OPEN_NOT_CLAIMED_PASS",
-  "new_world_matrix_syntax_check": "REQUIRES_EXECUTION",
   "production_readiness": "NOT_ESTABLISHED",
   "planned_outreach": {
     "NiceHash": {
@@ -187,13 +202,15 @@
     }
   },
   "open_gates": [
+    "USER_VALIDATE_BONUS_TIER_SELECTION",
+    "USER_VALIDATE_BONUS_CONFIRM_WINDOW_CLOSES",
+    "USER_VALIDATE_SELECTED_TIER_SESSION_STARTS",
     "USER_VALIDATE_JANUS_WORLD_STATE_CHIP",
     "USER_VALIDATE_RARE_APERIATUR_PORTA_EVENT",
-    "USER_VALIDATE_SOLAR_FREE_SPINS_BONUS_SESSION",
-    "USER_VALIDATE_BONUS_RETRIGGER",
     "USER_VALIDATE_BONUS_SESSION_MUSIC",
     "USER_VALIDATE_MOBILE_SHOWCASE",
     "EXECUTE_FULL_TEST_SUITE",
+    "PROMOTE_BONUS_TO_FIRST_CLASS_GAME_CORE_SOURCE",
     "SIGNED_PROVIDER_MANIFEST_MODEL",
     "SERVER_SIDE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
     "REAL_PROVIDER_ADAPTER",
