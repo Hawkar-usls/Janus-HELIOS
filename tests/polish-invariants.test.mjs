@@ -32,7 +32,7 @@ assert.match(polish, /let lastTotalWins/);
 assert.match(polish, /let lastNonZeroWin/);
 assert.match(polish, /function currentSpinWin\(\)/);
 assert.match(polish, /function persistLastWin\(\)/);
-assert.match(polish, /if\(lastNonZeroWin>0\) el\.textContent=lastNonZeroWin\.toFixed\(2\)/);
+assert.match(polish, /if\(lastNonZeroWin>0\)\s*el\.textContent=lastNonZeroWin\.toFixed\(2\)/);
 
 assert.match(core, /READY · CONSENT OFF/);
 assert.match(core, /ROUTE ARMED/);
