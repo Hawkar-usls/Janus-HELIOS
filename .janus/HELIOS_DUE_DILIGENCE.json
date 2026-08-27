@@ -1,7 +1,15 @@
 {
-  "schema": "janus.helios.due-diligence.v3",
-  "artifact_id": "JANUS-HELIOS-DUE-DILIGENCE-2026-08-27-v3.1",
-  "purpose": "Prepare HELIOS for buyer diligence without overstating ownership, production readiness, profitability, regulatory status or transfer scope.",
+  "schema": "janus.helios.due-diligence.v4",
+  "artifact_id": "JANUS-HELIOS-DUE-DILIGENCE-2026-08-27-v4.0",
+  "purpose": "Prepare HELIOS for buyer diligence without overstating ownership, production readiness, profitability, regulatory status or transfer scope, and keep active architecture/presentation/safety contracts synchronized with the exact product snapshot.",
+  "project_snapshot": {
+    "package_version": "1.16.0",
+    "canonical_architecture": ".janus/HELIOS_ARCHITECTURE.json",
+    "canonical_architecture_version": "1.16.0",
+    "architecture_package_version_must_match": true,
+    "project_status_package_version_must_match": true,
+    "green_ci_is_commit_scoped_only": true
+  },
   "default_transaction_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
   "asset_boundary": {
     "purchased_schedule": "legal/PURCHASED_ASSETS_SCHEDULE.md",
@@ -9,6 +17,7 @@
     "specialized_children_included_by_default": false,
     "other_janus_repositories_included_by_default": false,
     "future_inventions_included_by_default": false,
+    "seller_general_know_how_included_by_default": false,
     "seller_personal_accounts_included": false,
     "broad_related_technology_language_expands_scope": false
   },
@@ -45,7 +54,52 @@
       "historical_mit_notice_preservation_if_applicable": true,
       "later_source_available_background_ip_requires_express_transaction_rights": true,
       "entire_source_repository_transferred_by_default": false
+    },
+    "zim_conceptual_lineage": {
+      "contract": ".janus/HELIOS_ADAPTIVE_POLICY.json",
+      "conceptual_source_disclosed": true,
+      "source_code_copied_from_zim": false,
+      "active_dependency_on_zim_firmware": false,
+      "active_dependency_on_swarm_repository": false
+    },
+    "dual_stream_conceptual_lineage": {
+      "registry_repository": "Hawkar-usls/janus-meta-registry",
+      "source_artifact": "JANUS-HOLY-CRINGE-LOVE-DUAL-STREAM-CONVERTER-2026-08-27-v1.0",
+      "active_code_dependency_on_registry": false,
+      "player_emotional_model_imported": false,
+      "engineering_and_presentation_adaptations_disclosed": true
     }
+  },
+  "active_architecture_contracts": {
+    "desktop_fabric": ".janus/HELIOS_DESKTOP_FABRIC.json",
+    "adaptive_policy": ".janus/HELIOS_ADAPTIVE_POLICY.json",
+    "dual_stream_safety_guard": ".janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json",
+    "dual_stream_director": ".janus/HELIOS_DUAL_STREAM_DIRECTOR.json",
+    "adaptive_policy_truth_core_immutable": true,
+    "adaptive_policy_may_change_artifact_digest": false,
+    "adaptive_policy_may_change_verifier": false,
+    "safety_guard_may_fabricate_missing_safety_evidence": false,
+    "safety_guard_player_emotional_state_input": "FORBIDDEN",
+    "director_presentation_only": true,
+    "director_rng_effect": "NONE",
+    "director_rtp_effect": "NONE",
+    "director_bet_effect": "NONE",
+    "director_player_vulnerability_input": "FORBIDDEN",
+    "director_authoritative_loader": "index.html",
+    "mobile_layer_may_dynamically_load_feature_scripts": false,
+    "director_core_reel_cell_transform_override": false
+  },
+  "game_math_truth": {
+    "real_money_enabled": false,
+    "purchased_bonus_tier_cost_multipliers": [50, 100, 175],
+    "purchased_bonus_starting_spins": [10, 12, 15],
+    "purchased_bonus_visual_wheel_changes_award": false,
+    "forced_wins": false,
+    "forced_scatters": false,
+    "near_miss_shaping": false,
+    "personalized_outcome_shaping": false,
+    "bonus_first_class_core_source_implemented": false,
+    "bonus_balance_refund_bridge_is_prototype_only": true
   },
   "third_party": {
     "register": "THIRD_PARTY_NOTICES.md",
@@ -63,7 +117,16 @@
     "manifest_sha256_required": true,
     "signed_release_preferred": true,
     "signed_release_already_claimed": false,
-    "test_pass_requires_actual_execution_on_closing_snapshot": true
+    "test_pass_requires_actual_execution_on_closing_snapshot": true,
+    "buyer_preflight_strict_in_ci": true
+  },
+  "repository_change_control": {
+    "main_branch_protected_at_2026_08_27_audit": false,
+    "repository_rulesets_present_at_2026_08_27_audit": false,
+    "required_status_checks_enforced_at_host_setting_level": false,
+    "current_commit_signature_claimed": false,
+    "closing_gate": "ENABLE_BRANCH_PROTECTION_OR_EQUIVALENT_RULESET_AND_USE_SIGNED_RELEASE_OR_EQUIVALENT_ATTESTATION",
+    "repository_content_alone_can_enable_host_branch_protection": false
   },
   "acceptance": {
     "criteria": "legal/ACCEPTANCE_AND_HANDOVER.md",
@@ -99,6 +162,9 @@
     "current_public_product_class": "CAPABILITY_EVALUATION_PROTOTYPE",
     "desktop_compute_fabric_core_implemented": true,
     "desktop_agent_runtime_implemented": true,
+    "adaptive_policy_core_implemented": true,
+    "dual_stream_safety_guard_core_implemented": true,
+    "dual_stream_director_public_presentation_implemented": true,
     "production_provider_adapter_connected": false,
     "production_agent_transport_authenticated": false,
     "production_durable_multi_host_state_validated": false,
@@ -113,14 +179,16 @@
     "FULL_CONTRIBUTION_HISTORY_REVIEW",
     "AUTOMATED_SBOM_AND_LICENSE_SCAN",
     "HISTORICAL_SWARM_HELIOS_SOURCE_OVERLAP_REVIEW",
-    "CONFIRM_ACTIVE_DESKTOP_FABRIC_AND_AGENT_DO_NOT_REINTRODUCE_REMOVED_SWARM_SOURCE",
     "FULL_TEST_SUITE_EXECUTION_ON_EXACT_CLOSING_COMMIT",
+    "BRANCH_PROTECTION_OR_EQUIVALENT_HOST_RULESET",
     "SIGNED_RELEASE_OR_EQUIVALENT_CRYPTOGRAPHIC_ATTESTATION",
     "TRADEMARK_CLEARANCE_IF_BRAND_IS_TRANSFERRED",
     "PATENT_REVIEW_IF_PATENT_RIGHTS_ARE_PART_OF_NEGOTIATION",
     "ESCROW_OR_PAYMENT_MECHANICS",
     "SIGNED_ASSET_PURCHASE_AND_IP_ASSIGNMENT",
-    "BUYER_ACCEPTANCE_CERTIFICATE"
+    "BUYER_ACCEPTANCE_CERTIFICATE",
+    "INDEPENDENT_SECURITY_PRIVACY_REVIEW",
+    "REAL_PROVIDER_PILOT"
   ],
-  "invariant": "NO_HIDDEN_SCOPE_NO_FAKE_READINESS_NO_UNPROVEN_ECONOMICS_NO_PERSONAL_ACCOUNT_TRANSFER_NO_FAKE_RETROACTIVE_RELICENSING: exact assets, exact snapshot, disclosed provenance, objective acceptance and factual warranties only."
+  "invariant": "NO_HIDDEN_SCOPE_NO_FAKE_READINESS_NO_UNPROVEN_ECONOMICS_NO_PERSONAL_ACCOUNT_TRANSFER_NO_FAKE_RETROACTIVE_RELICENSING_NO_POLICY_TRUTH_EROSION_NO_PRESENTATION_AUTHORITY_LEAK: exact assets, exact snapshot, disclosed provenance, strict authority boundaries, objective acceptance and factual warranties only."
 }
