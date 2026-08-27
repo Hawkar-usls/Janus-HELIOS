@@ -1,142 +1,534 @@
 (() => {
   'use strict';
 
-  const CORE_VERSION='1.7.1';
+  const FALLBACK_ROUTES = [
+    {key:'market',icon:'⬡',name:'COMPUTE MARKET',short:'MARKET',route_class:'MARKETPLACE',task_type:'ECONOMIC_COMPUTE_JOB',demo_proof_kind:'MOCK_ECONOMIC_COMPUTE_RECEIPT',description:'Golem or another approved requestor/provider market.',path:'CONSENT → HELIOS → MARKETPLACE → REQUESTOR → VERIFIED PAYMENT → PLAYER VALUE + TREASURY',sink:'PLAYER_COMPUTE_EARNINGS_LEDGER + COMPUTE_TREASURY',demo_asset:'market-credit',demo_player_ratio:.7,demo_shared_ratio:.3,enabled:true},
+    {key:'science',icon:'✦',name:'SCIENCE',short:'SCIENCE',route_class:'SCIENCE',task_type:'SCIENCE_WORK_UNIT',demo_proof_kind:'MOCK_SCIENCE_RECEIPT',description:'Research or public-good workload with upstream acceptance.',path:'CONSENT → HELIOS → RESEARCH REQUESTOR → SCIENCE WORK → VERIFIED RECEIPT → IMPACT LEDGER',sink:'IMPACT_LEDGER',demo_asset:'impact-credit',demo_player_ratio:0,demo_shared_ratio:1,enabled:true},
+    {key:'jackpot',icon:'◈',name:'JACKPOT POOL',short:'TREASURY',route_class:'TREASURY',task_type:'POW_SHARE',demo_proof_kind:'MOCK_POOL_SHARE',description:'Shared mining/pool revenue routed into a transparent reserve.',path:'CONSENT → HELIOS → APPROVED POOL → ACCEPTED SHARE → VERIFIED REVENUE → COMPUTE TREASURY',sink:'COMPUTE_TREASURY',demo_asset:'treasury-credit',demo_player_ratio:0,demo_shared_ratio:1,enabled:true},
+    {key:'datacenter',icon:'▦',name:'DATA CENTER',short:'DC',route_class:'DATACENTER',task_type:'GENERAL_COMPUTE_JOB',demo_proof_kind:'MOCK_GENERAL_COMPUTE_RECEIPT',description:'Buyer-selected cloud, batch, render, analytics or HPC workload.',path:'CONSENT → HELIOS → DATA CENTER GATEWAY → GENERAL WORKLOAD → VERIFIED RECEIPT → CONTRACT SINK',sink:'CONTRACT_DEFINED_AUDITED_SINK',demo_asset:'compute-unit',demo_player_ratio:0,demo_shared_ratio:1,enabled:true},
+    {key:'operator',icon:'⚙',name:'OPERATOR',short:'OPERATOR',route_class:'OPERATOR',task_type:'GENERAL_COMPUTE_JOB',demo_proof_kind:'MOCK_GENERAL_COMPUTE_RECEIPT',description:'Approved buyer-owned workload behind a private gateway.',path:'CONSENT → HELIOS → OPERATOR GATEWAY → APPROVED WORKLOAD → VERIFIED RECEIPT → AUDITED SINK',sink:'CONTRACT_DEFINED_AUDITED_SINK',demo_asset:'operator-unit',demo_player_ratio:0,demo_shared_ratio:1,enabled:true},
+    {key:'custom',icon:'⌘',name:'CUSTOM',short:'CUSTOM',route_class:'CUSTOM',task_type:'GENERAL_COMPUTE_JOB',demo_proof_kind:'MOCK_GENERAL_COMPUTE_RECEIPT',description:'A future admissible provider not known when HELIOS was built.',path:'CONSENT → HELIOS → SIGNED BUYER MANIFEST → CUSTOM ADAPTER → VERIFIER → AUDITED SINK',sink:'CONTRACT_DEFINED_AUDITED_SINK',demo_asset:'custom-unit',demo_player_ratio:0,demo_shared_ratio:1,enabled:true}
+  ];
+
+  const GAME_MODES = {
+    helios:{
+      key:'helios',icon:'☀',name:'HELIOS',short:'HEL',subtitle:'Universal Core',summary:'Universal Core · balanced demo profile',
+      payoutScale:1,supportsDemoSpinEnergy:false,
+      paylines:[[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2]],
+      symbols:[['☀',1.60],['⬡',1.30],['◈',1.10],['⚙',.90],['✦',.72],['∆',.52],['◇',.36]]
+    },
+    divine:{
+      key:'divine',icon:'✦',name:'DIVINE',short:'DIV',subtitle:'Radiant Lattice',summary:'Radiant Lattice · five-line demo profile',
+      payoutScale:.58,supportsDemoSpinEnergy:false,
+      paylines:[[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2]],
+      symbols:[['✦',1.60],['☼',1.30],['◇',1.10],['△',.90],['❖',.72],['✧',.52],['⬡',.36]]
+    },
+    gridjack:{
+      key:'gridjack',icon:'◈',name:'GRIDJACK',short:'GRD',subtitle:'Treasury Pulse',summary:'Treasury Pulse · nine-line demo profile · supports demo Spin Energy',
+      payoutScale:.34,supportsDemoSpinEnergy:true,
+      paylines:[[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],[0,0,1,2,2],[2,2,1,0,0],[1,0,1,2,1],[1,2,1,0,1]],
+      symbols:[['◈',1.60],['⬢',1.30],['⚡',1.10],['⬡',.90],['◆',.72],['⬣',.52],['◇',.36]]
+    },
+    custom:{
+      key:'custom',icon:'⚙',name:'CUSTOM',short:'CUS',subtitle:'Builder Profile',summary:'Builder Profile · three configurable demo paths',
+      payoutScale:.82,supportsDemoSpinEnergy:false,
+      paylines:[[1,1,1,1,1],[0,0,1,2,2],[2,2,1,0,0]],
+      symbols:[['⚙',1.60],['⌘',1.30],['⧉',1.10],['⧫',.90],['◌',.72],['◇',.52],['⬡',.36]]
+    }
+  };
+
+  const DEFAULT_SPIN_ENERGY_POLICY = {
+    enabled:true,
+    seconds_per_spin:30,
+    max_bank:3,
+    eligible_game_modes:['gridjack'],
+    eligible_routes:['market','science','jackpot','datacenter','operator','custom'],
+    reward_ledger:'DEMO_ENERGY_REWARD_ONLY',
+    real_money_value:false,
+    automatic_wager_conversion:false,
+    auto_play_from_bank:false
+  };
+
+  const DEFAULT_CASCADE_POLICY = {
+    enabled:true,
+    eligible_game_modes:['helios','divine','gridjack','custom'],
+    multiplier_ladder:[1,4,16,64],
+    max_cascades:8,
+    collapse_ms:260,
+    refill_ms:340,
+    affects_compute:false,
+    compute_effect:'NONE'
+  };
+
   const $ = id => document.getElementById(id);
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  const VALID_SPIN_SOURCES = new Set(['balance','energy','bonus']);
-  const MODE_META = {
-    helios:{name:'HELIOS',icon:'☀',lines:'3L',summary:'Universal Core · balanced demo profile',symbols:['☀','⬡','◈','⚙','✦','∆','◇'],weights:[8,15,16,18,17,14,12],pays:{'☀':[0,0,1.8,4,10],'⬡':[0,0,1.3,3,7],'◈':[0,0,1.1,2.5,6],'⚙':[0,0,.9,2,4.5],'✦':[0,0,.8,1.7,3.8],'∆':[0,0,.7,1.5,3.2],'◇':[0,0,.6,1.2,2.5]}},
-    divine:{name:'DIVINE',icon:'✦',lines:'5L',summary:'Science Child · radiant lattice profile',symbols:['✦','☼','◇','△','❖','✧','⬡'],weights:[8,13,16,17,16,14,16],pays:{'✦':[0,0,2,4.5,11],'☼':[0,0,1.5,3.2,7.5],'◇':[0,0,1.2,2.7,6.3],'△':[0,0,1,2.2,5],'❖':[0,0,.9,1.9,4.2],'✧':[0,0,.75,1.6,3.4],'⬡':[0,0,.65,1.35,2.7]}},
-    gridjack:{name:'GRIDJACK',icon:'◈',lines:'9L',summary:'Treasury Child · dense jackpot profile',symbols:['◈','⬢','⚡','⬡','◆','⬣','◇'],weights:[7,12,15,16,17,17,16],pays:{'◈':[0,0,2.2,5,12],'⬢':[0,0,1.6,3.5,8],'⚡':[0,0,1.3,3,6.8],'⬡':[0,0,1,2.3,5.2],'◆':[0,0,.9,1.9,4.3],'⬣':[0,0,.75,1.6,3.3],'◇':[0,0,.6,1.3,2.6]}},
-    custom:{name:'CUSTOM',icon:'⚙',lines:'3P',summary:'Buyer Config · abstract operator profile',symbols:['⚙','⌘','⧉','⧫','◌','◇','⬡'],weights:[9,13,15,16,16,16,15],pays:{'⚙':[0,0,1.9,4.2,10],'⌘':[0,0,1.45,3.1,7.2],'⧉':[0,0,1.15,2.6,6],'⧫':[0,0,1,2.2,5],'◌':[0,0,.85,1.8,4],'◇':[0,0,.7,1.45,3],'⬡':[0,0,.6,1.25,2.5]}}
-  };
-  const DEFAULT_ROUTES=[
-    {id:'market',label:'MARKET',route_class:'MARKETPLACE',icon:'↗',description:'Paid workload marketplace',path:'CONSENT → HELIOS → MARKETPLACE → REQUESTOR → VERIFIED PAYMENT → PLAYER VALUE + TREASURY'},
-    {id:'science',label:'SCIENCE',route_class:'SCIENCE',icon:'✦',description:'Research / public-good workload',path:'CONSENT → HELIOS → SCIENCE → VERIFIED WORK UNIT → IMPACT LEDGER'},
-    {id:'jackpot',label:'TREASURY',route_class:'TREASURY',icon:'◈',description:'Shared economic compute pool',path:'CONSENT → HELIOS → TREASURY → VERIFIED RECEIPT → SHARED POOL'},
-    {id:'datacenter',label:'DC',route_class:'DATACENTER',icon:'▦',description:'Operator data-center offload',path:'CONSENT → HELIOS → DATACENTER → WORKLOAD → VERIFIED RECEIPT'},
-    {id:'operator',label:'OPERATOR',route_class:'OPERATOR',icon:'⌘',description:'Buyer-owned infrastructure',path:'CONSENT → HELIOS → OPERATOR INFRA → VERIFIED RECEIPT'},
-    {id:'custom',label:'CUSTOM',route_class:'CUSTOM',icon:'⚙',description:'Buyer-defined approved provider',path:'CONSENT → HELIOS → CUSTOM PROVIDER → VERIFIED RECEIPT'}
-  ];
-  const PAYLINES={
-    helios:[[1,1,1,1,1],[0,1,2,1,0],[2,1,0,1,2]],
-    divine:[[1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2]],
-    gridjack:[[1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],[0,0,1,2,2],[2,2,1,0,0],[1,0,1,2,1],[1,2,1,0,1]],
-    custom:[[1,1,1,1,1],[0,1,2,1,0],[2,1,0,1,2]]
-  };
-  const CASCADE_LADDER=[1,4,16,64];
-  const CASCADE_MAX_STEPS=8;
-  const CASCADE_COLLAPSE_MS=260;
-  const CASCADE_REFILL_MS=340;
 
-  let mode='helios',routes=DEFAULT_ROUTES.map(x=>({...x})),route='market',computeOn=false,units=0,balance=1000,totalWins=0,totalSpins=0,spinning=false,autoLeft=0,receiptSeq=0;
-  let lastPaidWin=0,spinEnergyBank=0,spinEnergyProgress=0,lastEnergyTick=Date.now(),energyTimer=null;
-  let bonusEntitlement={active:false,token:null,session_id:null,feature:null,tier_id:null,remaining:0,total_granted:0,max_total_spins:0,bet:0};
+  let routes = FALLBACK_ROUTES;
+  let routeMap = new Map();
+  let routeKey = 'market';
+  let enabledModeKeys = Object.keys(GAME_MODES);
+  let gameModeKey = 'helios';
+  let computeActive = false;
+  let computeTimer = null;
+  let computeUnits = 0;
+  let receiptNo = 0;
+  let balance = 1000;
+  let spinning = false;
+  let totalWins = 0;
+  let totalSpins = 0;
+  let lastPaidWin = 0;
+  let autoRemaining = 0;
+  let autoTimer = null;
+  let spinEnergyPolicy = {...DEFAULT_SPIN_ENERGY_POLICY};
+  let spinEnergySeconds = 0;
+  let spinBank = 0;
+  let energyRewardUnits = 0;
+  let energyTimer = null;
+  let cascadePolicy = {...DEFAULT_CASCADE_POLICY};
+  let cascadePeakMultiplier = 1;
 
-  function secureRandomUint(){const a=new Uint32Array(1);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(a);else a[0]=(Math.random()*0x100000000)>>>0;return a[0]>>>0;}
-  function secureUnit(){return secureRandomUint()/0x100000000;}
-  function secureOpaqueToken(prefix='bonus'){if(globalThis.crypto?.randomUUID)return `${prefix}:${globalThis.crypto.randomUUID()}`;if(globalThis.crypto?.getRandomValues){const bytes=new Uint8Array(24);globalThis.crypto.getRandomValues(bytes);return `${prefix}:${[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('')}`;}throw new Error('SECURE_RANDOM_REQUIRED_FOR_BONUS_CAPABILITY');}
-  function weightedPick(meta){const sum=meta.weights.reduce((a,b)=>a+b,0);let r=secureUnit()*sum;for(let i=0;i<meta.symbols.length;i++){r-=meta.weights[i];if(r<=0)return meta.symbols[i];}return meta.symbols.at(-1);}
-  function round2(n){return Math.round(Number(n)*100)/100;}
-  function coreBalanceText(){const el=$('balance');if(el)el.textContent=balance.toFixed(2);}
-  function normalizeRoute(raw,index){const rawId=String(raw?.key||raw?.id||DEFAULT_ROUTES[index]?.id||`route_${index}`);const fallback=DEFAULT_ROUTES.find(x=>x.id===rawId)||DEFAULT_ROUTES[index%DEFAULT_ROUTES.length]||DEFAULT_ROUTES[0];return {...fallback,...raw,id:rawId,label:String(raw?.short||raw?.label||fallback.label||rawId.toUpperCase()),route_class:String(raw?.route_class||fallback.route_class||'CUSTOM'),description:String(raw?.description||fallback.description||'Approved route'),path:String(raw?.path||fallback.path||'CONSENT → HELIOS → PROVIDER → VERIFIED RECEIPT')};}
-
-  function bonusSnapshot(){return Object.freeze({active:bonusEntitlement.active,session_id:bonusEntitlement.session_id,feature:bonusEntitlement.feature,tier_id:bonusEntitlement.tier_id,remaining:bonusEntitlement.remaining,total_granted:bonusEntitlement.total_granted,max_total_spins:bonusEntitlement.max_total_spins,bet:bonusEntitlement.bet});}
-  function openBonusSession({feature='SOLAR_CORONA_FREE_SPINS',tier_id='unknown',initial_spins,max_total_spins,bet,session_id=null}={}){
-    if(bonusEntitlement.active)return {ok:false,reason:'BONUS_SESSION_ALREADY_ACTIVE'};
-    if(spinning)return {ok:false,reason:'SPIN_ACTIVE'};
-    const initial=Math.max(1,Math.min(100,Math.floor(Number(initial_spins)||0))),cap=Math.max(initial,Math.min(200,Math.floor(Number(max_total_spins)||initial))),lockedBet=round2(Number(bet)||0);
-    if(!(lockedBet>0))return {ok:false,reason:'INVALID_BONUS_BET'};
-    autoLeft=0;renderAuto();
-    const token=secureOpaqueToken('helios-bonus');
-    bonusEntitlement={active:true,token,session_id:String(session_id||`bonus-${Date.now()}`),feature:String(feature),tier_id:String(tier_id),remaining:initial,total_granted:initial,max_total_spins:cap,bet:lockedBet};
-    syncControlLocks();
-    window.dispatchEvent(new CustomEvent('helios:core-bonus-session-open',{detail:{...bonusSnapshot(),source_authority:'GAME_CORE',stake_charge:'NONE',real_money_value:false}}));
-    return {ok:true,token,snapshot:bonusSnapshot()};
-  }
-  function grantBonusSpins(token,count){
-    if(!bonusEntitlement.active||token!==bonusEntitlement.token)return {ok:false,reason:'INVALID_BONUS_CAPABILITY',granted:0,snapshot:bonusSnapshot()};
-    const requested=Math.max(0,Math.floor(Number(count)||0)),room=Math.max(0,bonusEntitlement.max_total_spins-bonusEntitlement.total_granted),granted=Math.min(requested,room);
-    bonusEntitlement.remaining+=granted;bonusEntitlement.total_granted+=granted;
-    if(granted>0)window.dispatchEvent(new CustomEvent('helios:core-bonus-spins-granted',{detail:{granted,...bonusSnapshot(),source_authority:'GAME_CORE',real_money_value:false}}));
-    return {ok:true,granted,snapshot:bonusSnapshot()};
-  }
-  async function spinBonus(token){
-    if(!bonusEntitlement.active||token!==bonusEntitlement.token)return {ok:false,reason:'INVALID_BONUS_CAPABILITY'};
-    if(bonusEntitlement.remaining<=0)return {ok:false,reason:'BONUS_ENTITLEMENT_EXHAUSTED',snapshot:bonusSnapshot()};
-    if(spinning)return {ok:false,reason:'SPIN_ALREADY_ACTIVE',snapshot:bonusSnapshot()};
-    bonusEntitlement.remaining-=1;
-    try{const detail=await spin({source:'bonus',bonusCapability:token});if(!detail){bonusEntitlement.remaining+=1;return {ok:false,reason:'BONUS_SPIN_NOT_STARTED',snapshot:bonusSnapshot()};}return {ok:true,detail,snapshot:bonusSnapshot()};}catch(error){bonusEntitlement.remaining+=1;throw error;}
-  }
-  function closeBonusSession(token){
-    if(!bonusEntitlement.active||token!==bonusEntitlement.token)return {ok:false,reason:'INVALID_BONUS_CAPABILITY'};
-    const closed=bonusSnapshot();bonusEntitlement={active:false,token:null,session_id:null,feature:null,tier_id:null,remaining:0,total_granted:0,max_total_spins:0,bet:0};syncControlLocks();window.dispatchEvent(new CustomEvent('helios:core-bonus-session-close',{detail:{...closed,source_authority:'GAME_CORE',real_money_value:false}}));return {ok:true,snapshot:closed};
-  }
-  function debitDemoBalance({amount,reason}={}){
-    const value=round2(Number(amount)||0);if(reason!=='BONUS_PURCHASE')return {ok:false,reason:'UNSUPPORTED_LEDGER_DEBIT_REASON',balance};if(spinning)return {ok:false,reason:'SPIN_ACTIVE',balance};if(!(value>0))return {ok:false,reason:'INVALID_DEBIT_AMOUNT',balance};if(balance+1e-9<value)return {ok:false,reason:'INSUFFICIENT_DEMO_BALANCE',balance};balance=round2(balance-value);coreBalanceText();const detail={reason,amount:value,balance,ledger:'DEMO_BALANCE',source_authority:'GAME_CORE',real_money_value:false};window.dispatchEvent(new CustomEvent('helios:core-ledger-debit',{detail}));return {ok:true,...detail};
+  function secureIndex(max){
+    const a = new Uint32Array(1);
+    if(globalThis.crypto?.getRandomValues) globalThis.crypto.getRandomValues(a);
+    else a[0] = Math.floor(Math.random()*0xffffffff);
+    return a[0] % max;
   }
 
-  function modeMeta(){return MODE_META[mode]||MODE_META.helios;}
-  function currentLines(){return PAYLINES[mode]||PAYLINES.helios;}
-  function routeObj(){return routes.find(r=>r.id===route)||routes[0];}
-  function gameGrid(){return Array.from({length:5},()=>Array.from({length:3},()=>({s:weightedPick(modeMeta())})));}
-  function evalGrid(grid){const meta=modeMeta(),wins=[];currentLines().forEach((line,li)=>{const first=grid[0][line[0]].s;let count=1;for(let col=1;col<5;col++){if(grid[col][line[col]].s===first)count++;else break;}if(count>=3){const pay=meta.pays[first]?.[count]||0;if(pay>0)wins.push({line:li,count,symbol:first,pay,cells:Array.from({length:count},(_,col)=>[col,line[col]])});}});return wins;}
-  function winAmount(wins,bet,multiplier=1){return round2(wins.reduce((s,w)=>s+w.pay*bet,s)*multiplier);}
-  function cellAt(col,row){return document.querySelector(`.reel[data-col="${col}"] .cell[data-row="${row}"]`);}
-  function renderGrid(grid,{clearHits=true}={}){for(let c=0;c<5;c++)for(let r=0;r<3;r++){const el=cellAt(c,r);if(!el)continue;el.textContent=grid[c][r].s;if(clearHits)el.classList.remove('hit');}}
-  function markWinningCells(wins){wins.forEach(w=>w.cells.forEach(([c,r])=>cellAt(c,r)?.classList.add('hit')));}
-  function cascadeIndex(step){return Math.min(step,CASCADE_LADDER.length-1);}
-  function cascadeMultiplier(step){return CASCADE_LADDER[cascadeIndex(step)];}
-  function collapseWinningCells(grid,wins){const removed=Array.from({length:5},()=>new Set());wins.forEach(w=>w.cells.forEach(([c,r])=>removed[c].add(r)));for(let c=0;c<5;c++){const survivors=[];for(let r=2;r>=0;r--)if(!removed[c].has(r))survivors.push(grid[c][r]);const next=Array(3).fill(null);let write=2;for(const item of survivors)next[write--]=item;grid[c]=next;}return removed;}
-  async function animateCollapse(grid,removed){for(let c=0;c<5;c++)for(const r of removed[c]){const el=cellAt(c,r);if(el){el.classList.add('cascade-remove');el.textContent='';}}await sleep(CASCADE_COLLAPSE_MS);for(let c=0;c<5;c++)for(let r=0;r<3;r++){const el=cellAt(c,r);if(!el)continue;el.classList.remove('cascade-remove','hit');const item=grid[c][r];el.textContent=item?.s||'';if(item)el.classList.add('cascade-drop');else el.classList.add('cascade-hole');}await sleep(150);}
-  async function refillGrid(grid){for(let c=0;c<5;c++)for(let r=0;r<3;r++)if(!grid[c][r])grid[c][r]={s:weightedPick(modeMeta())};for(let c=0;c<5;c++)for(let r=0;r<3;r++){const el=cellAt(c,r);if(!el)continue;el.classList.remove('cascade-hole');el.textContent=grid[c][r].s;if(el.classList.contains('cascade-drop'))el.classList.remove('cascade-drop');else el.classList.add('cascade-refill');}await sleep(CASCADE_REFILL_MS);document.querySelectorAll('.cell').forEach(el=>el.classList.remove('cascade-refill','cascade-drop'));}
+  function currentMode(){ return GAME_MODES[gameModeKey] || GAME_MODES.helios; }
+  function currentSymbols(){ return currentMode().symbols.map(([s,v])=>({s,v})); }
+  function currentRoute(){ return routeMap.get(routeKey) || null; }
+  function round2(n){ return Math.round((Number(n)||0)*100)/100; }
 
-  function buildReels(){const root=$('reels');if(!root)return;root.innerHTML='';for(let c=0;c<5;c++){const reel=document.createElement('div');reel.className='reel';reel.dataset.col=String(c);for(let r=0;r<3;r++){const cell=document.createElement('div');cell.className='cell';cell.dataset.row=String(r);cell.textContent=weightedPick(modeMeta());reel.appendChild(cell);}root.appendChild(reel);}}
-  function buildModes(){const root=$('game-modes');if(!root)return;root.innerHTML='';Object.entries(MODE_META).forEach(([id,m])=>{const b=document.createElement('button');b.type='button';b.className='mode-btn';b.dataset.mode=id;b.innerHTML=`<span class="mi">${m.icon}</span><b>${m.name}</b><small>${m.lines} · ${m.summary.split('·')[0].trim()}</small>`;b.onclick=()=>setMode(id);root.appendChild(b);});}
-  function buildRoutes(){const root=$('route-grid');if(!root)return;root.innerHTML='';routes.forEach(r=>{const b=document.createElement('button');b.type='button';b.className='route';b.dataset.route=r.id;const icon=document.createElement('span');icon.className='r-icon';icon.textContent=r.icon||'◇';const title=document.createElement('b');title.textContent=r.label||r.id.toUpperCase();const desc=document.createElement('small');desc.textContent=r.description||r.route_class||'Approved route';b.append(icon,title,desc);b.onclick=()=>{if(spinning)return;route=r.id;renderAll();};root.appendChild(b);});}
-  function setMode(next){if(spinning||bonusEntitlement.active)return;mode=MODE_META[next]?next:'helios';document.body.dataset.gameMode=mode;buildReels();renderAll();}
-  function syncControlLocks(){const gameLocked=spinning||bonusEntitlement.active;if($('spin'))$('spin').disabled=gameLocked;if($('auto-spin'))$('auto-spin').disabled=gameLocked;document.querySelectorAll('.mode-btn').forEach(b=>b.disabled=gameLocked);document.querySelectorAll('.route').forEach(b=>b.disabled=spinning);}
-  function renderAll(){const m=modeMeta(),r=routeObj();document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));document.querySelectorAll('.route').forEach(b=>b.classList.toggle('active',b.dataset.route===route));$('station-name').textContent=`${m.name} STATION`;$('mode-summary').textContent=m.summary;$('mode-lines').textContent=m.lines;$('mode-short').textContent=m.name.slice(0,3).toUpperCase();$('selected-route').textContent=r.label;$('route-path').textContent=r.path;$('compute-state').textContent=computeOn?'ACTIVE':'OFF';$('compute-state').className=computeOn?'ok':'';$('compute-units').textContent=units.toFixed(2);$('balance').textContent=balance.toFixed(2);$('total-wins').textContent=totalWins.toFixed(2);$('total-spins').textContent=String(totalSpins);$('last-win-value').textContent=lastPaidWin.toFixed(2);$('core').classList.toggle('active',computeOn);$('receipt-status').textContent=computeOn?'SIMULATED':'NO RECEIPT';$('cpu-label').textContent=`${$('cpu').value}%`;renderSpinEnergy();syncControlLocks();}
-
-  function renderGameState({spinWin=0,source='balance',cascadeCount=0,peakMultiplier=1}={}){if(spinWin>0)lastPaidWin=spinWin;$('balance').textContent=balance.toFixed(2);$('total-wins').textContent=totalWins.toFixed(2);$('total-spins').textContent=String(totalSpins);$('last-win-value').textContent=lastPaidWin.toFixed(2);renderSpinEnergy();const suffix=source==='energy'?'ENERGY REWARD':source==='bonus'?'BONUS WIN':'HELIOS UNITS';const em=$('last-win-card')?.querySelector('em');if(em)em.textContent=suffix;window.dispatchEvent(new CustomEvent('helios:game-state',{detail:{spin_win:spinWin,last_paid_win:lastPaidWin,total_wins:totalWins,total_spins:totalSpins,balance,source,cascades:cascadeCount,peak_multiplier:peakMultiplier,bonus_core_remaining:bonusEntitlement.remaining}}));}
-
-  async function spin({fromAuto=false,source='balance',bonusCapability=null}={}){
-    if(spinning||!VALID_SPIN_SOURCES.has(source))return null;
-    const isEnergy=source==='energy',isBonus=source==='bonus';
-    if(bonusEntitlement.active&&!isBonus)return null;
-    if(isBonus&&(!bonusEntitlement.active||bonusCapability!==bonusEntitlement.token))return null;
-    const bet=isBonus?bonusEntitlement.bet:Number($('bet').value);
-    if(!(bet>0))return null;
-    if(!isEnergy&&!isBonus&&balance<bet){autoLeft=0;renderAuto();return null;}
-    if(isEnergy&&spinEnergyBank<1){renderSpinEnergy();return null;}
-    if(!isEnergy&&!isBonus)balance=round2(balance-bet);else if(isEnergy)spinEnergyBank=Math.max(0,spinEnergyBank-1);
-    totalSpins++;spinning=true;syncControlLocks();
-    const grid=gameGrid(),reelEls=[...document.querySelectorAll('.reel')];reelEls.forEach(reel=>[...reel.children].forEach(cell=>{cell.classList.remove('hit');cell.classList.add('spin');}));const finalWins=evalGrid(grid);
-    for(let c=0;c<5;c++){await sleep(105+c*48);for(let r=0;r<3;r++){const cell=reelEls[c]?.children[r];if(cell){cell.textContent=grid[c][r].s;cell.classList.remove('spin');}}if(navigator.vibrate)navigator.vibrate(5);}await sleep(90);
-    let cascadeCount=0,peakMultiplier=1,chainTotal=0,currentWins=finalWins;
-    while(currentWins.length&&cascadeCount<CASCADE_MAX_STEPS){const multiplier=cascadeMultiplier(cascadeCount),paid=winAmount(currentWins,bet,multiplier);peakMultiplier=multiplier;chainTotal=round2(chainTotal+paid);markWinningCells(currentWins);window.dispatchEvent(new CustomEvent('helios:cascade',{detail:{cascade_index:cascadeCount+1,multiplier,win:paid,chain_total:chainTotal,source,compute_effect:'NONE',initial_stop_effect:'NONE'}}));await sleep(260);const removed=collapseWinningCells(grid,currentWins);await animateCollapse(grid,removed);await refillGrid(grid);cascadeCount++;currentWins=evalGrid(grid);}
-    document.querySelectorAll('.cell').forEach(el=>el.classList.remove('hit'));const spinWin=round2(chainTotal);let energyRewardUnits=0;if(isEnergy){energyRewardUnits=spinWin;if(energyRewardUnits>0)window.dispatchEvent(new CustomEvent('helios:spin-energy-earned',{detail:{mode,route_class:routeObj().route_class,reward_units:energyRewardUnits,cascade_count:cascadeCount,peak_multiplier:peakMultiplier,real_money_value:false,game_balance_effect:'NONE'}}));}else balance=round2(balance+spinWin);totalWins=round2(totalWins+spinWin);renderGameState({spinWin,source,cascadeCount,peakMultiplier});const completion={spin_win:spinWin,last_paid_win:lastPaidWin,total_wins:totalWins,total_spins:totalSpins,balance,bet,source,cascades:cascadeCount,peak_multiplier:peakMultiplier,energy_reward_units:energyRewardUnits,bonus_core_remaining:bonusEntitlement.remaining};window.dispatchEvent(new CustomEvent('helios:spin-complete',{detail:completion}));spinning=false;syncControlLocks();updateSpinEnergyEligibility();if(autoLeft>0&&source==='balance'){autoLeft--;renderAuto();if(autoLeft>0)setTimeout(()=>spin({fromAuto:true}),220);}else if(autoLeft===0)renderAuto();return completion;
+  function setBranding(config){
+    const b=config?.branding||{};
+    if(b.product_name) $('brand-name').textContent=b.product_name;
+    if(b.tagline) $('brand-tagline').textContent=b.tagline;
+    if(b.station_name) $('station-name').textContent=b.station_name;
+    document.title=`${b.product_name||'JANUS HELIOS'} — ${b.tagline||'One Core. Any Destination.'}`;
   }
-  function toggleAuto(){if(bonusEntitlement.active)return;if(spinning&&autoLeft===0)return;if(autoLeft>0){autoLeft=0;renderAuto();return;}autoLeft=10;renderAuto();if(!spinning)spin({fromAuto:true});}
-  function renderAuto(){$('auto-spin').textContent=autoLeft>0?`AUTO · ${autoLeft}`:'AUTO ×10';$('auto-spin').classList.toggle('active',autoLeft>0);}
 
-  function energyPolicy(){return window.__HELIOS_PUBLIC_CONFIG?.demo_spin_energy||{enabled:true,seconds_per_spin:30,max_bank:3,eligible_routes:['market','science','jackpot','datacenter','operator','custom'],eligible_game_modes:['gridjack'],real_money_value:false,automatic_wager_conversion:false,auto_play_from_bank:false};}
-  function energyEligible(){const p=energyPolicy(),r=routeObj(),routeAllowed=p.eligible_routes?.some(x=>String(x)===r.id||String(x)===r.route_class);return Boolean(p.enabled&&computeOn&&p.eligible_game_modes?.includes(mode)&&routeAllowed);}
-  function renderSpinEnergy(){const panel=$('spin-energy-panel');if(!panel)return;const p=energyPolicy(),eligible=energyEligible(),seconds=Math.max(1,Number(p.seconds_per_spin||30)),pct=Math.min(100,(spinEnergyProgress/seconds)*100);panel.classList.toggle('active',eligible);$('spin-energy-bank').textContent=String(spinEnergyBank);$('spin-energy-progress').style.width=`${pct}%`;$('spin-energy-time').textContent=eligible?`${Math.max(0,seconds-spinEnergyProgress).toFixed(0)}s`:'PAUSED';const b=$('energy-spin');if(b){b.disabled=spinning||bonusEntitlement.active||spinEnergyBank<1;b.textContent=`ENERGY SPIN · ${spinEnergyBank}`;}}
-  function buildSpinEnergy(){if($('spin-energy-panel'))return;const panel=document.createElement('section');panel.id='spin-energy-panel';panel.className='spin-energy-panel';panel.innerHTML='<div class="spin-energy-copy"><b>◈ SPIN ENERGY</b><span>Eligible opted-in compute may earn demo-only manual spins. No cash value. No automatic wager conversion.</span></div><div class="spin-energy-meter"><div id="spin-energy-progress"></div></div><small id="spin-energy-time">PAUSED</small><button id="energy-spin" class="energy-spin-btn" type="button" disabled>ENERGY SPIN · 0</button><strong id="spin-energy-bank">0</strong>';document.querySelector('.game-controls')?.after(panel);$('energy-spin').onclick=()=>{if(!spinning&&!bonusEntitlement.active&&spinEnergyBank>0)spin({source:'energy'});};}
-  function tickSpinEnergy(){const now=Date.now(),elapsed=Math.max(0,Math.min(2,(now-lastEnergyTick)/1000));lastEnergyTick=now;const p=energyPolicy(),seconds=Math.max(1,Number(p.seconds_per_spin||30)),max=Math.max(1,Number(p.max_bank||3));if(energyEligible()&&spinEnergyBank<max){spinEnergyProgress+=elapsed;while(spinEnergyProgress>=seconds&&spinEnergyBank<max){spinEnergyProgress-=seconds;spinEnergyBank++;window.dispatchEvent(new CustomEvent('helios:spin-energy-earned',{detail:{mode,route_class:routeObj().route_class,bank:spinEnergyBank,seconds_per_spin:seconds,real_money_value:false,source:'ELIGIBLE_DEMO_COMPUTE_TIME',game_effect:'MANUAL_DEMO_SPIN_ONLY'}}));}if(spinEnergyBank>=max)spinEnergyProgress=0;}renderSpinEnergy();}
-  function updateSpinEnergyEligibility(){lastEnergyTick=Date.now();renderSpinEnergy();}
+  function applyPolicy(config){
+    const p=config?.resource_policy||{};
+    const max=Math.min(30,Math.max(5,Number(p.cpu_max_percent||30)));
+    const def=Math.min(max,Math.max(5,Number(p.cpu_default_percent||15)));
+    $('cpu').max=String(max);
+    $('cpu').value=String(def);
+    $('cpu-label').textContent=`${def}%`;
+  }
 
-  async function toggleCompute(on){if(on){if(!$('consent').checked)return;computeOn=true;}else{computeOn=false;$('consent').checked=false;}$('power-on').disabled=computeOn;$('power-off').disabled=!computeOn;renderAll();updateSpinEnergyEligibility();if(computeOn)simulateReceipt();else{$('receipt').textContent='Compute is OFF. Select a destination, grant consent, then route power.';$('receipt-status').textContent='NO RECEIPT';}}
-  function simulateReceipt(){if(!computeOn)return;const r=routeObj(),cpu=Number($('cpu').value),inc=round2(.15+cpu/180);units=round2(units+inc);receiptSeq++;const receipt={receipt_id:`SIM-${Date.now().toString(36).toUpperCase()}-${receiptSeq}`,status:'SIMULATED_ONLY',route_id:r.id,route_class:r.route_class,cpu_policy_percent:cpu,compute_units:inc,game_effect:'NONE',verified_by:'PUBLIC_DEMO_NOT_AUTHORITATIVE',ts:new Date().toISOString()};$('receipt').textContent=JSON.stringify(receipt,null,2);renderAll();window.dispatchEvent(new CustomEvent('helios:compute-receipt',{detail:receipt}));setTimeout(simulateReceipt,1850);}
-  function loadConfig(){return fetch('./config/helios.public.json',{cache:'no-store'}).then(r=>r.json()).then(cfg=>{window.__HELIOS_PUBLIC_CONFIG=cfg;if(Array.isArray(cfg.routes)&&cfg.routes.length)routes=cfg.routes.filter(x=>x?.enabled!==false).map(normalizeRoute);const defaultRoute=cfg.default_route||cfg.branding?.default_route;if(defaultRoute&&routes.some(r=>r.id===defaultRoute))route=defaultRoute;if(cfg.branding){$('brand-name').textContent=cfg.branding.product_name||'JANUS HELIOS';$('brand-tagline').textContent=cfg.branding.tagline||'ONE CORE · ANY DESTINATION';}const p=cfg.resource_policy||{};$('cpu').max=String(p.cpu_max_percent||30);$('cpu').value=String(p.cpu_default_percent||15);$('config-state').textContent='LOADED';$('config-state').className='ok';$('sys-config').textContent='Loaded';buildRoutes();renderAll();}).catch(()=>{$('config-state').textContent='FALLBACK';$('sys-config').textContent='Fallback';});}
+  function applyGameConfig(config){
+    const declared=Array.isArray(config?.game_modes)?config.game_modes:[];
+    const allowed=declared.filter(x=>x?.enabled!==false&&GAME_MODES[x?.key]).map(x=>x.key);
+    if(allowed.length) enabledModeKeys=[...new Set(allowed)];
+    const requested=config?.branding?.default_game_mode;
+    if(requested&&enabledModeKeys.includes(requested)) gameModeKey=requested;
 
-  function injectDynamicStyles(){const s=document.createElement('style');s.textContent=`.cell.spin{filter:blur(2px);opacity:.62;transform:translateY(3px)}.cell.cascade-remove{animation:heliosCascadeVanish ${CASCADE_COLLAPSE_MS}ms ease forwards}.cell.cascade-hole{opacity:.16;transform:translateY(-5px)}.cell.cascade-drop{animation:heliosCascadeDrop .18s ease}.cell.cascade-refill{animation:heliosCascadeRefill ${CASCADE_REFILL_MS}ms cubic-bezier(.16,.8,.2,1)}@keyframes heliosCascadeVanish{0%{opacity:1;transform:scale(1)}55%{opacity:.72;transform:scale(1.06);filter:brightness(1.8)}100%{opacity:0;transform:scale(.3) rotate(9deg);filter:blur(4px)}}@keyframes heliosCascadeDrop{from{opacity:.3;transform:translateY(-10px)}to{opacity:1;transform:none}}@keyframes heliosCascadeRefill{from{opacity:0;transform:translateY(-30px) scale(.88)}55%{opacity:1;transform:translateY(4px) scale(1.02)}to{opacity:1;transform:none}}.spin-energy-panel{display:none;grid-template-columns:1.15fr 1.5fr auto auto auto;gap:7px;align-items:center;border:1px solid #294133;background:#07110d;border-radius:10px;padding:8px;margin:7px 0}.spin-energy-panel.active{display:grid}.spin-energy-copy b{display:block;color:#95ff9a;font-size:8px}.spin-energy-copy span{display:block;color:#72837a;font-size:6px;line-height:1.3;margin-top:2px}.spin-energy-meter{height:5px;border-radius:99px;background:#142018;overflow:hidden}.spin-energy-meter>div{height:100%;width:0;background:linear-gradient(90deg,#4a9861,#95ff9a);transition:width .2s}.spin-energy-panel small{color:#809087;font:7px ui-monospace,SFMono-Regular,Consolas,monospace}.energy-spin-btn{border:1px solid #376445;background:#0b1b11;color:#95ff9a;border-radius:8px;padding:6px 8px;font-size:7px;font-weight:900}.spin-energy-panel>strong{color:#d7ffe0;font:900 14px ui-monospace,SFMono-Regular,Consolas,monospace}@media(max-width:720px){.spin-energy-panel{grid-template-columns:1fr auto auto}.spin-energy-copy{grid-column:1/-1}.spin-energy-meter{grid-column:1/-1}}`;document.head.appendChild(s);}
-  function bind(){$('spin').onclick=()=>spin();$('auto-spin').onclick=toggleAuto;$('power-on').onclick=()=>toggleCompute(true);$('power-off').onclick=()=>toggleCompute(false);$('cpu').oninput=()=>{$('cpu-label').textContent=`${$('cpu').value}%`;};$('consent').onchange=()=>{if(!$('consent').checked&&computeOn)toggleCompute(false);};document.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','SELECT','BUTTON'].includes(document.activeElement?.tagName)){e.preventDefault();spin();}});}
-  function init(){injectDynamicStyles();buildModes();buildRoutes();buildReels();buildSpinEnergy();bind();renderAll();loadConfig();energyTimer=setInterval(tickSpinEnergy,1000);window.addEventListener('pagehide',()=>clearInterval(energyTimer),{once:true});}
+    const p=config?.demo_spin_energy||{};
+    spinEnergyPolicy={
+      ...DEFAULT_SPIN_ENERGY_POLICY,...p,
+      seconds_per_spin:Math.max(10,Number(p.seconds_per_spin||DEFAULT_SPIN_ENERGY_POLICY.seconds_per_spin)),
+      max_bank:Math.max(1,Math.min(10,Number(p.max_bank||DEFAULT_SPIN_ENERGY_POLICY.max_bank))),
+      eligible_game_modes:Array.isArray(p.eligible_game_modes)?p.eligible_game_modes.filter(k=>GAME_MODES[k]):DEFAULT_SPIN_ENERGY_POLICY.eligible_game_modes,
+      eligible_routes:Array.isArray(p.eligible_routes)&&p.eligible_routes.length?p.eligible_routes:DEFAULT_SPIN_ENERGY_POLICY.eligible_routes,
+      real_money_value:false,automatic_wager_conversion:false,auto_play_from_bank:false
+    };
 
-  window.HELIOS_GAME_CORE=Object.freeze({version:CORE_VERSION,trust_boundary:'PUBLIC_DEMO_BROWSER_NOT_AUTHORITATIVE_PRODUCTION_LEDGER',getDemoBalance:()=>balance,ledger:Object.freeze({debitDemoBalance}),bonus:Object.freeze({openSession:openBonusSession,grantSpins:grantBonusSpins,spin:spinBonus,closeSession:closeBonusSession,snapshot:bonusSnapshot})});
+    const c=config?.demo_cascades||{};
+    const ladder=Array.isArray(c.multiplier_ladder)?c.multiplier_ladder.map(Number).filter(x=>Number.isFinite(x)&&x>=1):DEFAULT_CASCADE_POLICY.multiplier_ladder;
+    cascadePolicy={
+      ...DEFAULT_CASCADE_POLICY,...c,
+      eligible_game_modes:Array.isArray(c.eligible_game_modes)?c.eligible_game_modes.filter(k=>GAME_MODES[k]):DEFAULT_CASCADE_POLICY.eligible_game_modes,
+      multiplier_ladder:ladder.length?ladder:DEFAULT_CASCADE_POLICY.multiplier_ladder,
+      max_cascades:Math.max(1,Math.min(12,Number(c.max_cascades||DEFAULT_CASCADE_POLICY.max_cascades))),
+      collapse_ms:Math.max(120,Math.min(800,Number(c.collapse_ms||DEFAULT_CASCADE_POLICY.collapse_ms))),
+      refill_ms:Math.max(160,Math.min(900,Number(c.refill_ms||DEFAULT_CASCADE_POLICY.refill_ms))),
+      affects_compute:false,compute_effect:'NONE'
+    };
+  }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  async function loadConfig(){
+    try{
+      const response=await fetch('./config/helios.public.json',{cache:'no-store'});
+      if(!response.ok) throw new Error(`HTTP_${response.status}`);
+      const config=await response.json();
+      const configuredRoutes=Array.isArray(config.routes)?config.routes.filter(r=>r?.enabled===true&&r.key):[];
+      if(configuredRoutes.length) routes=configuredRoutes;
+      routeKey=config?.branding?.default_route||routes[0]?.key||'market';
+      setBranding(config); applyPolicy(config); applyGameConfig(config);
+      $('config-state').textContent='CONFIG LOADED'; $('config-state').className='ok'; $('sys-config').textContent='Loaded';
+    }catch(_){
+      routes=FALLBACK_ROUTES; routeKey='market'; enabledModeKeys=Object.keys(GAME_MODES); gameModeKey='helios';
+      spinEnergyPolicy={...DEFAULT_SPIN_ENERGY_POLICY}; cascadePolicy={...DEFAULT_CASCADE_POLICY};
+      $('config-state').textContent='FALLBACK CONFIG'; $('sys-config').textContent='Fallback';
+    }
+  }
+
+  function randomSymbol(){
+    const symbols=currentSymbols();
+    return symbols[secureIndex(symbols.length)];
+  }
+
+  function ensureCascadeBanner(){
+    const reels=$('reels');
+    if(!reels||$('cascade-banner')) return;
+    const banner=document.createElement('div');
+    banner.id='cascade-banner';
+    banner.className='cascade-banner';
+    reels.appendChild(banner);
+  }
+
+  function buildReels(){
+    const reels=$('reels');
+    reels.innerHTML='';
+    window.__heliosCells=[]; window.__heliosReels=[];
+    for(let c=0;c<5;c++){
+      const reel=document.createElement('div');
+      reel.className='reel'; window.__heliosReels[c]=reel; window.__heliosCells[c]=[];
+      for(let r=0;r<3;r++){
+        const cell=document.createElement('div');
+        cell.className='cell'; cell.textContent=randomSymbol().s;
+        reel.appendChild(cell); window.__heliosCells[c][r]=cell;
+      }
+      reels.appendChild(reel);
+    }
+    if($('spin-energy-panel')) ensureCascadeBanner();
+  }
+
+  function buildGameModes(){
+    const host=$('game-modes'); host.innerHTML='';
+    for(const key of enabledModeKeys){
+      const mode=GAME_MODES[key];
+      const btn=document.createElement('button'); btn.type='button'; btn.className='mode-btn'; btn.dataset.mode=key;
+      const top=document.createElement('div'); const icon=document.createElement('span'); icon.className='mi'; icon.textContent=mode.icon;
+      const label=document.createElement('b'); label.textContent=mode.name; top.append(icon,label);
+      const sub=document.createElement('small'); sub.textContent=mode.subtitle; btn.append(top,sub);
+      btn.onclick=()=>selectGameMode(key); host.appendChild(btn);
+    }
+    selectGameMode(gameModeKey,{initial:true});
+  }
+
+  function selectGameMode(key,{initial=false}={}){
+    if(spinning||!enabledModeKeys.includes(key)||!GAME_MODES[key]) return;
+    gameModeKey=key; document.body.dataset.gameMode=key;
+    const mode=currentMode();
+    [...$('game-modes').children].forEach(x=>x.classList.toggle('active',x.dataset.mode===key));
+    $('mode-summary').textContent=mode.summary; $('mode-short').textContent=mode.short; $('mode-lines').textContent=`${mode.paylines.length}L`;
+    if(!initial) buildReels();
+    setCascadeMultiplier(1); renderSpinEnergy();
+  }
+
+  function buildRoutes(){
+    const grid=$('route-grid'); grid.innerHTML=''; routeMap=new Map(routes.map(r=>[r.key,r]));
+    if(!routeMap.has(routeKey)) routeKey=routes[0]?.key;
+    routes.forEach(r=>{
+      const b=document.createElement('button'); b.type='button'; b.className='route'; b.dataset.route=r.key;
+      const icon=document.createElement('span'); icon.className='r-icon'; icon.textContent=r.icon||'⬡';
+      const title=document.createElement('b'); title.textContent=r.name; const sub=document.createElement('small'); sub.textContent=r.description||'';
+      b.append(icon,title,sub); b.onclick=()=>selectRoute(r.key); grid.appendChild(b);
+    });
+    selectRoute(routeKey,{initial:true});
+  }
+
+  function routePreview(r){
+    return {product:'JANUS_HELIOS',mode:'ROUTE_PREVIEW',route_selected:r.key,provider_route:r.route_class,task_type:r.task_type,expected_proof:r.demo_proof_kind,sink:r.sink,next_step:'GRANT_EXPLICIT_CONSENT_THEN_ROUTE_POWER',game_event_weighting:'FORBIDDEN',game_effect:'NONE'};
+  }
+
+  function updatePowerCTA(){
+    const r=currentRoute(); if(!r) return;
+    if(computeActive){ $('power-on').disabled=true; $('power-on').textContent=`STREAMING · ${r.short||r.name}`; return; }
+    const allowed=$('consent').checked;
+    $('power-on').disabled=!allowed;
+    $('power-on').textContent=allowed?`⚡ ROUTE POWER · ${r.short||r.name}`:`SELECTED · ${r.short||r.name} · GRANT CONSENT`;
+  }
+
+  function selectRoute(key,{initial=false}={}){
+    if(computeActive){ alert('Stop compute before changing the route.'); return; }
+    const r=routeMap.get(key); if(!r) return;
+    routeKey=key;
+    [...$('route-grid').children].forEach(x=>x.classList.toggle('active',x.dataset.route===key));
+    $('selected-route').textContent=r.short||r.name; $('route-path').textContent=String(r.path||'');
+    $('compute-state').textContent='READY · CONSENT OFF'; $('compute-state').className='solar';
+    $('receipt-status').textContent='ROUTE ARMED'; $('receipt').textContent=JSON.stringify(routePreview(r),null,2);
+    const sysRouter=$('sys-router'); if(sysRouter) sysRouter.textContent=`Armed · ${r.short||r.name}`;
+    $('core').classList.remove('armed'); void $('core').offsetWidth; $('core').classList.add('armed'); setTimeout(()=>$('core').classList.remove('armed'),700);
+    updatePowerCTA(); renderSpinEnergy();
+    if(!initial){ const active=[...$('route-grid').children].find(x=>x.dataset.route===key); active?.classList.add('route-pulse'); setTimeout(()=>active?.classList.remove('route-pulse'),520); }
+  }
+
+  function demoSpinEnergyMeta(){
+    return {enabled:Boolean(spinEnergyPolicy.enabled),eligible_mode:spinEnergyPolicy.eligible_game_modes.includes(gameModeKey),eligible_route:routeSupportsEnergy(),bank:spinBank,progress_seconds:spinEnergySeconds,seconds_per_spin:spinEnergyPolicy.seconds_per_spin,reward_ledger:'DEMO_ENERGY_REWARD_ONLY',real_money_value:false,automatic_wager_conversion:false,auto_play_from_bank:false};
+  }
+
+  function renderReceipt(){
+    const r=currentRoute(); if(!r) return;
+    receiptNo++; computeUnits+=.25; $('compute-units').textContent=computeUnits.toFixed(2);
+    const out={product:'JANUS_HELIOS',router_version:'1.2.0',mode:'SIMULATION',receipt_id:`helios_demo_${String(receiptNo).padStart(5,'0')}`,provider_route:r.route_class,task_type:r.task_type,proof_kind:r.demo_proof_kind,resource_policy:{cpu_percent:Number($('cpu').value),gpu:false},compute_units:.25,asset:r.demo_asset,sink:r.sink,demo_allocation:{player_ratio:Number(r.demo_player_ratio||0),shared_ratio:Number(r.demo_shared_ratio??1)},demo_spin_energy:demoSpinEnergyMeta(),scheduling_basis:'CONSENT_DEVICE_POLICY_PROVIDER_CAPACITY_AND_WORKLOAD_ADMISSION',game_event_weighting:'FORBIDDEN',game_effect:'NONE',timestamp:new Date().toISOString()};
+    $('receipt').textContent=JSON.stringify(out,null,2); $('receipt-status').textContent='SIMULATED / STREAMING';
+  }
+
+  function startCompute(){
+    if(!$('consent').checked){ alert('Explicit compute consent is required.'); return; }
+    if(computeActive) return;
+    computeActive=true; $('compute-state').textContent='ACTIVE'; $('compute-state').className='ok'; $('core').classList.add('active');
+    $('power-off').disabled=false; $('cpu').disabled=true; $('consent').disabled=true; [...$('route-grid').children].forEach(x=>x.disabled=true);
+    $('health-value').textContent='93%'; const sysRouter=$('sys-router'); if(sysRouter) sysRouter.textContent='Streaming';
+    updatePowerCTA(); renderReceipt(); computeTimer=setInterval(renderReceipt,6000); startEnergyClock();
+  }
+
+  function stopCompute(){
+    computeActive=false; if(computeTimer) clearInterval(computeTimer); computeTimer=null; stopEnergyClock(); $('core').classList.remove('active');
+    $('power-off').disabled=true; $('cpu').disabled=false; $('consent').disabled=false; $('consent').checked=false; [...$('route-grid').children].forEach(x=>x.disabled=false);
+    $('health-value').textContent='87%'; const r=currentRoute(); $('compute-state').textContent='READY · CONSENT OFF'; $('compute-state').className='solar';
+    if(r){ $('receipt-status').textContent='ROUTE ARMED'; $('receipt').textContent=JSON.stringify(routePreview(r),null,2); const sysRouter=$('sys-router'); if(sysRouter) sysRouter.textContent=`Armed · ${r.short||r.name}`; }
+    updatePowerCTA(); renderSpinEnergy();
+  }
+
+  function buildOutcome(){
+    return Array.from({length:5},()=>Array.from({length:3},()=>randomSymbol()));
+  }
+
+  function evaluate(grid,bet){
+    const mode=currentMode(); let win=0; const hits=[]; const hitKeys=new Set();
+    for(const line of mode.paylines){
+      const first=grid[0][line[0]].s; let count=1;
+      for(let col=1;col<5;col++){ if(grid[col][line[col]].s===first) count++; else break; }
+      if(count>=3){
+        const base=currentSymbols().find(x=>x.s===first)?.v||.35; const countFactor=count===5?4:count===4?2:1;
+        win+=bet*base*countFactor*mode.payoutScale;
+        for(let col=0;col<count;col++){ const row=line[col]; const key=`${col}:${row}`; if(!hitKeys.has(key)){ hitKeys.add(key); hits.push([col,row]); } }
+      }
+    }
+    return {win:round2(win),hits};
+  }
+
+  function pulseMachine(kind='land'){
+    const panel=$('game-panel'); panel.classList.remove('impact','win-impact'); void panel.offsetWidth; panel.classList.add(kind==='win'?'win-impact':'impact');
+    setTimeout(()=>panel.classList.remove(kind==='win'?'win-impact':'impact'),kind==='win'?900:260);
+  }
+
+  function burstAtReel(reelIndex){
+    const reels=$('reels'); const reel=window.__heliosReels?.[reelIndex]; if(!reels||!reel) return;
+    const host=reels.getBoundingClientRect(); const box=reel.getBoundingClientRect(); const x=box.left-host.left+box.width/2; const y=box.top-host.top+box.height/2;
+    for(let i=0;i<7;i++){
+      const p=document.createElement('i'); p.className='solar-particle'; p.style.left=`${x}px`; p.style.top=`${y}px`;
+      const angle=(Math.PI*2*i/7)+(secureIndex(30)/100); const dist=18+secureIndex(26);
+      p.style.setProperty('--dx',`${Math.cos(angle)*dist}px`); p.style.setProperty('--dy',`${Math.sin(angle)*dist}px`); reels.appendChild(p); setTimeout(()=>p.remove(),650);
+    }
+  }
+
+  async function animateReel(col,finalColumn,stopDelay){
+    const reel=window.__heliosReels[col]; const cells=window.__heliosCells[col]; reel.classList.add('reel-spinning');
+    cells.forEach(c=>{c.classList.remove('hit','cascade-out','cascade-in');c.classList.add('spin');});
+    const cycle=setInterval(()=>{ for(let row=0;row<3;row++) cells[row].textContent=randomSymbol().s; },55);
+    await sleep(stopDelay); clearInterval(cycle); reel.classList.remove('reel-spinning'); reel.classList.add('reel-stop');
+    for(let row=0;row<3;row++){ cells[row].textContent=finalColumn[row].s; cells[row].classList.remove('spin'); }
+    burstAtReel(col); pulseMachine('land'); if(navigator.vibrate) navigator.vibrate(6); setTimeout(()=>reel.classList.remove('reel-stop'),280);
+  }
+
+  function renderGrid(grid){
+    for(let c=0;c<5;c++) for(let r=0;r<3;r++) window.__heliosCells[c][r].textContent=grid[c][r].s;
+  }
+
+  function renderHits(hits){
+    window.__heliosCells.flat().forEach(c=>c.classList.remove('hit'));
+    hits.forEach(([c,r])=>window.__heliosCells[c][r].classList.add('hit'));
+  }
+
+  function collapseGrid(grid,hits){
+    const hitSet=new Set(hits.map(([c,r])=>`${c}:${r}`));
+    const next=[];
+    for(let c=0;c<5;c++){
+      const survivors=[];
+      for(let r=0;r<3;r++) if(!hitSet.has(`${c}:${r}`)) survivors.push(grid[c][r]);
+      const incoming=Array.from({length:3-survivors.length},()=>randomSymbol());
+      next[c]=[...incoming,...survivors];
+    }
+    return next;
+  }
+
+  function cascadeMultiplierAt(index){
+    const ladder=cascadePolicy.multiplier_ladder;
+    return ladder[Math.min(index,ladder.length-1)]||1;
+  }
+
+  function setCascadeMultiplier(multiplier){
+    cascadePeakMultiplier=Math.max(cascadePeakMultiplier,multiplier);
+    const steps=[...document.querySelectorAll('.energy-step')];
+    steps.forEach(x=>x.classList.remove('cascade-active'));
+    const target=steps.find(x=>x.querySelector('b')?.textContent.trim()===`x${multiplier}`);
+    target?.classList.add('cascade-active');
+    const chip=$('cascade-status');
+    if(chip) chip.innerHTML=`CASCADE <b>x${multiplier}</b>`;
+  }
+
+  function showCascadeBanner(text,detail=''){
+    const el=$('cascade-banner'); if(!el) return;
+    el.innerHTML=`<b>${text}</b>${detail?`<small>${detail}</small>`:''}`;
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    clearTimeout(el.__t); el.__t=setTimeout(()=>el.classList.remove('show'),850);
+  }
+
+  async function animateCascade(grid,hits,nextGrid,multiplier,cascadeNo,payout){
+    renderHits(hits);
+    showCascadeBanner(`CASCADE ${cascadeNo} · x${multiplier}`,`+${payout.toFixed(2)} DEMO UNITS`);
+    window.dispatchEvent(new CustomEvent('helios:cascade',{detail:{cascade:cascadeNo,multiplier,payout,hits:[...hits],game_mode:gameModeKey,compute_effect:'NONE'}}));
+    await sleep(260);
+    hits.forEach(([c,r])=>window.__heliosCells[c][r].classList.add('cascade-out'));
+    await sleep(cascadePolicy.collapse_ms);
+    renderGrid(nextGrid);
+    window.__heliosCells.flat().forEach(c=>{c.classList.remove('hit','cascade-out');c.classList.add('cascade-in');});
+    await sleep(cascadePolicy.refill_ms);
+    window.__heliosCells.flat().forEach(c=>c.classList.remove('cascade-in'));
+  }
+
+  async function resolveCascades(initialGrid,bet){
+    let grid=initialGrid; let total=0; let cascadeNo=0; let multiplierIndex=0; let lastHits=[];
+    cascadePeakMultiplier=1; setCascadeMultiplier(1);
+
+    while(cascadeNo<cascadePolicy.max_cascades){
+      const result=evaluate(grid,bet);
+      if(result.win<=0||result.hits.length===0){ lastHits=[]; break; }
+      cascadeNo++;
+      const multiplier=cascadePolicy.enabled&&cascadePolicy.eligible_game_modes.includes(gameModeKey)?cascadeMultiplierAt(multiplierIndex):1;
+      setCascadeMultiplier(multiplier);
+      const payout=round2(result.win*multiplier);
+      total=round2(total+payout); lastHits=result.hits;
+      renderHits(result.hits); pulseMachine('win');
+      if(navigator.vibrate) navigator.vibrate([10,18,10]);
+
+      const cascadesEnabled=cascadePolicy.enabled&&cascadePolicy.eligible_game_modes.includes(gameModeKey);
+      if(!cascadesEnabled) break;
+      const nextGrid=collapseGrid(grid,result.hits);
+      await animateCascade(grid,result.hits,nextGrid,multiplier,cascadeNo,payout);
+      grid=nextGrid;
+      multiplierIndex=Math.min(multiplierIndex+1,cascadePolicy.multiplier_ladder.length-1);
+    }
+
+    if(lastHits.length) renderHits(lastHits);
+    return {grid,total,cascades:cascadeNo,peak_multiplier:cascadePeakMultiplier};
+  }
+
+  function renderGameState(source='balance'){
+    $('balance').textContent=balance.toFixed(2); $('last-win-value').textContent=lastPaidWin.toFixed(2); $('total-wins').textContent=totalWins.toFixed(2); $('total-spins').textContent=String(totalSpins);
+    const label=$('last-win-card')?.querySelector('em'); if(label) label.textContent=source==='energy'?'DEMO ENERGY REWARD':'HELIOS UNITS';
+  }
+
+  function stopAuto(){
+    autoRemaining=0; if(autoTimer) clearTimeout(autoTimer); autoTimer=null; $('auto-spin').classList.remove('active'); $('auto-spin').textContent='AUTO ×10';
+  }
+
+  function scheduleNextAuto(){
+    if(autoRemaining<=0){ stopAuto(); return; }
+    $('auto-spin').textContent=`STOP AUTO · ${autoRemaining}`; autoTimer=setTimeout(()=>spin({fromAuto:true,source:'balance'}),650);
+  }
+
+  async function spin({fromAuto=false,source='balance'}={}){
+    if(spinning) return;
+    const isEnergy=source==='energy'; const bet=Number($('bet').value);
+    if(!isEnergy&&balance<bet){ stopAuto(); return; }
+    if(isEnergy&&!currentMode().supportsDemoSpinEnergy) return;
+
+    spinning=true; setCascadeMultiplier(1);
+    if(!isEnergy) balance-=bet; renderGameState(isEnergy?'energy':'balance');
+    $('spin').disabled=true; $('bet').disabled=true; const energyButton=$('energy-spin'); if(energyButton) energyButton.disabled=true;
+    [...$('game-modes').children].forEach(x=>x.disabled=true); $('reels').classList.add('spinning');
+
+    const outcome=buildOutcome(); const baseStop=780; const step=185;
+    await Promise.all(outcome.map((column,col)=>animateReel(col,column,baseStop+(col*step))));
+    $('reels').classList.remove('spinning'); renderGrid(outcome);
+
+    const chain=await resolveCascades(outcome,bet);
+    const spinWin=round2(chain.total);
+    if(isEnergy) energyRewardUnits=round2(energyRewardUnits+spinWin); else balance=round2(balance+spinWin);
+    totalSpins++; totalWins=round2(totalWins+spinWin); if(spinWin>0) lastPaidWin=spinWin;
+    renderGameState(isEnergy?'energy':'balance');
+
+    const winCard=$('last-win-card'); winCard.classList.remove('win');
+    if(spinWin>0){ void winCard.offsetWidth; winCard.classList.add('win'); pulseMachine('win'); if(navigator.vibrate) navigator.vibrate([18,28,24]); }
+
+    window.dispatchEvent(new CustomEvent('helios:spin-complete',{detail:{spin_win:spinWin,cascades:chain.cascades,peak_multiplier:chain.peak_multiplier,game_mode:gameModeKey,source,compute_effect:'NONE'}}));
+
+    spinning=false; $('spin').disabled=false; $('bet').disabled=false; [...$('game-modes').children].forEach(x=>x.disabled=false); renderSpinEnergy();
+    if(autoRemaining>0){ autoRemaining--; if(autoRemaining>0) scheduleNextAuto(); else stopAuto(); }
+    else if(fromAuto) stopAuto();
+  }
+
+  function toggleAuto(){
+    if(autoRemaining>0){ stopAuto(); return; }
+    if(spinning) return; autoRemaining=10; $('auto-spin').classList.add('active'); $('auto-spin').textContent='STOP AUTO · 10'; spin({fromAuto:true,source:'balance'});
+  }
+
+  function modeSupportsEnergy(){ return Boolean(currentMode().supportsDemoSpinEnergy&&spinEnergyPolicy.eligible_game_modes.includes(gameModeKey)); }
+  function routeSupportsEnergy(){ return spinEnergyPolicy.eligible_routes.includes('*')||spinEnergyPolicy.eligible_routes.includes(routeKey); }
+  function canAccrueSpinEnergy(){ return Boolean(spinEnergyPolicy.enabled&&computeActive&&modeSupportsEnergy()&&routeSupportsEnergy()); }
+
+  function ensureEnergyUI(){
+    if($('spin-energy-panel')) return;
+    const style=document.createElement('style');
+    style.textContent=`
+      .core.armed{animation:armedPulse .7s ease}.route.route-pulse{animation:routePulse .52s ease}
+      .spin-energy-panel{display:grid;grid-template-columns:1fr 86px;gap:8px;align-items:center;border:1px solid #3b4a54;background:linear-gradient(90deg,#081019ee,#0b130dcc);border-radius:11px;padding:9px 10px;margin:7px 0 9px;box-shadow:inset 0 0 18px #95ff9a08}
+      .spin-energy-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.spin-energy-head b{font-size:9px;color:#95ff9a;letter-spacing:.08em}.spin-energy-head span{font:10px ui-monospace,SFMono-Regular,Consolas,monospace;color:#e8edf1}
+      .spin-energy-status{font-size:7px;color:#83919b;margin-top:3px}.spin-energy-track{height:5px;border-radius:999px;background:#03070a;overflow:hidden;margin-top:6px;border:1px solid #24313a}.spin-energy-bar{height:100%;width:0;background:linear-gradient(90deg,#55d96f,#b7ff78);box-shadow:0 0 10px #95ff9a55;transition:width .25s}
+      .energy-spin-btn{height:100%;min-height:46px;border:1px solid #396341;border-radius:9px;background:#102019;color:#95ff9a;font-size:8px;font-weight:900;line-height:1.25}.energy-spin-btn:not(:disabled){box-shadow:0 0 16px #95ff9a1f}.energy-spin-btn small{display:block;color:#819289;font-size:6px;margin-top:3px}.energy-ledger{font-size:7px;color:#708078;margin-top:4px}
+      .energy-step.cascade-active{opacity:1!important;border-color:var(--mode)!important;background:linear-gradient(180deg,var(--mode-soft),#0a0e12)!important;box-shadow:0 0 22px var(--mode),inset 0 0 16px var(--mode-soft)!important;transform:translateX(3px) scale(1.035)}.energy-step.cascade-active b{color:#fff4bd!important}
+      .cascade-status{display:inline-flex;align-items:center;border:1px solid #4a3920;background:#0e0a04;border-radius:8px;padding:4px 7px;color:#8f826a;font:7px ui-monospace,SFMono-Regular,Consolas,monospace}.cascade-status b{color:var(--mode);margin-left:4px}
+      .cascade-banner{position:absolute;z-index:40;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);min-width:180px;text-align:center;border:1px solid var(--mode);border-radius:12px;padding:10px 16px;background:#05090df2;box-shadow:0 0 36px var(--mode-soft),0 20px 55px #000c;opacity:0;pointer-events:none;transition:.18s}.cascade-banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.cascade-banner b{display:block;color:var(--mode);font:900 14px ui-monospace,SFMono-Regular,Consolas,monospace}.cascade-banner small{display:block;color:#e4d7ae;font:800 8px ui-monospace,SFMono-Regular,Consolas,monospace;margin-top:4px}
+      .cell.cascade-out{animation:cascadeOut .25s ease forwards}.cell.cascade-in{animation:cascadeIn .34s cubic-bezier(.2,.85,.25,1)}
+      @keyframes cascadeOut{to{opacity:0;transform:scale(.35) rotate(8deg);filter:blur(3px)}}@keyframes cascadeIn{from{opacity:.1;transform:translateY(-30px) scale(.92)}to{opacity:1;transform:none}}
+      @keyframes armedPulse{0%{box-shadow:0 0 25px #ffb84c33}45%{box-shadow:0 0 52px #ffcc6577,0 0 90px #ff9f1c22}100%{box-shadow:0 0 25px #ffb84c33}}@keyframes routePulse{0%{transform:none}45%{transform:translateY(-2px);box-shadow:0 0 24px #ffbb4244}100%{transform:none}}
+    `;
+    document.head.appendChild(style);
+
+    const panel=document.createElement('section'); panel.id='spin-energy-panel'; panel.className='spin-energy-panel';
+    panel.innerHTML=`<div><div class="spin-energy-head"><b>◈ DEMO SPIN ENERGY</b><span><strong id="spin-bank">0</strong> BANK · <strong id="spin-energy-countdown">--:--</strong></span></div><div id="spin-energy-status" class="spin-energy-status">GRIDJACK can accumulate demo-only spins while any configured compute route is active.</div><div class="spin-energy-track"><div id="spin-energy-bar" class="spin-energy-bar"></div></div><div class="energy-ledger">Energy rewards → DEMO_ENERGY_REWARD_ONLY · no cash value · no automatic wagering conversion · no bank autoplay.</div></div><button id="energy-spin" class="energy-spin-btn" type="button" disabled>ENERGY SPIN<small id="energy-reward">REWARD 0.00</small></button>`;
+    document.querySelector('.mode-note')?.after(panel); $('energy-spin').onclick=useEnergySpin;
+
+    const tools=$('helios-game-tools');
+    if(tools&&!$('cascade-status')){ const chip=document.createElement('span'); chip.id='cascade-status'; chip.className='cascade-status'; chip.innerHTML='CASCADE <b>x1</b>'; tools.querySelector('.session-mini')?.appendChild(chip); }
+    ensureCascadeBanner();
+  }
+
+  function formatCountdown(seconds){ const s=Math.max(0,Math.ceil(seconds)); return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+
+  function renderSpinEnergy(){
+    if(!$('spin-energy-panel')) return;
+    const threshold=spinEnergyPolicy.seconds_per_spin; const remaining=spinBank>=spinEnergyPolicy.max_bank?0:threshold-spinEnergySeconds;
+    $('spin-bank').textContent=String(spinBank); $('spin-energy-countdown').textContent=spinBank>=spinEnergyPolicy.max_bank?'FULL':formatCountdown(remaining); $('spin-energy-bar').style.width=`${Math.min(100,(spinEnergySeconds/threshold)*100)}%`; $('energy-reward').textContent=`REWARD ${energyRewardUnits.toFixed(2)}`;
+    let status='Paused.';
+    if(!spinEnergyPolicy.enabled) status='Disabled by public config.';
+    else if(!modeSupportsEnergy()) status='Select GRIDJACK (or another configured supporting mode) to accrue/use Spin Energy.';
+    else if(!routeSupportsEnergy()) status='Current route is not eligible for Spin Energy.';
+    else if(!computeActive) status=`${currentRoute()?.short||'Route'} is eligible. Grant consent and ROUTE POWER to start the timer.`;
+    else if(spinBank>=spinEnergyPolicy.max_bank) status=`Bank full (${spinEnergyPolicy.max_bank}). Use one demo spin to resume accrual.`;
+    else status=`STREAMING ${currentRoute()?.short||'ROUTE'} · next demo spin in ${formatCountdown(remaining)}.`;
+    $('spin-energy-status').textContent=status;
+    const canUse=spinBank>0&&modeSupportsEnergy()&&!spinning; $('energy-spin').disabled=!canUse; $('energy-spin').firstChild.textContent=canUse?`ENERGY SPIN ×${spinBank}`:'ENERGY SPIN';
+  }
+
+  function tickSpinEnergy(){
+    if(!canAccrueSpinEnergy()||spinBank>=spinEnergyPolicy.max_bank){ renderSpinEnergy(); return; }
+    spinEnergySeconds++;
+    if(spinEnergySeconds>=spinEnergyPolicy.seconds_per_spin){ spinEnergySeconds=0; spinBank=Math.min(spinEnergyPolicy.max_bank,spinBank+1); if(navigator.vibrate) navigator.vibrate([8,20,8]); window.dispatchEvent(new CustomEvent('helios:spin-energy-earned',{detail:{bank:spinBank,route:routeKey,game_mode:gameModeKey,real_money_value:false}})); }
+    renderSpinEnergy();
+  }
+
+  function startEnergyClock(){ stopEnergyClock(); energyTimer=setInterval(tickSpinEnergy,1000); renderSpinEnergy(); }
+  function stopEnergyClock(){ if(energyTimer) clearInterval(energyTimer); energyTimer=null; }
+  function useEnergySpin(){ if(spinning||spinBank<=0||!modeSupportsEnergy()) return; stopAuto(); spinBank--; renderSpinEnergy(); spin({source:'energy'}); }
+
+  function bindKeyboard(){
+    window.addEventListener('keydown',e=>{
+      if(e.code!=='Space'||e.repeat) return; const tag=document.activeElement?.tagName; if(['INPUT','SELECT','BUTTON','TEXTAREA'].includes(tag)) return;
+      e.preventDefault(); spin({source:'balance'});
+    });
+  }
+
+  async function init(){
+    await loadConfig(); buildReels(); buildGameModes(); buildRoutes(); ensureEnergyUI(); renderGameState(); setCascadeMultiplier(1); renderSpinEnergy();
+    $('cpu').oninput=()=> $('cpu-label').textContent=$('cpu').value+'%'; $('consent').onchange=updatePowerCTA; $('power-on').onclick=startCompute; $('power-off').onclick=stopCompute;
+    $('spin').onclick=()=>spin({source:'balance'}); $('auto-spin').onclick=toggleAuto; bindKeyboard();
+  }
+
+  init();
 })();
