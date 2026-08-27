@@ -32,7 +32,8 @@ This document describes the **active HELIOS 1.16 architecture**, intended securi
 - bonus state;
 - strict game/compute separation;
 - strict presentation/game-math separation;
-- prohibition on vulnerability/loss-history driven choreography.
+- prohibition on vulnerability/loss-history driven choreography;
+- presentation provenance and reduced-motion accessibility.
 
 ### Transaction/IP assets
 
@@ -63,7 +64,7 @@ WORKLOAD-SPECIFIC RESULT VERIFIER
 AUTHORITATIVE PROVIDER RECEIPT / SETTLEMENT
 ```
 
-Optional policy planes have **less authority** than the execution truth layer:
+Optional policy/presentation planes have **less authority** than the execution/game truth layers:
 
 ```text
 ADAPTIVE POLICY PLANE
@@ -75,10 +76,13 @@ DUAL-STREAM SAFETY GUARD
 DESKTOP FABRIC / AGENT TRUTH GATES
 
 GAME RESULT (read-only settled signal)
-        ▼
-DUAL-STREAM PRESENTATION DIRECTOR
-        ▼
-VISUAL / AUDIO / NARRATIVE ONLY
+        ├──────────────→ DUAL-STREAM PRESENTATION DIRECTOR
+        │                         ↓
+        │                VISUAL / AUDIO / NARRATIVE ONLY
+        │
+        └──────────────→ STELLAR NAVIGATOR
+                                  ↓
+                         BACKGROUND CAMERA / SKY ONLY
 ```
 
 The browser is not authoritative for settlement, provider identity, workload truth, production telemetry or secrets.
@@ -285,6 +289,29 @@ Active controls:
 
 Production gate: independent frontend/game-math review ensuring no certified deployment rewires those event boundaries.
 
+### T17 — Stellar Navigator authority, provenance or accessibility leak
+
+Threat: a cosmetic sky/navigation layer becomes a hidden game/retention signal, performs undeclared network/catalogue loading, introduces unlicensed external data/assets, or ignores reduced-motion requirements.
+
+Active controls:
+
+- `helios-stellar-nav.js` is presentation-only Canvas 2D;
+- RNG/RTP/payout/bet/bonus probability and compute/provider selection effects are `NONE`;
+- bet, balance, loss streak, near miss, wager history and inferred vulnerability are not inputs;
+- no `fetch`, XHR or WebSocket path exists in the active module;
+- no runtime third-party dependency is required;
+- the faint field is deterministic synthetic Fibonacci-sphere geometry rather than a downloaded catalogue;
+- bright anchors are manually curated rounded astronomical facts and are not marketed as a scientific catalogue;
+- `prefers-reduced-motion` disables travel/warp motion;
+- `wisnc/stellar-map` is recorded as design-study-only because no root licence was found during review; no source/catalogue/constellation/Messier/image asset from that project is incorporated.
+
+Production/closing gates:
+
+- preserve the third-party/provenance notice if the visual implementation evolves;
+- require explicit compatible licence review before importing any future external catalogue, texture, image or source fragment;
+- include the navigator in frontend performance/accessibility review across representative phones/desktops;
+- keep presentation events read-only and independent from certified game math.
+
 ## 4. Explicitly untrusted browser claims
 
 Browser display alone is not authoritative evidence of provider acceptance/payment, scientific impact, compute earnings, receipt validity, regulator approval or datacenter savings.
@@ -312,4 +339,4 @@ Regulated gambling, financial, crypto, medical or other regulated deployments ad
 
 ## 6. Review rule
 
-Revisit this threat model whenever a real provider adapter, production gateway, workload/executor class, identity system, authoritative settlement path, learnable policy arm, safety metric or presentation event source is introduced.
+Revisit this threat model whenever a real provider adapter, production gateway, workload/executor class, identity system, authoritative settlement path, learnable policy arm, safety metric, presentation event source, external visual catalogue or presentation runtime dependency is introduced.
