@@ -1,6 +1,6 @@
 {
   "schema": "janus.helios.buyer-critic-audit.v1",
-  "artifact_id": "JANUS-HELIOS-BUYER-CRITIC-AUDIT-2026-08-27-v1.2",
+  "artifact_id": "JANUS-HELIOS-BUYER-CRITIC-AUDIT-2026-08-27-v1.3",
   "audit_posture": "HOSTILE_BUT_FAIR_BUYER_TECHNICAL_DILIGENCE",
   "project_target": "Hawkar-usls/Janus-HELIOS",
   "product_snapshot_version": "1.16.0",
@@ -27,7 +27,7 @@
       "finding": "CANONICAL_ARCHITECTURE_DRIFT",
       "severity_before_fix": "HIGH",
       "problem": "HELIOS_ARCHITECTURE still described project 1.12 and an obsolete single-tier purchased bonus while active product had tiered bonus, desktop fabric, adaptive/safety and Director layers.",
-      "remediation": "Canonical architecture advanced to schema v16 / project 1.16.0 and records current bonus, desktop, adaptive, safety, Director and production gates.",
+      "remediation": "Canonical architecture advanced to schema v16 / project 1.16.0 and records current bonus, desktop, adaptive, safety, Director, Stellar Navigator and production gates.",
       "regression_gate": "strict due-diligence preflight checks architecture/package/status synchronization and current tier values"
     },
     {
@@ -35,7 +35,7 @@
       "finding": "PROJECT_STATUS_AND_README_DRIFT",
       "severity_before_fix": "MEDIUM_HIGH",
       "problem": "Status/test inventory and README did not describe the full active policy/presentation architecture and referenced older integrity evidence as if it were current context.",
-      "remediation": "PROJECT_STATUS v21 and README 1.16 explicitly list active modules, current authority boundaries and commit-scoped evidence semantics.",
+      "remediation": "PROJECT_STATUS v23 and README 1.16 explicitly list active modules, current authority boundaries, Stellar Navigator and commit-scoped evidence semantics.",
       "regression_gate": "tests/due-diligence-invariants.test.mjs + strict preflight"
     },
     {
@@ -43,7 +43,7 @@
       "finding": "BUYER_PREFLIGHT_WAS_TOO_NARROW",
       "severity_before_fix": "HIGH",
       "problem": "Due-diligence preflight checked desktop fabric/agent but did not inspect Adaptive Policy, Dual-Stream Safety, Director loader/authority or canonical architecture synchronization.",
-      "remediation": "Strict preflight now validates all active authority planes, exact bonus tiers, explicit loaders, DOM-injection boundaries, workflow hardening, transaction scope and security-document synchronization.",
+      "remediation": "Strict preflight now validates all active authority planes, Stellar Navigator provenance/runtime boundaries, exact bonus tiers, explicit loaders, DOM-injection boundaries, workflow hardening, transaction scope and security-document synchronization.",
       "regression_gate": "tools/due-diligence-preflight.mjs --strict"
     },
     {
@@ -59,7 +59,7 @@
       "finding": "THREAT_MODEL_REFERENCED_REMOVED_SWARM_IMPLEMENTATION",
       "severity_before_fix": "HIGH",
       "problem": "Security documentation named removed helios-swarm-dispatcher as an active control and omitted new adaptive/safety/presentation threat classes.",
-      "remediation": "Threat Model and SECURITY now use Desktop Fabric/Agent trust boundaries and explicitly cover policy truth erosion, stale/forged safety evidence and Director authority/retention leakage.",
+      "remediation": "Threat Model and SECURITY now use Desktop Fabric/Agent trust boundaries and explicitly cover policy truth erosion, stale/forged safety evidence, Director authority leakage and Stellar Navigator authority/provenance/accessibility leakage.",
       "regression_gate": "strict preflight + due-diligence invariants"
     },
     {
@@ -85,6 +85,46 @@
       "problem": "Bonus tier names were interpolated into innerHTML and externally supplied tier IDs were interpolated into a querySelector expression. Current repository-controlled demo config limited exploitability, but this was not acceptable for buyer-configurable/remote production evolution.",
       "remediation": "Bonus Confirmation v2.3 normalizes tier IDs/text, renders dynamic tier metadata using textContent/DOM nodes, renders dynamic wheel result using replaceChildren, and removes dynamic selector interpolation.",
       "regression_gate": "tests/bonus-buy-consent-invariants.test.mjs + strict preflight"
+    },
+    {
+      "id": "BC-11",
+      "finding": "REPEATING_CLUSTERED_COSMIC_BACKGROUND",
+      "severity_before_fix": "MEDIUM_PRODUCT_QUALITY",
+      "problem": "The public cosmic background used repeating CSS radial-gradient star tiles, visually clustering/repeating stars and weakening the impression of spatial travel.",
+      "remediation": "Added independent HELIOS Stellar Navigator v1.0: manually curated rounded bright-star coordinate anchors plus a deterministic synthetic Fibonacci-sphere deep field, perspective projection and bounded presentation travel impulses.",
+      "regression_gate": "tests/stellar-navigator-invariants.test.mjs + strict preflight"
+    },
+    {
+      "id": "BC-12",
+      "finding": "EXTERNAL_STELLAR_REFERENCE_WITHOUT_DISCOVERED_LICENSE",
+      "severity_before_fix": "HIGH_IP_IF_COPIED",
+      "problem": "wisnc/stellar-map was attractive as a design/source reference, but no root LICENSE file was found during review; direct source/catalogue/asset copying would create avoidable acquisition-title risk.",
+      "remediation": "Treat stellar-map as design-study-only. HELIOS imports no source, catalogue, constellation/Messier data, screenshots or assets; active Stellar Navigator is a requirements-first HELIOS implementation. Boundary is recorded in third-party/provenance docs and strict preflight.",
+      "regression_gate": "THIRD_PARTY_NOTICES.md + legal/BACKGROUND_IP_AND_PROVENANCE.md + .janus/HELIOS_STELLAR_NAVIGATOR.json + strict preflight"
+    },
+    {
+      "id": "BC-13",
+      "finding": "STALE_PUBLIC_CACHE_KEYS",
+      "severity_before_fix": "MEDIUM_HIGH_RUNTIME_DRIFT",
+      "problem": "index.html requested helios.js and helios-bonus.js using older cache-bust versions than the active core/bonus module versions, allowing browsers/CDNs to retain misleading stale behavior.",
+      "remediation": "Public loader cache keys now match game core 1.7.1 and bonus engine 1.4.0; semantic tests assert current loader versions.",
+      "regression_gate": "tests/polish-invariants.test.mjs + tests/solar-corona.test.mjs"
+    },
+    {
+      "id": "BC-14",
+      "finding": "BRITTLE_ARCHAEOLOGICAL_TEST_ASSERTIONS",
+      "severity_before_fix": "MEDIUM_EVIDENCE_QUALITY",
+      "problem": "Several integrity tests asserted obsolete implementation labels/strings such as GAME_MODES, READY CONSENT OFF and old module query versions rather than current product invariants.",
+      "remediation": "Rebased public-surface, polish and Solar Corona tests on current semantic contracts: MODE_META profiles, explicit consent/compute state, fixed neutral stop schedule, first-class spin sources and current module versions.",
+      "regression_gate": "HELIOS Integrity npm invariant suite"
+    },
+    {
+      "id": "BC-15",
+      "finding": "BONUS_CORE_DOCUMENTATION_LAGGED_IMPLEMENTATION",
+      "severity_before_fix": "HIGH_DD_DRIFT",
+      "problem": "The game core already implemented first-class source:'bonus' entitlement/capability semantics, while README/architecture/status/game-math documents still described a presentation stake-refund bridge as current state.",
+      "remediation": "Canonical architecture, PROJECT_STATUS, README and game-math boundary now describe the first-class BONUS source, no per-spin stake charge, game-core winnings credit and stale-capability rejection; obsolete production gate removed.",
+      "regression_gate": "tests/solar-corona.test.mjs + strict preflight architecture/game-math checks"
     }
   ],
   "open_external_or_production_gates": [
@@ -109,12 +149,6 @@
       "required_action": "Use signed release/tag or equivalent cryptographic attestation for final closing snapshot if agreed."
     },
     {
-      "id": "BC-EXT-04",
-      "finding": "FIRST_CLASS_BONUS_CORE_SOURCE_NOT_IMPLEMENTED",
-      "status": "OPEN_PRODUCT_GATE",
-      "required_action": "Replace presentation-layer stake-refund bridge before regulated production deployment."
-    },
-    {
       "id": "BC-EXT-05",
       "finding": "REAL_PROVIDER_AND_DURABLE_MULTI_HOST_PLANE_NOT_VALIDATED",
       "status": "OPEN_PRODUCTION_GATE",
@@ -137,6 +171,12 @@
       "finding": "PUBLIC_DEMO_RNG_IS_NOT_A_CERTIFIED_REGULATED_RNG_PACKAGE",
       "status": "OPEN_REGULATED_GAME_GATE",
       "required_action": "For real-money deployment define the authoritative production RNG interface, formal game mathematics, simulations and jurisdiction/test-lab certification on the exact production snapshot."
+    },
+    {
+      "id": "BC-EXT-09",
+      "finding": "STELLAR_NAVIGATOR_REQUIRES_REAL_DEVICE_VISUAL_PERFORMANCE_ACCESSIBILITY_VALIDATION",
+      "status": "OPEN_PRESENTATION_VALIDATION_GATE",
+      "required_action": "Visually validate the new moving sky on representative desktop/mobile browsers, including reduced-motion behavior, before calling the presentation polished for buyer demo."
     }
   ],
   "non_claims": {
@@ -144,10 +184,11 @@
     "security_certified": false,
     "regulated_game_certified": false,
     "profitability_proven": false,
+    "scientific_planetarium_claimed": false,
     "patented_or_patent_pending_claimed": false,
     "branch_protection_claimed_enabled": false,
     "signed_release_claimed": false
   },
-  "buyer_conclusion_if_repository_integrity_passes": "REPOSITORY_LEVEL_ARCHITECTURE_AND_DILIGENCE_PACKAGE_MATERIALLY_HARDENED; REMAINING MATERIAL RISKS ARE PRIMARILY EXPLICIT HOST_LEVEL_CLOSING_CONTROLS, REGULATED_GAME_CERTIFICATION AND REAL_PRODUCTION_PROVIDER_PILOT_VALIDATION, NOT HIDDEN_DOCUMENTATION_OR_PRESENTATION_AUTHORITY_DRIFT.",
+  "buyer_conclusion_if_repository_integrity_passes": "REPOSITORY_LEVEL_ARCHITECTURE_AND_DILIGENCE_PACKAGE_MATERIALLY_HARDENED; REMAINING MATERIAL RISKS ARE PRIMARILY EXPLICIT HOST_LEVEL_CLOSING_CONTROLS, REGULATED_GAME_CERTIFICATION, REAL_PRODUCTION_PROVIDER_PILOT_VALIDATION AND REAL_DEVICE_PRESENTATION_VALIDATION, NOT HIDDEN_DOCUMENTATION_OR_PRESENTATION_AUTHORITY_DRIFT.",
   "invariant": "FIX_WHAT_THE_REPOSITORY_CAN_PROVE; DISCLOSE_WHAT_REQUIRES_EXTERNAL_EVIDENCE; NEVER_CONVERT_AN_OPEN_GATE_INTO_A_PAPER_PASS."
 }
