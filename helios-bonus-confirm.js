@@ -2,11 +2,13 @@
   'use strict';
 
   const $ = id => document.getElementById(id);
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const DEFAULT_TIERS = [
     {id:'standard',name:'STANDARD CORONA',cost_multiplier_of_demo_bet:50,free_spins_count:10,retrigger_spins:2,max_total_spins:16},
     {id:'radiant',name:'RADIANT CORONA',cost_multiplier_of_demo_bet:100,free_spins_count:12,retrigger_spins:2,max_total_spins:20},
     {id:'solar_flare',name:'SOLAR FLARE',cost_multiplier_of_demo_bet:175,free_spins_count:15,retrigger_spins:3,max_total_spins:24}
   ];
+  const PURCHASE_WHEEL_VALUES = [6,8,10,12,15,18,20,24];
 
   let tiers = DEFAULT_TIERS.map(x=>({...x}));
   let selectedTierId = 'standard';
@@ -101,12 +103,64 @@
     const overlay=$('bonus-confirm-overlay');if(!overlay||overlay.hidden)return;overlay.hidden=true;overlay.setAttribute('aria-hidden','true');document.body.classList.remove('bonus-confirm-open');if(emitCancel)window.dispatchEvent(new CustomEvent('helios:bonus-buy-review-cancel',{detail:{tier_id:selectedTierId,cost:currentCost(),real_money_value:false}}));if(lastFocused?.focus)setTimeout(()=>lastFocused.focus(),20);
   }
 
-  function confirmPurchase(){
+  async function animatePurchasedBonusWheel(detail){
+    const overlay=$('solar-corona-overlay');
+    const pointer=$('corona-pointer');
+    const result=$('solar-corona-result');
+    const sub=$('solar-corona-sub');
+    const title=$('solar-corona-title');
+    const rays=[...document.querySelectorAll('.corona-ray')];
+    if(!overlay||!pointer||!result||!sub||!title||!rays.length)return false;
+
+    const award=Math.max(1,Number(detail.free_spins_count||0));
+    const values=[...PURCHASE_WHEEL_VALUES];
+    let selected=values.indexOf(award);
+    if(selected<0){
+      selected=values.reduce((best,v,i)=>Math.abs(v-award)<Math.abs(values[best]-award)?i:best,0);
+      values[selected]=award;
+    }
+    const oldLabels=rays.map(x=>x.textContent);
+
+    rays.forEach((ray,i)=>{
+      ray.classList.remove('selected');
+      ray.textContent=`${values[i%values.length]} FS`;
+    });
+    title.textContent='SOLAR CORONA ACTIVATION';
+    sub.textContent=`${detail.tier_name||'BONUS TIER'} · AUTHORIZED · CORONA SPIN`;
+    result.innerHTML='IGNITING…<small>FREE-SPIN AWARD ACTIVATION</small>';
+    overlay.classList.add('show');
+
+    window.dispatchEvent(new CustomEvent('helios:bonus-wheel-start',{detail:{...detail,presentation_only:true,rng_effect:'NONE',compute_effect:'NONE'}}));
+
+    const angle=(360/rays.length)*selected;
+    pointer.style.transition='none';
+    pointer.style.transform='rotate(0deg)';
+    void pointer.offsetWidth;
+    pointer.style.transition='transform 1.85s cubic-bezier(.12,.78,.14,1)';
+    pointer.style.transform=`rotate(${1440+angle}deg)`;
+
+    await sleep(1900);
+    rays[selected]?.classList.add('selected');
+    result.innerHTML=`${award} FREE SPINS<small>${detail.tier_name||'SELECTED TIER'} · TIER AWARD · VISUAL ACTIVATION</small>`;
+    if(navigator.vibrate)navigator.vibrate([16,28,16,28,38]);
+
+    window.dispatchEvent(new CustomEvent('helios:bonus-wheel-complete',{detail:{...detail,spins_awarded:award,presentation_only:true,rng_effect:'NONE',compute_effect:'NONE'}}));
+
+    await sleep(850);
+    overlay.classList.remove('show');
+    await sleep(220);
+    rays.forEach((ray,i)=>{ray.classList.remove('selected');ray.textContent=oldLabels[i]||ray.textContent;});
+    return true;
+  }
+
+  async function confirmPurchase(){
     const consent=$('bonus-confirm-consent');if(!consent?.checked)return;const tier=selectedTier(),bet=currentBet(),cost=currentCost();if(currentBalance()+1e-9<cost){updateConfirmState();return;}
+    const buy=$('bonus-confirm-buy');if(buy)buy.disabled=true;
     closeDialog(false);
     const detail={feature:'SOLAR_CORONA_FREE_SPINS',tier_id:tier.id,tier_name:tier.name,bet,cost,cost_multiplier:tier.cost_multiplier_of_demo_bet,free_spins_count:tier.free_spins_count,retrigger_spins:tier.retrigger_spins,max_total_spins:tier.max_total_spins,explicit_consent:true,real_money_value:false,production_enabled:false,compute_effect:'NONE'};
     window.dispatchEvent(new CustomEvent('helios:bonus-buy-review-confirmed',{detail}));
-    queueMicrotask(()=>window.dispatchEvent(new CustomEvent('helios:bonus-buy-authorized',{detail})));
+    try{await animatePurchasedBonusWheel(detail);}catch(err){console.warn('[HELIOS BONUS WHEEL]',err);}
+    window.dispatchEvent(new CustomEvent('helios:bonus-buy-authorized',{detail:{...detail,visual_wheel_complete:true}}));
   }
 
   function keyHandler(e){const overlay=$('bonus-confirm-overlay');if(!overlay||overlay.hidden)return;if(e.key==='Escape'){e.preventDefault();closeDialog(true);}}
