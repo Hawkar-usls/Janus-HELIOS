@@ -1,20 +1,20 @@
 # JANUS HELIOS — CI & Release Evidence
 
-This document records reproducible integrity evidence for specific repository snapshots. It does **not** turn HELIOS into a production-certified product and does not replace transaction counsel, an independent security review, regulated-game certification, a provider pilot, or a closing-time independent SBOM/licence review.
+This document records reproducible integrity evidence for **immutable historical repository snapshots**. It does not turn HELIOS into a production-certified product and does not replace transaction counsel, independent security review, regulated-game certification, provider pilot or closing-time independent SBOM/licence review.
 
-## Latest recorded integrity snapshot
+## Recorded baseline integrity snapshot
 
 Repository: `Hawkar-usls/Janus-HELIOS`
 
 Commit:
 
-`ab859cd7207aacfc6b97541aad340c41b3cfe03c`
+`36c28dd139218e765d5e62ba0c090d29f7fe4b84`
 
 GitHub Actions workflow: `HELIOS Integrity`
 
-Run ID:
+Run ID: `33085222325` (run #73)
 
-`33080312910`
+Result: **success**.
 
 Execution environment:
 
@@ -24,13 +24,9 @@ Execution environment:
 - checkout credentials not persisted;
 - third-party GitHub Actions pinned to immutable commit SHAs.
 
-## Result
+The following stages completed with `success` for that exact snapshot:
 
-The run completed successfully for the exact commit above.
-
-The following stages all completed with `success`:
-
-1. syntax / public-surface checks;
+1. syntax/public-surface checks;
 2. configured invariant test suite;
 3. high-confidence tracked-file secret scan;
 4. declared dependency SBOM generation;
@@ -38,31 +34,53 @@ The following stages all completed with `success`:
 6. strict closing-manifest generation;
 7. buyer-integrity artifact upload.
 
-This exact snapshot includes the HELIOS-native desktop compute plane:
-
-- `src/helios-desktop-fabric.js` — Fabric `2.1.0`;
-- `src/helios-desktop-agent.js` — Agent `1.1.0`;
-- scheduler fairness regression preventing an unavailable resource class from head-of-line blocking runnable work;
-- per-slice verified-agent receipt provenance;
-- local assignment lease-expiry and resource-capacity rechecks;
-- fail-closed controller-budget checks preventing a coordinator from widening the user's local resource policy;
-- buyer preflight guards that fail if the removed Buzz-derived active dispatcher paths are silently reintroduced.
-
-## Buyer-integrity artifact
+## Recorded buyer-integrity artifact
 
 Artifact name:
 
-`helios-buyer-integrity-ab859cd7207aacfc6b97541aad340c41b3cfe03c`
+`helios-buyer-integrity-36c28dd139218e765d5e62ba0c090d29f7fe4b84`
 
-Artifact ID:
+Artifact ID: `9651829670`
 
-`9649711471`
+GitHub-reported archive digest:
 
-Artifact archive digest reported by GitHub:
+`sha256:e9316b3079b8d6c351bc1d2b48eb5eb4c4264fe0dc814f4c466d44e3874682b6`
 
-`sha256:a410bb7a8f4e0f37103f8e8316cebd122cddb10e1e6a5d078c33fa1b77af9d23`
+The artifact is temporary CI evidence. A transaction must regenerate and separately preserve evidence for the exact final closing commit rather than rely indefinitely on Actions retention.
 
-The artifact is temporary CI evidence. A real transaction should regenerate and separately preserve buyer-integrity evidence for the exact final closing commit rather than rely indefinitely on CI retention.
+## Why this document does not claim to certify current `main`
+
+A repository commit cannot contain the future workflow-run ID/digest produced only after that same commit exists without creating another commit. Therefore this file intentionally records known immutable evidence snapshots instead of pretending a prose pointer inside `main` can recursively certify itself.
+
+For a current candidate, the authoritative process is:
+
+```text
+candidate commit SHA
+        ↓
+GitHub HELIOS Integrity run for that exact SHA
+        ↓
+job/step conclusions
+        ↓
+buyer-integrity artifact + digest
+        ↓
+externally retained closing record
+```
+
+Every later code/documentation snapshot must be re-run. A previous green commit never certifies a later commit.
+
+## Current workflow hardening target
+
+The active workflow is intended to run:
+
+- syntax/public checks;
+- complete configured invariant suite;
+- high-confidence secret scan;
+- declared dependency SBOM;
+- **strict** buyer due-diligence preflight;
+- strict clean-tree closing manifest;
+- buyer-integrity artifact upload.
+
+Repository content does not itself enforce GitHub branch protection. Host-level branch protection/ruleset and signed closing attestation remain separate closing gates.
 
 ## What the strict closing manifest proves
 
@@ -71,52 +89,31 @@ The artifact is temporary CI evidence. A real transaction should regenerate and 
 - exact Git commit SHA;
 - exact Git tree SHA;
 - tracked-file list;
-- byte size for each tracked file;
+- byte size of each tracked file;
 - SHA-256 of each tracked file;
 - SHA-256 of the canonical manifest payload.
 
-It proves snapshot identity/integrity. It does **not** by itself prove:
-
-- ownership of every copyright interest;
-- non-infringement worldwide;
-- security certification;
-- production readiness;
-- regulatory approval;
-- provider availability;
-- profitability;
-- datacenter offload;
-- patent or trademark rights.
-
-Those are separate diligence questions.
+It proves snapshot identity/integrity. It does not prove copyright title, worldwide non-infringement, security certification, production readiness, regulatory approval, provider availability, profitability, datacenter savings or patent/trademark rights.
 
 ## Declared dependency SBOM boundary
 
-The CI-generated CycloneDX-formatted SBOM reflects dependencies declared by `package.json`. At the recorded snapshot, the package declares no npm runtime/development dependencies.
+The CI-generated CycloneDX-formatted SBOM reflects dependencies declared in `package.json`. HELIOS currently declares no npm runtime/development dependencies.
 
-This is useful reproducible evidence but is **not** represented as an independent complete software-composition analysis. A closing review should still scan for vendored, undeclared, generated, browser-loaded, operating-system and other third-party components as applicable.
-
-## Audit history
-
-The integrity workflow was intentionally introduced as a hard gate instead of declaring tests green without execution.
-
-Early audit runs exposed stale source-text assertions. Later desktop-fabric work exposed another useful class of buyer-level review findings: scheduler fairness and execution-plane provenance. Those findings were corrected with code plus regression tests rather than papered over in documentation.
-
-Historical Buzz/ESP32 lineage remains disclosed in `legal/BACKGROUND_IP_AND_PROVENANCE.md`; the active desktop fabric/agent does not pretend Git history or historical MIT grants disappeared.
+This is useful reproducible evidence but is not represented as an independent complete software-composition analysis. Closing review must still check vendored, undeclared, generated, browser-loaded, operating-system and other external components as applicable.
 
 ## Closing rule
 
-Every definitive sale/licence closing candidate must receive a **new** exact-snapshot run. A previous green commit does not automatically certify a later commit.
-
-Recommended closing sequence:
+Every definitive sale/licence closing candidate gets a **new exact-snapshot run**.
 
 ```text
 FREEZE CANDIDATE
-→ CI INTEGRITY PASS
-→ INDEPENDENT SBOM / LICENSE / SECURITY REVIEW AS AGREED
-→ STRICT MANIFEST
-→ SIGNED TAG OR EQUIVALENT ATTESTATION
+→ HOST-LEVEL CHANGE CONTROL / BRANCH FREEZE
+→ CI INTEGRITY PASS ON EXACT SHA
+→ INDEPENDENT SBOM / LICENCE / SECURITY REVIEW AS AGREED
+→ STRICT MANIFEST + ARTIFACT DIGEST PRESERVED EXTERNALLY
+→ SIGNED TAG / RELEASE OR EQUIVALENT ATTESTATION
 → BUYER VERIFIES HASHES
 → OBJECTIVE ACCEPTANCE
 ```
 
-The current public maturity remains an active capability prototype. Production validation remains a separate gate.
+HELIOS remains an active capability prototype. Production validation is a separate gate.
