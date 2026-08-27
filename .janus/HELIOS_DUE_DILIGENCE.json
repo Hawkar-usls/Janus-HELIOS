@@ -1,6 +1,6 @@
 {
-  "schema": "janus.helios.due-diligence.v1",
-  "artifact_id": "JANUS-HELIOS-DUE-DILIGENCE-2026-08-27-v1.0",
+  "schema": "janus.helios.due-diligence.v2",
+  "artifact_id": "JANUS-HELIOS-DUE-DILIGENCE-2026-08-27-v2.0",
   "purpose": "Prepare HELIOS for buyer diligence without overstating ownership, production readiness, profitability, regulatory status or transfer scope.",
   "default_transaction_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
   "asset_boundary": {
@@ -21,8 +21,14 @@
     "buzz_lineage": {
       "repository": "Hawkar-usls/janus-distributed-ai-swarm",
       "repository_owner_matches_helios_owner": true,
-      "license": "MIT",
-      "required_notice_preservation": true,
+      "historical_license": "MIT",
+      "historical_mit_last_snapshot": "b644af87de104b405427a8c0ae3c35c8d192507c",
+      "historical_mit_retroactively_revoked": false,
+      "current_license": "JANUS_DISTRIBUTED_AI_SWARM_SOURCE_AVAILABLE_EVALUATION_LICENSE_V1_1",
+      "first_source_available_relicense_commit": "a1df4ee660f523bf014d739726458ecd1c909587",
+      "exact_source_overlap_review_required": true,
+      "historical_mit_notice_preservation_if_applicable": true,
+      "later_source_available_background_ip_requires_express_transaction_rights": true,
       "entire_source_repository_transferred_by_default": false
     }
   },
@@ -31,6 +37,7 @@
     "declared_npm_dependencies_at_current_snapshot": 0,
     "closing_sbom_scan_required": true,
     "closing_license_scan_required": true,
+    "exact_background_source_overlap_review_required": true,
     "block_closing_on_unresolved_incompatible_license": true
   },
   "release_integrity": {
@@ -70,7 +77,8 @@
     "patent_status_claimed": false,
     "trademark_assignment_requires_explicit_listing": true,
     "provider_outreach_equals_transferable_contract": false,
-    "non_compete_implied": false
+    "non_compete_implied": false,
+    "historical_open_source_grants_are_hidden_or_denied": false
   },
   "production_truth": {
     "current_public_product_class": "CAPABILITY_EVALUATION_PROTOTYPE",
@@ -85,6 +93,7 @@
     "SELLER_IDENTITY_AND_AUTHORITY_DOCUMENTATION",
     "FULL_CONTRIBUTION_HISTORY_REVIEW",
     "AUTOMATED_SBOM_AND_LICENSE_SCAN",
+    "EXACT_SWARM_HELIOS_SOURCE_OVERLAP_REVIEW",
     "FULL_TEST_SUITE_EXECUTION_ON_EXACT_CLOSING_COMMIT",
     "SIGNED_RELEASE_OR_EQUIVALENT_CRYPTOGRAPHIC_ATTESTATION",
     "TRADEMARK_CLEARANCE_IF_BRAND_IS_TRANSFERRED",
@@ -93,5 +102,5 @@
     "SIGNED_ASSET_PURCHASE_AND_IP_ASSIGNMENT",
     "BUYER_ACCEPTANCE_CERTIFICATE"
   ],
-  "invariant": "NO_HIDDEN_SCOPE_NO_FAKE_READINESS_NO_UNPROVEN_ECONOMICS_NO_PERSONAL_ACCOUNT_TRANSFER: exact assets, exact snapshot, disclosed provenance, objective acceptance and factual warranties only."
+  "invariant": "NO_HIDDEN_SCOPE_NO_FAKE_READINESS_NO_UNPROVEN_ECONOMICS_NO_PERSONAL_ACCOUNT_TRANSFER_NO_FAKE_RETROACTIVE_RELICENSING: exact assets, exact snapshot, disclosed provenance, objective acceptance and factual warranties only."
 }
