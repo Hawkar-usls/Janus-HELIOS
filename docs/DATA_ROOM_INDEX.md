@@ -8,8 +8,8 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `PROJECT_STATUS.json`
 - `.janus/HELIOS_ARCHITECTURE.json`
 - `.janus/HELIOS_ECOSYSTEM.json`
-- `.janus/HELIOS_SWARM_DISPATCHER.json`
-- `docs/SWARM_DISPATCHER.md`
+- `.janus/HELIOS_DESKTOP_FABRIC.json`
+- `docs/DESKTOP_FABRIC.md`
 - `docs/COMMERCIAL_THESIS.md`
 - `docs/GAME_MATH_AND_REGULATORY_BOUNDARY.md`
 - `docs/PUBLIC_PRIVATE_PRODUCTION_BOUNDARY.md`
@@ -58,11 +58,15 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `tools/due-diligence-preflight.mjs`
 - `tools/secret-scan.mjs`
 - `src/helios-router.js`
-- `src/helios-swarm-dispatcher.js`
+- `src/helios-desktop-fabric.js`
 - `package.json`
 - `tests/`
 
-## G. Machine-generated buyer evidence
+## G. Historical provenance material
+
+The Git history contains an earlier Buzz-derived execution-plane implementation. The active closing snapshot does not treat that historical module as the HELIOS execution plane. Its lineage and licence boundary are disclosed in `legal/BACKGROUND_IP_AND_PROVENANCE.md` rather than hidden.
+
+## H. Machine-generated buyer evidence
 
 The integrity workflow produces, for each exact successful commit:
 
