@@ -1,0 +1,97 @@
+{
+  "schema": "janus.helios.due-diligence.v1",
+  "artifact_id": "JANUS-HELIOS-DUE-DILIGENCE-2026-08-27-v1.0",
+  "purpose": "Prepare HELIOS for buyer diligence without overstating ownership, production readiness, profitability, regulatory status or transfer scope.",
+  "default_transaction_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
+  "asset_boundary": {
+    "purchased_schedule": "legal/PURCHASED_ASSETS_SCHEDULE.md",
+    "excluded_schedule": "legal/EXCLUDED_ASSETS_SCHEDULE.md",
+    "specialized_children_included_by_default": false,
+    "other_janus_repositories_included_by_default": false,
+    "future_inventions_included_by_default": false,
+    "seller_personal_accounts_included": false,
+    "broad_related_technology_language_expands_scope": false
+  },
+  "provenance": {
+    "record": "legal/BACKGROUND_IP_AND_PROVENANCE.md",
+    "ai_assisted_development_disclosed": true,
+    "buyer_should_receive_contribution_history_review": true,
+    "seller_attestation_required_at_closing": true,
+    "complete_chain_of_title_claimed_without_review": false,
+    "buzz_lineage": {
+      "repository": "Hawkar-usls/janus-distributed-ai-swarm",
+      "repository_owner_matches_helios_owner": true,
+      "license": "MIT",
+      "required_notice_preservation": true,
+      "entire_source_repository_transferred_by_default": false
+    }
+  },
+  "third_party": {
+    "register": "THIRD_PARTY_NOTICES.md",
+    "declared_npm_dependencies_at_current_snapshot": 0,
+    "closing_sbom_scan_required": true,
+    "closing_license_scan_required": true,
+    "block_closing_on_unresolved_incompatible_license": true
+  },
+  "release_integrity": {
+    "procedure": "docs/RELEASE_AND_HASHING.md",
+    "exact_commit_required": true,
+    "exact_tree_required": true,
+    "per_file_sha256_manifest_required": true,
+    "manifest_sha256_required": true,
+    "signed_release_preferred": true,
+    "signed_release_already_claimed": false,
+    "test_pass_requires_actual_execution_on_closing_snapshot": true
+  },
+  "acceptance": {
+    "criteria": "legal/ACCEPTANCE_AND_HANDOVER.md",
+    "objective_reproducible": true,
+    "subjective_commercial_satisfaction_allowed_as_default": false,
+    "profitability_is_acceptance_condition": false,
+    "regulatory_approval_is_acceptance_condition": false,
+    "future_provider_integration_is_acceptance_condition": false,
+    "known_exceptions_must_be_disclosed": true
+  },
+  "support": {
+    "scope": "legal/TRANSITION_SUPPORT_SCOPE.md",
+    "unlimited_support_by_default": false,
+    "new_features_included_by_default": false,
+    "production_operations_included_by_default": false,
+    "new_work_requires_sow": true
+  },
+  "transaction_guardrails": {
+    "document": "legal/TRANSACTION_GUARDRAILS.md",
+    "seller_personal_credentials_are_delivery_item": false,
+    "escrow_or_confirmed_payment_before_control_transfer_recommended": true,
+    "commercial_results_warranted": false,
+    "token_price_appreciation_warranted": false,
+    "datacenter_offload_warranted_without_pilot": false,
+    "regulatory_approval_implied": false,
+    "patent_status_claimed": false,
+    "trademark_assignment_requires_explicit_listing": true,
+    "provider_outreach_equals_transferable_contract": false,
+    "non_compete_implied": false
+  },
+  "production_truth": {
+    "current_public_product_class": "CAPABILITY_EVALUATION_PROTOTYPE",
+    "production_provider_adapter_connected": false,
+    "production_profitability_validated": false,
+    "datacenter_offload_measured": false,
+    "real_money_certification_included": false,
+    "sponsor_provider_pilot_required_for_measured_unit_economics": true
+  },
+  "external_closing_steps_not_solved_by_repository_docs": [
+    "QUALIFIED_TRANSACTION_COUNSEL_REVIEW",
+    "SELLER_IDENTITY_AND_AUTHORITY_DOCUMENTATION",
+    "FULL_CONTRIBUTION_HISTORY_REVIEW",
+    "AUTOMATED_SBOM_AND_LICENSE_SCAN",
+    "FULL_TEST_SUITE_EXECUTION_ON_EXACT_CLOSING_COMMIT",
+    "SIGNED_RELEASE_OR_EQUIVALENT_CRYPTOGRAPHIC_ATTESTATION",
+    "TRADEMARK_CLEARANCE_IF_BRAND_IS_TRANSFERRED",
+    "PATENT_REVIEW_IF_PATENT_RIGHTS_ARE_PART_OF_NEGOTIATION",
+    "ESCROW_OR_PAYMENT_MECHANICS",
+    "SIGNED_ASSET_PURCHASE_AND_IP_ASSIGNMENT",
+    "BUYER_ACCEPTANCE_CERTIFICATE"
+  ],
+  "invariant": "NO_HIDDEN_SCOPE_NO_FAKE_READINESS_NO_UNPROVEN_ECONOMICS_NO_PERSONAL_ACCOUNT_TRANSFER: exact assets, exact snapshot, disclosed provenance, objective acceptance and factual warranties only."
+}
