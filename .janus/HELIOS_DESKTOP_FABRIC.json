@@ -1,8 +1,9 @@
 {
   "schema": "janus.helios.desktop-fabric.v2",
-  "artifact_id": "JANUS-HELIOS-DESKTOP-FABRIC-2026-08-27-v2.0",
+  "artifact_id": "JANUS-HELIOS-DESKTOP-FABRIC-2026-08-27-v2.1",
   "classification": "DESKTOP_CLASS_DISTRIBUTED_COMPUTE_EXECUTION_PLANE_CORE",
   "implementation": "src/helios-desktop-fabric.js",
+  "agent_runtime": "src/helios-desktop-agent.js",
   "parent_router": "src/helios-router.js",
   "lineage": {
     "implementation_basis": "HELIOS_REQUIREMENTS_FIRST_REWRITE",
@@ -24,6 +25,16 @@
     "thermal_telemetry_gate": true,
     "power_budget_gate": true,
     "battery_policy_gate": true
+  },
+  "desktop_agent": {
+    "runtime_version": "1.0.0",
+    "exact_provider_task_artifact_executor_binding": true,
+    "arbitrary_shell_execution": false,
+    "generic_command_fields_forbidden": true,
+    "resource_budget_exposed_to_executor": true,
+    "immediate_revoke_supported": true,
+    "runtime_heartbeat_inventory": ["PLATFORM", "ARCHITECTURE", "LOGICAL_CORES", "RAM", "GPU_INVENTORY", "CAPABILITIES", "RESOURCE_POLICY", "TELEMETRY"],
+    "browser_provider_secrets_allowed": false
   },
   "scheduler": {
     "priority_aging": true,
@@ -70,6 +81,7 @@
   },
   "production_claim_boundary": {
     "desktop_coordination_core_implemented": true,
+    "desktop_agent_runtime_implemented": true,
     "production_ready": false,
     "real_provider_adapter_connected": false,
     "real_multi_host_durable_state_validated": false,
@@ -81,5 +93,5 @@
     "independent_security_review_complete": false,
     "non_money_pilot_required": true
   },
-  "invariant": "HELIOS_NATIVE_DESKTOP_FABRIC: game state never schedules compute; desktop agents are admitted only by explicit consent and resource policy; CPU/GPU placement uses declared capabilities and telemetry; every slice has a fenced lease; every result requires provider verification before a HELIOS fabric receipt is emitted."
+  "invariant": "HELIOS_NATIVE_DESKTOP_FABRIC: game state never schedules compute; desktop agents are admitted only by explicit consent and resource policy; CPU/GPU placement uses declared capabilities and telemetry; every slice has a fenced lease; agent execution requires an exact pre-registered provider/task/artifact executor; every result requires provider verification before a HELIOS fabric receipt is emitted."
 }
