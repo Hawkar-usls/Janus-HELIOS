@@ -1,0 +1,78 @@
+{
+  "schema": "janus.helios.world-matrix.v1",
+  "project": "Janus-HELIOS",
+  "mechanic": "JANUS_WORLD_MATRIX",
+  "latin_key": "APERIATUR_PORTA",
+  "formula_name": "RESPICIENS_ET_PROSPICIENS",
+  "version": "1.0.0",
+  "purpose": "Translate the Janus backward/forward idea into a safe slot-world mechanic: read current neutral session context, generate a Monte Carlo fan of possible abstract environment states, summarize the cloud, and use the resulting world state for presentation and generative-system modulation only.",
+  "source_concept": {
+    "accepted": [
+      "MONTE_CARLO_FUTURE_STATE_FAN",
+      "STOCHASTIC_ENVIRONMENT_MATRIX",
+      "RESPICIENS_CURRENT_PARAMETERS",
+      "PROSPICIENS_ALTERNATIVE_FUTURES"
+    ],
+    "explicitly_not_inherited": [
+      "WEAPON_BALLISTICS",
+      "PROJECTILE_TRAJECTORY_OPTIMIZATION",
+      "AIMING_ASSISTANCE",
+      "TARGET_TRACKING",
+      "WEAPON_REINFORCEMENT_LEARNING"
+    ]
+  },
+  "runtime_module": "helios-janus-worlds.js",
+  "default_samples": 256,
+  "abstract_dimensions": ["FLUX", "DRIFT", "TURBULENCE", "RESONANCE"],
+  "world_states": {
+    "AUREA": "high luminous flux / solar presentation bias",
+    "AETHER": "high resonance / airy presentation bias",
+    "VORTEX": "high turbulence / kinetic presentation bias",
+    "UMBRA": "lower-energy shadow presentation bias",
+    "LIMEN": "high entropy threshold / threshold-world presentation state"
+  },
+  "event_inputs": [
+    "INIT",
+    "GAME_MODE_CHANGE",
+    "ROUTE_CHANGE",
+    "SPIN_COMPLETE",
+    "BONUS_SESSION_START",
+    "BONUS_SPIN",
+    "SOLAR_CORONA",
+    "LUCKY_CONTRIBUTION"
+  ],
+  "outputs": [
+    "helios:world-matrix",
+    "helios:porta-aperta",
+    "body.dataset.janusWorld",
+    "JANUS_WORLD_STATUS_CHIP",
+    "COSMIC_BACKGROUND_PRESENTATION_SHIFT"
+  ],
+  "porta_policy": {
+    "event": "APERIATUR_PORTA",
+    "trigger": "HIGH_ENTROPY_PRESENTATION_THRESHOLD",
+    "default_threshold": 0.90,
+    "rarity_goal": "RARE_BUT_OBSERVABLE_IN_EXTREME_SESSION_STATES",
+    "reward_value": 0,
+    "game_math_effect": "NONE",
+    "compute_effect": "NONE"
+  },
+  "immutable_boundaries": {
+    "presentation_only": true,
+    "rng_effect": "NONE",
+    "payout_effect": "NONE",
+    "rtp_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_effect": "NONE",
+    "compute_route_effect": "NONE",
+    "weapon_domain": false
+  },
+  "design_intent": "HELIOS should feel as if Janus continuously looks backward at the current state and forward across a cloud of possible worlds. The selected world changes how the station feels, not what the player is mathematically owed and not where compute is routed.",
+  "future_safe_extensions": [
+    "GENERATIVE_MUSIC_CAN_READ_WORLD_MATRIX_AS_PRESENTATION_INPUT",
+    "BUYER_CAN_CONFIGURE_WORLD_STATE_PALETTES",
+    "WORLD_STATE_CAN_MODULATE_NON_GAMEPLAY_VISUAL_PARTICLES",
+    "PROFILE_CAN_LOG_WORLD_STATE_HISTORY_FOR_DEMO_ANALYTICS"
+  ]
+}
