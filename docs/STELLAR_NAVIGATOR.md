@@ -1,32 +1,34 @@
-# HELIOS Stellar Navigator v1.0
+# HELIOS Stellar Navigator v1.1
 
 `helios-stellar-nav.js` replaces the old repeating CSS star tiles with a deterministic moving sky sphere.
 
 The goal is visual depth and navigational continuity, not scientific-planetarium claims.
 
-## Presentation model
+## Current recovery phase
+
+Version `1.1.0` is deliberately **PASSIVE BACKGROUND ONLY**.
 
 ```text
-SPIN / CASCADE / BONUS / MODE / ROUTE
-                  ↓
-         STELLAR NAVIGATOR
-                  ↓
-         CAMERA IMPULSE / EASE
-                  ↓
-       MOVING STAR SPHERE / WARP
+AUTONOMOUS SLOW DRIFT
+        ↓
+STELLAR NAVIGATOR
+        ↓
+MOVING STAR SPHERE
 ```
 
-The navigator has **no authority over game math or compute scheduling**.
+There is currently **no input from SPIN, CASCADE, BONUS, MODE or ROUTE**. This is intentional: after a presentation regression, Stellar was reintroduced as an isolated background shell before any event-reactive motion is allowed back.
+
+The navigator has **no authority over game math, bonus flow or compute scheduling**.
 
 ```text
 RNG / RTP / PAYTABLE / BET / BONUS ODDS
                 │
-                │ no write path
+                │ no read/write path
                 ▼
       HELIOS STELLAR NAVIGATOR
                 │
                 ▼
-        CANVAS PRESENTATION ONLY
+        CANVAS BACKGROUND ONLY
 ```
 
 ## Sky composition
@@ -41,15 +43,17 @@ This means the current HELIOS background is **astronomy-inspired, not a scientif
 ## Motion
 
 - baseline camera drift is slow and deterministic;
-- pressing `SPIN` creates a short presentation-only camera impulse;
-- cascades can briefly increase apparent travel energy;
-- Bonus/Corona events can create stronger but bounded warp;
-- mode changes move the camera toward different deterministic sky regions;
-- route changes add small deterministic angular offsets;
-- `HELIOS_DUAL_STREAM_DIRECTOR` divergence may add a bounded presentation impulse;
-- all motion decays smoothly back to the current mode target.
+- declination has a small bounded autonomous oscillation;
+- there is no warp or event impulse in v1.1;
+- no win amount, bet amount, loss history, near-miss state or inferred player vulnerability is read;
+- no game-mode or compute-route state is read;
+- no gameplay or bonus DOM element is queried or modified.
 
-No win amount, bet amount, loss history, near-miss state or inferred player vulnerability is read by the navigator.
+## Fail-closed presentation fallback
+
+The old static CSS star field remains visible until the Stellar canvas completes its first successful frame. Only then does `.cosmos.stellar-active` fade the fallback out.
+
+Therefore a missing/failed Stellar script should degrade to the static background rather than damage the slot.
 
 ## Performance envelope
 
@@ -59,7 +63,7 @@ No win amount, bet amount, loss history, near-miss state or inferred player vuln
 - synthetic star count scales with viewport area and is bounded;
 - rendering pauses when the document is hidden;
 - no network fetch, XHR, WebSocket or remote asset dependency;
-- `prefers-reduced-motion` disables travel/warp motion and leaves a static sky.
+- `prefers-reduced-motion` removes autonomous travel and leaves a stable sky.
 
 ## `wisnc/stellar-map` reference boundary
 
@@ -74,11 +78,12 @@ The HELIOS implementation was written independently in JavaScript from product r
 A buyer should be able to remove or replace `helios-stellar-nav.js` without changing:
 
 - game RNG;
+- reels/tactile presentation;
 - paytable/RTP;
-- bonus eligibility;
+- bonus eligibility or Solar Corona flow;
 - compute routing;
 - provider selection;
 - receipt verification;
 - desktop Fabric/Agent execution.
 
-That removability is intentional: the Stellar Navigator is a branded presentation capability, not an authority-bearing subsystem.
+That removability is intentional: the Stellar Navigator is a branded background capability, not an authority-bearing subsystem.
