@@ -1,0 +1,81 @@
+{
+  "schema": "janus.helios.stellar_navigator.v1",
+  "module": "helios-stellar-nav.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_ASTRONOMY_INSPIRED_STELLAR_NAVIGATION_BACKGROUND",
+  "purpose": "Replace the tiled decorative star pattern with a deterministic moving sky sphere that reacts to presentation events without acquiring game or compute authority.",
+  "rendering": {
+    "surface": "CANVAS_2D",
+    "projection": "HELIOS_NATIVE_EQUIRECTANGULAR_STAR_VECTORS_TO_PERSPECTIVE_CAMERA",
+    "target_fps": 30,
+    "max_device_pixel_ratio": 1.5,
+    "visibility_pause": true,
+    "reduced_motion_supported": true,
+    "network_requests": false,
+    "external_runtime_dependency": false
+  },
+  "sky_model": {
+    "bright_anchor_class": "MANUALLY_CURATED_ROUNDED_ASTRONOMICAL_FACTS",
+    "bright_anchor_count": 39,
+    "bright_anchor_epoch_note": "Approximate J2000-ish orientation values; not a scientific catalogue.",
+    "faint_field": "DETERMINISTIC_FIBONACCI_SPHERE_SYNTHETIC_BACKGROUND",
+    "scientific_catalog_claim": false,
+    "external_catalog_imported": false,
+    "external_images_or_assets_imported": false
+  },
+  "interaction_inputs": [
+    "SPIN_BUTTON_PRESENTATION_IMPULSE",
+    "AUTO_BUTTON_PRESENTATION_IMPULSE",
+    "CASCADE_EVENT",
+    "BONUS_WHEEL_START_COMPLETE",
+    "BONUS_SESSION_START_COMPLETE",
+    "DUAL_STREAM_DIRECTOR_PRESENTATION_STATE",
+    "GAME_MODE_PRESENTATION_CHANGE",
+    "COMPUTE_ROUTE_PRESENTATION_CHANGE"
+  ],
+  "forbidden_authority_inputs": [
+    "BET_SIZE",
+    "BALANCE",
+    "LOSS_STREAK",
+    "NEAR_MISS",
+    "WAGER_HISTORY",
+    "INFERRED_VULNERABILITY",
+    "PROBLEM_GAMBLING_LABEL",
+    "RNG_INTERNAL_STATE",
+    "PAYTABLE_MUTATION",
+    "COMPUTE_SCHEDULER_CONTROL"
+  ],
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE",
+    "provider_selection_effect": "NONE"
+  },
+  "external_reference_provenance": {
+    "reference_repository": "wisnc/stellar-map",
+    "reference_use": "DESIGN_STUDY_ONLY",
+    "license_file_found_during_2026_08_27_review": false,
+    "source_code_copied": false,
+    "star_catalog_copied": false,
+    "constellation_data_copied": false,
+    "images_or_assets_copied": false,
+    "principles_observed": [
+      "SPHERICAL_SKY_PROJECTION",
+      "MAGNITUDE_TO_VISUAL_BRIGHTNESS",
+      "SPECTRAL_COLOR_HINTS",
+      "CAMERA_EASING"
+    ],
+    "implementation_basis": "HELIOS_REQUIREMENTS_FIRST_ORIGINAL_JAVASCRIPT_IMPLEMENTATION"
+  },
+  "buyer_invariants": [
+    "STELLAR_NAVIGATOR_IS_PRESENTATION_ONLY",
+    "NO_EXTERNAL_NETWORK_OR_RUNTIME_DEPENDENCY",
+    "NO_UNLICENSED_STELLAR_MAP_CODE_DATA_OR_ASSETS_IN_ACTIVE_SNAPSHOT",
+    "NO_GAME_MATH_OR_COMPUTE_AUTHORITY",
+    "REDUCED_MOTION_REMAINS_FUNCTIONAL",
+    "CURRENT_SKY_IS_NOT_MARKETED_AS_A_SCIENTIFIC_PLANETARIUM"
+  ]
+}
