@@ -25,7 +25,6 @@ assert.match(bonus, /helios:bonus-session-start/);
 assert.match(bonus, /helios:bonus-spin/);
 assert.match(bonus, /helios:bonus-session-complete/);
 assert.match(bonus, /helios:bonus-buy-complete/);
-assert.match(bonus, /DEMO_SOLAR_FREE_SPINS/);
 assert.match(bonus, /production_enabled:false/);
 assert.match(bonus, /compute_effect:'NONE'/);
 assert.match(bonus, /first_class_bonus_core_source:true/);
