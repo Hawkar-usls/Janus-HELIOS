@@ -9,6 +9,7 @@
   style.textContent = `
     html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
     body{overflow-x:hidden;overscroll-behavior-x:none;}
+    .station{display:none!important;}
     button,[role="button"],input,select{touch-action:manipulation;}
     .game-panel.impact{animation:mobileMachineImpact .24s cubic-bezier(.2,.8,.3,1)}
     .game-panel.win-impact{box-shadow:0 0 0 1px #8f6b2a,0 0 44px #ffc95c2d,var(--shadow)}
