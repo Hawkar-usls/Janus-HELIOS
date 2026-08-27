@@ -22,10 +22,25 @@ assert.match(confirm, /explicit_consent:true/);
 assert.match(confirm, /Nothing is deducted before confirmation/);
 assert.match(confirm, /helios:bonus-buy-request/);
 assert.match(confirm, /helios:bonus-buy-authorized/);
-assert.match(confirm, /queueMicrotask/);
+assert.match(confirm, /animatePurchasedBonusWheel/);
+assert.match(confirm, /SOLAR CORONA ACTIVATION/);
+assert.match(confirm, /corona-pointer/);
+assert.match(confirm, /transform 1\.85s/);
+assert.match(confirm, /1440\+angle/);
+assert.match(confirm, /helios:bonus-wheel-start/);
+assert.match(confirm, /helios:bonus-wheel-complete/);
+assert.match(confirm, /visual_wheel_complete:true/);
+assert.match(confirm, /presentation_only:true/);
+assert.match(confirm, /rng_effect:'NONE'/);
 assert.match(confirm, /overlay\.hidden=true/);
+assert.doesNotMatch(confirm, /queueMicrotask/);
 assert.doesNotMatch(confirm, /bypassOnce/);
 assert.doesNotMatch(confirm, /btn\.click\(\)/);
+
+const reviewPos = confirm.indexOf("helios:bonus-buy-review-confirmed");
+const wheelPos = confirm.indexOf('await animatePurchasedBonusWheel(detail)');
+const authPos = confirm.lastIndexOf("helios:bonus-buy-authorized");
+assert.ok(reviewPos >= 0 && wheelPos > reviewPos && authPos > wheelPos, 'wheel must complete between review confirmation and core authorization');
 
 assert.match(bonus, /helios:bonus-buy-request/);
 assert.match(bonus, /helios:bonus-buy-authorized/);
@@ -42,4 +57,4 @@ assert.deepEqual(buy.tiers.map(x=>x.id), ['standard','radiant','solar_flare']);
 assert.deepEqual(buy.tiers.map(x=>x.cost_multiplier_of_demo_bet), [50,100,175]);
 assert.deepEqual(buy.tiers.map(x=>x.free_spins_count), [10,12,15]);
 
-console.log('HELIOS Bonus Buy event-driven consent + tier chooser invariants: PASS');
+console.log('HELIOS Bonus Buy consent + tier chooser + wheel activation invariants: PASS');
