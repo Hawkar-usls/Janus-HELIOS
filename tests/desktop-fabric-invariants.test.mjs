@@ -10,7 +10,7 @@ import {
 const source = await readFile(new URL('../src/helios-desktop-fabric.js', import.meta.url), 'utf8');
 const contract = JSON.parse(await readFile(new URL('../.janus/HELIOS_DESKTOP_FABRIC.json', import.meta.url), 'utf8'));
 
-assert.equal(HELIOS_DESKTOP_FABRIC_VERSION, '2.0.0');
+assert.equal(HELIOS_DESKTOP_FABRIC_VERSION, '2.1.0');
 assert.equal(contract.lineage.active_dependency_on_janus_distributed_ai_swarm, false);
 assert.equal(contract.target_hardware.desktop_class, true);
 assert.equal(contract.target_hardware.esp32_required, false);
@@ -22,6 +22,8 @@ assert.match(source, /STALE_FENCING_TOKEN/);
 assert.match(source, /ACK_DEADLINE_EXCEEDED/);
 assert.match(source, /ARBITRARY_EXECUTION_OR_SECRET_FORBIDDEN/);
 assert.match(source, /DESKTOP_TELEMETRY/);
+assert.match(source, /selectDispatchableSlice/);
+assert.match(source, /verified_agent_id/);
 assert.doesNotMatch(source, /Buzz-derived/i);
 
 const slices = buildFabricSlices({ workload_id: 'desktop-range', total_units: 96, shard_units: 24 });
@@ -32,6 +34,7 @@ assert.deepEqual(slices.map(x => x.payload), [
   { offset: 48, units: 24 },
   { offset: 72, units: 24 }
 ]);
+assert.equal(slices.every(x => x.verified_agent_id === null), true);
 
 const hotAgent = {
   inflight: 0,
@@ -93,6 +96,14 @@ assert.throws(() => fabric.submitWorkload({
   artifact_digest: `sha256:${'b'.repeat(64)}`, consent_required: true, requirements: { resource_class: 'CPU' }, partitions: [{ command: 'unsafe' }]
 }, 1000), /ARBITRARY_EXECUTION_OR_SECRET_FORBIDDEN/);
 
+const hybrid = fabric.submitWorkload({
+  workload_id: 'hybrid-contract', provider_id: 'provider-gpu', type: 'GENERAL_COMPUTE_JOB', route_class: 'DATACENTER',
+  artifact_digest: `sha256:${'e'.repeat(64)}`, consent_required: true, priority: 1,
+  requirements: { resource_class: 'HYBRID' }, total_units: 1, shard_units: 1
+}, 1000);
+assert.deepEqual(hybrid.requirements.required_capabilities, ['GENERAL_CPU', 'GENERAL_GPU']);
+await fabric.cancelWorkload('hybrid-contract');
+
 fabric.submitWorkload({
   workload_id: 'cpu-job', provider_id: 'provider-cpu', type: 'GENERAL_COMPUTE_JOB', route_class: 'DATACENTER',
   artifact_digest: `sha256:${'c'.repeat(64)}`, consent_required: true, priority: 20,
@@ -105,6 +116,7 @@ assert.equal(cpuWave.length, 2);
 assert.equal(cpuWave.every(x => x.assignment.signature.startsWith('sig:')), true);
 assert.equal(cpuWave.every(x => x.assignment.game_event_weighting === 'FORBIDDEN'), true);
 assert.equal(cpuWave.every(x => x.assignment.game_effect === 'NONE'), true);
+assert.equal(cpuWave.every(x => x.assignment.execution_budget.cpu_limit_percent > 0), true);
 
 for (const item of cpuWave) fabric.acknowledge({ workload_id: item.assignment.workload_id, slice_id: item.assignment.slice_id, agent_id: item.agent_id, lease_id: item.assignment.lease_id }, 1200);
 
@@ -126,6 +138,8 @@ assert.equal(done.receipt.schema, 'janus.helios.fabric.receipt.v2');
 assert.equal(done.receipt.resource_class, 'CPU');
 assert.equal(done.receipt.retry_count, 1);
 assert.equal(done.receipt.provider_settlement_authoritative, false);
+assert.equal(done.receipt.participating_agents.length >= 1, true);
+assert.equal(done.receipt.slice_provenance.every(x => typeof x.verified_agent_id === 'string' && x.verified_agent_id.length > 0), true);
 
 fabric.submitWorkload({
   workload_id: 'gpu-job', provider_id: 'provider-gpu', type: 'SCIENCE_WORK_UNIT', route_class: 'SCIENCE',
@@ -138,4 +152,27 @@ assert.equal(gpuWave.length, 1);
 assert.equal(gpuWave[0].agent_id, 'desktop-gpu-01');
 assert.equal(gpuWave[0].assignment.requirements.resource_class, 'GPU');
 
-console.log('HELIOS desktop fabric invariants: PASS');
+// Regression: an unschedulable high-priority GPU job must not block a runnable lower-priority CPU job.
+const fairness = new HeliosDesktopFabric({ policy: { max_slices: 20, max_dispatch_per_tick: 8 } });
+fairness.registerProviderAdapter('fair-gpu', { async dispatch() { return true; }, async verify() { return true; } });
+fairness.registerProviderAdapter('fair-cpu', { async dispatch() { return true; }, async verify() { return true; } });
+await fairness.heartbeat({
+  agent_id: 'cpu-only', logical_cores: 16, memory_mb: 32768, capabilities: ['GENERAL_CPU'], gpus: [],
+  resource_policy: { compute_consent: true, allow_cpu: true, allow_gpu: false, max_concurrent: 1, max_temp_c: 80 },
+  telemetry: { cpu_load: 0.1, temperature_c: 50, on_ac_power: true, available_memory_mb: 24000, reliability: 0.99 }
+}, 5000);
+fairness.submitWorkload({
+  workload_id: 'blocked-gpu-priority-100', provider_id: 'fair-gpu', type: 'GENERAL_COMPUTE_JOB', route_class: 'DATACENTER',
+  artifact_digest: `sha256:${'f'.repeat(64)}`, consent_required: true, priority: 100,
+  requirements: { resource_class: 'GPU', min_vram_mb: 1000 }, total_units: 1, shard_units: 1
+}, 5000);
+fairness.submitWorkload({
+  workload_id: 'runnable-cpu-priority-10', provider_id: 'fair-cpu', type: 'GENERAL_COMPUTE_JOB', route_class: 'DATACENTER',
+  artifact_digest: `sha256:${'1'.repeat(64)}`, consent_required: true, priority: 10,
+  requirements: { resource_class: 'CPU' }, total_units: 1, shard_units: 1
+}, 5000);
+const fairWave = await fairness.dispatchReady({ now: 5100, limit: 1 });
+assert.equal(fairWave.length, 1);
+assert.equal(fairWave[0].assignment.workload_id, 'runnable-cpu-priority-10');
+
+console.log('HELIOS desktop fabric fairness + provenance invariants: PASS');
