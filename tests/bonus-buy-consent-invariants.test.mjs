@@ -10,7 +10,7 @@ const [html, confirm, bonus, config] = await Promise.all([
 const cfg = JSON.parse(config);
 const buy = cfg.demo_bonus_buy;
 
-assert.match(html, /helios-bonus\.js\?v=1\.3\.0/);
+assert.match(html, /helios-bonus\.js\?v=1\.4\.0/);
 assert.match(html, /id="helios-bonus-confirm-script"/);
 assert.match(html, /helios-bonus-confirm\.js\?v=2\.3\.0/);
 assert.match(confirm, /BONUS_CONFIRM_VERSION = '2\.3\.0'/);
@@ -63,10 +63,13 @@ const animateEnd = confirm.indexOf('async function confirmPurchase');
 const animateBody = confirm.slice(animateStart, animateEnd);
 assert.equal(animateBody.includes("overlay.classList.remove('show')"), false, 'purchase wheel must not close before core activation handoff');
 
+assert.match(bonus, /BONUS_ENGINE_VERSION='1\.4\.0'/);
 assert.match(bonus, /helios:bonus-buy-request/);
 assert.match(bonus, /helios:bonus-buy-authorized/);
 assert.match(bonus, /PRICE_OR_BET_CHANGED/);
 assert.match(bonus, /explicit_confirmation_required/);
+assert.match(bonus, /first_class_bonus_core_source:true/);
+assert.match(bonus, /stake_refund_bridge:false/);
 
 assert.equal(buy.explicit_confirmation_required, true);
 assert.equal(buy.tier_selection_required, true);
