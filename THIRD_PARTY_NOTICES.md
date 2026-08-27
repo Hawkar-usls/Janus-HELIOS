@@ -21,13 +21,33 @@ Historical copyright notice:
 
 `Copyright (c) 2026 Hawkar-usls / JANUS project`
 
-The HELIOS swarm-dispatcher documentation acknowledges architectural lineage from that repository.
+Historical HELIOS revisions documented architectural lineage from that repository. The active HELIOS Desktop Fabric/Agent no longer has a runtime dependency on Buzz/ESP32 swarm code.
 
 If substantial source copied/adapted from a historical MIT-covered swarm snapshot is present in a HELIOS closing candidate, the applicable MIT notice and permission terms must remain with that covered material.
 
 If later source-available swarm material is incorporated, the transaction must expressly state the background-IP licence or assignment that permits the buyer to use that material. A HELIOS-only sale does not silently transfer the whole swarm repository.
 
 Architectural similarity alone is not treated as proof that source code was copied; closing review must inspect the exact source snapshot rather than infer licensing from concepts alone.
+
+### `wisnc/stellar-map` design reference
+
+Repository reviewed: `wisnc/stellar-map`.
+
+Reason for review: visual/product research for a more convincing astronomy-inspired moving background in HELIOS.
+
+The repository README describes an offline planetarium rendering naked-eye stars, constellation lines, some planets and the Moon. During the 2026-08-27 HELIOS review, no repository `LICENSE` file was found at the root.
+
+HELIOS therefore treats this repository as a **design-study reference only**:
+
+- no `stellar-map` source file is copied into HELIOS;
+- no generated star catalogue is copied;
+- no constellation, Messier or label data is copied;
+- no screenshots, BMP/PNG assets or splash images are copied;
+- HELIOS does not import or depend on the repository at runtime.
+
+The independently written `helios-stellar-nav.js` uses general astronomical/rendering concepts such as spherical star coordinates, perspective camera projection, apparent-brightness styling and camera easing. Its small bright-star anchor list consists of manually curated rounded astronomical facts; its faint background is deterministic synthetic geometry.
+
+This notice does **not** claim that broad concepts such as sky projection, magnitude-based brightness or camera easing are proprietary to either project.
 
 ## Package dependencies
 
@@ -51,7 +71,8 @@ Before any commercial handover:
 4. preserve all required historical MIT and third-party notices;
 5. disclose any source-available, proprietary, copyleft or field-of-use restrictions;
 6. document any separately licensed Background IP needed by the Purchased Assets;
-7. block closing if an incompatible or unknown material licence remains unresolved.
+7. confirm that externally reviewed design references did not silently become copied source/data/assets;
+8. block closing if an incompatible or unknown material licence remains unresolved.
 
 ## No false title warranty
 
