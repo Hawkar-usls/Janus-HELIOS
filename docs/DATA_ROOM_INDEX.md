@@ -59,12 +59,24 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `tools/secret-scan.mjs`
 - `src/helios-router.js`
 - `src/helios-desktop-fabric.js`
+- `src/helios-desktop-agent.js`
+- `tests/desktop-fabric-invariants.test.mjs`
+- `tests/desktop-agent-invariants.test.mjs`
 - `package.json`
 - `tests/`
 
 ## G. Historical provenance material
 
 The Git history contains an earlier Buzz-derived execution-plane implementation. The active closing snapshot does not treat that historical module as the HELIOS execution plane. Its lineage and licence boundary are disclosed in `legal/BACKGROUND_IP_AND_PROVENANCE.md` rather than hidden.
+
+The current active compute implementation is the HELIOS-native desktop pair:
+
+```text
+src/helios-desktop-fabric.js
+src/helios-desktop-agent.js
+```
+
+The buyer preflight fails if the removed Buzz-derived dispatcher, contract, documentation or invariant test is silently reintroduced as an active path.
 
 ## H. Machine-generated buyer evidence
 
