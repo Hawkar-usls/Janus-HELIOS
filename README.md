@@ -31,6 +31,82 @@ MEASURABLE EXTERNAL RESULT
 
 Public demo: https://hawkar-usls.github.io/Janus-HELIOS/
 
+## Commercial thesis & sponsor validation
+
+HELIOS is designed around **two independent value loops**:
+
+```text
+LOOP A — GAMEPLAY VALUE
+player activity → game/operator economics
+
+LOOP B — EXTERNAL COMPUTE VALUE
+opted-in idle resource → approved workload → authoritative receipt → measurable value / impact
+```
+
+The product does **not** claim to have invented slots, mining, idle-compute marketplaces or distributed computing. Its innovation is the combination: a reusable game-shaped entry point, explicit resource consent, replaceable compute destinations, provider-independent receipts/history, and strict separation between compute economics and game mathematics.
+
+A conventional slot has one principal economic engine. HELIOS is designed so a second, separately accounted value source can exist alongside gameplay economics without allowing compute to change RNG, RTP, stake, bonus probability or personal jackpot weighting.
+
+Illustrative sensitivity example only — **not a forecast or guaranteed return**:
+
+```text
+100,000 MAU
+× 10% compute opt-in
+× 1 device-hour/day
+× 30 days
+× $0.03 realized external value/device-hour
+= $9,000 gross verified external value/month
+```
+
+An illustrative `70% user / 30% operator-platform` split would correspond to `$6,300 / $2,700`. Real economics can only be measured from live workload pricing, device mix, electricity, fees and authoritative receipts.
+
+### Sponsor / provider gate
+
+The public Pages build proves the **interaction architecture**, not production profitability. HELIOS cannot honestly validate real commercial returns without a sponsor, operator, compute provider, research partner or enterprise workload buyer willing to provide a real workload and authoritative settlement/receipt path.
+
+A credible pilot is:
+
+```text
+REAL SPONSOR / PROVIDER
+        ↓
+LIVE WORKLOAD
+        ↓
+CONSENTING TEST DEVICES
+        ↓
+REAL DEVICE-HOURS + WATT-HOURS
+        ↓
+AUTHORITATIVE RECEIPTS
+        ↓
+REAL VALUE / COST DATA
+        ↓
+MEASURED UNIT ECONOMICS
+```
+
+Until such a pilot exists, HELIOS economics are described as **modelled and testable, not production-validated**.
+
+### Compute-funded engagement rewards
+
+The current public demo already contains a capped non-cash reward primitive: `Spin Energy`.
+
+```text
+eligible active demo compute
+        ↓
+30 seconds
+        ↓
++1 DEMO ENERGY SPIN
+        ↓
+manual use only
+bank cap = 3
+```
+
+This demonstrates how verified external work can fund **separate reward inventory** rather than every incentive being paid only from an operator marketing budget. A future compliant deployment could extend the same accounting idea to capped daily-style non-cash rewards, loyalty points, compute credits, cosmetics, fee rebates or other non-wagering benefits.
+
+HELIOS must **not** target people with gambling problems or inferred vulnerability. No loss-streak targeting, near-miss targeting, forced autoplay or automatic compute-value-to-wager conversion is part of the product boundary; responsible-gaming limits remain authoritative.
+
+Full commercial model, illustrative unit economics, electricity-aware break-even logic and sponsor gate: [`docs/COMMERCIAL_THESIS.md`](docs/COMMERCIAL_THESIS.md).
+
+Machine-readable JANUS contract: [`.janus/HELIOS_COMMERCIAL_THESIS.json`](.janus/HELIOS_COMMERCIAL_THESIS.json).
+
 ## Current demo surface
 
 HELIOS currently demonstrates:
