@@ -17,15 +17,30 @@ For transaction purposes:
 - the definitive agreement should make only jurisdiction-appropriate representations about copyright authorship/ownership;
 - a buyer should not infer that AI assistance is itself a warranty of non-infringement or a defect in title.
 
-## Buzz / JANUS distributed swarm lineage
+## HELIOS-native product architecture
 
-The HELIOS Swarm Dispatcher generalizes coordinator/worker patterns previously demonstrated in:
+The seller's project record treats the central HELIOS concept as a HELIOS-native architecture: a configurable multi-destination compute-routing layer presented alongside, but authority-separated from, game/slot UX.
+
+The active product thesis includes:
+
+- a universal multi-route HELIOS router;
+- replaceable provider/data-center/operator/custom destinations;
+- explicit resource consent and resource policy;
+- provider-independent execution receipts/history;
+- a strict `GAME RNG ⟂ COMPUTE` authority boundary;
+- a reusable B2B presentation/integration layer.
+
+This central multi-gateway resource-routing architecture is **not attributed in the current project record to Buzz or to the ESP32 swarm implementation** merely because an earlier HELIOS execution-plane module reused/generalized some coordinator/worker lessons from that repository.
+
+## Historical Buzz / JANUS distributed swarm lineage
+
+An earlier HELIOS repository revision contained `src/helios-swarm-dispatcher.js` and `.janus/HELIOS_SWARM_DISPATCHER.json`. Those files explicitly documented generalized lineage from:
 
 `Hawkar-usls/janus-distributed-ai-swarm`
 
-The source repository is controlled by the same GitHub owner.
+That historical record is not rewritten or concealed.
 
-### Historical licence boundary
+### Historical licence boundary of the separate swarm repository
 
 Swarm revisions through commit:
 
@@ -37,41 +52,47 @@ were published under MIT for repository-authored code with the copyright notice:
 
 Those historical MIT rights are not represented as retroactively revoked. A recipient of covered historical material may continue exercising the applicable MIT rights for that material.
 
-### Current maintained swarm licence
-
 Beginning with relicensing commit:
 
 `a1df4ee660f523bf014d739726458ecd1c909587`
 
 new maintained swarm revisions moved to the **JANUS Distributed AI Swarm Source-Available Evaluation License**. Later additions and modifications first published under that licence are not automatically offered under MIT merely because an ancestor was MIT-licensed.
 
-The swarm repository records this in `LICENSE_HISTORY.md`, `IP_NOTICE.md`, `THIRD_PARTY_NOTICES.md`, and `.janus/SWARM_IP_BOUNDARY.json`.
+The separate swarm repository records this in `LICENSE_HISTORY.md`, `IP_NOTICE.md`, `THIRD_PARTY_NOTICES.md`, and `.janus/SWARM_IP_BOUNDARY.json`.
 
-### What HELIOS reuses
+## Active HELIOS Desktop Fabric v2 boundary
 
-HELIOS intentionally reuses/generalizes architectural lessons such as:
+The active execution plane is now:
 
-- coordinator/worker topology;
-- typed work/result envelopes;
-- heartbeat/stale-node handling;
-- partitioned work slices;
-- ACK/bounded queue discipline;
-- verify-before-credit;
-- retry/reassignment;
-- lease/fencing ownership discipline.
+- `src/helios-desktop-fabric.js`;
+- `.janus/HELIOS_DESKTOP_FABRIC.json`;
+- `docs/DESKTOP_FABRIC.md`;
+- `tests/desktop-fabric-invariants.test.mjs`.
 
-Those broad systems ideas are not represented as exclusive simply because they appear in JANUS. The transaction value lies in the concrete HELIOS implementation, maintained project versions, documentation, tests, integration work, and any separately protected rights.
+It is maintained as a **HELIOS requirements-first desktop/workstation implementation** and has no active code dependency on `janus-distributed-ai-swarm` or Buzz ESP32 firmware.
 
-HELIOS does **not** require assignment of the entire `janus-distributed-ai-swarm` repository for a HELIOS-only acquisition.
+Its target model is materially different from the historical microcontroller worker target. The active fabric explicitly models:
 
-If substantial source from an historical MIT-covered swarm snapshot is actually copied/adapted into the HELIOS closing snapshot, the applicable MIT notice must remain with that covered material. If later source-available swarm material is incorporated, the buyer must receive whatever background-IP licence or assignment the definitive transaction expressly provides for that material.
+- multi-core CPU resource pools;
+- discrete GPU and hybrid CPU/GPU placement;
+- RAM and VRAM admission;
+- desktop concurrency;
+- thermal, watt-budget and battery/AC-power policy;
+- provider adapter circuit breaking;
+- bounded queue backpressure;
+- priority aging;
+- provider-specific result verification;
+- fenced leases and stale-result rejection.
 
-A buyer must therefore not assume either of these incorrect extremes:
+The active snapshot therefore does not require assignment of the `janus-distributed-ai-swarm` repository for a HELIOS-only transaction.
 
-- that all swarm IP automatically transfers with HELIOS; or
-- that HELIOS cannot be transferred unless the entire swarm repository is sold.
+### What this does and does not claim
 
-The exact answer belongs in the Purchased Assets and Background IP schedules.
+This separation is **not** represented as a magical erasure of Git history or of historical MIT grants. A buyer can inspect the historical repository record.
+
+It also does not claim exclusive ownership of broad distributed-systems ideas such as heartbeats, queues, leases, retries, worker pools or fencing tokens. The transaction value lies in the concrete HELIOS implementation, product architecture, maintained versions, documentation, tests, integration work, brand assets and any separately protected rights.
+
+If a future closing snapshot re-introduces source copied/adapted from an historical MIT-covered swarm revision, the applicable MIT notice must remain with that covered material. If source from later source-available swarm revisions is incorporated, the definitive agreement must expressly address the required background-IP licence or assignment.
 
 ## Specialized child repositories
 
@@ -99,7 +120,8 @@ Before signing a definitive IP Assignment, complete a contribution provenance re
 5. visual/audio assets not generated or authored within the project;
 6. AI-assisted code-generation disclosures relevant to buyer policy;
 7. background repositories materially incorporated into the closing snapshot;
-8. the exact historical/current licence boundary for any incorporated swarm material.
+8. the exact historical/current licence boundary for any incorporated swarm material;
+9. confirmation that the closing snapshot's active desktop fabric does not silently re-introduce removed Buzz/ESP32 source.
 
 For each non-seller contributor with copyrightable material not already covered by a compatible inbound licence, obtain an assignment or sufficient licence before closing.
 
