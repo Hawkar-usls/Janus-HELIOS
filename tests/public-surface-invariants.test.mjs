@@ -23,37 +23,41 @@ assert.match(html, /AUTO ×10/);
 assert.match(html, /DIVINE_REALM · science child/);
 assert.match(html, /SSlot · jackpot child/);
 
-// Current game-core semantic anchors. Do not pin obsolete variable names.
-assert.match(controller, /const CORE_VERSION='1\.7\.1'/);
-assert.match(controller, /const VALID_SPIN_SOURCES = new Set\(\['balance','energy','bonus'\]\)/);
-assert.match(controller, /const MODE_META = \{/);
-assert.match(controller, /helios:\{name:'HELIOS'/);
-assert.match(controller, /divine:\{name:'DIVINE'/);
-assert.match(controller, /gridjack:\{name:'GRIDJACK'/);
-assert.match(controller, /custom:\{name:'CUSTOM'/);
-assert.match(controller, /const CASCADE_LADDER=\[1,4,16,64\]/);
-assert.match(controller, /const CASCADE_MAX_STEPS=8/);
+// Restored tactile runtime semantic anchors. Do not pin the discarded hardening refactor API.
+assert.match(controller, /const GAME_MODES = \{/);
+assert.match(controller, /helios:\{/);
+assert.match(controller, /key:'helios'.*name:'HELIOS'/s);
+assert.match(controller, /divine:\{/);
+assert.match(controller, /key:'divine'.*name:'DIVINE'/s);
+assert.match(controller, /gridjack:\{/);
+assert.match(controller, /key:'gridjack'.*name:'GRIDJACK'/s);
+assert.match(controller, /custom:\{/);
+assert.match(controller, /key:'custom'.*name:'CUSTOM'/s);
+assert.match(controller, /const DEFAULT_CASCADE_POLICY = \{/);
+assert.match(controller, /multiplier_ladder:\[1,4,16,64\]/);
+assert.match(controller, /max_cascades:8/);
 
-// Initial reel stop timing is a fixed column schedule, not weighted by outcome/near-miss/compute state.
-assert.match(controller, /for\(let c=0;c<5;c\+\+\)\{await sleep\(105\+c\*48\)/);
-assert.doesNotMatch(controller, /(?:finalWins|spinWin|nearMiss|computeOn|routeObj\(\))\s*\?\s*\d+\s*:\s*\d+/);
+// Tactile reel stopping remains a fixed column schedule, never outcome-weighted.
+assert.match(controller, /const outcome=buildOutcome\(\); const baseStop=780; const step=185;/);
+assert.match(controller, /animateReel\(col,column,baseStop\+\(col\*step\)\)/);
+assert.match(controller, /reel\.classList\.add\('reel-spinning'\)/);
+assert.match(controller, /reel\.classList\.add\('reel-stop'\)/);
+assert.match(controller, /pulseMachine\('land'\)/);
+assert.doesNotMatch(controller, /(?:finalWins|spinWin|nearMiss|computeActive|routeKey)\s*\?\s*\d+\s*:\s*\d+/);
 
 // Simulated compute remains game-neutral.
+assert.match(controller, /game_event_weighting:'FORBIDDEN'/);
 assert.match(controller, /game_effect:'NONE'/);
-assert.match(controller, /verified_by:'PUBLIC_DEMO_NOT_AUTHORITATIVE'/);
+assert.match(controller, /compute_effect:'NONE'/);
 
 // Bounded autoplay and demo Spin Energy current semantics.
-assert.match(controller, /autoLeft=10;renderAuto\(\)/);
-assert.match(controller, /source:'ELIGIBLE_DEMO_COMPUTE_TIME',game_effect:'MANUAL_DEMO_SPIN_ONLY'/);
+assert.match(controller, /spin\(\{fromAuto:true,source:'balance'\}\)/);
+assert.match(controller, /const isEnergy=source==='energy'/);
+assert.match(controller, /reward_ledger:'DEMO_ENERGY_REWARD_ONLY'/);
+assert.match(controller, /real_money_value:false/);
 assert.match(controller, /automatic_wager_conversion:false/);
 assert.match(controller, /auto_play_from_bank:false/);
-assert.match(controller, /if\(isEnergy\)\{energyRewardUnits=spinWin/);
-assert.match(controller, /else balance=round2\(balance\+spinWin\)/);
-
-// Bonus is a first-class game-core source with no stake charge.
-assert.match(controller, /spin\(\{source:'bonus',bonusCapability:token\}\)/);
-assert.match(controller, /stake_charge:'NONE'/);
-assert.match(controller, /INVALID_BONUS_CAPABILITY/);
+assert.match(controller, /if\(isEnergy\) energyRewardUnits=round2\(energyRewardUnits\+spinWin\); else balance=round2\(balance\+spinWin\)/);
 
 const config = JSON.parse(configText);
 assert.equal(config.branding.default_game_mode, 'helios');
