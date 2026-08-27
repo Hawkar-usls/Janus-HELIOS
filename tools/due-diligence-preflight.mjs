@@ -193,7 +193,8 @@ check(stellar.authority?.compute_routing_effect==='NONE'&&stellar.authority?.pro
 check(stellar.rendering?.network_requests===false&&stellar.rendering?.external_runtime_dependency===false,'stellar navigator is local/no-network','stellar navigator external runtime dependency');
 check(stellar.external_reference_provenance?.source_code_copied===false&&stellar.external_reference_provenance?.star_catalog_copied===false&&stellar.external_reference_provenance?.images_or_assets_copied===false,'stellar-map material not copied','stellar-map copy boundary weakened');
 check(architecture.stellar_navigation?.stellar_map_reference_use==='DESIGN_STUDY_ONLY_NO_CODE_DATA_OR_ASSET_IMPORT','canonical architecture records design-study-only boundary','stellar-map architecture provenance drift');
-check(/id="helios-stellar-nav-script"[^>]+helios-stellar-nav\.js\?v=1\.0\.0/.test(indexHtml),'index explicitly loads Stellar Navigator v1.0.0','stellar navigator loader/version drift');
+check(stellar.version==='1.1.0'&&stellar.deployment_phase==='PASSIVE_BACKGROUND_ONLY','stellar navigator contract is passive v1.1.0','stellar navigator contract/version drift');
+check(/id="helios-stellar-nav-script"[^>]+helios-stellar-nav\.js\?v=1\.1\.0/.test(indexHtml),'index explicitly loads passive Stellar Navigator v1.1.0','stellar navigator loader/version drift');
 check(/prefers-reduced-motion/.test(stellarSource),'stellar navigator supports reduced motion','stellar reduced-motion boundary missing');
 check(/buildSyntheticSky/.test(stellarSource)&&/const BRIGHT_STAR_ANCHORS/.test(stellarSource),'stellar navigator contains HELIOS sky model','stellar sky model missing');
 check(!/\bfetch\s*\(/.test(stellarSource)&&!/XMLHttpRequest/.test(stellarSource)&&!/WebSocket/.test(stellarSource),'stellar navigator has no network primitive','stellar navigator network primitive detected');
