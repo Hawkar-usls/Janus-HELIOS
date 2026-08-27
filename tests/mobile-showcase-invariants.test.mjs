@@ -8,7 +8,7 @@ const [html, mobile, bonus] = await Promise.all([
 ]);
 
 assert.match(html, /width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover/);
-assert.match(html, /helios-mobile\.js\?v=1\.1\.0/);
+assert.match(html, /helios-mobile\.js\?v=1\.1\.1/);
 assert.match(html, /grid-template-columns:minmax\(0,1\.07fr\) minmax\(0,\.93fr\)/);
 assert.match(html, /@media\(max-width:980px\)/);
 assert.match(html, /overflow-x:hidden/);
@@ -34,6 +34,7 @@ assert.doesNotMatch(mobile, /helios-bonus-confirm\.js/);
 assert.doesNotMatch(mobile, /helios-dual-stream-director\.js/);
 assert.match(html, /id="helios-bonus-confirm-script"/);
 assert.match(html, /id="helios-dual-stream-director-script"/);
+assert.match(html, /id="helios-stellar-nav-script"[^>]+helios-stellar-nav\.js\?v=1\.1\.0/);
 
 assert.match(bonus, /solar-free-spins-hud/);
 assert.match(bonus, /@media\(max-width:520px\)/);
