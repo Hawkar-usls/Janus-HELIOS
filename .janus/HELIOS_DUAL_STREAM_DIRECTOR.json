@@ -1,7 +1,8 @@
 {
   "schema": "janus.helios.dual-stream-director.v1",
-  "artifact_id": "JANUS-HELIOS-DUAL-STREAM-DIRECTOR-2026-08-27-v1.0",
+  "artifact_id": "JANUS-HELIOS-DUAL-STREAM-DIRECTOR-2026-08-27-v1.1",
   "implementation": "helios-dual-stream-director.js",
+  "implementation_version": "1.1.0",
   "classification": "PRESENTATION_ONLY_PROCEDURAL_VISUAL_AUDIO_NARRATIVE_DIRECTOR",
   "conceptual_origin": {
     "source_artifact": "JANUS-HOLY-CRINGE-LOVE-DUAL-STREAM-CONVERTER-2026-08-27-v1.0",
@@ -33,7 +34,16 @@
     "resolution_is_mandatory": true,
     "divergence_is_bounded": true,
     "reduced_motion_respected": true,
-    "procedural_audio_accent_requires_existing_music_opt_in": true
+    "reduced_motion_runtime_changes_observed": true,
+    "procedural_audio_accent_requires_existing_music_opt_in": true,
+    "transform_isolation": "DIRECTOR_OWNS_ONLY_HELIOS_DIRECTOR_STAGE_TRANSFORM",
+    "core_reel_cell_transform_overrides": false
+  },
+  "loader_boundary": {
+    "authoritative_loader": "index.html",
+    "direct_script_id": "helios-dual-stream-director-script",
+    "mobile_layer_may_load_director": false,
+    "duplicate_dynamic_loader_forbidden": true
   },
   "event_inputs": {
     "allowed": [
