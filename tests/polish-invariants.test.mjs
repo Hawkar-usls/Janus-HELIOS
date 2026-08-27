@@ -21,7 +21,7 @@ assert.match(polish, /PULSE WIN/);
 assert.match(polish, /STABLE WIN/);
 assert.match(polish, /visual event only/);
 assert.match(polish, /DEMO GAME PROFILE ONLY/);
-assert.match(polish, /They do not select compute routes/);
+assert.match(polish, /Modes do not select compute routes or alter compute rate/);
 
 assert.match(polish, /function buildBetPicker\(\)/);
 assert.match(polish, /helios-native-bet/);
