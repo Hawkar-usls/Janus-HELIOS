@@ -1,6 +1,6 @@
 {
-  "schema": "janus.helios.due-diligence.v2",
-  "artifact_id": "JANUS-HELIOS-DUE-DILIGENCE-2026-08-27-v2.0",
+  "schema": "janus.helios.due-diligence.v3",
+  "artifact_id": "JANUS-HELIOS-DUE-DILIGENCE-2026-08-27-v3.0",
   "purpose": "Prepare HELIOS for buyer diligence without overstating ownership, production readiness, profitability, regulatory status or transfer scope.",
   "default_transaction_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
   "asset_boundary": {
@@ -18,6 +18,14 @@
     "buyer_should_receive_contribution_history_review": true,
     "seller_attestation_required_at_closing": true,
     "complete_chain_of_title_claimed_without_review": false,
+    "helios_native_architecture": {
+      "central_multigateway_resource_router_attributed_to_buzz": false,
+      "active_execution_plane": "src/helios-desktop-fabric.js",
+      "active_execution_plane_version": "2.0.0",
+      "active_dependency_on_janus_distributed_ai_swarm": false,
+      "active_dependency_on_buzz_esp32_firmware": false,
+      "desktop_workstation_target": true
+    },
     "buzz_lineage": {
       "repository": "Hawkar-usls/janus-distributed-ai-swarm",
       "repository_owner_matches_helios_owner": true,
@@ -26,7 +34,8 @@
       "historical_mit_retroactively_revoked": false,
       "current_license": "JANUS_DISTRIBUTED_AI_SWARM_SOURCE_AVAILABLE_EVALUATION_LICENSE_V1_1",
       "first_source_available_relicense_commit": "a1df4ee660f523bf014d739726458ecd1c909587",
-      "exact_source_overlap_review_required": true,
+      "historical_removed_helios_dispatcher_disclosed": true,
+      "historical_overlap_review_required": true,
       "historical_mit_notice_preservation_if_applicable": true,
       "later_source_available_background_ip_requires_express_transaction_rights": true,
       "entire_source_repository_transferred_by_default": false
@@ -82,6 +91,7 @@
   },
   "production_truth": {
     "current_public_product_class": "CAPABILITY_EVALUATION_PROTOTYPE",
+    "desktop_compute_fabric_core_implemented": true,
     "production_provider_adapter_connected": false,
     "production_profitability_validated": false,
     "datacenter_offload_measured": false,
@@ -93,7 +103,8 @@
     "SELLER_IDENTITY_AND_AUTHORITY_DOCUMENTATION",
     "FULL_CONTRIBUTION_HISTORY_REVIEW",
     "AUTOMATED_SBOM_AND_LICENSE_SCAN",
-    "EXACT_SWARM_HELIOS_SOURCE_OVERLAP_REVIEW",
+    "HISTORICAL_SWARM_HELIOS_SOURCE_OVERLAP_REVIEW",
+    "CONFIRM_ACTIVE_DESKTOP_FABRIC_DOES_NOT_REINTRODUCE_REMOVED_SWARM_SOURCE",
     "FULL_TEST_SUITE_EXECUTION_ON_EXACT_CLOSING_COMMIT",
     "SIGNED_RELEASE_OR_EQUIVALENT_CRYPTOGRAPHIC_ATTESTATION",
     "TRADEMARK_CLEARANCE_IF_BRAND_IS_TRANSFERRED",
