@@ -173,4 +173,13 @@
     confirmation.defer = true;
     document.head.appendChild(confirmation);
   }
+
+  // Presentation-only dual-stream director. It reads settled public game events but has no game-math authority.
+  if (!document.getElementById('helios-dual-stream-director-script')) {
+    const director = document.createElement('script');
+    director.id = 'helios-dual-stream-director-script';
+    director.src = './helios-dual-stream-director.js?v=1.0.0';
+    director.defer = true;
+    document.head.appendChild(director);
+  }
 })();
