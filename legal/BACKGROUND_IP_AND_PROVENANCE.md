@@ -95,11 +95,35 @@ The active desktop agent is not implemented as a generic remote shell. Its buyer
 
 The active snapshot therefore does not require assignment of the `janus-distributed-ai-swarm` repository for a HELIOS-only transaction.
 
+## HELIOS Adaptive Policy Plane / Zim conceptual lineage
+
+The active repository also contains:
+
+- `src/helios-adaptive-policy.js`;
+- `.janus/HELIOS_ADAPTIVE_POLICY.json`;
+- `docs/ADAPTIVE_POLICY_PLANE.md`;
+- `tests/adaptive-policy-invariants.test.mjs`.
+
+This module implements HELIOS-native bounded policy mechanisms around the desktop execution truth layer, including:
+
+- `PRIMARY_MISSION + BOUNDED_SIDE_QUESTS`;
+- Quiet Canary pressure shedding;
+- self-tested acceleration before fast-path promotion;
+- bounded multiplicative-weights learning over a predeclared safe action set;
+- throttled persistent learner state;
+- local autonomy with continuing policy/decision reporting.
+
+The generalized policy design is conceptually inspired by resource and learning discipline visible in the separate JANUS Zim Geek firmware at `firmware/zim_geek/Zim.ino` in `Hawkar-usls/janus-distributed-ai-swarm`.
+
+That conceptual relationship is **disclosed rather than hidden**, but the active HELIOS module is a requirements-first JavaScript implementation. It does not import Zim firmware, does not require the swarm repository at runtime, and is not represented as copied Zim source merely because both implementations express similar high-level engineering principles.
+
+The adaptive layer is also deliberately weaker in authority than the Desktop Agent truth layer. It may choose only among predeclared safe policy arms and may tighten optional side-work budgets. It may not change artifact identity, task type, verifier, signatures, secrets, game RNG/RTP or local user safety limits.
+
 ### What this does and does not claim
 
 This separation is **not** represented as a magical erasure of Git history or of historical MIT grants. A buyer can inspect the historical repository record.
 
-It also does not claim exclusive ownership of broad distributed-systems ideas such as heartbeats, queues, leases, retries, worker pools, scheduling or fencing tokens. The transaction value lies in the concrete HELIOS implementation, product architecture, maintained versions, documentation, tests, integration work, brand assets and any separately protected rights.
+It also does not claim exclusive ownership of broad distributed-systems or adaptive-systems ideas such as heartbeats, queues, leases, retries, worker pools, scheduling, fencing tokens, bounded bandits, canary throttling or self-testing before optimization. The transaction value lies in the concrete HELIOS implementation, product architecture, maintained versions, documentation, tests, integration work, brand assets and any separately protected rights.
 
 If a future closing snapshot re-introduces source copied/adapted from an historical MIT-covered swarm revision, the applicable MIT notice must remain with that covered material. If source from later source-available swarm revisions is incorporated, the definitive agreement must expressly address the required background-IP licence or assignment.
 
@@ -130,7 +154,8 @@ Before signing a definitive IP Assignment, complete a contribution provenance re
 6. AI-assisted code-generation disclosures relevant to buyer policy;
 7. background repositories materially incorporated into the closing snapshot;
 8. the exact historical/current licence boundary for any incorporated swarm material;
-9. confirmation that the closing snapshot's active desktop fabric/agent does not silently re-introduce removed Buzz/ESP32 source.
+9. confirmation that the closing snapshot's active desktop fabric/agent does not silently re-introduce removed Buzz/ESP32 source;
+10. confirmation that the adaptive policy module remains a HELIOS-native implementation and does not silently import Zim/swarm source.
 
 For each non-seller contributor with copyrightable material not already covered by a compatible inbound licence, obtain an assignment or sufficient licence before closing.
 
