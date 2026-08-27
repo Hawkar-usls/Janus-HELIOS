@@ -1,5 +1,5 @@
 {
-  "schema_id": "hawkar.project-status.v22",
+  "schema_id": "hawkar.project-status.v23",
   "project": "Janus-HELIOS",
   "project_version": "1.16.0",
   "public_branding": "JANUS HELIOS — One Core. Any Destination.",
@@ -7,7 +7,7 @@
   "portfolio_class": "universal_configurable_compute_routing_slot_asset",
   "last_reviewed": "2026-08-27",
   "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
-  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_TIERED_SOLAR_FREE_SPINS_GENERATIVE_MUSIC_DUAL_STREAM_PRESENTATION_DIRECTOR_STELLAR_NAVIGATOR_HELIOS_NATIVE_DESKTOP_FABRIC_DESKTOP_AGENT_BOUNDED_ADAPTIVE_POLICY_DUAL_STREAM_SAFETY_GUARD_AND_BUYER_DUE_DILIGENCE_TOOLING",
+  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_FIRST_CLASS_BONUS_SOURCE_TIERED_SOLAR_FREE_SPINS_GENERATIVE_MUSIC_DUAL_STREAM_PRESENTATION_DIRECTOR_STELLAR_NAVIGATOR_HELIOS_NATIVE_DESKTOP_FABRIC_DESKTOP_AGENT_BOUNDED_ADAPTIVE_POLICY_DUAL_STREAM_SAFETY_GUARD_AND_BUYER_DUE_DILIGENCE_TOOLING",
   "delivery_model": "WEB_FIRST_UNIVERSAL_ASSET",
   "github_pages_url": "https://hawkar-usls.github.io/Janus-HELIOS/",
   "github_pages_source": "main/root",
@@ -17,6 +17,8 @@
   "core_game": {
     "layout": "5X3",
     "modes": ["HELIOS", "DIVINE", "GRIDJACK", "CUSTOM"],
+    "spin_sources": ["BALANCE", "ENERGY", "BONUS"],
+    "core_version": "1.7.1",
     "cascade_engine": true,
     "cascade_multiplier_ladder": [1, 4, 16, 64],
     "cascade_max_steps": 8,
@@ -41,6 +43,7 @@
   },
   "natural_solar_corona": {
     "module": "helios-bonus.js",
+    "module_version": "1.4.0",
     "classification": "HELIOS_NATURAL_IDENTITY_EVENT",
     "eligible_mode": "HELIOS",
     "trigger": "THREE_OR_MORE_SUN_SYMBOLS_ON_SETTLED_NON_BONUS_GRID",
@@ -63,6 +66,11 @@
     "visual_activation_wheel": true,
     "visual_activation_rng_effect": "NONE",
     "seamless_overlay_handoff": true,
+    "game_core_spin_source": "BONUS_FIRST_CLASS",
+    "game_core_capability_required": true,
+    "stake_refund_bridge": false,
+    "per_bonus_spin_stake_charge": "NONE",
+    "winnings_credit_authority": "GAME_CORE",
     "tiers": [
       {"id": "standard", "cost_bet_multiplier": 50, "base_free_spins": 10, "sun_retrigger_spins": 2, "max_total_spins": 16},
       {"id": "radiant", "cost_bet_multiplier": 100, "base_free_spins": 12, "sun_retrigger_spins": 2, "max_total_spins": 20},
@@ -75,7 +83,7 @@
     "compute_dependent_outcome_shaping": false,
     "real_money_value": false,
     "production_enabled": false,
-    "implementation_note": "The public prototype still bridges purchased bonus spins into the balance-source spin core and refunds each bonus stake in the presentation layer. Production should promote BONUS to a first-class game-core spin source.",
+    "implementation_note": "The public prototype now uses a first-class game-core BONUS spin source with bounded entitlement/capability, no per-spin stake charge, and game-core winnings credit. This engineering state is still not a certified real-money implementation.",
     "manual_validation": "CURRENT_PUBLIC_DEMO_SPOT_CHECK_REPORTED_OK_BY_USER_2026_08_27; NOT_AN_EXHAUSTIVE_REGRESSION_CERTIFICATION"
   },
   "procedural_audio": {
@@ -268,7 +276,7 @@
   "test_suites_present": [
     "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "STELLAR_NAVIGATOR", "DESKTOP_FABRIC", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "DUE_DILIGENCE"
   ],
-  "full_test_suite_execution_status": "PASS_ON_RECORDED_36C28D_INTEGRITY_SNAPSHOT; REQUIRES_NEW_INTEGRITY_RUN_FOR_CURRENT_STELLAR_NAVIGATION_CHANGES_AND_ANY_CLOSING_SNAPSHOT",
+  "full_test_suite_execution_status": "PASS_ON_RECORDED_36C28D_INTEGRITY_SNAPSHOT; REQUIRES_NEW_INTEGRITY_RUN_FOR_CURRENT_STELLAR_NAVIGATION_AND_FIRST_CLASS_BONUS_DOCUMENTATION_CHANGES_AND_ANY_CLOSING_SNAPSHOT",
   "repository_change_control": {
     "main_branch_protected_at_last_audit": false,
     "repository_rulesets_present_at_last_audit": false,
@@ -289,7 +297,6 @@
     "DEDICATED_REAL_DEVICE_MOBILE_MATRIX_VALIDATION",
     "USER_VALIDATE_RARE_APERIATUR_PORTA_EVENT",
     "REPEAT_FULL_INTEGRITY_SUITE_ON_CURRENT_1_16_AND_EACH_CLOSING_SNAPSHOT",
-    "PROMOTE_BONUS_TO_FIRST_CLASS_GAME_CORE_SOURCE",
     "SIGNED_PROVIDER_MANIFEST_MODEL",
     "SERVER_SIDE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
     "REAL_PROVIDER_ADAPTER",
