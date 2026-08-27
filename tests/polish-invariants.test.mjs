@@ -7,7 +7,7 @@ const [html, core, polish] = await Promise.all([
   readFile(new URL('../helios-polish.js', import.meta.url), 'utf8')
 ]);
 
-assert.match(html, /<script src="\.\/helios\.js\?v=1\.7\.1"><\/script>/);
+assert.match(html, /<script src="\.\/helios\.js\?v=1\.6\.0"><\/script>/);
 assert.match(html, /<script src="\.\/helios-polish\.js\?v=[^"]+"><\/script>/);
 assert.equal(polish.includes('Telegram.WebApp'), false);
 assert.equal(polish.includes('telegram.org'), false);
@@ -34,11 +34,16 @@ assert.match(polish, /function currentSpinWin\(\)/);
 assert.match(polish, /function persistLastWin\(\)/);
 assert.match(polish, /if\(lastNonZeroWin>0\)\s*el\.textContent=lastNonZeroWin\.toFixed\(2\)/);
 
-// Current core feedback semantics: explicit consent gates compute, and the status is rendered from compute authority state.
-assert.match(core, /\$\('compute-state'\)\.textContent=computeOn\?'ACTIVE':'OFF'/);
-assert.match(core, /async function toggleCompute\(on\)/);
-assert.match(core, /if\(on\)\{if\(!\$\('consent'\)\.checked\)return;computeOn=true;/);
-assert.match(core, /\$\('power-off'\)\.disabled=!computeOn/);
+// Rescue core feedback semantics: explicit consent gates compute, route changes are blocked while active, and revoke returns to armed/off state.
+assert.match(core, /let computeActive = false/);
+assert.match(core, /function startCompute\(\)/);
+assert.match(core, /if\(!\$\('consent'\)\.checked\)\{ alert\('Explicit compute consent is required\.'\); return; \}/);
+assert.match(core, /computeActive=true/);
+assert.match(core, /\$\('compute-state'\)\.textContent='ACTIVE'/);
+assert.match(core, /function stopCompute\(\)/);
+assert.match(core, /computeActive=false/);
+assert.match(core, /\$\('power-off'\)\.disabled=true/);
+assert.match(core, /\$\('consent'\)\.checked=false/);
 assert.match(core, /game_effect:'NONE'/);
 assert.match(core, /automatic_wager_conversion:false/);
 assert.match(core, /auto_play_from_bank:false/);
