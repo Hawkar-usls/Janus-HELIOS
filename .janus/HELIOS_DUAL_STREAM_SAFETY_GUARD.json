@@ -1,0 +1,64 @@
+{
+  "schema": "janus.helios.dual-stream-safety.v1",
+  "artifact_id": "JANUS-HELIOS-DUAL-STREAM-SAFETY-GUARD-2026-08-27-v1.0",
+  "implementation": "src/helios-dual-stream-guard.js",
+  "conceptual_source": "JANUS HOLY CRINGE × LOVE dual-stream converter",
+  "source_registry_artifact": "Hawkar-usls/janus-meta-registry/data/JANUS-HOLY-CRINGE-LOVE-DUAL-STREAM-CONVERTER-2026-08-27-v1.0.json",
+  "active_code_dependency_on_meta_registry": false,
+  "source_code_copied_from_registry": false,
+  "helios_mapping": {
+    "C": "CHANGE_OR_OPTIMIZATION_PRESSURE",
+    "L": "SAFETY_RESERVE",
+    "care": "THERMAL_POWER_BATTERY_MEMORY_HEADROOM",
+    "agency_exit": "EXPLICIT_CONSENT_PLUS_IMMEDIATE_REVOKE",
+    "truth": "VERIFIER_EXACT_ARTIFACT_SELF_TEST_RECEIPT_EVIDENCE"
+  },
+  "hard_invariant": {
+    "formula": "SAFETY_RESERVE >= rho * CHANGE_PRESSURE",
+    "implementation_rule": "WHEN_RESERVE_IS_INSUFFICIENT_CONSTRAIN_OR_REJECT_CHANGE_DO_NOT_FABRICATE_SAFETY",
+    "bottleneck_reserve": true
+  },
+  "projection_operator": {
+    "supported": true,
+    "formula": "P_perp=I-ss^T/(s^Ts)",
+    "purpose": "PROJECT_OPTIMIZATION_PROPOSAL_AWAY_FROM_DECLARED_UNSAFE_DIRECTION",
+    "unsafe_direction_must_be_nonzero": true
+  },
+  "hard_gates": [
+    "CONSENT_ACTIVE",
+    "IMMEDIATE_REVOKE_AVAILABLE",
+    "VERIFIER_READY",
+    "EXACT_ARTIFACT_BOUND",
+    "TELEMETRY_FRESH"
+  ],
+  "safety_reserve_components": [
+    "THERMAL_HEADROOM",
+    "POWER_HEADROOM",
+    "MEMORY_HEADROOM",
+    "VERIFICATION_CONFIDENCE",
+    "ROLLBACK_READINESS"
+  ],
+  "player_boundary": {
+    "player_emotional_state_input": "FORBIDDEN",
+    "fear_anger_despair_sadness_inference": "FORBIDDEN",
+    "problem_gambling_or_vulnerability_targeting": "FORBIDDEN",
+    "loss_streak_targeting": "FORBIDDEN",
+    "near_miss_targeting": "FORBIDDEN",
+    "wager_history_as_policy_input": "FORBIDDEN",
+    "game_event_weighting": "FORBIDDEN",
+    "game_effect": "NONE"
+  },
+  "relationship_to_adaptive_policy": {
+    "role": "SAFETY_ENVELOPE_AROUND_LEARNABLE_OR_EXPERIMENTAL_POLICY",
+    "adaptive_policy_may_choose_among_safe_actions": true,
+    "dual_stream_guard_may_veto_or_limit_change": true,
+    "dual_stream_guard_may_change_rng_or_rtp": false,
+    "dual_stream_guard_may_widen_user_resource_policy": false
+  },
+  "epistemic_boundary": {
+    "original_emotional_model_imported_as_player_model": false,
+    "mathematical_structure_reused_as_engineering_control_pattern": true,
+    "production_benefit_measured": false,
+    "real_provider_pilot_required": true
+  }
+}
