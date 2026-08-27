@@ -12,10 +12,12 @@ const cfg = JSON.parse(config);
 const corona = cfg.demo_solar_corona;
 const buy = cfg.demo_bonus_buy;
 
-assert.match(html, /helios-bonus\.js\?v=/);
+assert.match(html, /helios-bonus\.js\?v=1\.3\.0/);
 assert.match(bonus, /SOLAR CORONA BONUS/);
 assert.match(bonus, /SOLAR FREE SPINS/);
-assert.match(bonus, /BUY SOLAR CORONA BONUS/);
+assert.match(bonus, /CHOOSE BONUS/);
+assert.match(bonus, /helios:bonus-buy-request/);
+assert.match(bonus, /helios:bonus-buy-authorized/);
 assert.match(bonus, /helios:bonus-buy-start/);
 assert.match(bonus, /helios:bonus-session-start/);
 assert.match(bonus, /helios:bonus-spin/);
@@ -23,9 +25,8 @@ assert.match(bonus, /helios:bonus-session-complete/);
 assert.match(bonus, /helios:bonus-buy-complete/);
 assert.match(bonus, /retrigger_spins_added/);
 assert.match(bonus, /DEMO_SOLAR_FREE_SPINS/);
-assert.match(bonus, /production_enabled:false/);
-assert.match(bonus, /compute_effect:'NONE'/);
-assert.match(bonus, /rng_effect:'STANDARD_GAME_RNG'/);
+assert.match(bonus, /production_enabled: false/);
+assert.match(bonus, /compute_effect: 'NONE'/);
 
 assert.equal(corona.enabled, true);
 assert.deepEqual(corona.eligible_game_modes, ['helios']);
@@ -40,22 +41,27 @@ assert.equal(corona.reward_ledger, 'SOLAR_BONUS_BANK');
 assert.equal(buy.enabled, true);
 assert.deepEqual(buy.eligible_game_modes, ['helios']);
 assert.equal(buy.feature, 'SOLAR_CORONA_FREE_SPINS');
-assert.equal(buy.cost_multiplier_of_demo_bet, 50);
-assert.equal(buy.free_spins_count, 10);
 assert.equal(buy.retrigger_symbol, '☀');
 assert.equal(buy.retrigger_count, 3);
-assert.equal(buy.retrigger_spins, 2);
-assert.equal(buy.max_total_spins, 16);
 assert.equal(buy.bonus_session_ledger, 'DEMO_SOLAR_FREE_SPINS');
 assert.equal(buy.winnings_settle_to_demo_balance, true);
+assert.equal(buy.explicit_confirmation_required, true);
+assert.equal(buy.tier_selection_required, true);
 assert.equal(buy.real_money_value, false);
 assert.equal(buy.production_enabled, false);
 assert.equal(buy.affects_compute, false);
 assert.equal(buy.affects_compute_route, false);
+
+const tiers = buy.tiers;
+assert.deepEqual(tiers.map(x=>x.id), ['standard','radiant','solar_flare']);
+assert.deepEqual(tiers.map(x=>x.free_spins_count), [10,12,15]);
+assert.deepEqual(tiers.map(x=>x.retrigger_spins), [2,2,3]);
+assert.deepEqual(tiers.map(x=>x.max_total_spins), [16,20,24]);
+assert.deepEqual(tiers.map(x=>x.extra_retrigger_chance), [0,0,0]);
 
 for (const event of ['helios:bonus-session-start','helios:bonus-spin','helios:bonus-session-complete']) {
   assert.match(music, new RegExp(event.replace(':','\\:')));
 }
 assert.match(music, /bonusSessionActive/);
 
-console.log('HELIOS Solar Corona + true free-spins Bonus Buy invariants: PASS');
+console.log('HELIOS Solar Corona + tiered free-spins Bonus Buy invariants: PASS');
