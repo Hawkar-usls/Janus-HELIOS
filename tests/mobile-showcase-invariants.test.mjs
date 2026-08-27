@@ -8,7 +8,7 @@ const [html, mobile, bonus] = await Promise.all([
 ]);
 
 assert.match(html, /width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover/);
-assert.match(html, /helios-mobile\.js\?v=1\.0\.0/);
+assert.match(html, /helios-mobile\.js\?v=1\.1\.0/);
 assert.match(html, /grid-template-columns:minmax\(0,1\.07fr\) minmax\(0,\.93fr\)/);
 assert.match(html, /@media\(max-width:980px\)/);
 assert.match(html, /overflow-x:hidden/);
@@ -27,9 +27,17 @@ assert.match(mobile, /\.profile-drawer\{width:100vw!important/);
 assert.match(mobile, /\.solar-corona-overlay/);
 assert.match(mobile, /\.spin-btn\{grid-column:1\/-1!important/);
 
+// Mobile is a responsive presentation layer, not a hidden dependency loader.
+assert.match(mobile, /responsive\/mobile presentation only/);
+assert.doesNotMatch(mobile, /createElement\(['"]script['"]\)/);
+assert.doesNotMatch(mobile, /helios-bonus-confirm\.js/);
+assert.doesNotMatch(mobile, /helios-dual-stream-director\.js/);
+assert.match(html, /id="helios-bonus-confirm-script"/);
+assert.match(html, /id="helios-dual-stream-director-script"/);
+
 assert.match(bonus, /solar-free-spins-hud/);
 assert.match(bonus, /@media\(max-width:520px\)/);
 assert.match(bonus, /\.solar-free-spins-hud\{grid-template-columns:1fr 1fr\}/);
 assert.match(bonus, /\.bonus-buy-btn\{width:100%\}/);
 
-console.log('HELIOS mobile showcase + Solar Free Spins HUD invariants: PASS');
+console.log('HELIOS mobile showcase + explicit-loader + Solar Free Spins HUD invariants: PASS');
