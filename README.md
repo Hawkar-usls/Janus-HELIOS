@@ -53,6 +53,7 @@ The product proposition is the maintained combination of:
 - bounded local adaptive policy around an immutable execution truth core;
 - a safety guard that requires more verified safety reserve as optimization pressure increases;
 - a presentation-only divergence/resolution Director with no game-math authority;
+- an astronomy-inspired deterministic Stellar Navigator that turns the backdrop into a moving presentation space without acquiring RNG/compute authority;
 - strict `GAME RNG ⟂ COMPUTE` separation;
 - buyer-configurable routing/presentation;
 - source-available evaluation with separately negotiated commercial rights.
@@ -116,9 +117,11 @@ HELIOS currently demonstrates:
 - natural `SOLAR CORONA` wheel from 3+ suns;
 - tiered purchased `SOLAR FREE SPINS` demo sessions;
 - explicit per-purchase price review/consent and visual activation wheel;
+- first-class game-core `BONUS` spin source with bounded entitlement/capability and no per-spin stake charge;
 - GRIDJACK `DEMO SPIN ENERGY`;
 - mode + route + event + bonus-session generative WebAudio;
 - `HELIOS_DUAL_STREAM_DIRECTOR` presentation choreography;
+- `HELIOS_STELLAR_NAVIGATOR` moving astronomy-inspired backdrop with real-coordinate bright-star anchors plus a deterministic synthetic deep field;
 - six replaceable compute routes with explicit consent/revoke;
 - rare `LUCKY HASH / IMPACT HIT / GOLDEN TASK` demo recognition;
 - `MY HELIOS` local demo profile/history/simulated offer board;
@@ -170,7 +173,15 @@ Higher tiers buy more disclosed spin/retrigger opportunity. They do not guarante
 
 The visual activation wheel does **not** randomize the already selected tier award. The purchase flow is event-driven and has no synthetic re-click bridge.
 
-The public prototype still bridges bonus spins into the existing balance-source core and refunds each bonus stake in the presentation layer. Production should promote `BONUS` to a first-class game-core source before regulated deployment.
+The current game core has three explicit spin sources:
+
+```text
+BALANCE
+ENERGY
+BONUS
+```
+
+Purchased free spins now execute through the first-class `BONUS` source. The core opens a bounded bonus capability, locks the session bet, charges no per-spin stake for authorized bonus spins, credits winnings itself, tracks remaining entitlement and rejects stale/invalid bonus capability tokens. The presentation layer owns consent, wheel/HUD and retrigger choreography; it no longer emulates free spins by refunding ordinary balance-source stakes.
 
 ```text
 compute state / route / contribution → bonus RNG      NONE
@@ -214,6 +225,31 @@ It consumes only read-only settled presentation events. Bet, balance pressure, l
 Version 1.1 owns only a dedicated `#helios-director-stage` wrapper transform. It does not override `.reel` or `.cell` game transforms. `index.html` is the only feature loader; `helios-mobile.js` does not dynamically load Director/bonus logic. Reduced-motion changes are respected even when toggled at runtime.
 
 See [`docs/DUAL_STREAM_DIRECTOR.md`](docs/DUAL_STREAM_DIRECTOR.md).
+
+## Stellar Navigator v1.0
+
+`helios-stellar-nav.js` replaces the old repeating CSS star tiles with a deterministic moving sky sphere.
+
+```text
+SPIN / CASCADE / BONUS / MODE / ROUTE
+                  ↓
+         STELLAR NAVIGATOR
+                  ↓
+       CAMERA IMPULSE / EASING
+                  ↓
+      MOVING STAR SPHERE / WARP
+```
+
+The public sky intentionally combines:
+
+- a small manually curated set of well-known bright-star anchors using rounded RA/Dec/magnitude facts;
+- a deterministic Fibonacci-sphere deep field that avoids tiled/clumped repetition.
+
+It is **astronomy-inspired, not a scientific planetarium**. It performs no network requests, imports no external star catalogue, supports `prefers-reduced-motion`, and cannot change RNG, RTP, payout, bet, bonus probability, compute route or provider selection.
+
+`wisnc/stellar-map` was inspected as a design reference only. No repository root licence was found during the 2026-08-27 review, so HELIOS imports none of its source code, generated catalogues, constellation/Messier data, screenshots or assets. That boundary is recorded in `THIRD_PARTY_NOTICES.md` and the provenance record.
+
+See [`docs/STELLAR_NAVIGATOR.md`](docs/STELLAR_NAVIGATOR.md).
 
 ## Demo Spin Energy
 
@@ -382,6 +418,9 @@ safety guard -> fabricated safety reserve    FORBIDDEN
 Director -> RNG / RTP / bet / bonus odds     NONE
 Director -> loss/vulnerability targeting     FORBIDDEN
 Director -> core reel/cell transform control FORBIDDEN
+Stellar Navigator -> RNG / RTP / payout      NONE
+Stellar Navigator -> compute/provider route  NONE
+Stellar Navigator -> bet/loss/vulnerability FORBIDDEN
 music -> RNG / RTP / payout                  NONE
 Lucky Contribution -> game odds              NONE
 forced win / forced scatter / near miss      NONE
@@ -409,13 +448,14 @@ Host-level change control remains separate: at the latest buyer-side audit, `mai
 ## Current implementation
 
 - [`index.html`](index.html) — explicit public feature loader / Pages surface;
-- [`helios.js`](helios.js) — demo game core/cascades/routing/Spin Energy;
+- [`helios.js`](helios.js) — demo game core/cascades/routing/Spin Energy/first-class bonus source;
 - [`helios-polish.js`](helios-polish.js) — presentation observer layer;
 - [`helios-bonus.js`](helios-bonus.js) — natural Corona + tiered purchased Solar Free Spins;
 - [`helios-bonus-confirm.js`](helios-bonus-confirm.js) — tier review/authorization/wheel presentation;
 - [`helios-slot-ux.js`](helios-slot-ux.js) — BET stepper, Game Guide, Win Focus;
 - [`helios-music.js`](helios-music.js) — procedural soundtrack v3.1;
 - [`helios-dual-stream-director.js`](helios-dual-stream-director.js) — presentation Director v1.1;
+- [`helios-stellar-nav.js`](helios-stellar-nav.js) — presentation-only Stellar Navigator v1.0;
 - [`helios-lucky.js`](helios-lucky.js) — demo rare contribution recognition;
 - [`helios-profile.js`](helios-profile.js) — local profile/simulated offers;
 - [`helios-mobile.js`](helios-mobile.js) — responsive presentation only;
@@ -434,7 +474,6 @@ Project package version: **`1.16.0`**.
 
 HELIOS is not production-ready. Important gates include:
 
-- first-class `BONUS` game-core source;
 - real provider adapter and signed provider manifest;
 - authenticated production Desktop Agent transport;
 - durable multi-host coordinator/replay state;
