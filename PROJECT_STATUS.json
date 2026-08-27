@@ -1,5 +1,5 @@
 {
-  "schema_id": "hawkar.project-status.v21",
+  "schema_id": "hawkar.project-status.v22",
   "project": "Janus-HELIOS",
   "project_version": "1.16.0",
   "public_branding": "JANUS HELIOS — One Core. Any Destination.",
@@ -7,7 +7,7 @@
   "portfolio_class": "universal_configurable_compute_routing_slot_asset",
   "last_reviewed": "2026-08-27",
   "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
-  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_TIERED_SOLAR_FREE_SPINS_GENERATIVE_MUSIC_DUAL_STREAM_PRESENTATION_DIRECTOR_HELIOS_NATIVE_DESKTOP_FABRIC_DESKTOP_AGENT_BOUNDED_ADAPTIVE_POLICY_DUAL_STREAM_SAFETY_GUARD_AND_BUYER_DUE_DILIGENCE_TOOLING",
+  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_TIERED_SOLAR_FREE_SPINS_GENERATIVE_MUSIC_DUAL_STREAM_PRESENTATION_DIRECTOR_STELLAR_NAVIGATOR_HELIOS_NATIVE_DESKTOP_FABRIC_DESKTOP_AGENT_BOUNDED_ADAPTIVE_POLICY_DUAL_STREAM_SAFETY_GUARD_AND_BUYER_DUE_DILIGENCE_TOOLING",
   "delivery_model": "WEB_FIRST_UNIVERSAL_ASSET",
   "github_pages_url": "https://hawkar-usls.github.io/Janus-HELIOS/",
   "github_pages_source": "main/root",
@@ -106,6 +106,27 @@
     "bet_effect": "NONE",
     "bonus_probability_effect": "NONE",
     "compute_effect": "NONE"
+  },
+  "stellar_navigation": {
+    "module": "helios-stellar-nav.js",
+    "version": "1.0.0",
+    "contract": ".janus/HELIOS_STELLAR_NAVIGATOR.json",
+    "documentation": "docs/STELLAR_NAVIGATOR.md",
+    "classification": "PRESENTATION_ONLY_ASTRONOMY_INSPIRED_STELLAR_NAVIGATION_BACKGROUND",
+    "replaces_repeating_css_star_tiles": true,
+    "bright_real_coordinate_anchors": true,
+    "faint_field": "DETERMINISTIC_SYNTHETIC_FIBONACCI_SPHERE",
+    "scientific_catalog_claim": false,
+    "external_runtime_dependency": false,
+    "network_requests": false,
+    "stellar_map_reference_use": "DESIGN_STUDY_ONLY_NO_CODE_DATA_ASSET_IMPORT",
+    "reduced_motion_supported": true,
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bet_effect": "NONE",
+    "compute_effect": "NONE",
+    "manual_validation": "AWAITING_USER_VISUAL_CHECK_ON_GITHUB_PAGES"
   },
   "demo_spin_energy": {
     "enabled": true,
@@ -245,9 +266,9 @@
     "evidence_document": "docs/CI_AND_RELEASE_EVIDENCE.md"
   },
   "test_suites_present": [
-    "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "DESKTOP_FABRIC", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "DUE_DILIGENCE"
+    "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "STELLAR_NAVIGATOR", "DESKTOP_FABRIC", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "DUE_DILIGENCE"
   ],
-  "full_test_suite_execution_status": "PASS_ON_RECORDED_36C28D_INTEGRITY_SNAPSHOT; REQUIRES_NEW_INTEGRITY_RUN_FOR_CURRENT_1_16_AUDIT_CHANGES_AND_ANY_CLOSING_SNAPSHOT",
+  "full_test_suite_execution_status": "PASS_ON_RECORDED_36C28D_INTEGRITY_SNAPSHOT; REQUIRES_NEW_INTEGRITY_RUN_FOR_CURRENT_STELLAR_NAVIGATION_CHANGES_AND_ANY_CLOSING_SNAPSHOT",
   "repository_change_control": {
     "main_branch_protected_at_last_audit": false,
     "repository_rulesets_present_at_last_audit": false,
@@ -264,6 +285,7 @@
     }
   },
   "open_gates": [
+    "USER_VISUALLY_VALIDATE_STELLAR_NAVIGATOR_ON_PAGES",
     "DEDICATED_REAL_DEVICE_MOBILE_MATRIX_VALIDATION",
     "USER_VALIDATE_RARE_APERIATUR_PORTA_EVENT",
     "REPEAT_FULL_INTEGRITY_SUITE_ON_CURRENT_1_16_AND_EACH_CLOSING_SNAPSHOT",
