@@ -1,10 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [html, bonus, core, config, music] = await Promise.all([
+const [html, bonus, config, music] = await Promise.all([
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../helios-bonus.js', import.meta.url), 'utf8'),
-  readFile(new URL('../helios.js', import.meta.url), 'utf8'),
   readFile(new URL('../config/helios.public.json', import.meta.url), 'utf8'),
   readFile(new URL('../helios-music.js', import.meta.url), 'utf8')
 ]);
@@ -13,8 +12,8 @@ const cfg = JSON.parse(config);
 const corona = cfg.demo_solar_corona;
 const buy = cfg.demo_bonus_buy;
 
-assert.match(html, /helios-bonus\.js\?v=1\.4\.0/);
-assert.match(bonus, /BONUS_ENGINE_VERSION='1\.4\.0'/);
+// Rescue snapshot intentionally protects the last visually/user-verified working bonus engine.
+assert.match(html, /helios-bonus\.js\?v=1\.3\.0/);
 assert.match(bonus, /SOLAR CORONA/);
 assert.match(bonus, /SOLAR FREE SPINS/);
 assert.match(bonus, /CHOOSE BONUS/);
@@ -27,26 +26,29 @@ assert.match(bonus, /helios:bonus-session-complete/);
 assert.match(bonus, /helios:bonus-buy-complete/);
 assert.match(bonus, /production_enabled:false/);
 assert.match(bonus, /compute_effect:'NONE'/);
-assert.match(bonus, /first_class_bonus_core_source:true/);
-assert.match(bonus, /stake_refund_bridge:false/);
 
-// Current retrigger semantics: settled trigger count is evaluated, bounded by the tier max,
-// then granted through the authoritative game-core bonus entitlement rather than a presentation counter.
-assert.match(bonus, /function possibleRetrigger\(triggerCount,tier,totalGranted\)/);
-assert.match(bonus, /triggerCount>=buyPolicy\.retrigger_minimum_count/);
-assert.match(bonus, /Math\.max\(0,tier\.max_total_spins-totalGranted\)/);
-assert.match(bonus, /coreBonus\.grantSpins\(coreToken,retrigger\.added\)/);
-assert.match(bonus, /retrigger:granted/);
-assert.match(bonus, /retrigger_kind:retrigger\.kind/);
-assert.match(bonus, /stake_charge:'NONE'/);
+// Natural Solar Corona retains the animated pointer/wheel presentation.
+assert.match(bonus, /async function triggerBonus\(symbolCount/);
+assert.match(bonus, /pointer\.style\.transition = 'transform 1\.45s cubic-bezier\(\.16,\.82,\.18,1\)'/);
+assert.match(bonus, /pointer\.style\.transform = `rotate\(\$\{1080 \+ angle\}deg\)`/);
+assert.match(bonus, /navigator\.vibrate\(\[18, 32, 18, 32, 28\]\)/);
 
-// Bonus execution belongs to the game core, not a balance-source refund bridge.
-assert.match(core, /const VALID_SPIN_SOURCES = new Set\(\['balance','energy','bonus'\]\)/);
-assert.match(core, /function openBonusSession/);
-assert.match(core, /async function spinBonus\(token\)/);
-assert.match(core, /spin\(\{source:'bonus',bonusCapability:token\}\)/);
-assert.match(core, /stake_charge:'NONE'/);
-assert.match(core, /INVALID_BONUS_CAPABILITY/);
+// Restored purchased-free-spins bridge: normal tactile spins are reused and their stake is
+// presentation-refunded so the bonus keeps the proven reel/cascade runtime intact.
+assert.match(bonus, /function waitForSpinComplete\(\)/);
+assert.match(bonus, /if\(e\.detail\?\.source !== 'balance'\) return/);
+assert.match(bonus, /async function runPurchasedFreeSpins\(cost, tier\)/);
+assert.match(bonus, /const done = waitForSpinComplete\(\);/);
+assert.match(bonus, /\$\('spin'\)\.click\(\);/);
+assert.match(bonus, /displayOffset = round2\(displayOffset - currentBet\(\)\)/);
+assert.match(bonus, /renderAdjustedBalance\(\)/);
+
+// Retriggers are bounded by the disclosed tier maximum.
+assert.match(bonus, /function possibleRetrigger\(tier, naturalSunCount, totalGranted\)/);
+assert.match(bonus, /naturalSunCount >= buyPolicy\.retrigger_count/);
+assert.match(bonus, /totalGranted < tier\.max_total_spins/);
+assert.match(bonus, /Math\.min\(tier\.retrigger_spins, tier\.max_total_spins - totalGranted - added\)/);
+assert.match(bonus, /retrigger_spins_added: retrigger\.added/);
 
 assert.equal(corona.enabled, true);
 assert.deepEqual(corona.eligible_game_modes, ['helios']);
@@ -77,8 +79,6 @@ assert.deepEqual(tiers.map(x=>x.id), ['standard','radiant','solar_flare']);
 assert.deepEqual(tiers.map(x=>x.free_spins_count), [10,12,15]);
 assert.deepEqual(tiers.map(x=>x.retrigger_spins), [2,2,3]);
 assert.deepEqual(tiers.map(x=>x.max_total_spins), [16,20,24]);
-// Public config intentionally disables extra probabilistic retriggers; premium value comes
-// from disclosed starting spins / natural-sun retrigger budget.
 assert.deepEqual(tiers.map(x=>x.extra_retrigger_chance), [0,0,0]);
 
 for (const event of ['helios:bonus-session-start','helios:bonus-spin','helios:bonus-session-complete']) {
@@ -86,4 +86,4 @@ for (const event of ['helios:bonus-session-start','helios:bonus-spin','helios:bo
 }
 assert.match(music, /bonusSessionActive/);
 
-console.log('HELIOS Solar Corona + tiered free-spins Bonus Buy invariants: PASS');
+console.log('HELIOS restored Solar Corona + tiered free-spins invariants: PASS');
