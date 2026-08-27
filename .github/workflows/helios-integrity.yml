@@ -37,8 +37,8 @@ jobs:
       - name: Generate declared dependency SBOM
         run: npm run audit:sbom:declared
 
-      - name: Buyer due-diligence preflight
-        run: npm run audit:preflight
+      - name: Strict buyer due-diligence preflight
+        run: npm run audit:preflight:strict
 
       - name: Generate strict closing manifest candidate
         run: npm run closing:manifest
