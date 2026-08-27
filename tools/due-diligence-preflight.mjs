@@ -87,7 +87,7 @@ check(/commercial/i.test(license) && /separate written agreement/i.test(license)
 check(/patent status is claimed/i.test(ipNotice) === false || /No patent status is claimed/i.test(ipNotice), 'patent claims remain bounded', 'IP notice may overstate patent status');
 check(/SBOM/i.test(thirdParty), 'third-party register requires closing SBOM', 'third-party register lacks SBOM closing gate');
 check(status.production_readiness !== 'READY' && status.production_readiness !== 'PRODUCTION_READY', 'status does not falsely claim production readiness', 'status falsely claims production readiness');
-check(typeof status.full_test_suite_execution_status === 'string' && /RE_RUN_REQUIRED/i.test(status.full_test_suite_execution_status), 'test status is snapshot-scoped and requires rerun', 'test status is not scoped to an exact/repeatable snapshot');
+check(typeof status.full_test_suite_execution_status === 'string' && /(RE_RUN_REQUIRED|REQUIRES_NEW_INTEGRITY_RUN)/i.test(status.full_test_suite_execution_status), 'test status is snapshot-scoped and requires rerun', 'test status is not scoped to an exact/repeatable snapshot');
 check(status.integrity_ci?.scope_rule?.includes('GREEN_COMMIT_DOES_NOT_CERTIFY_A_LATER_COMMIT'), 'status records immutable CI scope rule', 'status does not clearly scope green CI to one commit');
 check(status.project_version === packageJson.version, 'PROJECT_STATUS and package version agree', 'PROJECT_STATUS/package version drift detected');
 check(status.desktop_fabric?.module === 'src/helios-desktop-fabric.js', 'project status points to active desktop fabric', 'project status does not point to active desktop fabric');
