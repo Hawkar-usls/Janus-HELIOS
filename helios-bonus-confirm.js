@@ -103,6 +103,24 @@
     const overlay=$('bonus-confirm-overlay');if(!overlay||overlay.hidden)return;overlay.hidden=true;overlay.setAttribute('aria-hidden','true');document.body.classList.remove('bonus-confirm-open');if(emitCancel)window.dispatchEvent(new CustomEvent('helios:bonus-buy-review-cancel',{detail:{tier_id:selectedTierId,cost:currentCost(),real_money_value:false}}));if(lastFocused?.focus)setTimeout(()=>lastFocused.focus(),20);
   }
 
+  function restorePurchaseWheel(handoff){
+    const rays=handoff?.rays||[];
+    const oldLabels=handoff?.oldLabels||[];
+    rays.forEach((ray,i)=>{ray.classList.remove('selected');ray.textContent=oldLabels[i]||ray.textContent;});
+  }
+
+  async function releasePurchasedBonusOverlay(handoff, timeoutMs=2600){
+    const overlay=handoff?.overlay;
+    if(!overlay){restorePurchaseWheel(handoff);return;}
+    const started=Date.now();
+    while(overlay.classList.contains('show') && Date.now()-started<timeoutMs) await sleep(50);
+    if(overlay.classList.contains('show')){
+      overlay.classList.remove('show');
+      await sleep(180);
+    }
+    restorePurchaseWheel(handoff);
+  }
+
   async function animatePurchasedBonusWheel(detail){
     const overlay=$('solar-corona-overlay');
     const pointer=$('corona-pointer');
@@ -110,7 +128,7 @@
     const sub=$('solar-corona-sub');
     const title=$('solar-corona-title');
     const rays=[...document.querySelectorAll('.corona-ray')];
-    if(!overlay||!pointer||!result||!sub||!title||!rays.length)return false;
+    if(!overlay||!pointer||!result||!sub||!title||!rays.length)return null;
 
     const award=Math.max(1,Number(detail.free_spins_count||0));
     const values=[...PURCHASE_WHEEL_VALUES];
@@ -146,11 +164,10 @@
 
     window.dispatchEvent(new CustomEvent('helios:bonus-wheel-complete',{detail:{...detail,spins_awarded:award,presentation_only:true,rng_effect:'NONE',compute_effect:'NONE'}}));
 
+    // Keep this exact overlay visible. The bonus core immediately reuses it for the
+    // purchased-session activation message, so there is no close → reopen flash.
     await sleep(850);
-    overlay.classList.remove('show');
-    await sleep(220);
-    rays.forEach((ray,i)=>{ray.classList.remove('selected');ray.textContent=oldLabels[i]||ray.textContent;});
-    return true;
+    return {overlay,rays,oldLabels};
   }
 
   async function confirmPurchase(){
@@ -159,8 +176,10 @@
     closeDialog(false);
     const detail={feature:'SOLAR_CORONA_FREE_SPINS',tier_id:tier.id,tier_name:tier.name,bet,cost,cost_multiplier:tier.cost_multiplier_of_demo_bet,free_spins_count:tier.free_spins_count,retrigger_spins:tier.retrigger_spins,max_total_spins:tier.max_total_spins,explicit_consent:true,real_money_value:false,production_enabled:false,compute_effect:'NONE'};
     window.dispatchEvent(new CustomEvent('helios:bonus-buy-review-confirmed',{detail}));
-    try{await animatePurchasedBonusWheel(detail);}catch(err){console.warn('[HELIOS BONUS WHEEL]',err);}
-    window.dispatchEvent(new CustomEvent('helios:bonus-buy-authorized',{detail:{...detail,visual_wheel_complete:true}}));
+    let wheelHandoff=null;
+    try{wheelHandoff=await animatePurchasedBonusWheel(detail);}catch(err){console.warn('[HELIOS BONUS WHEEL]',err);}
+    window.dispatchEvent(new CustomEvent('helios:bonus-buy-authorized',{detail:{...detail,visual_wheel_complete:true,seamless_overlay_handoff:true}}));
+    if(wheelHandoff) await releasePurchasedBonusOverlay(wheelHandoff);
   }
 
   function keyHandler(e){const overlay=$('bonus-confirm-overlay');if(!overlay||overlay.hidden)return;if(e.key==='Escape'){e.preventDefault();closeDialog(true);}}
