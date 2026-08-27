@@ -1,4 +1,4 @@
-# JANUS HELIOS Source-Available Evaluation License v1.0
+# JANUS HELIOS Source-Available Evaluation License v1.1
 
 Copyright (c) 2026 Hawkar-usls. All rights reserved.
 
@@ -56,5 +56,19 @@ Commercial, pilot, OEM, operator, platform, hosted, white-label, exclusive field
 ## 12. Reservation of rights
 
 All rights not expressly granted are reserved.
+
+## 13. Acquisition / assignment boundary
+
+This evaluation license does **not** itself transfer ownership of the Materials, related JANUS projects, future inventions, general know-how, personal accounts, provider relationships, trademarks or other assets.
+
+Any acquisition, IP assignment or asset sale requires a separate signed definitive agreement that expressly identifies the assets being transferred. Transaction-preparation schedules and diligence materials are maintained in:
+
+- `legal/PURCHASED_ASSETS_SCHEDULE.md`;
+- `legal/EXCLUDED_ASSETS_SCHEDULE.md`;
+- `legal/BACKGROUND_IP_AND_PROVENANCE.md`;
+- `THIRD_PARTY_NOTICES.md`;
+- `.janus/HELIOS_DUE_DILIGENCE.json`.
+
+Third-party and open-source rights remain governed by their original terms. Any required notices survive a commercial transfer.
 
 **This is a source-available evaluation license, not an open-source license.**
