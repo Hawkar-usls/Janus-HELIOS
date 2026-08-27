@@ -23,13 +23,33 @@ The HELIOS Swarm Dispatcher generalizes coordinator/worker patterns previously d
 
 `Hawkar-usls/janus-distributed-ai-swarm`
 
-The source repository is owned by the same GitHub owner and publishes an MIT License with copyright notice:
+The source repository is controlled by the same GitHub owner.
+
+### Historical licence boundary
+
+Swarm revisions through commit:
+
+`b644af87de104b405427a8c0ae3c35c8d192507c`
+
+were published under MIT for repository-authored code with the copyright notice:
 
 `Copyright (c) 2026 Hawkar-usls / JANUS project`
 
-The MIT terms permit use, modification, sublicensing and sale subject to preservation of the MIT copyright/license notice in copies or substantial portions of the covered Software.
+Those historical MIT rights are not represented as retroactively revoked. A recipient of covered historical material may continue exercising the applicable MIT rights for that material.
 
-HELIOS intentionally reuses generalized architectural patterns such as:
+### Current maintained swarm licence
+
+Beginning with relicensing commit:
+
+`a1df4ee660f523bf014d739726458ecd1c909587`
+
+new maintained swarm revisions moved to the **JANUS Distributed AI Swarm Source-Available Evaluation License**. Later additions and modifications first published under that licence are not automatically offered under MIT merely because an ancestor was MIT-licensed.
+
+The swarm repository records this in `LICENSE_HISTORY.md`, `IP_NOTICE.md`, `THIRD_PARTY_NOTICES.md`, and `.janus/SWARM_IP_BOUNDARY.json`.
+
+### What HELIOS reuses
+
+HELIOS intentionally reuses/generalizes architectural lessons such as:
 
 - coordinator/worker topology;
 - typed work/result envelopes;
@@ -37,9 +57,21 @@ HELIOS intentionally reuses generalized architectural patterns such as:
 - partitioned work slices;
 - ACK/bounded queue discipline;
 - verify-before-credit;
-- retry/reassignment.
+- retry/reassignment;
+- lease/fencing ownership discipline.
 
-HELIOS does **not** require assignment of the entire `janus-distributed-ai-swarm` repository for a HELIOS-only acquisition. If substantial MIT-covered source is present in the HELIOS closing snapshot, the MIT notice must remain with that covered material.
+Those broad systems ideas are not represented as exclusive simply because they appear in JANUS. The transaction value lies in the concrete HELIOS implementation, maintained project versions, documentation, tests, integration work, and any separately protected rights.
+
+HELIOS does **not** require assignment of the entire `janus-distributed-ai-swarm` repository for a HELIOS-only acquisition.
+
+If substantial source from an historical MIT-covered swarm snapshot is actually copied/adapted into the HELIOS closing snapshot, the applicable MIT notice must remain with that covered material. If later source-available swarm material is incorporated, the buyer must receive whatever background-IP licence or assignment the definitive transaction expressly provides for that material.
+
+A buyer must therefore not assume either of these incorrect extremes:
+
+- that all swarm IP automatically transfers with HELIOS; or
+- that HELIOS cannot be transferred unless the entire swarm repository is sold.
+
+The exact answer belongs in the Purchased Assets and Background IP schedules.
 
 ## Specialized child repositories
 
@@ -66,7 +98,8 @@ Before signing a definitive IP Assignment, complete a contribution provenance re
 4. commissioned work, contractor work or employee work, if any;
 5. visual/audio assets not generated or authored within the project;
 6. AI-assisted code-generation disclosures relevant to buyer policy;
-7. background repositories materially incorporated into the closing snapshot.
+7. background repositories materially incorporated into the closing snapshot;
+8. the exact historical/current licence boundary for any incorporated swarm material.
 
 For each non-seller contributor with copyrightable material not already covered by a compatible inbound licence, obtain an assignment or sufficient licence before closing.
 
