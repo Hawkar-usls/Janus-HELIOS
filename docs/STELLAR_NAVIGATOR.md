@@ -6,7 +6,7 @@ The goal is visual depth and navigational continuity, not scientific-planetarium
 
 ## Current recovery phase
 
-Version `1.1.0` remains deliberately **PASSIVE BACKGROUND ONLY**. The current `SMOOTH_FLOW_1` patch changes only presentation smoothing; it does not add gameplay inputs.
+Version `1.1.0` remains deliberately **PASSIVE BACKGROUND ONLY**. The current `SMOOTH_FLOW_BLACK_HOLE_1` patch changes only background presentation; it does not add gameplay inputs.
 
 ```text
 AUTONOMOUS SLOW DRIFT
@@ -51,9 +51,9 @@ This means the current HELIOS background is **astronomy-inspired, not a scientif
 
 ## Smooth-flow presentation patch
 
-`SMOOTH_FLOW_1` removes the sharp visual exposure changes noticed during the passive-Stellar acceptance pass.
+`SMOOTH_FLOW_BLACK_HOLE_1` keeps the exposure fixes from `SMOOTH_FLOW_1` and adds a purely decorative lower black-hole treatment.
 
-The background now uses three separate smoothing layers:
+The background uses three smoothing layers:
 
 - **fallback crossfade** — the old CSS sky and the Stellar canvas crossfade over roughly `2.4 s` instead of switching rapidly;
 - **star alpha damping** — each visible star approaches its target brightness through a long exponential response (`~1.25 s`) rather than visually snapping between levels;
@@ -63,11 +63,25 @@ Bright anchor stars twinkle more slowly and with lower amplitude than the synthe
 
 ### Background body colour flow
 
-The decorative Sun, lower planet horizon and orbit field never jump directly between colour states. They use long-period, low-amplitude, continuously interpolated `filter` animations with independent durations/phases.
+The decorative Sun, lower black-hole body and orbit field never jump directly between colour states. They use long-period, low-amplitude, continuously interpolated `filter` animations with independent durations/phases.
 
 In practice the colour movement is intentionally subtle: only a few degrees of hue rotation plus very small saturation/brightness movement over tens of seconds. The objective is a slow atmospheric colour **flow**, not a visible mode switch or disco effect.
 
 With `prefers-reduced-motion: reduce`, autonomous travel and colour-flow animations are disabled and the bodies remain at their neutral palette.
+
+## Centered event-horizon black hole
+
+The former lower-right decorative `planet-horizon` is now restyled at runtime as a centered lower black-hole presentation:
+
+- the body is horizontally centered beneath the main HELIOS shell;
+- its upper arc rises behind the lower information cards so the cards remain readable in front of it;
+- a thin cold-white/blue rim represents the visible event-horizon/lensing boundary;
+- layered radial highlights preserve the existing mercury-like reflective character near the upper surface;
+- the inner body rapidly falls toward near-black to read as a black hole rather than a conventional planet;
+- the shell remains `z-index:2` while the black-hole body remains `z-index:1`, so it cannot cover or capture the UI;
+- no extra network request, image asset, WebGL dependency, game event, bet, balance, route, RNG or bonus input is introduced.
+
+This is a visual black-hole treatment, not a scientific simulation of general-relativistic ray tracing.
 
 ## Fail-closed presentation fallback
 
