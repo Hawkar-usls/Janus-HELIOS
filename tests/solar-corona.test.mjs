@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [html, bonus, config, music] = await Promise.all([
+const [html, bonus, core, config, music] = await Promise.all([
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../helios-bonus.js', import.meta.url), 'utf8'),
+  readFile(new URL('../helios.js', import.meta.url), 'utf8'),
   readFile(new URL('../config/helios.public.json', import.meta.url), 'utf8'),
   readFile(new URL('../helios-music.js', import.meta.url), 'utf8')
 ]);
@@ -12,7 +13,8 @@ const cfg = JSON.parse(config);
 const corona = cfg.demo_solar_corona;
 const buy = cfg.demo_bonus_buy;
 
-assert.match(html, /helios-bonus\.js\?v=1\.3\.0/);
+assert.match(html, /helios-bonus\.js\?v=1\.4\.0/);
+assert.match(bonus, /BONUS_ENGINE_VERSION='1\.4\.0'/);
 assert.match(bonus, /SOLAR CORONA BONUS/);
 assert.match(bonus, /SOLAR FREE SPINS/);
 assert.match(bonus, /CHOOSE BONUS/);
@@ -27,6 +29,16 @@ assert.match(bonus, /retrigger_spins_added/);
 assert.match(bonus, /DEMO_SOLAR_FREE_SPINS/);
 assert.match(bonus, /production_enabled: false/);
 assert.match(bonus, /compute_effect: 'NONE'/);
+assert.match(bonus, /first_class_bonus_core_source:true/);
+assert.match(bonus, /stake_refund_bridge:false/);
+
+// Bonus execution belongs to the game core, not a balance-source refund bridge.
+assert.match(core, /const VALID_SPIN_SOURCES = new Set\(\['balance','energy','bonus'\]\)/);
+assert.match(core, /function openBonusSession/);
+assert.match(core, /async function spinBonus\(token\)/);
+assert.match(core, /spin\(\{source:'bonus',bonusCapability:token\}\)/);
+assert.match(core, /stake_charge:'NONE'/);
+assert.match(core, /INVALID_BONUS_CAPABILITY/);
 
 assert.equal(corona.enabled, true);
 assert.deepEqual(corona.eligible_game_modes, ['helios']);
