@@ -105,11 +105,9 @@ The current public product demonstrates:
 
 Higher tiers buy disclosed additional opportunities/budget; they do not secretly alter ordinary symbol odds or guarantee profit.
 
-### Current architecture caveat
+### Current first-class BONUS source
 
-At the time this document was introduced, purchased bonus execution still depended on a browser presentation bridge around the canonical balance-source game core. That is a valid capability-demo implementation but is not the preferred production architecture.
-
-The production target is:
+The public core now implements the intended source model directly:
 
 ```text
 GAME CORE SPIN SOURCE
@@ -118,9 +116,22 @@ GAME CORE SPIN SOURCE
   └── BONUS
 ```
 
-with the authoritative core itself deciding whether a source charges stake and where winnings settle.
+`BONUS` is a first-class game-core spin source rather than a presentation-layer stake-refund bridge.
 
-Until that first-class BONUS source is implemented and verified, this issue remains a disclosed engineering gate rather than being hidden behind UI behavior.
+The authoritative core:
+
+- opens a bounded bonus entitlement/capability;
+- locks the bonus bet for the session;
+- executes `source:'bonus'` spins through the same symbol/cascade evaluator;
+- charges no per-spin stake for an authorized bonus spin;
+- credits winnings in the game core;
+- tracks remaining/granted bonus entitlement;
+- rejects invalid/stale bonus capabilities;
+- closes the bounded session when complete.
+
+The bonus presentation layer still owns UX, tier review, consent, wheel choreography, HUD and retrigger presentation, but it does not emulate free spins by refunding ordinary stakes.
+
+This engineering improvement does **not** make the public demo production-certified. A real-money implementation still needs exact game-math simulation, recovery/interruption rules, wallet/accounting integration, independent testing and jurisdiction/platform approval.
 
 ## 7. Spin Energy
 
