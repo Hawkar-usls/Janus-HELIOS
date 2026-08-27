@@ -23,6 +23,7 @@ This index is the recommended starting point for a serious acquisition/licensing
 - `LICENSE.md`
 - `IP_NOTICE.md`
 - `THIRD_PARTY_NOTICES.md`
+- `CONTRIBUTING.md`
 - `legal/BACKGROUND_IP_AND_PROVENANCE.md`
 - `.janus/HELIOS_DUE_DILIGENCE.json`
 
@@ -36,17 +37,27 @@ This index is the recommended starting point for a serious acquisition/licensing
 ## E. Closing / acceptance
 
 - `docs/RELEASE_AND_HASHING.md`
+- `docs/CI_AND_RELEASE_EVIDENCE.md`
 - `legal/ACCEPTANCE_AND_HANDOVER.md`
 - `legal/CLOSING_CHECKLIST.md`
 - `legal/SELLER_DISCLOSURE_SCHEDULE_TEMPLATE.md`
 - `legal/TRANSITION_SUPPORT_SCOPE.md`
 
-## F. Source / tests
+## F. Security / source / tests
 
+- `SECURITY.md`
+- `.github/workflows/helios-integrity.yml`
+- `tools/build-closing-manifest.mjs`
+- `tools/due-diligence-preflight.mjs`
+- `tools/secret-scan.mjs`
 - `src/helios-router.js`
 - `src/helios-swarm-dispatcher.js`
 - `package.json`
 - `tests/`
+
+## Current reproducible evidence
+
+`docs/CI_AND_RELEASE_EVIDENCE.md` records an exact GitHub Actions integrity run and closing-manifest artifact for a specific immutable commit. That evidence applies only to the commit named there. Every later closing candidate must be re-run and re-manifested.
 
 ## Missing closing artifacts — expected only during a real transaction
 
@@ -55,9 +66,10 @@ The following should **not** be fabricated in advance. They are produced for the
 - signed NDA/LOI/APA/IP Assignment;
 - seller identity/authority documents;
 - completed and signed Seller Disclosure Schedule;
-- complete automated SBOM/licence scan report;
-- complete test execution report on the exact closing commit;
-- closing commit/tree/file hash manifest;
+- independent/automated SBOM and licence scan report for the final snapshot;
+- independent security report if required by the transaction;
+- full integrity/test execution evidence on the exact final closing commit;
+- closing commit/tree/file hash manifest preserved outside temporary CI retention;
 - signed release/tag or equivalent cryptographic attestation if agreed;
 - trademark/patent clearance reports if applicable;
 - escrow confirmation;
