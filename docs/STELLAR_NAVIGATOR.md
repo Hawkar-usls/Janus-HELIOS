@@ -6,7 +6,7 @@ The goal is visual depth and navigational continuity, not scientific-planetarium
 
 ## Current recovery phase
 
-Version `1.1.0` is deliberately **PASSIVE BACKGROUND ONLY**.
+Version `1.1.0` remains deliberately **PASSIVE BACKGROUND ONLY**. The current `SMOOTH_FLOW_1` patch changes only presentation smoothing; it does not add gameplay inputs.
 
 ```text
 AUTONOMOUS SLOW DRIFT
@@ -49,9 +49,29 @@ This means the current HELIOS background is **astronomy-inspired, not a scientif
 - no game-mode or compute-route state is read;
 - no gameplay or bonus DOM element is queried or modified.
 
+## Smooth-flow presentation patch
+
+`SMOOTH_FLOW_1` removes the sharp visual exposure changes noticed during the passive-Stellar acceptance pass.
+
+The background now uses three separate smoothing layers:
+
+- **fallback crossfade** — the old CSS sky and the Stellar canvas crossfade over roughly `2.4 s` instead of switching rapidly;
+- **star alpha damping** — each visible star approaches its target brightness through a long exponential response (`~1.25 s`) rather than visually snapping between levels;
+- **edge/depth fades** — stars entering or leaving the projection fade through a smoothstep envelope instead of appearing at full intensity on a viewport boundary.
+
+Bright anchor stars twinkle more slowly and with lower amplitude than the synthetic faint field, so stable visual landmarks do not behave like flashing indicators.
+
+### Background body colour flow
+
+The decorative Sun, lower planet horizon and orbit field never jump directly between colour states. They use long-period, low-amplitude, continuously interpolated `filter` animations with independent durations/phases.
+
+In practice the colour movement is intentionally subtle: only a few degrees of hue rotation plus very small saturation/brightness movement over tens of seconds. The objective is a slow atmospheric colour **flow**, not a visible mode switch or disco effect.
+
+With `prefers-reduced-motion: reduce`, autonomous travel and colour-flow animations are disabled and the bodies remain at their neutral palette.
+
 ## Fail-closed presentation fallback
 
-The old static CSS star field remains visible until the Stellar canvas completes its first successful frame. Only then does `.cosmos.stellar-active` fade the fallback out.
+The old static CSS star field remains visible until the Stellar canvas completes its first successful frame. Only then does `.cosmos.stellar-active` begin the crossfade.
 
 Therefore a missing/failed Stellar script should degrade to the static background rather than damage the slot.
 
