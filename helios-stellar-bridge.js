@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const BRIDGE_VERSION = '1.0.0';
+  const BRIDGE_VERSION = '1.0.1';
   const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)') || null;
   const clamp = (n,min,max) => Math.max(min,Math.min(max,Number(n)||0));
 
@@ -38,6 +38,32 @@
     const style=document.createElement('style');
     style.id='helios-stellar-bridge-styles';
     style.textContent=`
+      @property --mode{syntax:'<color>';inherits:true;initial-value:#ffc24b}
+      @property --mode-soft{syntax:'<color>';inherits:true;initial-value:#ffc24b20}
+      @property --helios-ambient-hue{syntax:'<number>';inherits:true;initial-value:0}
+      @property --helios-ambient-sat{syntax:'<number>';inherits:true;initial-value:1}
+      @property --helios-ambient-bright{syntax:'<number>';inherits:true;initial-value:1}
+      @property --helios-orbit-glow{syntax:'<color>';inherits:true;initial-value:#ffb13d08}
+
+      /* Registered presentation variables interpolate instead of snapping when a mode changes. */
+      body{
+        --helios-ambient-hue:0;
+        --helios-ambient-sat:1;
+        --helios-ambient-bright:1;
+        --helios-orbit-glow:#ffb13d08;
+        transition:
+          --mode 2.65s cubic-bezier(.22,.61,.36,1),
+          --mode-soft 2.65s cubic-bezier(.22,.61,.36,1),
+          --helios-ambient-hue 3.1s cubic-bezier(.22,.61,.36,1),
+          --helios-ambient-sat 3.1s cubic-bezier(.22,.61,.36,1),
+          --helios-ambient-bright 3.1s cubic-bezier(.22,.61,.36,1),
+          --helios-orbit-glow 3.1s cubic-bezier(.22,.61,.36,1);
+      }
+      body[data-game-mode="helios"]{--mode:#ffc24b;--mode-soft:#ffc24b20;--helios-ambient-hue:0;--helios-ambient-sat:1;--helios-ambient-bright:1;--helios-orbit-glow:#ffb13d08}
+      body[data-game-mode="divine"]{--mode:#79dfff;--mode-soft:#79dfff24;--helios-ambient-hue:12;--helios-ambient-sat:.992;--helios-ambient-bright:1.004;--helios-orbit-glow:#79dfff10}
+      body[data-game-mode="gridjack"]{--mode:#95ff9a;--mode-soft:#95ff9a20;--helios-ambient-hue:-4;--helios-ambient-sat:1.008;--helios-ambient-bright:1.002;--helios-orbit-glow:#95ff9a0d}
+      body[data-game-mode="custom"]{--mode:#c998ff;--mode-soft:#c998ff20;--helios-ambient-hue:-9;--helios-ambient-sat:.996;--helios-ambient-bright:.999;--helios-orbit-glow:#c998ff10}
+
       /* The bridge never changes game outcome/RTP/compute state. It owns only presentation easing. */
       .helios-stellar-canvas{
         transform-origin:50% 50%;
@@ -45,26 +71,44 @@
         transition:opacity 2.4s cubic-bezier(.22,.61,.36,1),transform 2.8s cubic-bezier(.16,.78,.22,1)!important;
       }
 
-      /* Remove the old fast contrast pumping. Director keeps geometry/glow, not exposure jumps. */
-      body.director-divergence .helios-director-stage,
-      body.director-resolution .helios-director-stage{filter:none!important}
+      /* Director keeps geometry/narrative, but exposure pumping is removed completely. */
       .helios-director-stage{
         will-change:transform,box-shadow!important;
-        transition:transform .42s cubic-bezier(.2,.76,.22,1),box-shadow .52s ease!important;
+        box-shadow:0 0 0 rgba(0,0,0,0);
+        transition:transform .42s cubic-bezier(.2,.76,.22,1),box-shadow 1.05s cubic-bezier(.22,.61,.36,1)!important;
+      }
+      body.director-divergence .helios-director-stage,
+      body.director-resolution .helios-director-stage{
+        filter:none!important;
+        box-shadow:0 0 calc(4px + var(--director-l)*8px) var(--mode-soft)!important;
       }
 
-      /* Mode atmosphere is intentionally shallow and interpolated instead of palette-snapping. */
-      .cosmos>.sun,.cosmos>.orbit-field{
-        transition:filter 2.8s cubic-bezier(.22,.61,.36,1),box-shadow 2.8s cubic-bezier(.22,.61,.36,1)!important;
+      /* One source of truth for atmospheric colour: registered variables, not instant filter swaps. */
+      .cosmos>.sun{
+        filter:hue-rotate(calc(var(--helios-ambient-hue)*1deg)) saturate(var(--helios-ambient-sat)) brightness(var(--helios-ambient-bright))!important;
+        transition:none!important;
       }
-      body[data-game-mode="helios"] .cosmos>.sun{filter:hue-rotate(0deg) saturate(1) brightness(1)!important}
-      body[data-game-mode="divine"] .cosmos>.sun{filter:hue-rotate(16deg) saturate(.98) brightness(1.008)!important}
-      body[data-game-mode="gridjack"] .cosmos>.sun{filter:hue-rotate(-6deg) saturate(1.015) brightness(1.004)!important}
-      body[data-game-mode="custom"] .cosmos>.sun{filter:hue-rotate(-13deg) saturate(.99) brightness(.998)!important}
-      body[data-game-mode="helios"] .cosmos>.orbit-field{box-shadow:inset 0 0 70px #ffb13d08!important}
-      body[data-game-mode="divine"] .cosmos>.orbit-field{box-shadow:inset 0 0 82px #79dfff10!important}
-      body[data-game-mode="gridjack"] .cosmos>.orbit-field{box-shadow:inset 0 0 82px #95ff9a0d!important}
-      body[data-game-mode="custom"] .cosmos>.orbit-field{box-shadow:inset 0 0 82px #c998ff10!important}
+      .cosmos>.orbit-field{
+        filter:none!important;
+        box-shadow:inset 0 0 82px var(--helios-orbit-glow)!important;
+        transition:none!important;
+      }
+
+      /* Paid-win focus is still readable, but no longer flashes the reels from bright to dark in 160 ms. */
+      .reels.win-focus .cell{
+        opacity:.48!important;
+        filter:saturate(.82) brightness(.90)!important;
+        transition:opacity .82s cubic-bezier(.22,.61,.36,1),filter .92s cubic-bezier(.22,.61,.36,1),transform .28s ease,box-shadow .82s ease,border-color .82s ease,color .82s ease!important;
+      }
+      .reels.win-focus .cell.hit{opacity:1!important;filter:none!important}
+      .reels.win-focus .cell.cascade-out,.reels.win-focus .cell.cascade-in{opacity:1!important;filter:none!important}
+      .cell,.energy-step,.last-win-card,.mode-btn,.route,.reels{
+        transition-property:opacity,filter,transform,box-shadow,border-color,color,background-color!important;
+        transition-duration:.72s!important;
+        transition-timing-function:cubic-bezier(.22,.61,.36,1)!important;
+      }
+      .game-panel{transition:box-shadow 1.1s cubic-bezier(.22,.61,.36,1)!important}
+      .game-panel.win-impact{box-shadow:0 0 0 1px #8f6b2a99,0 0 28px #ffc95c18,var(--shadow)!important}
 
       /* Dyson coordinates are supplied from actual UI geometry, not viewport percentages. */
       .cosmos>.helios-dyson-sphere{
@@ -72,14 +116,19 @@
         transform-origin:50% 50%;
       }
 
-      .mode-btn,.route{
-        transition:border-color .65s ease,box-shadow .75s ease,background-color .65s ease,color .65s ease,transform .24s ease!important;
+      /* Static baseline trim only: one small step lower, with size/aspect untouched. */
+      .cosmos>.planet-horizon{bottom:clamp(-328px,-13.8vw,-205px)!important}
+
+      @media(max-width:720px){
+        .cosmos>.planet-horizon{bottom:-250px!important}
       }
 
       @media(prefers-reduced-motion:reduce){
+        body{transition:none!important}
         .helios-stellar-canvas{transform:none!important;transition:opacity .35s ease!important}
         .cosmos>.helios-dyson-sphere{transition:left .18s ease,top .18s ease,width .18s ease,height .18s ease!important}
-        .cosmos>.sun,.cosmos>.orbit-field{transition:filter .35s ease,box-shadow .35s ease!important}
+        .reels.win-focus .cell{transition-duration:.22s!important}
+        .game-panel,.helios-director-stage{transition-duration:.22s!important}
       }
     `;
     document.head.appendChild(style);
@@ -260,6 +309,8 @@
         mode:state.mode,
         reduced_motion:state.reducedMotion,
         dyson_angle_deg:state.dysonAngle,
+        palette_transition:'REGISTERED_INTERPOLATED_CUSTOM_PROPERTIES',
+        black_hole_offset:'STATIC_ONE_STEP_LOWER',
         presentation_only:true,
         reads_bet:false,
         reads_balance:false,
@@ -269,7 +320,7 @@
         compute_routing_effect:'NONE'
       })
     });
-    dispatchEvent(new CustomEvent('helios:stellar-bridge-ready',{detail:{version:BRIDGE_VERSION,presentation_only:true,ui_bound_dyson:true,mode_camera_flyby:true,abrupt_contrast_pumping:false,rng_effect:'NONE',rtp_effect:'NONE'}}));
+    dispatchEvent(new CustomEvent('helios:stellar-bridge-ready',{detail:{version:BRIDGE_VERSION,presentation_only:true,ui_bound_dyson:true,mode_camera_flyby:true,registered_palette_interpolation:true,win_focus_smoothed:true,black_hole_static_lower_step:true,abrupt_contrast_pumping:false,rng_effect:'NONE',rtp_effect:'NONE'}}));
     return true;
   }
 
