@@ -26,6 +26,7 @@
   "game_surface": {
     "layout": "5X3",
     "game_modes": ["HELIOS", "DIVINE", "GRIDJACK", "CUSTOM"],
+    "spin_sources": ["BALANCE", "ENERGY", "BONUS"],
     "initial_spin_animation": "NEUTRAL_STAGGERED_REELS",
     "post_win_mechanic": "TUMBLE_CASCADE",
     "cascade_sequence": "REMOVE_PAID_SYMBOLS_THEN_GRAVITY_THEN_RANDOM_REFILL_THEN_REEVALUATE",
@@ -62,6 +63,11 @@
       "visual_activation_rng_effect": "NONE",
       "seamless_overlay_handoff": true,
       "game_math": "EXISTING_STANDARD_GAME_RNG_PLUS_EXISTING_CASCADE_ENGINE",
+      "game_core_spin_source": "BONUS_FIRST_CLASS",
+      "game_core_capability_required": true,
+      "per_bonus_spin_stake_charge": "NONE",
+      "stake_refund_bridge": false,
+      "winnings_credit_authority": "GAME_CORE",
       "forced_win": false,
       "forced_scatter": false,
       "near_miss_shaping": false,
@@ -71,8 +77,6 @@
       "session_hud": ["SPINS_LEFT", "BONUS_WIN", "CURRENT_EVENT"],
       "session_events": ["BONUS_SESSION_START", "BONUS_SPIN", "BONUS_SESSION_COMPLETE"],
       "winnings_settle_to_demo_balance": true,
-      "prototype_bridge": "BONUS_SESSION_CALLS_EXISTING_BALANCE_SPIN_AND_PRESENTATION_LAYER_REFUNDS_EACH_STAKE",
-      "production_refactor_target": "FIRST_CLASS_GAME_CORE_SOURCE_BONUS",
       "real_money_value": false,
       "production_enabled": false,
       "production_rule": "SEPARATE_JURISDICTION_PLATFORM_RESPONSIBLE_GAMING_AND_GAME_MATH_REVIEW_REQUIRED"
@@ -221,6 +225,7 @@
     "COMPUTE_CANNOT_AUTOMATICALLY_CREATE_PRODUCTION_WAGERS_OR_FREE_SPINS",
     "BONUS_SESSION_CANNOT_READ_COMPUTE_STATE_ROUTE_OR_CONTRIBUTION_FOR_OUTCOME_GENERATION",
     "BONUS_SESSION_HAS_NO_FORCED_WIN_NEAR_MISS_OR_FORCED_SCATTER_LOGIC",
+    "BONUS_SPINS_USE_FIRST_CLASS_GAME_CORE_SOURCE_WITH_NO_STAKE_REFUND_BRIDGE",
     "REAL_MONEY_BONUS_BUY_IS_NOT_ENABLED_BY_PUBLIC_DEMO",
     "PROCEDURAL_AUDIO_HAS_NO_RNG_PAYOUT_RTP_OR_COMPUTE_AUTHORITY",
     "DUAL_STREAM_DIRECTOR_HAS_PRESENTATION_AUTHORITY_ONLY",
@@ -238,7 +243,6 @@
   "production_gate": {
     "status": "NOT_ESTABLISHED",
     "blocked_pending": [
-      "FIRST_CLASS_BONUS_CORE_SOURCE",
       "REAL_PROVIDER_ADAPTER",
       "AUTHENTICATED_PRODUCTION_AGENT_TRANSPORT",
       "DURABLE_MULTI_HOST_COORDINATOR_STATE",
