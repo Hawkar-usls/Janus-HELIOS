@@ -1,0 +1,120 @@
+{
+  "schema": "janus.helios.commercial-thesis.v1",
+  "project": "JANUS HELIOS",
+  "tagline": "ONE CORE. ANY DESTINATION.",
+  "positioning": "B2B_GAMEPLAY_PLUS_EXPLICIT_OPT_IN_RESOURCE_ROUTING_LAYER",
+  "core_thesis": "A polished game surface can coexist with a separately controlled compute layer that routes bounded consenting-device capacity into approved workloads and records authoritative external value without allowing compute activity to alter game odds.",
+  "value_loops": {
+    "gameplay": "PLAYER_ACTIVITY_TO_GAME_OPERATOR_ECONOMICS",
+    "external_compute": "IDLE_RESOURCE_TO_VERIFIED_WORKLOAD_TO_AUTHORITATIVE_RECEIPT_TO_EXTERNAL_VALUE"
+  },
+  "innovation_claim": {
+    "does_not_claim_to_invent_idle_compute_marketplaces": true,
+    "does_not_claim_to_invent_slots": true,
+    "claimed_product_innovation": [
+      "GAME_SHAPED_CONSUMER_ENTRY_TO_OPT_IN_RESOURCE_SUPPLY",
+      "REPLACEABLE_MULTI_DESTINATION_PROVIDER_ROUTER",
+      "STRICT_GAME_COMPUTE_AUTHORITY_SEPARATION",
+      "USER_VISIBLE_RECEIPTS_WORK_HISTORY_AND_VALUE",
+      "WHITE_LABEL_REUSABLE_PARENT_SURFACE",
+      "COMPUTE_FUNDED_SEPARATE_REWARD_INVENTORY"
+    ]
+  },
+  "illustrative_unit_economics": {
+    "forecast": false,
+    "guaranteed_return": false,
+    "example": {
+      "monthly_active_users": 100000,
+      "compute_opt_in_ratio": 0.10,
+      "average_device_hours_per_day": 1,
+      "days_per_month": 30,
+      "illustrative_realized_external_value_usd_per_device_hour": 0.03,
+      "gross_external_value_usd_per_month": 9000,
+      "illustrative_user_ratio": 0.70,
+      "illustrative_operator_ratio": 0.30,
+      "illustrative_user_value_usd_per_month": 6300,
+      "illustrative_operator_value_usd_per_month": 2700
+    },
+    "interpretation": "A second verified external-value source may exist alongside gameplay economics. Real unit economics must be measured from live workload pricing, real devices, electricity, fees and authoritative receipts."
+  },
+  "electricity_aware_gate": {
+    "formula": "USER_NET_VALUE = PROVIDER_PAYMENT - ELECTRICITY_COST - PLATFORM_PROVIDER_FEES - SAFETY_MARGIN",
+    "economic_route_rule": "PRESENT_AS_PROFITABLE_ONLY_IF_USER_NET_VALUE_GT_ZERO",
+    "requires_real_energy_telemetry": true
+  },
+  "sponsor_validation_gate": {
+    "production_profitability_proven": false,
+    "reason": "PUBLIC_DEMO_HAS_NO_AUTHORITATIVE_LIVE_PROVIDER_WORKLOAD_SETTLEMENT_PATH",
+    "required_counterparty": "SPONSOR_OR_OPERATOR_OR_COMPUTE_PROVIDER_OR_RESEARCH_PARTNER_OR_ENTERPRISE_WORKLOAD_BUYER",
+    "pilot_sequence": [
+      "REAL_PROVIDER_OR_SPONSOR",
+      "LIVE_WORKLOAD",
+      "CONSENTING_TEST_DEVICES",
+      "REAL_DEVICE_HOURS",
+      "REAL_WATT_HOURS",
+      "AUTHORITATIVE_RECEIPTS",
+      "REAL_VALUE_AND_COST_DATA",
+      "MEASURED_UNIT_ECONOMICS"
+    ],
+    "minimum_claim_until_pilot": "TESTABLE_COMMERCIAL_THESIS_WITH_WORKING_DEMO_MECHANICS_NOT_YET_PRODUCTION_VALIDATED"
+  },
+  "compute_funded_engagement": {
+    "current_demo_primitive": "SPIN_ENERGY",
+    "current_rule": "30_SECONDS_ELIGIBLE_DEMO_COMPUTE_TO_ONE_CAPPED_NON_CASH_ENERGY_SPIN",
+    "bank_cap": 3,
+    "manual_use_only": true,
+    "automatic_wager_conversion": false,
+    "real_money_value": false,
+    "future_compliant_surfaces": [
+      "CAPPED_NON_CASH_DAILY_SPIN_ENERGY",
+      "LOYALTY_POINTS_SEPARATE_FROM_WAGERING_BALANCE",
+      "COMPUTE_CREDITS",
+      "COSMETIC_PROFILE_PROGRESSION",
+      "MARKETPLACE_FEE_REBATES",
+      "NON_WAGERING_DIGITAL_REWARDS",
+      "PUBLIC_GOOD_IMPACT_CREDITS"
+    ]
+  },
+  "responsible_gaming_boundary": {
+    "target_problem_gamblers": false,
+    "target_inferred_vulnerability": false,
+    "loss_streak_targeting": false,
+    "near_miss_targeting": false,
+    "compute_changes_rng": false,
+    "compute_changes_rtp": false,
+    "compute_changes_bonus_probability": false,
+    "automatic_compute_value_to_wager_conversion": false,
+    "forced_autoplay": false,
+    "responsible_gaming_limits_authoritative": true,
+    "principle": "ENGAGEMENT_MAY_BE_CREATED_BY_TRANSPARENT_EARNED_VALUE_BUT_REWARD_TIMING_MUST_NOT_BE_OPTIMIZED_AGAINST_INFERRED_ADDICTION_OR_VULNERABILITY"
+  },
+  "b2b_models": [
+    "WHITE_LABEL_LICENSE",
+    "INTEGRATION_SETUP_FEE",
+    "RECURRING_PLATFORM_FEE",
+    "DISCLOSED_TAKE_RATE_ON_VERIFIED_COMPUTE_VALUE",
+    "CUSTOM_PROVIDER_ADAPTERS",
+    "OPERATOR_OWNED_WORKLOAD_ROUTING",
+    "EXTERNAL_COMPUTE_FUNDED_USER_INCENTIVES"
+  ],
+  "candidate_workload_destinations": [
+    "COMPUTE_MARKETPLACE",
+    "SCIENTIFIC_COMPUTING",
+    "GPU_RENDERING",
+    "AI_INFERENCE",
+    "VIDEO_TRANSCODING",
+    "STORAGE_OR_NETWORK_WORK",
+    "POOL_OR_TREASURY_JOBS",
+    "OPERATOR_OWNED_BATCH_WORKLOADS",
+    "CUSTOM_APPROVED_WORKLOADS"
+  ],
+  "truth_boundary": {
+    "public_pages_is_concept_capability_demo": true,
+    "real_provider_adapter_required": true,
+    "authoritative_receipt_required": true,
+    "energy_thermal_telemetry_required": true,
+    "security_privacy_legal_review_required": true,
+    "non_money_pilot_required": true
+  },
+  "human_readable_doc": "docs/COMMERCIAL_THESIS.md"
+}
