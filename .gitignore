@@ -1,0 +1,53 @@
+# Local dependencies / tooling
+node_modules/
+.npm/
+.cache/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.secret
+*.secrets
+secrets/
+private/
+credentials/
+
+# Provider / settlement local material
+provider-private/
+settlement-private/
+wallet-private/
+*.wallet
+*.seed
+
+# Generated closing / audit artifacts
+artifacts/
+reports/
+sbom/
+coverage/
+
+# Logs / temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local deployment overrides
+config/*.local.json
+config/*.private.json
+*.local.json
+*.private.json
