@@ -35,6 +35,7 @@ const required = [
   '.janus/HELIOS_ADAPTIVE_POLICY.json',
   '.janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json',
   '.janus/HELIOS_DUAL_STREAM_DIRECTOR.json',
+  '.janus/HELIOS_BUYER_CRITIC_AUDIT_2026-08-27.json',
   '.github/CODEOWNERS',
   '.github/workflows/helios-integrity.yml',
   'legal/PURCHASED_ASSETS_SCHEDULE.md',
@@ -87,7 +88,7 @@ for (const path of removedLegacyActivePaths) {
 
 const [
   license, ipNotice, thirdParty, statusText, handoffText, ddText, architectureText,
-  fabricText, adaptiveText, safetyText, directorContractText,
+  fabricText, adaptiveText, safetyText, directorContractText, criticAuditText,
   purchased, excluded, provenance, guardrails, acceptance, support,
   changeControl, codeowners, ciEvidence, packageText, workflowText,
   indexHtml, mobileSource, directorSource, fabricSource, agentSource, adaptiveSource, safetySource,
@@ -97,6 +98,7 @@ const [
   text('BUYER_HANDOFF_SPEC.json'), text('.janus/HELIOS_DUE_DILIGENCE.json'), text('.janus/HELIOS_ARCHITECTURE.json'),
   text('.janus/HELIOS_DESKTOP_FABRIC.json'), text('.janus/HELIOS_ADAPTIVE_POLICY.json'),
   text('.janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json'), text('.janus/HELIOS_DUAL_STREAM_DIRECTOR.json'),
+  text('.janus/HELIOS_BUYER_CRITIC_AUDIT_2026-08-27.json'),
   text('legal/PURCHASED_ASSETS_SCHEDULE.md'), text('legal/EXCLUDED_ASSETS_SCHEDULE.md'), text('legal/BACKGROUND_IP_AND_PROVENANCE.md'), text('legal/TRANSACTION_GUARDRAILS.md'),
   text('legal/ACCEPTANCE_AND_HANDOVER.md'), text('legal/TRANSITION_SUPPORT_SCOPE.md'), text('docs/CHANGE_CONTROL_AND_CLOSING_FREEZE.md'),
   text('.github/CODEOWNERS'), text('docs/CI_AND_RELEASE_EVIDENCE.md'), text('package.json'), text('.github/workflows/helios-integrity.yml'),
@@ -112,6 +114,7 @@ const fabric = JSON.parse(fabricText);
 const adaptive = JSON.parse(adaptiveText);
 const safety = JSON.parse(safetyText);
 const director = JSON.parse(directorContractText);
+const criticAudit = JSON.parse(criticAuditText);
 const packageJson = JSON.parse(packageText);
 
 check(/source-available/i.test(license) && /not an open-source license/i.test(license), 'public HELIOS licence is source-available evaluation only', 'HELIOS licence boundary is not explicit');
@@ -120,11 +123,12 @@ check(/No patent status is claimed/i.test(ipNotice), 'patent claims remain bound
 check(/SBOM/i.test(thirdParty), 'third-party register requires closing SBOM', 'third-party register lacks SBOM closing gate');
 
 check(status.production_readiness !== 'READY' && status.production_readiness !== 'PRODUCTION_READY', 'status does not falsely claim production readiness', 'status falsely claims production readiness');
-check(typeof status.full_test_suite_execution_status === 'string' && /(RE_RUN_REQUIRED|REQUIRES_NEW_INTEGRITY_RUN|CLOSING_SNAPSHOT)/i.test(status.full_test_suite_execution_status), 'test status is snapshot-scoped and requires closing rerun', 'test status is not scoped to an exact/repeatable snapshot');
+check(typeof status.full_test_suite_execution_status === 'string' && /(RE_RUN_REQUIRED|REQUIRES_NEW_INTEGRITY_RUN|CLOSING_SNAPSHOT|REQUIRES_NEW_INTEGRITY_RUN_FOR_CURRENT)/i.test(status.full_test_suite_execution_status), 'test status is snapshot-scoped and requires closing rerun', 'test status is not scoped to an exact/repeatable snapshot');
 check(status.integrity_ci?.scope_rule?.includes('GREEN_COMMIT_DOES_NOT_CERTIFY_A_LATER_COMMIT'), 'status records immutable CI scope rule', 'status does not clearly scope green CI to one commit');
 check(status.project_version === packageJson.version, 'PROJECT_STATUS and package version agree', 'PROJECT_STATUS/package version drift detected');
 check(architecture.version === packageJson.version, 'canonical architecture and package version agree', 'HELIOS_ARCHITECTURE/package version drift detected');
 check(dd.project_snapshot?.package_version === packageJson.version && dd.project_snapshot?.canonical_architecture_version === architecture.version, 'DD snapshot, architecture and package versions agree', 'DD snapshot version drift detected');
+check(handoff.product_version === undefined || handoff.product_version === packageJson.version, 'buyer handoff is not version-drifted', 'BUYER_HANDOFF_SPEC/package version drift detected');
 check(status.desktop_fabric?.module === 'src/helios-desktop-fabric.js', 'project status points to active desktop fabric', 'project status does not point to active desktop fabric');
 check(status.adaptive_policy_plane?.module === 'src/helios-adaptive-policy.js', 'project status points to adaptive policy plane', 'adaptive policy plane missing from project status');
 check(status.dual_stream_safety_guard?.module === 'src/helios-dual-stream-guard.js', 'project status points to dual-stream safety guard', 'dual-stream safety guard missing from project status');
@@ -180,7 +184,16 @@ check(safety.hard_invariant?.bottleneck_reserve === true, 'safety reserve uses b
 check(safety.player_boundary?.player_emotional_state_input === 'FORBIDDEN', 'safety guard forbids player emotional inputs', 'safety guard player-emotion boundary weakened');
 check(safety.player_boundary?.problem_gambling_or_vulnerability_targeting === 'FORBIDDEN', 'safety guard forbids vulnerability targeting', 'safety guard vulnerability boundary weakened');
 check(safety.relationship_to_adaptive_policy?.dual_stream_guard_may_widen_user_resource_policy === false, 'safety guard cannot widen user resource policy', 'safety guard can widen user resource policy');
-check(/SAFETY_RESERVE/.test(safetySource) && /CHANGE_PRESSURE/.test(safetySource), 'safety implementation contains explicit reserve/change control state', 'safety implementation control variables missing');
+const safetyImplementationSemantic =
+  /export function stepBoundedDualStream/.test(safetySource) &&
+  /state\.change_pressure/.test(safetySource) &&
+  /state\.safety_reserve/.test(safetySource) &&
+  /const maxAdmissibleChange = rawSafety \/ rho/.test(safetySource) &&
+  /const changePressure = Math\.min\(rawChange, maxAdmissibleChange\)/.test(safetySource) &&
+  /export function evaluateSafetyBalance/.test(safetySource) &&
+  /const safetyReserve = Math\.min\(\.\.\.Object\.values\(reserveComponents\)\)/.test(safetySource) &&
+  /SAFETY_RESERVE_BELOW_REQUIRED_BALANCE/.test(safetySource);
+check(safetyImplementationSemantic, 'safety implementation enforces bounded change pressure and bottleneck safety reserve', 'safety implementation no longer semantically enforces reserve/change balance');
 
 check(director.implementation_version === '1.1.0', 'presentation director contract is current v1.1.0', 'presentation director contract version drifted');
 check(director.authority_boundary?.presentation_only === true && director.authority_boundary?.rng_effect === 'NONE' && director.authority_boundary?.rtp_effect === 'NONE', 'director is presentation-only with no RNG/RTP authority', 'director authority boundary weakened');
@@ -209,10 +222,17 @@ check(/SOW/i.test(support) && /new feature/i.test(support), 'transition support 
 check(/required Code Owner review/i.test(changeControl) && /no force-push/i.test(changeControl), 'closing change-control policy defines enforceable target settings', 'change-control policy lacks required review/force-push controls');
 check(/At the time this document was introduced, branch protection was not represented as already enabled/i.test(changeControl), 'branch-protection status is not falsely claimed', 'change-control document may falsely imply repository settings are enforced');
 check(/\* @Hawkar-usls/.test(codeowners), 'default CODEOWNERS review owner is declared', 'default CODEOWNERS owner missing');
-check(/exact commit/i.test(ciEvidence) && /does \*\*not\*\* turn HELIOS into a production-certified product/i.test(ciEvidence), 'CI evidence is exact-snapshot and non-certification scoped', 'CI evidence scope is ambiguous');
+const evidenceIsCommitScoped = /exact (?:repository )?snapshots?|exact commit|exact SHA/i.test(ciEvidence) && /previous green commit never certifies a later commit|does not .*certif.*later commit/i.test(ciEvidence);
+const evidenceIsNotCertification = /does (?:\*\*)?not(?:\*\*)? turn HELIOS into a production-certified product/i.test(ciEvidence) || /not a .*security certification|not a gambling certificate/i.test(ciEvidence);
+check(evidenceIsCommitScoped && evidenceIsNotCertification, 'CI evidence is exact-snapshot and non-certification scoped', 'CI evidence scope is ambiguous');
 check(/audit:preflight:strict/.test(workflowText), 'CI runs strict buyer preflight', 'CI buyer preflight is not strict');
 check(/actions\/checkout@[a-f0-9]{40}/.test(workflowText) && /actions\/setup-node@[a-f0-9]{40}/.test(workflowText), 'workflow actions are pinned to immutable SHAs', 'workflow actions are not pinned to immutable SHAs');
 check(/persist-credentials:\s*false/.test(workflowText) && /contents:\s*read/.test(workflowText), 'workflow uses read-only content permission and no persisted checkout credentials', 'workflow credential hardening drifted');
+
+check(criticAudit.product_snapshot_version === packageJson.version, 'buyer-critic audit targets current product version', 'buyer-critic audit version drift detected');
+check(Array.isArray(criticAudit.fixed_findings) && criticAudit.fixed_findings.length >= 8, 'buyer-critic audit records concrete remediations', 'buyer-critic audit lacks concrete remediation record');
+check(Array.isArray(criticAudit.open_external_or_production_gates) && criticAudit.open_external_or_production_gates.length >= 1, 'buyer-critic audit separates unresolved external/production gates', 'buyer-critic audit hides unresolved gates');
+check(criticAudit.non_claims?.production_ready === false && criticAudit.non_claims?.security_certified === false, 'buyer-critic audit does not self-certify production/security readiness', 'buyer-critic audit overclaims readiness');
 
 // Security docs must describe the active desktop architecture, not a removed swarm implementation.
 check(!/src\/helios-swarm-dispatcher\.js/.test(threatModel), 'threat model does not cite removed swarm dispatcher as active control', 'threat model still cites removed swarm dispatcher as active control');
