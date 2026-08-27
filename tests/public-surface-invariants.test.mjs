@@ -8,6 +8,7 @@ const [html, controller, configText, ecosystem] = await Promise.all([
   readFile(new URL('../.janus/HELIOS_ECOSYSTEM.json', import.meta.url), 'utf8')
 ]);
 
+// Web-first public surface.
 assert.equal(html.includes('telegram.org/js/telegram-web-app.js'), false, 'HELIOS must be web-first and Telegram-independent');
 assert.equal(controller.includes('Telegram.WebApp'), false, 'HELIOS controller must not require Telegram');
 assert.match(html, /class="cosmos"/);
@@ -21,24 +22,37 @@ assert.match(html, /AUTO ×10/);
 assert.match(html, /DIVINE_REALM · science child/);
 assert.match(html, /SSlot · jackpot child/);
 
-assert.match(controller, /const GAME_MODES =/);
-assert.match(controller, /helios:/);
-assert.match(controller, /divine:/);
-assert.match(controller, /gridjack:/);
-assert.match(controller, /custom:/);
-assert.match(controller, /supportsDemoSpinEnergy:true/);
-assert.match(controller, /const baseStop=780;/);
-assert.match(controller, /const step=185;/);
-assert.match(controller, /game_event_weighting:'FORBIDDEN'/);
+// Current game-core semantic anchors. Do not pin obsolete variable names.
+assert.match(controller, /const CORE_VERSION='1\.7\.1'/);
+assert.match(controller, /const VALID_SPIN_SOURCES = new Set\(\['balance','energy','bonus'\]\)/);
+assert.match(controller, /const MODE_META = \{/);
+assert.match(controller, /helios:\{name:'HELIOS'/);
+assert.match(controller, /divine:\{name:'DIVINE'/);
+assert.match(controller, /gridjack:\{name:'GRIDJACK'/);
+assert.match(controller, /custom:\{name:'CUSTOM'/);
+assert.match(controller, /const CASCADE_LADDER=\[1,4,16,64\]/);
+assert.match(controller, /const CASCADE_MAX_STEPS=8/);
+
+// Initial reel stop timing is a fixed column schedule, not weighted by outcome/near-miss/compute state.
+assert.match(controller, /for\(let c=0;c<5;c\+\+\)\{await sleep\(105\+c\*48\)/);
+assert.doesNotMatch(controller, /(?:finalWins|spinWin|nearMiss|computeOn|routeObj\(\))\s*\?\s*\d+\s*:\s*\d+/);
+
+// Simulated compute remains game-neutral.
 assert.match(controller, /game_effect:'NONE'/);
-assert.match(controller, /autoRemaining=10;/);
-assert.match(controller, /mode:'ROUTE_PREVIEW'/);
-assert.match(controller, /ROUTE ARMED/);
-assert.match(controller, /DEMO_ENERGY_REWARD_ONLY/);
+assert.match(controller, /verified_by:'PUBLIC_DEMO_NOT_AUTHORITATIVE'/);
+
+// Bounded autoplay and demo Spin Energy current semantics.
+assert.match(controller, /autoLeft=10;renderAuto\(\)/);
+assert.match(controller, /source:'ELIGIBLE_DEMO_COMPUTE_TIME',game_effect:'MANUAL_DEMO_SPIN_ONLY'/);
 assert.match(controller, /automatic_wager_conversion:false/);
 assert.match(controller, /auto_play_from_bank:false/);
-assert.match(controller, /if\(isEnergy\) energyRewardUnits=round2\(energyRewardUnits\+spinWin\)/);
+assert.match(controller, /if\(isEnergy\)\{energyRewardUnits=spinWin/);
 assert.match(controller, /else balance=round2\(balance\+spinWin\)/);
+
+// Bonus is a first-class game-core source with no stake charge.
+assert.match(controller, /spin\(\{source:'bonus',bonusCapability:token\}\)/);
+assert.match(controller, /stake_charge:'NONE'/);
+assert.match(controller, /INVALID_BONUS_CAPABILITY/);
 
 const config = JSON.parse(configText);
 assert.equal(config.branding.default_game_mode, 'helios');
