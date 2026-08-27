@@ -34,16 +34,21 @@ jobs:
       - name: High-confidence secret scan
         run: npm run audit:secrets
 
+      - name: Generate declared dependency SBOM
+        run: npm run audit:sbom:declared
+
       - name: Buyer due-diligence preflight
         run: npm run audit:preflight
 
       - name: Generate strict closing manifest candidate
         run: npm run closing:manifest
 
-      - name: Upload closing manifest evidence
+      - name: Upload buyer-integrity evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: helios-closing-manifest-${{ github.sha }}
-          path: artifacts/closing-manifest.json
+          name: helios-buyer-integrity-${{ github.sha }}
+          path: |
+            artifacts/closing-manifest.json
+            artifacts/declared-sbom.cdx.json
           if-no-files-found: error
           retention-days: 30
