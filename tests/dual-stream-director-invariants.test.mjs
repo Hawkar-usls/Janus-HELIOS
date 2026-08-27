@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [director, mobile, contract] = await Promise.all([
+const [director, mobile, html, contract] = await Promise.all([
   readFile(new URL('../helios-dual-stream-director.js', import.meta.url), 'utf8'),
   readFile(new URL('../helios-mobile.js', import.meta.url), 'utf8'),
+  readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../.janus/HELIOS_DUAL_STREAM_DIRECTOR.json', import.meta.url), 'utf8').then(JSON.parse)
 ]);
 
 assert.equal(contract.classification, 'PRESENTATION_ONLY_PROCEDURAL_VISUAL_AUDIO_NARRATIVE_DIRECTOR');
+assert.equal(contract.implementation_version, '1.1.0');
 assert.equal(contract.authority_boundary.presentation_only, true);
 assert.equal(contract.authority_boundary.rng_effect, 'NONE');
 assert.equal(contract.authority_boundary.rtp_effect, 'NONE');
@@ -15,24 +17,39 @@ assert.equal(contract.authority_boundary.bet_effect, 'NONE');
 assert.equal(contract.authority_boundary.compute_routing_effect, 'NONE');
 assert.equal(contract.presentation_model.resolution_is_mandatory, true);
 assert.equal(contract.presentation_model.reduced_motion_respected, true);
+assert.equal(contract.presentation_model.reduced_motion_runtime_changes_observed, true);
+assert.equal(contract.presentation_model.core_reel_cell_transform_overrides, false);
+assert.equal(contract.loader_boundary.authoritative_loader, 'index.html');
+assert.equal(contract.loader_boundary.mobile_layer_may_load_director, false);
 assert.equal(contract.conceptual_origin.mapping.C, 'DIVERGENCE / controlled presentation script-break');
 assert.equal(contract.conceptual_origin.mapping.L, 'RESOLUTION / coherence and return-to-readable-state');
 
-assert.match(mobile, /helios-dual-stream-director-script/);
-assert.match(mobile, /helios-dual-stream-director\.js\?v=1\.0\.0/);
-assert.match(director, /DIRECTOR_VERSION = '1\.0\.0'/);
+assert.match(html, /id="helios-dual-stream-director-script"/);
+assert.match(html, /helios-dual-stream-director\.js\?v=1\.1\.0/);
+assert.doesNotMatch(mobile, /helios-dual-stream-director\.js/);
+assert.doesNotMatch(mobile, /createElement\(['"]script['"]\)/);
+assert.match(director, /DIRECTOR_VERSION = '1\.1\.0'/);
 assert.match(director, /const RHO = 1\.20/);
 assert.match(director, /MAX_DIVERGENCE = 1 \/ RHO/);
 assert.match(director, /RHO\*rawC/);
 assert.match(director, /requiredL\/RHO/);
 assert.match(director, /DIVERGENCE/);
 assert.match(director, /RESOLUTION/);
+assert.match(director, /helios-director-stage/);
+assert.match(director, /buildStage/);
 assert.match(director, /prefers-reduced-motion: reduce/);
+assert.match(director, /motionQuery\?\.addEventListener/);
 assert.match(director, /helios:music-state/);
 assert.match(director, /helios:director-state/);
 assert.match(director, /presentation_only:true/);
 assert.match(director, /rng_effect:'NONE'/);
 assert.match(director, /rtp_effect:'NONE'/);
+
+// Director owns only its wrapper transform. It must not neutralize core/mobile reel or cell transforms.
+assert.doesNotMatch(director, /director-resolution \.reel[,\{]/);
+assert.doesNotMatch(director, /director-resolution \.cell[,\{]/);
+assert.doesNotMatch(director, /director-divergence \.reel[,\{]/);
+assert.doesNotMatch(director, /director-divergence \.cell[,\{]/);
 
 // Director may observe whether a settled spin paid, but must not derive choreography from stake, loss history or player vulnerability.
 assert.match(director, /Number\(e\.detail\?\.spin_win\|\|0\)>0/);
@@ -51,4 +68,4 @@ for (const term of ['loss_streak','near_miss','wager_history','inferred_vulnerab
   assert.equal(contract.event_inputs.forbidden_player_inputs.includes(term.toUpperCase()), true);
 }
 
-console.log('HELIOS dual-stream presentation director invariants: PASS');
+console.log('HELIOS dual-stream director explicit-loader + authority + transform-isolation invariants: PASS');
