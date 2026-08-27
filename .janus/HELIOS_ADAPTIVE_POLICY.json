@@ -1,0 +1,106 @@
+{
+  "schema": "janus.helios.adaptive-policy.v1",
+  "artifact_id": "JANUS-HELIOS-ADAPTIVE-POLICY-2026-08-27-v1.0",
+  "implementation": "src/helios-adaptive-policy.js",
+  "classification": "BOUNDED_LEARNABLE_POLICY_PLANE_AROUND_IMMUTABLE_EXECUTION_TRUTH",
+  "principle": "IMMUTABLE_EXECUTION_TRUTH_PLUS_LEARNABLE_BOUNDED_POLICY_AROUND_IT",
+  "lineage": {
+    "implementation_basis": "HELIOS_REQUIREMENTS_FIRST_REWRITE",
+    "conceptual_pattern_source": "JANUS Zim Geek resource and learning discipline",
+    "source_repository": "Hawkar-usls/janus-distributed-ai-swarm",
+    "source_file_reference": "firmware/zim_geek/Zim.ino",
+    "active_code_dependency_on_swarm_repository": false,
+    "active_code_dependency_on_zim_firmware": false,
+    "source_code_copied_from_zim": false,
+    "note": "The HELIOS module independently implements generalized policy invariants. Historical/conceptual inspiration is disclosed without making Zim firmware an active HELIOS dependency."
+  },
+  "primary_mission_bounded_side_quests": {
+    "primary_specialization_preserved": true,
+    "side_quests_optional": true,
+    "side_quest_time_budget": true,
+    "side_quest_cpu_budget": true,
+    "side_quest_gpu_budget": true,
+    "side_quest_concurrency_budget": true,
+    "critical_pressure_disables_side_quests_first": true,
+    "constrained_pressure_throttles_side_quests_first": true,
+    "primary_mission_bypasses_safety_gates": false,
+    "invariant": "PRIMARY_PRIORITY_DOES_NOT_OVERRIDE_CONSENT_THERMAL_POWER_MEMORY_OR_EXECUTOR_TRUTH_GATES"
+  },
+  "self_tested_acceleration_only": {
+    "stable_truth_path_required": true,
+    "candidate_fast_path_required": true,
+    "byte_equivalence_before_promotion": true,
+    "minimum_benchmark_gain_required": true,
+    "periodic_crosscheck_after_promotion": true,
+    "candidate_failure_falls_back_to_stable": true,
+    "crosscheck_mismatch_demotes_fast_path": true,
+    "invariant": "NEW_FAST_PATH_TO_EQUIVALENCE_TEST_TO_BENCHMARK_TO_PROMOTE_OR_REJECT"
+  },
+  "quiet_canary": {
+    "pressure_states": ["NORMAL", "CONSTRAINED", "CRITICAL"],
+    "inputs": ["CPU_LOAD", "GPU_LOAD", "TEMPERATURE", "POWER", "BATTERY_AC_STATE"],
+    "optional_work_sheds_first": true,
+    "primary_work_priority_preserved": true,
+    "safety_authority_preserved": true
+  },
+  "safe_learning": {
+    "algorithm_family": "MULTIPLICATIVE_WEIGHTS_BOUNDED_ACTION_BANDIT",
+    "exploration_supported": true,
+    "weight_decay_supported": true,
+    "old_random_successes_fade": true,
+    "arm_set_predeclared": true,
+    "persisted_arm_set_must_match_runtime_arm_set": true,
+    "allowed_top_level_policy_keys": [
+      "batch_size",
+      "side_quest_budget_percent",
+      "concurrency_hint",
+      "poll_interval_ms",
+      "retry_backoff_ms",
+      "prefetch_depth",
+      "provider_preference_bias"
+    ],
+    "learning_may_change_artifact_digest": false,
+    "learning_may_change_task_type": false,
+    "learning_may_change_verifier": false,
+    "learning_may_change_signature_rules": false,
+    "learning_may_change_game_rng_or_rtp": false
+  },
+  "persistent_learning_memory": {
+    "adapter_injected": true,
+    "throttled_save": true,
+    "forced_checkpoint_supported": true,
+    "secret_fields_forbidden": true,
+    "game_state_fields_forbidden": true
+  },
+  "autonomy_without_isolation": {
+    "local_policy_may_decline_side_work": true,
+    "local_policy_may_choose_among_safe_arms": true,
+    "decision_reporting_supported": true,
+    "admit_and_decline_events_reported": true,
+    "learning_outcomes_reported": true,
+    "policy_memory_restore_reported": true,
+    "invariant": "LOCAL_AUTONOMY_DOES_NOT_MEAN_COLLECTIVE_INFORMATION_BLACKOUT"
+  },
+  "desktop_agent_binding": {
+    "optional_policy_bound_agent": "HeliosPolicyBoundDesktopAgent",
+    "base_agent_truth_gates_remain_authoritative": true,
+    "side_quest_budget_can_only_tighten_controller_execution_budget": true,
+    "side_quest_budget_can_widen_local_user_policy": false
+  },
+  "game_boundary": {
+    "game_event_weighting": "FORBIDDEN",
+    "game_effect": "NONE",
+    "compute_can_change_rng": false,
+    "compute_can_change_rtp": false,
+    "compute_can_change_bonus_probability": false,
+    "compute_can_change_bet": false,
+    "player_vulnerability_input": "FORBIDDEN"
+  },
+  "production_claim_boundary": {
+    "policy_plane_core_implemented": true,
+    "production_learning_quality_validated": false,
+    "production_energy_savings_measured": false,
+    "real_multi_host_policy_memory_backend_validated": false,
+    "real_provider_pilot_required": true
+  }
+}
