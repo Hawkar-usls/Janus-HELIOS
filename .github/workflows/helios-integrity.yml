@@ -39,3 +39,11 @@ jobs:
 
       - name: Generate strict closing manifest candidate
         run: npm run closing:manifest
+
+      - name: Upload closing manifest evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: helios-closing-manifest-${{ github.sha }}
+          path: artifacts/closing-manifest.json
+          if-no-files-found: error
+          retention-days: 30
