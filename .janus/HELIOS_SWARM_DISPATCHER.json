@@ -1,0 +1,130 @@
+{
+  "schema": "janus.helios.swarm-dispatcher.v1",
+  "artifact_id": "JANUS-HELIOS-SWARM-DISPATCHER-2026-08-27-v1.0",
+  "classification": "PRODUCTION_ORIENTED_DISTRIBUTED_EXECUTION_PLANE_CORE",
+  "implementation": "src/helios-swarm-dispatcher.js",
+  "documentation": "docs/SWARM_DISPATCHER.md",
+  "parent_router": "src/helios-router.js",
+  "lineage": {
+    "source_repository": "Hawkar-usls/janus-distributed-ai-swarm",
+    "buzz_role": "POOL_MASTER_ARBITER_AND_WORKER_DISTRIBUTOR",
+    "reused_patterns": [
+      "MASTER_WORKER_TOPOLOGY",
+      "TYPED_JOB_AND_RESULT_ENVELOPES",
+      "HEARTBEAT_AND_STALE_PEER_TTL",
+      "NON_OVERLAPPING_WORK_SLICES",
+      "ACK_AND_BOUNDED_QUEUE_DISCIPLINE",
+      "IMMUTABLE_JOB_SNAPSHOT_FOR_ASSIGNED_WORK",
+      "VERIFY_BEFORE_UPSTREAM_CREDIT",
+      "PARTIAL_FAILURE_RECOVERY",
+      "STALE_WORK_CLEARING_AND_REASSIGNMENT"
+    ],
+    "not_inherited": [
+      "MINING_SPECIFIC_SHA_OR_STRATUM_SEMANTICS",
+      "LEGACY_UNAUTHENTICATED_TRUST_ASSUMPTIONS",
+      "DEVICE_SPECIFIC_AUDIO_OR_UI_LOGIC"
+    ]
+  },
+  "pipeline": [
+    "UPSTREAM_PROVIDER_OR_DATACENTER_JOB",
+    "HELIOS_ROUTER",
+    "WORKLOAD_ADMISSION",
+    "CHUNKING",
+    "ELIGIBLE_NODE_SELECTION",
+    "FENCED_LEASE",
+    "NODE_ACK",
+    "LEASE_RENEWAL_WHILE_RUNNING",
+    "RESULT_SUBMISSION",
+    "INDEPENDENT_VERIFICATION",
+    "AGGREGATION",
+    "SWARM_RECEIPT"
+  ],
+  "node_admission": {
+    "explicit_compute_consent_required": true,
+    "heartbeat_ttl": true,
+    "capability_match": true,
+    "concurrency_limit": true,
+    "thermal_guard": true,
+    "battery_guard": true,
+    "load_scoring": true,
+    "reliability_scoring": true,
+    "latency_scoring": true,
+    "immediate_revoke_supported": true
+  },
+  "lease_fencing": {
+    "lease_id_is_fencing_token": true,
+    "secure_random_token_required": true,
+    "ack_deadline": true,
+    "renew_before_expiry": true,
+    "expired_lease_cannot_submit": true,
+    "reassignment_gets_new_token": true,
+    "stale_result_rejected": true,
+    "max_attempts_fuse": true
+  },
+  "verification": {
+    "result_verifier_required": true,
+    "all_chunks_must_verify_before_completion": true,
+    "aggregate_only_after_verification": true,
+    "provider_settlement_receipt_is_separate": true,
+    "browser_self_claim_is_authoritative": false
+  },
+  "security": {
+    "client_secrets_forbidden": true,
+    "generic_shell_command_fields_forbidden": true,
+    "node_authentication_hook": true,
+    "assignment_signature_hook": true,
+    "transport_is_injected_not_hardcoded": true,
+    "legacy_hive_transport_trust_reused": false
+  },
+  "game_boundary": {
+    "game_event_weighting": "FORBIDDEN",
+    "game_effect": "NONE",
+    "compute_can_change_rng": false,
+    "compute_can_change_rtp": false,
+    "compute_can_change_bonus_probability": false,
+    "compute_can_change_bet": false,
+    "compute_can_change_personal_jackpot_weight": false
+  },
+  "generic_workload_support": {
+    "task_types": [
+      "SCIENCE_WORK_UNIT",
+      "GENERAL_COMPUTE_JOB",
+      "ECONOMIC_COMPUTE_JOB",
+      "POW_SHARE"
+    ],
+    "route_classes": [
+      "SCIENCE",
+      "PUBLIC_GOOD",
+      "MARKETPLACE",
+      "TREASURY",
+      "DATACENTER",
+      "OPERATOR",
+      "CUSTOM"
+    ],
+    "partition_models": [
+      "NON_OVERLAPPING_NUMERIC_RANGES",
+      "EXPLICIT_PROVIDER_PARTITIONS"
+    ]
+  },
+  "production_claim_boundary": {
+    "execution_plane_core_implemented": true,
+    "real_datacenter_transport_connected": false,
+    "real_multi_host_durable_state_validated": false,
+    "distributed_consensus_claimed": false,
+    "exactly_once_claimed": false,
+    "real_provider_auth_and_signatures_connected": false,
+    "real_datacenter_offload_measured": false,
+    "sponsor_provider_pilot_required": true,
+    "required_pilot_metrics": [
+      "THROUGHPUT",
+      "P95_LATENCY",
+      "NODE_DROPOUT_RATE",
+      "RETRY_RATE",
+      "VERIFIER_REJECT_RATE",
+      "DEVICE_HOURS",
+      "WATT_HOURS",
+      "COST_PER_VERIFIED_WORK_UNIT"
+    ]
+  },
+  "invariant": "BUZZ_DERIVED_COORDINATION_WITHOUT_MINING_SEMANTIC_COUPLING: coordinator owns assignment truth; each node owns only its current fenced chunk; stale work cannot regain authority; no result creates value before independent verification; game state never schedules compute."
+}
