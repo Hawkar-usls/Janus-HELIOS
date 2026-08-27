@@ -2,74 +2,92 @@
 
 Status: public capability prototype / transaction-readiness security model.
 
-This document describes the intended security boundaries and known production gaps. It is **not** a penetration-test report or security certification.
+This document describes the **active HELIOS 1.16 architecture**, intended security boundaries and known production gaps. It is not a penetration-test report, legal opinion, game certification or security certification.
 
 ## 1. Assets to protect
 
 ### User/device assets
 
-- explicit compute consent state;
+- explicit compute consent and immediate revoke;
 - CPU/GPU/resource limits;
-- thermal/battery safety policy;
+- thermal, battery and watt policy;
+- device availability/capability telemetry;
 - local demo profile/history;
-- device availability and capability telemetry;
-- user ability to revoke compute immediately.
+- the user's right to keep gameplay independent from compute participation.
 
-### Workload / provider assets
+### Workload/provider assets
 
-- workload payloads;
-- provider identity and manifests;
-- provider credentials and signing keys;
-- verification logic;
-- settlement/receipt data;
-- private pricing and capacity policy;
-- customer/partner confidential information.
+- workload payloads and artifact identity;
+- provider manifests, credentials and signing keys;
+- result-verification logic;
+- authoritative settlement/receipt data;
+- private pricing/capacity policy;
+- partner/customer confidential information.
 
-### Game integrity assets
+### Game/presentation integrity assets
 
-- game RNG/outcome authority;
-- configured game math;
+- RNG/outcome authority;
+- configured game math and paytable;
 - demo balance/accounting consistency;
 - bonus state;
-- strict separation between game events and compute scheduling.
+- strict game/compute separation;
+- strict presentation/game-math separation;
+- prohibition on vulnerability/loss-history driven choreography.
 
-### Transaction / IP assets
+### Transaction/IP assets
 
 - source provenance;
-- exact release integrity;
+- exact release identity;
 - production-sensitive implementation details;
-- private partner contracts and commercial terms.
+- private partner contracts/terms;
+- explicit Purchased vs Excluded Asset boundaries.
 
-## 2. Trust boundaries
+## 2. Active trust boundaries
 
 ```text
 PUBLIC BROWSER / GAME UI
-        │
-        │ untrusted client boundary
+        │ untrusted presentation client
         ↓
-FUTURE AUTHENTICATED GATEWAY
+FUTURE AUTHENTICATED GATEWAY / PROVIDER ADAPTER
         │
-        ├── PROVIDER / WORKLOAD OWNER
+        ↓
+HELIOS DESKTOP FABRIC
+        │ admission / placement / fenced leases
+        ↓
+HELIOS DESKTOP AGENT(S)
+        │ local consent + resource + exact-executor recheck
+        ↓
+WORKLOAD-SPECIFIC RESULT VERIFIER
         │
-        └── SWARM COORDINATOR
-                 │
-                 ↓
-          CONSENTING NODES
-                 │
-                 ↓
-          RESULT VERIFIER
-                 │
-                 ↓
-       AUTHORITATIVE RECEIPT
+        ↓
+AUTHORITATIVE PROVIDER RECEIPT / SETTLEMENT
 ```
 
-The public browser is **not** an authoritative settlement or provider-secret boundary.
+Optional policy planes have **less authority** than the execution truth layer:
+
+```text
+ADAPTIVE POLICY PLANE
+        │ may choose only predeclared safe policy arms
+        ▼
+DUAL-STREAM SAFETY GUARD
+        │ may tighten / veto experimental pressure
+        ▼
+DESKTOP FABRIC / AGENT TRUTH GATES
+
+GAME RESULT (read-only settled signal)
+        ▼
+DUAL-STREAM PRESENTATION DIRECTOR
+        ▼
+VISUAL / AUDIO / NARRATIVE ONLY
+```
+
+The browser is not authoritative for settlement, provider identity, workload truth, production telemetry or secrets.
 
 ## 3. Threats and required controls
 
 ### T1 — Hidden or non-consensual compute
 
-Threat: workload execution occurs without clear user permission or continues after revocation.
+Threat: execution begins without clear permission or continues after revoke.
 
 Current/design controls:
 
@@ -77,248 +95,221 @@ Current/design controls:
 - explicit opt-in;
 - visible resource cap;
 - immediate revoke requirement;
-- scheduler basis excludes spin/loss behavior.
+- local Desktop Agent policy recheck;
+- scheduler excludes spin/loss/vulnerability behavior.
 
-Production gate:
-
-- independently verify that revoke stops work promptly at node/gateway level, not only in UI.
+Production gate: independently verify node/gateway revoke latency and kill/cancel behavior under active work.
 
 ### T2 — Game/compute coupling
 
-Threat: compute activity changes RNG, RTP, bonus probability, stake, near-miss behavior, or personal jackpot weighting.
+Threat: compute changes RNG, RTP, stake, bonus probability, near-miss behavior or personal jackpot weighting.
 
 Controls:
 
-- `GAME RNG ⟂ COMPUTE` architectural invariant;
-- compute routes and game modes are separate controls;
-- test invariants reject known coupling paths;
-- compute scheduler is based on consent/device/provider/workload state, not spin frequency.
+- `GAME RNG ⟂ COMPUTE` invariant;
+- compute scheduler basis is consent/device/provider/workload state;
+- route and game-mode controls are separate;
+- invariant tests reject known coupling paths.
 
-Production gate:
+Production gate: independent game-math/code review on the exact certified deployment artifact.
 
-- independent game-math/code review for the certified deployment artifact.
+### T3 — Arbitrary code execution on desktop agents
 
-### T3 — Arbitrary code execution on nodes
+Threat: a generic distributed workload becomes a remote shell.
 
-Threat: a generic workload becomes a remote shell / command channel.
+Active controls:
 
-Controls in `src/helios-swarm-dispatcher.js`:
+- `src/helios-desktop-agent.js` is not a generic process launcher;
+- executor registration uses exact `provider_id + task_type + artifact SHA-256` binding;
+- generic command/shell/script/eval/process-spawn assignment fields are forbidden;
+- the agent locally rechecks lease expiry, consent, capacity and resource policy immediately before execution;
+- controller budgets may tighten but may not widen local user policy.
 
-- generic shell/command/script/exec fields are forbidden;
-- workloads are typed and capability-admitted;
-- transport and verifier are explicit injected boundaries.
+Production gates:
 
-Production gate:
-
-- workload-specific sandbox/isolation model;
-- image/artifact allowlisting and signatures;
-- OS/container/device isolation review;
-- egress restrictions appropriate to workload.
+- workload-specific sandbox/container/process isolation;
+- signed artifact/image allowlist;
+- egress policy;
+- OS-level watchdog/kill path;
+- hardening review for every admitted executor class.
 
 ### T4 — Forged result / free credit
 
-Threat: a node invents a successful result and obtains value without performing valid work.
+Threat: an agent invents a result and receives value without valid work.
 
 Controls:
 
-- result verifier is mandatory;
-- unverified result has zero authoritative value;
-- aggregation only after all required chunks verify.
+- provider-specific result verifier is mandatory;
+- unverified work has zero authoritative ledger value;
+- verified agent identity is recorded per slice;
+- aggregation/receipt creation follows verification.
 
-Production gate:
+Production gates: workload-specific challenge/duplicate sampling where appropriate and signed authoritative provider receipts.
 
-- workload-specific verification;
-- duplicate/challenge sampling where appropriate;
-- authoritative provider receipt/signature.
+### T5 — Replay or stale leased work
 
-### T5 — Replay / stale worker result
-
-Threat: disconnected worker returns an old result after reassignment.
+Threat: an old/disconnected agent returns a result after reassignment.
 
 Controls:
 
-- per-assignment random lease/fencing token;
-- ACK deadline;
-- lease expiry;
+- fenced lease token;
+- ACK deadline and lease expiry;
 - reassignment receives a new token;
-- stale fencing token rejected.
+- stale token/result rejected;
+- Desktop Agent locally rejects expired assignments.
 
-Production gate:
+Production gates: durable lease/replay state across coordinator restarts, authenticated identity, monotonic sequence/nonces where applicable.
 
-- durable coordinator state;
-- authenticated node identity;
-- replay cache / monotonic sequence policy across process restarts.
+### T6 — Agent spoofing / Sybil behavior
 
-### T6 — Node spoofing / Sybil behavior
+Threat: attacker creates fake nodes or impersonates a trusted desktop.
 
-Threat: attacker registers many fake nodes or impersonates a trusted device.
+Current core has registration, heartbeat/capability state and explicit authentication boundaries, but the public prototype has no production identity provider.
 
-Current core:
-
-- authentication hook exists;
-- capability/heartbeat/resource admission exists.
-
-Production gap:
-
-- no real identity/attestation provider is connected in the public prototype.
-
-Required production controls may include mTLS/device keys, signed enrollment, rate limits, reputation and/or hardware attestation depending on the workload risk.
+Production controls may include mTLS/device keys, signed enrollment, rate limits, reputation and/or hardware attestation depending on workload risk.
 
 ### T7 — Provider impersonation / manifest substitution
 
-Threat: client routes work or value to an attacker-controlled endpoint.
+Threat: work/value is redirected to an attacker-controlled endpoint.
 
-Current design:
+Design controls: provider identity and signed manifest are explicit admission gates; provider secrets are forbidden in browser code.
 
-- signed provider manifest is an explicit production gate;
-- browser secrets forbidden.
-
-Production gap:
-
-- signed provider manifest and authoritative gateway are not yet connected.
+Production gap: real signed provider manifests and authoritative gateway are not connected yet.
 
 ### T8 — Receipt forgery / settlement replay
 
-Threat: fabricated or repeated receipt creates duplicated value.
+Threat: fabricated/replayed receipt creates duplicated value.
 
-Current design:
-
-- browser receipt is explicitly simulated;
-- production receipt verification and anti-replay are open gates.
-
-Required production controls:
-
-- provider signatures;
-- server-side verification;
-- unique receipt IDs/nonces;
-- replay store;
-- settlement reconciliation.
+The public receipt surface is explicitly simulated. Production requires provider signatures, server-side verification, unique receipt IDs/nonces, replay state and settlement reconciliation.
 
 ### T9 — Workload/customer data exfiltration
 
-Threat: confidential payload is exposed to consumer nodes or public clients.
+Threat: confidential payload is exposed to consumer/edge devices.
 
-Controls/design rule:
+Controls/design rule: only workloads suitable for partially trusted distributed execution may be admitted. Public clients never receive production secrets.
 
-- public client must not receive production secrets;
-- only workloads suitable for distributed untrusted/partially trusted execution should be admitted;
-- private payloads belong behind production policy.
-
-Production gate:
-
-- data classification;
-- minimum necessary chunk disclosure;
-- encryption in transit;
-- sandbox/egress controls;
-- privacy/legal review;
-- do not route unsuitable confidential workloads to consumer devices.
+Production gates: data classification, minimum chunk disclosure, encryption in transit, sandbox/egress controls, contractual/privacy/export review. Some workloads must remain in a data center.
 
 ### T10 — Resource exhaustion / thermal abuse
 
-Threat: workload harms device availability or runs outside user policy.
+Threat: a workload exceeds user/device safety policy.
 
-Current dispatcher primitives:
+Active controls:
 
-- CPU/resource policy;
-- concurrency limit;
-- temperature guard;
-- battery guard;
-- load-aware scheduling;
-- node revoke.
+- CPU/GPU/RAM/VRAM admission;
+- concurrency limits;
+- thermal/power/battery policy;
+- local Desktop Agent recheck;
+- immediate revoke;
+- Quiet Canary sheds optional Side Quests first.
 
-Production gate:
-
-- real OS/device telemetry and enforcement;
-- watchdog/kill path;
-- validation across representative hardware.
+Production gate: real OS/device telemetry and enforcement across representative hardware.
 
 ### T11 — Supply-chain compromise
 
-Threat: workflow action, dependency, library, or source modification injects malicious code.
+Threat: workflow action, dependency or source change injects malicious behavior.
 
 Current controls:
 
-- GitHub Actions dependencies pinned to immutable commit SHAs;
-- package currently declares no npm dependencies;
-- source-available provenance/third-party register;
-- exact commit/tree/file hash closing manifest;
-- secret scan and invariant CI.
+- GitHub Actions references pinned to immutable commit SHAs;
+- checkout credentials not persisted;
+- workflow has read-only contents permission;
+- package currently declares zero npm dependencies;
+- source provenance/third-party register;
+- exact commit/tree/per-file SHA-256 closing manifest;
+- invariant and secret-scan CI.
 
-Remaining controls:
+Open host-level gates:
 
-- branch protection/ruleset;
-- independent SBOM/licence scan;
-- signed closing tag/release or equivalent attestation;
-- dependency pinning/version review as dependencies are introduced.
+- `main` branch protection/ruleset is not currently enabled;
+- required status checks are not currently enforced by GitHub settings;
+- current commits are not represented as cryptographically signed.
 
-### T12 — XSS / DOM injection in public UI
+Closing target: protect/freeze the closing branch, require HELIOS Integrity, and use a signed tag/release or equivalent attestation as agreed.
 
-Threat: untrusted provider/config text reaches `innerHTML` or equivalent unsafe DOM surface.
+### T12 — Browser DOM/XSS injection
 
-Current public config is repository-controlled, not a live untrusted provider feed.
+Threat: future live provider/config text reaches unsafe DOM APIs.
 
-Production gate:
+Current public config is repository-controlled rather than a live untrusted provider feed.
 
-- treat all live provider/workload strings as untrusted;
-- use text-only DOM APIs where possible;
-- schema validation/sanitization;
-- restrictive CSP;
-- no secrets in the browser even if XSS defenses exist.
+Production gates: treat provider/workload strings as untrusted; schema validation; text-only DOM APIs where possible; restrictive CSP; no browser secrets regardless of XSS defenses.
 
 ### T13 — Transaction snapshot substitution
 
 Threat: buyer reviews one source state and receives another.
 
-Controls:
+Controls: exact commit/tree, clean-tree strict manifest, per-file SHA-256, commit-scoped CI evidence, objective acceptance criteria.
 
-- exact commit SHA;
-- exact tree SHA;
-- strict clean-tree manifest;
-- per-file SHA-256;
-- CI evidence tied to one commit;
-- objective acceptance criteria.
+Remaining gate: host-level protected closing branch/ruleset and signed tag/attestation where agreed.
 
-Remaining gate:
+### T14 — Adaptive-policy truth-core erosion
 
-- protected closing branch/ruleset and signed tag/attestation where agreed.
+Threat: a learner/optimizer gradually gains authority over artifact identity, verification, signatures, game math or local safety limits.
 
-## 4. Explicitly untrusted claims
+Active controls:
 
-The following are not authoritative merely because the browser displays them:
+- learnable actions come only from a predeclared safe arm set;
+- unknown policy keys fail closed;
+- artifact digest, task type, verifier, signature/secret and game keys are immutable/forbidden;
+- Side Quest policy may only tighten the Desktop Agent execution budget;
+- self-tested acceleration requires equivalence before promotion and can be demoted on cross-check failure.
 
-- provider acceptance;
-- provider payment;
-- scientific impact;
-- real compute earnings;
-- production receipt validity;
-- regulator approval;
-- datacenter savings.
+Production gates: review the admitted arm vocabulary for each deployment and keep policy-memory integrity/versioning authoritative.
 
-Authoritative claims require the relevant external evidence.
+### T15 — Forged/stale safety evidence
 
-## 5. Production security gates
+Threat: optimization is admitted because telemetry or verifier/rollback readiness is stale, fabricated or over-aggregated.
 
-Before production, close at minimum:
+Active Dual-Stream Safety Guard rules:
+
+- safety reserve is bottleneck-based, not hidden by a favorable average;
+- required gates include active consent, immediate revoke, verifier readiness, exact artifact binding and fresh telemetry;
+- insufficient safety limits/rejects change pressure; missing evidence is not synthetically increased.
+
+Production gates: authoritative telemetry provenance/freshness, trusted rollback readiness, verifier-confidence definition, failure-injection tests.
+
+### T16 — Presentation Director authority or retention leak
+
+Threat: a visual/music system becomes a hidden gambling/retention controller or overrides core reel animations.
+
+Active controls:
+
+- Director consumes read-only settled presentation events;
+- it uses paid-win boolean only, not wager-relative magnitude;
+- bet size, balance pressure, losses, near misses, wagering history, inferred vulnerability and problem-gambling labels are forbidden inputs;
+- RNG/RTP/paytable/bet/bonus/compute authority is `NONE`;
+- Director owns only its dedicated wrapper transform stage, not reel/cell game transforms;
+- reduced-motion preference is respected, including runtime changes;
+- accent audio requires the existing music opt-in.
+
+Production gate: independent frontend/game-math review ensuring no certified deployment rewires those event boundaries.
+
+## 4. Explicitly untrusted browser claims
+
+Browser display alone is not authoritative evidence of provider acceptance/payment, scientific impact, compute earnings, receipt validity, regulator approval or datacenter savings.
+
+## 5. Minimum production security gates
 
 ```text
 AUTHENTICATED GATEWAY
 SIGNED PROVIDER MANIFEST
 NODE IDENTITY / ENROLLMENT
 ENCRYPTED TRANSPORT
-WORKLOAD SANDBOX
-DURABLE LEASE / REPLAY STATE
+WORKLOAD SANDBOX / EGRESS POLICY
+DURABLE LEASE + REPLAY STATE
 AUTHORITATIVE RESULT VERIFIER
-SIGNED RECEIPTS
-ANTI-REPLAY
+SIGNED RECEIPTS + ANTI-REPLAY
 SECRET MANAGEMENT
 RESOURCE / THERMAL ENFORCEMENT
+TRUSTED TELEMETRY FOR SAFETY POLICY
 PRIVACY DATA-FLOW REVIEW
 INDEPENDENT SECURITY REVIEW
 INCIDENT RESPONSE / LOGGING
 ```
 
-Regulated gambling, financial, crypto, medical or other regulated deployments add their own independent requirements.
+Regulated gambling, financial, crypto, medical or other regulated deployments add independent requirements.
 
 ## 6. Review rule
 
-This threat model must be revisited whenever a real provider adapter, production gateway, new workload class, new dependency, persistent identity system or authoritative settlement path is introduced.
+Revisit this threat model whenever a real provider adapter, production gateway, workload/executor class, identity system, authoritative settlement path, learnable policy arm, safety metric or presentation event source is introduced.
