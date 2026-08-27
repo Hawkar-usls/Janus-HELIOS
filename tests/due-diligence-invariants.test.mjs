@@ -5,7 +5,7 @@ const [
   license, ip, thirdParty, security, contributing, handoffText, ddText,
   architectureText, fabricText, adaptiveText, safetyText, directorText,
   statusText, purchased, excluded, provenance, guardrails, acceptance,
-  support, release, pkgText, workflow, html, mobile, directorSource, threatModel
+  support, release, pkgText, workflow, html, mobile, directorSource, bonusConfirm, threatModel
 ] = await Promise.all([
   readFile(new URL('../LICENSE.md', import.meta.url), 'utf8'),
   readFile(new URL('../IP_NOTICE.md', import.meta.url), 'utf8'),
@@ -32,6 +32,7 @@ const [
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../helios-mobile.js', import.meta.url), 'utf8'),
   readFile(new URL('../helios-dual-stream-director.js', import.meta.url), 'utf8'),
+  readFile(new URL('../helios-bonus-confirm.js', import.meta.url), 'utf8'),
   readFile(new URL('../docs/THREAT_MODEL.md', import.meta.url), 'utf8')
 ]);
 
@@ -60,6 +61,7 @@ assert.match(contributing, /separate written contributor agreement, assignment, 
 assert.equal(pkg.version, '1.16.0');
 assert.equal(status.project_version, pkg.version);
 assert.equal(architecture.version, pkg.version);
+assert.equal(handoff.product_version, pkg.version);
 assert.equal(dd.project_snapshot.package_version, pkg.version);
 assert.equal(dd.project_snapshot.canonical_architecture_version, pkg.version);
 assert.equal(status.production_readiness, 'NOT_ESTABLISHED');
@@ -134,7 +136,15 @@ assert.equal(director.presentation_model.core_reel_cell_transform_overrides, fal
 assert.equal(director.loader_boundary.authoritative_loader, 'index.html');
 assert.equal(director.loader_boundary.mobile_layer_may_load_director, false);
 assert.match(html, /id="helios-dual-stream-director-script"[^>]+helios-dual-stream-director\.js\?v=1\.1\.0/);
-assert.match(html, /id="helios-bonus-confirm-script"[^>]+helios-bonus-confirm\.js\?v=2\.2\.0/);
+assert.match(html, /id="helios-bonus-confirm-script"[^>]+helios-bonus-confirm\.js\?v=2\.3\.0/);
+assert.match(bonusConfirm, /BONUS_CONFIRM_VERSION = '2\.3\.0'/);
+assert.match(bonusConfirm, /safeTierId/);
+assert.match(bonusConfirm, /safeText/);
+assert.match(bonusConfirm, /name\.textContent=tier\.name/);
+assert.match(bonusConfirm, /replaceChildren/);
+assert.doesNotMatch(bonusConfirm, /btn\.innerHTML=`<b>\$\{tier\.name\}/);
+assert.doesNotMatch(bonusConfirm, /result\.innerHTML=`\$\{award\}/);
+assert.doesNotMatch(bonusConfirm, /querySelector\(`\.bonus-tier-card\[data-tier=/);
 assert.doesNotMatch(mobile, /createElement\(['"]script['"]\)/);
 assert.doesNotMatch(mobile, /helios-bonus-confirm\.js/);
 assert.doesNotMatch(mobile, /helios-dual-stream-director\.js/);
@@ -184,6 +194,7 @@ assert.match(workflow, /persist-credentials:\s*false/);
 assert.match(workflow, /contents:\s*read/);
 assert.match(workflow, /actions\/checkout@[a-f0-9]{40}/);
 assert.match(workflow, /actions\/setup-node@[a-f0-9]{40}/);
+assert.match(workflow, /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/);
 assert.match(threatModel, /Adaptive-policy truth-core erosion/i);
 assert.match(threatModel, /Forged\/stale safety evidence/i);
 assert.match(threatModel, /Presentation Director authority or retention leak/i);
@@ -196,4 +207,4 @@ assert.match(pkg.scripts['audit:buyer'], /audit:preflight:strict/);
 assert.equal(typeof pkg.scripts['closing:manifest'], 'string');
 assert.equal(pkg.engines.node, '>=24');
 
-console.log('HELIOS 1.16 acquisition / provenance / authority-plane due-diligence invariants: PASS');
+console.log('HELIOS 1.16 acquisition / provenance / authority-plane + bonus DOM due-diligence invariants: PASS');
