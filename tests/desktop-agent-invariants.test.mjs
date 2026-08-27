@@ -5,7 +5,7 @@ import {
 } from '../src/helios-desktop-agent.js';
 import { FABRIC_ASSIGNMENT_SCHEMA } from '../src/helios-desktop-fabric.js';
 
-assert.equal(HELIOS_DESKTOP_AGENT_VERSION, '1.0.0');
+assert.equal(HELIOS_DESKTOP_AGENT_VERSION, '1.1.0');
 
 const artifact = `sha256:${'a'.repeat(64)}`;
 const agent = new HeliosDesktopAgentRuntime({
@@ -45,7 +45,9 @@ agent.registerExecutor({
     ok: true,
     doubled: Number(payload.value) * 2,
     cpu_budget: resource_budget.cpu_limit_percent,
-    gpu_budget: resource_budget.gpu_limit_percent
+    gpu_budget: resource_budget.gpu_limit_percent,
+    thermal_budget: resource_budget.max_temp_c,
+    watt_budget: resource_budget.max_watts
   })
 });
 
@@ -59,7 +61,7 @@ assert.equal(heartbeat.gpus.length, 1);
 
 const assignment = {
   schema: FABRIC_ASSIGNMENT_SCHEMA,
-  fabric_version: '2.0.0',
+  fabric_version: '2.1.0',
   workload_id: 'workload-1',
   slice_id: 'workload-1:r000000',
   provider_id: 'provider-test',
@@ -74,6 +76,13 @@ const assignment = {
     min_vram_mb: 1000,
     required_capabilities: ['GENERAL_GPU', 'CUDA']
   },
+  execution_budget: {
+    cpu_limit_percent: 30,
+    gpu_limit_percent: 35,
+    max_temp_c: 75,
+    max_watts: 200,
+    max_concurrent: 2
+  },
   payload: { value: 21 },
   lease_id: 'lease-1',
   lease_expires_at_ms: Date.now() + 10000,
@@ -85,8 +94,10 @@ const assignment = {
 const result = await agent.executeAssignment(assignment);
 assert.equal(result.ok, true);
 assert.equal(result.output.doubled, 42);
-assert.equal(result.output.cpu_budget, 35);
-assert.equal(result.output.gpu_budget, 40);
+assert.equal(result.output.cpu_budget, 30);
+assert.equal(result.output.gpu_budget, 35);
+assert.equal(result.output.thermal_budget, 75);
+assert.equal(result.output.watt_budget, 200);
 assert.equal(result.game_event_weighting, 'FORBIDDEN');
 assert.equal(result.game_effect, 'NONE');
 
@@ -105,7 +116,32 @@ await assert.rejects(
   /ARBITRARY_EXECUTION_OR_SECRET_FORBIDDEN/
 );
 
+await assert.rejects(
+  agent.executeAssignment({
+    ...assignment,
+    execution_budget: { ...assignment.execution_budget, gpu_limit_percent: 90 }
+  }),
+  /CONTROLLER_GPU_BUDGET_EXCEEDS_AGENT_POLICY/
+);
+
+await assert.rejects(
+  agent.executeAssignment({
+    ...assignment,
+    lease_id: 'expired-lease',
+    lease_expires_at_ms: Date.now() - 1
+  }),
+  /ASSIGNMENT_LEASE_EXPIRED/
+);
+
+await assert.rejects(
+  agent.executeAssignment({
+    ...assignment,
+    requirements: { ...assignment.requirements, min_vram_mb: 20000 }
+  }),
+  /LOCAL_VRAM_CAPACITY_CHANGED/
+);
+
 agent.revoke();
 await assert.rejects(agent.executeAssignment(assignment), /COMPUTE_CONSENT_NOT_ACTIVE/);
 
-console.log('HELIOS desktop agent runtime invariants: PASS');
+console.log('HELIOS desktop agent lease + local resource-policy invariants: PASS');
