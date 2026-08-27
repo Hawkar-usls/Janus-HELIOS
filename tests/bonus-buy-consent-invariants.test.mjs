@@ -12,7 +12,8 @@ const buy = cfg.demo_bonus_buy;
 
 assert.match(html, /helios-bonus\.js\?v=1\.3\.0/);
 assert.match(html, /id="helios-bonus-confirm-script"/);
-assert.match(html, /helios-bonus-confirm\.js\?v=2\.2\.0/);
+assert.match(html, /helios-bonus-confirm\.js\?v=2\.3\.0/);
+assert.match(confirm, /BONUS_CONFIRM_VERSION = '2\.3\.0'/);
 assert.match(confirm, /CHOOSE SOLAR FREE SPINS/);
 assert.match(confirm, /TOTAL BONUS COST/);
 assert.match(confirm, /CURRENT BET/);
@@ -41,6 +42,16 @@ assert.doesNotMatch(confirm, /queueMicrotask/);
 assert.doesNotMatch(confirm, /bypassOnce/);
 assert.doesNotMatch(confirm, /btn\.click\(\)/);
 
+// Buyer/config-provided tier metadata must never become executable HTML or selector syntax.
+assert.match(confirm, /safeTierId/);
+assert.match(confirm, /safeText/);
+assert.match(confirm, /replaceChildren/);
+assert.match(confirm, /name\.textContent=tier\.name/);
+assert.match(confirm, /setResult\(result/);
+assert.doesNotMatch(confirm, /btn\.innerHTML=`<b>\$\{tier\.name\}/);
+assert.doesNotMatch(confirm, /result\.innerHTML=`\$\{award\}/);
+assert.doesNotMatch(confirm, /querySelector\(`\.bonus-tier-card\[data-tier=/);
+
 const reviewPos = confirm.indexOf("helios:bonus-buy-review-confirmed");
 const wheelPos = confirm.indexOf('wheelHandoff=await animatePurchasedBonusWheel(detail)');
 const authPos = confirm.lastIndexOf("helios:bonus-buy-authorized");
@@ -67,4 +78,4 @@ assert.deepEqual(buy.tiers.map(x=>x.id), ['standard','radiant','solar_flare']);
 assert.deepEqual(buy.tiers.map(x=>x.cost_multiplier_of_demo_bet), [50,100,175]);
 assert.deepEqual(buy.tiers.map(x=>x.free_spins_count), [10,12,15]);
 
-console.log('HELIOS Bonus Buy seamless wheel → session activation invariants: PASS');
+console.log('HELIOS Bonus Buy seamless activation + DOM-injection boundary invariants: PASS');
