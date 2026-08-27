@@ -9,7 +9,7 @@ import {
   RESOURCE_CLASSES
 } from './helios-desktop-fabric.js';
 
-export const HELIOS_DESKTOP_AGENT_VERSION = '1.0.0';
+export const HELIOS_DESKTOP_AGENT_VERSION = '1.1.0';
 export const DESKTOP_AGENT_RESULT_SCHEMA = 'janus.helios.desktop-agent.result.v1';
 
 const FORBIDDEN_KEYS = new Set([
@@ -26,6 +26,11 @@ function stableId(value, label, max = 192) {
   if (!s || s.length > max || !/^[A-Za-z0-9_.:/@+-]+$/.test(s)) throw new Error(`${label}_INVALID`);
   return s;
 }
+function boundedNumber(value, label, { min = 0, max = Number.MAX_SAFE_INTEGER } = {}) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < min || n > max) throw new Error(`${label}_OUT_OF_RANGE`);
+  return n;
+}
 function normalizeDigest(value) {
   const s = String(value || '').toLowerCase();
   if (!/^(sha256:)?[a-f0-9]{64}$/.test(s)) throw new Error('ARTIFACT_DIGEST_SHA256_REQUIRED');
@@ -39,6 +44,17 @@ function walkForbidden(value, path = 'root') {
   }
 }
 function clone(value) { return structuredClone(value); }
+
+function normalizeExecutionBudget(input) {
+  assertObject(input, 'EXECUTION_BUDGET');
+  return {
+    cpu_limit_percent: boundedNumber(input.cpu_limit_percent, 'CPU_LIMIT_PERCENT', { min: 1, max: 100 }),
+    gpu_limit_percent: boundedNumber(input.gpu_limit_percent, 'GPU_LIMIT_PERCENT', { min: 1, max: 100 }),
+    max_temp_c: boundedNumber(input.max_temp_c, 'MAX_TEMP_C', { min: 40, max: 100 }),
+    max_watts: boundedNumber(input.max_watts ?? 0, 'MAX_WATTS', { min: 0, max: 100_000 }),
+    max_concurrent: boundedNumber(input.max_concurrent, 'MAX_CONCURRENT', { min: 1, max: 64 })
+  };
+}
 
 export class DesktopExecutorRegistry {
   constructor() { this.executors = new Map(); }
@@ -104,8 +120,15 @@ export class HeliosDesktopAgentRuntime {
 
   registerExecutor(spec) { return this.registry.register(spec); }
 
-  grantConsent() { if (!this.revoked) this.policy.compute_consent = true; }
-  revoke() { this.revoked = true; this.policy.compute_consent = false; return true; }
+  grantConsent() {
+    if (!this.revoked) this.policy.compute_consent = true;
+  }
+
+  revoke() {
+    this.revoked = true;
+    this.policy.compute_consent = false;
+    return true;
+  }
 
   async telemetry() {
     const external = typeof this.telemetryProvider === 'function' ? await this.telemetryProvider() : {};
@@ -146,46 +169,67 @@ export class HeliosDesktopAgentRuntime {
     };
   }
 
-  assertAssignmentAllowed(assignment, telemetry) {
+  assertControllerBudget(budget) {
+    if (budget.cpu_limit_percent > this.policy.cpu_limit_percent) throw new Error('CONTROLLER_CPU_BUDGET_EXCEEDS_AGENT_POLICY');
+    if (budget.gpu_limit_percent > this.policy.gpu_limit_percent) throw new Error('CONTROLLER_GPU_BUDGET_EXCEEDS_AGENT_POLICY');
+    if (budget.max_temp_c > this.policy.max_temp_c) throw new Error('CONTROLLER_THERMAL_BUDGET_EXCEEDS_AGENT_POLICY');
+    if (budget.max_concurrent > this.policy.max_concurrent) throw new Error('CONTROLLER_CONCURRENCY_BUDGET_EXCEEDS_AGENT_POLICY');
+    if (this.policy.max_watts > 0 && (budget.max_watts === 0 || budget.max_watts > this.policy.max_watts)) throw new Error('CONTROLLER_POWER_BUDGET_EXCEEDS_AGENT_POLICY');
+  }
+
+  assertAssignmentAllowed(assignment, telemetry, at = Date.now()) {
     assertObject(assignment, 'ASSIGNMENT');
     assertNoGameCoupling(assignment, 'assignment');
     assertNoClientSecrets(assignment, 'assignment');
     walkForbidden(assignment, 'assignment');
     if (assignment.schema !== FABRIC_ASSIGNMENT_SCHEMA) throw new Error('UNSUPPORTED_ASSIGNMENT_SCHEMA');
+    if (!String(assignment.lease_id || '')) throw new Error('LEASE_ID_REQUIRED');
+    if (!Number.isFinite(Number(assignment.lease_expires_at_ms))) throw new Error('LEASE_EXPIRY_REQUIRED');
+    if (Number(at) > Number(assignment.lease_expires_at_ms)) throw new Error('ASSIGNMENT_LEASE_EXPIRED');
     if (assignment.game_event_weighting !== 'FORBIDDEN' || assignment.game_effect !== 'NONE') throw new Error('GAME_COMPUTE_BOUNDARY_VIOLATION');
     if (!this.policy.compute_consent || this.revoked) throw new Error('COMPUTE_CONSENT_NOT_ACTIVE');
     if (this.inflight >= this.policy.max_concurrent) throw new Error('AGENT_CONCURRENCY_LIMIT');
+
+    const budget = normalizeExecutionBudget(assignment.execution_budget);
+    this.assertControllerBudget(budget);
+
     const resourceClass = String(assignment.requirements?.resource_class || 'CPU');
     if (!RESOURCE_CLASSES.includes(resourceClass)) throw new Error('INVALID_RESOURCE_CLASS');
     if ((resourceClass === 'CPU' || resourceClass === 'HYBRID') && !this.policy.allow_cpu) throw new Error('CPU_NOT_ALLOWED_BY_AGENT_POLICY');
     if ((resourceClass === 'GPU' || resourceClass === 'HYBRID') && (!this.policy.allow_gpu || this.gpuInventory.length === 0)) throw new Error('GPU_NOT_ALLOWED_OR_UNAVAILABLE');
-    if (Number.isFinite(telemetry.temperature_c) && telemetry.temperature_c >= this.policy.max_temp_c) throw new Error('THERMAL_POLICY_BLOCK');
-    if (this.policy.max_watts > 0 && telemetry.estimated_watts > this.policy.max_watts) throw new Error('POWER_BUDGET_BLOCK');
+
+    if (os.cpus().length < Number(assignment.requirements?.min_logical_cores || 1)) throw new Error('LOCAL_CPU_CAPACITY_CHANGED');
+    if (telemetry.available_memory_mb < Number(assignment.requirements?.min_memory_mb || 0)) throw new Error('LOCAL_MEMORY_CAPACITY_CHANGED');
+    if (telemetry.available_vram_mb < Number(assignment.requirements?.min_vram_mb || 0)) throw new Error('LOCAL_VRAM_CAPACITY_CHANGED');
+    if (Number.isFinite(telemetry.temperature_c) && telemetry.temperature_c >= Math.min(this.policy.max_temp_c, budget.max_temp_c)) throw new Error('THERMAL_POLICY_BLOCK');
+    const effectiveWatts = this.policy.max_watts > 0 && budget.max_watts > 0 ? Math.min(this.policy.max_watts, budget.max_watts) : Math.max(this.policy.max_watts, budget.max_watts);
+    if (effectiveWatts > 0 && telemetry.estimated_watts > effectiveWatts) throw new Error('POWER_BUDGET_BLOCK');
     if (telemetry.battery_percent != null && telemetry.on_ac_power === false && !this.policy.battery_allowed) throw new Error('BATTERY_POLICY_BLOCK');
+
     const executor = this.registry.resolve(assignment);
     if (!executor) throw new Error('APPROVED_EXECUTOR_NOT_FOUND_FOR_EXACT_ARTIFACT');
-    const advertised = new Set(['GENERAL_CPU', ...(this.gpuInventory.length ? ['GENERAL_GPU'] : []), ...this.extraCapabilities, ...this.registry.capabilities()]);
+    const advertised = new Set([
+      'GENERAL_CPU',
+      ...(this.gpuInventory.length ? ['GENERAL_GPU'] : []),
+      ...this.extraCapabilities,
+      ...this.registry.capabilities()
+    ]);
     for (const capability of assignment.requirements?.required_capabilities || []) {
       if (!advertised.has(capability)) throw new Error(`CAPABILITY_NOT_AVAILABLE:${capability}`);
     }
-    return executor;
+    return { executor, budget };
   }
 
   async executeAssignment(assignment) {
     const telemetry = await this.telemetry();
-    const executor = this.assertAssignmentAllowed(assignment, telemetry);
+    const { executor, budget } = this.assertAssignmentAllowed(assignment, telemetry);
     this.inflight += 1;
     const startedAt = Date.now();
     try {
       const output = await executor.handler({
         payload: clone(assignment.payload),
         assignment: clone(assignment),
-        resource_budget: {
-          cpu_limit_percent: this.policy.cpu_limit_percent,
-          gpu_limit_percent: this.policy.gpu_limit_percent,
-          max_temp_c: this.policy.max_temp_c,
-          max_watts: this.policy.max_watts
-        }
+        resource_budget: clone(budget)
       });
       assertNoGameCoupling(output || {}, 'executor_output');
       assertNoClientSecrets(output || {}, 'executor_output');
