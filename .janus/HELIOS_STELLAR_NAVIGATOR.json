@@ -2,12 +2,12 @@
   "schema": "janus.helios.stellar_navigator.v1",
   "module": "helios-stellar-nav.js",
   "version": "1.1.0",
-  "patch_level": "SMOOTH_FLOW_BLACK_HOLE_1",
+  "patch_level": "SMOOTH_FLOW_BLACK_HOLE_DYSON_1",
   "classification": "PRESENTATION_ONLY_ASTRONOMY_INSPIRED_STELLAR_NAVIGATION_BACKGROUND",
-  "purpose": "Replace the tiled decorative star pattern with a deterministic passive moving sky sphere while keeping all gameplay, bonus and compute surfaces untouched, with deliberately smoothed exposure, continuous colour flow, and a centered lower event-horizon black-hole presentation behind the UI.",
+  "purpose": "Replace the tiled decorative star pattern with a deterministic passive moving sky sphere while keeping all gameplay, bonus and compute surfaces untouched, with deliberately smoothed exposure, continuous colour flow, a centered lower event-horizon black-hole presentation, and a passive Dyson-swarm/lattice sphere behind the slot UI.",
   "deployment_phase": "PASSIVE_BACKGROUND_ONLY",
   "rendering": {
-    "surface": "CANVAS_2D",
+    "surface": "CANVAS_2D_PLUS_CSS_DECORATIVE_BODIES",
     "projection": "HELIOS_NATIVE_STAR_VECTORS_TO_PERSPECTIVE_CAMERA",
     "target_fps": 30,
     "max_device_pixel_ratio": 1.5,
@@ -26,7 +26,14 @@
     "black_hole_centered": true,
     "event_horizon_ring": true,
     "mercury_reflection": true,
-    "black_hole_behind_shell": true
+    "black_hole_behind_shell": true,
+    "dyson_sphere": "CENTERED_SLOT_BACKDROP_PARTIAL_SWARM_LATTICE",
+    "dyson_viewport_anchor_percent_x": 35.5,
+    "dyson_behind_shell": true,
+    "dyson_external_assets": false,
+    "dyson_network_requests": false,
+    "dyson_reduced_motion_disables_rotation": true,
+    "dyson_gameplay_authority": "NONE"
   },
   "sky_model": {
     "bright_anchor_class": "MANUALLY_CURATED_ROUNDED_ASTRONOMICAL_FACTS",
@@ -45,6 +52,8 @@
     "SMOOTH_VIEWPORT_EDGE_FADE",
     "LONG_PERIOD_BACKGROUND_BODY_COLOUR_FLOW",
     "CENTERED_LOWER_BLACK_HOLE_WITH_STATIC_EVENT_HORIZON_GEOMETRY",
+    "SLOW_DYSON_LATTICE_RING_ROTATION",
+    "SLOW_DYSON_COLOUR_BREATHING",
     "NO_GAME_EVENT_REACTIVITY_IN_V1_1"
   ],
   "forbidden_authority_inputs": [
@@ -102,6 +111,9 @@
     "BACKGROUND_BODY_COLOUR_CHANGES_FLOW_CONTINUOUSLY_NOT_STEPWISE",
     "CENTERED_BLACK_HOLE_REMAINS_BEHIND_UI_SHELL",
     "BLACK_HOLE_PRESENTATION_HAS_NO_GAMEPLAY_AUTHORITY",
+    "DYSON_SPHERE_REMAINS_BEHIND_UI_SHELL",
+    "DYSON_SPHERE_HAS_NO_GAMEPLAY_OR_COMPUTE_AUTHORITY",
+    "DYSON_SPHERE_USES_NO_EXTERNAL_ASSET_OR_NETWORK_REQUEST",
     "CURRENT_SKY_IS_NOT_MARKETED_AS_A_SCIENTIFIC_PLANETARIUM"
   ]
 }
