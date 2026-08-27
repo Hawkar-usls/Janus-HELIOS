@@ -1,13 +1,13 @@
 {
-  "schema_id": "hawkar.project-status.v15",
+  "schema_id": "hawkar.project-status.v16",
   "project": "Janus-HELIOS",
-  "project_version": "1.12.0",
+  "project_version": "1.13.0",
   "public_branding": "JANUS HELIOS — One Core. Any Destination.",
   "repository": "https://github.com/Hawkar-usls/Janus-HELIOS",
   "portfolio_class": "universal_configurable_compute_routing_slot_asset",
   "last_reviewed": "2026-08-27",
   "maturity": "ACTIVE_PUBLIC_PROTOTYPE",
-  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_MOBILE_SHOWCASE_CASCADES_SPIN_ENERGY_NATURAL_SOLAR_CORONA_TRUE_PURCHASED_SOLAR_FREE_SPINS_RARE_PROFILE_LUCKY_CONTRIBUTION_GENERATIVE_MUSIC_AND_MINER_PROFILE_DASHBOARD",
+  "completion_status": "LIVE_MULTI_MODE_ROUTING_SLOT_WITH_MOBILE_SHOWCASE_CASCADES_SPIN_ENERGY_NATURAL_SOLAR_CORONA_TRUE_PURCHASED_SOLAR_FREE_SPINS_RARE_PROFILE_LUCKY_CONTRIBUTION_GENERATIVE_MUSIC_MINER_PROFILE_AND_JANUS_WORLD_MATRIX",
   "delivery_model": "WEB_FIRST_UNIVERSAL_ASSET",
   "github_pages_url": "https://hawkar-usls.github.io/Janus-HELIOS/",
   "github_pages_source": "main/root",
@@ -25,6 +25,26 @@
     "spin_stop_timing_depends_on_outcome": false,
     "spin_stop_timing_depends_on_near_miss": false,
     "compute_or_route_input_to_game_rng": false
+  },
+  "janus_world_matrix": {
+    "module": "helios-janus-worlds.js",
+    "contract": ".janus/JANUS_WORLD_MATRIX.json",
+    "classification": "STOCHASTIC_PRESENTATION_WORLD_STATE_MECHANIC",
+    "formula": "RESPICIENS_ET_PROSPICIENS",
+    "latin_key": "APERIATUR_PORTA",
+    "samples_per_matrix": 256,
+    "dimensions": ["FLUX", "DRIFT", "TURBULENCE", "RESONANCE"],
+    "world_states": ["AUREA", "AETHER", "VORTEX", "UMBRA", "LIMEN"],
+    "event_inputs": ["INIT", "MODE_CHANGE", "ROUTE_CHANGE", "SPIN_COMPLETE", "BONUS_SESSION_START", "BONUS_SPIN", "SOLAR_CORONA", "LUCKY_CONTRIBUTION"],
+    "rare_event": "APERIATUR_PORTA_HIGH_ENTROPY_PRESENTATION_EVENT",
+    "default_porta_entropy_threshold": 0.90,
+    "rng_effect": "NONE",
+    "payout_effect": "NONE",
+    "rtp_effect": "NONE",
+    "compute_effect": "NONE",
+    "route_effect": "NONE",
+    "weapon_domain": false,
+    "manual_validation": "AWAITS_POST_DEPLOY_USER_CHECK"
   },
   "natural_solar_corona": {
     "module": "helios-bonus.js",
@@ -88,6 +108,7 @@
       "cascade_peak_changes_arrangement": true,
       "bonus_spin_index_mutates_motif": true
     },
+    "world_matrix_future_integration": "EVENT_BUS_READY_VIA_HELIOS_WORLD_MATRIX_NOT_YET_CLAIMED_AS_AUDIO_INPUT",
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "rng_effect": "NONE",
     "payout_effect": "NONE",
@@ -140,6 +161,7 @@
     "minimum_touch_target_px": 44,
     "horizontal_overflow_policy": "FORBIDDEN",
     "solar_free_spins_hud_has_own_phone_layout": true,
+    "janus_porta_mobile_safe": true,
     "manual_validation": "AWAITS_USER_CHECK_ON_REAL_MOBILE_DEVICE_OR_EMULATION"
   },
   "compute_boundaries": {
@@ -154,10 +176,9 @@
     "browser_provider_secrets_allowed": false,
     "unverified_receipt_ledger_value": 0
   },
-  "test_suites_present": ["ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE"],
-  "stale_test_contracts_repaired_this_pass": ["PUBLIC_SPIN_ENERGY_ALL_ROUTES", "POLISH_CACHE_VERSION_ASSUMPTIONS", "MUSIC_DUPLICATE_LUCKY_SCRIPT_ASSUMPTION"],
+  "test_suites_present": ["ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX"],
   "full_test_suite_execution_status": "OPEN_NOT_CLAIMED_PASS",
-  "new_bonus_and_music_syntax_check": "REQUIRES_EXECUTION",
+  "new_world_matrix_syntax_check": "REQUIRES_EXECUTION",
   "production_readiness": "NOT_ESTABLISHED",
   "planned_outreach": {
     "NiceHash": {
@@ -166,6 +187,8 @@
     }
   },
   "open_gates": [
+    "USER_VALIDATE_JANUS_WORLD_STATE_CHIP",
+    "USER_VALIDATE_RARE_APERIATUR_PORTA_EVENT",
     "USER_VALIDATE_SOLAR_FREE_SPINS_BONUS_SESSION",
     "USER_VALIDATE_BONUS_RETRIGGER",
     "USER_VALIDATE_BONUS_SESSION_MUSIC",
