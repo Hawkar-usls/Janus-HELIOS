@@ -1,12 +1,26 @@
 {
-  "schema": "janus.helios.buyer-handoff.v3",
+  "schema": "janus.helios.buyer-handoff.v4",
   "product": "JANUS HELIOS",
+  "product_version": "1.16.0",
   "ecosystem": "JANUS_HELIOS_ECOSYSTEM",
-  "purpose": "Make HELIOS reconfigurable and transferable for a licensed buyer without rewriting slot/game mathematics and without accidentally transferring unrelated JANUS assets.",
+  "purpose": "Make HELIOS reconfigurable and transferable for a licensed buyer without rewriting slot/game mathematics, without allowing presentation or adaptive policy to acquire hidden authority, and without accidentally transferring unrelated JANUS assets.",
   "delivery_model": {
     "web_first": true,
     "telegram_required": false,
     "allowed_host_examples": ["GITHUB_PAGES", "OPERATOR_WEB", "WHITE_LABEL_WEB", "APP_WEBVIEW", "OTHER_APPROVED_FRONTEND"]
+  },
+  "active_product_package": {
+    "canonical_architecture": ".janus/HELIOS_ARCHITECTURE.json",
+    "project_status": "PROJECT_STATUS.json",
+    "router": "src/helios-router.js",
+    "desktop_fabric": "src/helios-desktop-fabric.js",
+    "desktop_agent": "src/helios-desktop-agent.js",
+    "adaptive_policy": "src/helios-adaptive-policy.js",
+    "dual_stream_safety_guard": "src/helios-dual-stream-guard.js",
+    "dual_stream_director": "helios-dual-stream-director.js",
+    "public_feature_loader": "index.html",
+    "responsive_presentation_layer": "helios-mobile.js",
+    "data_room": "docs/DATA_ROOM_INDEX.md"
   },
   "transaction_boundary": {
     "default_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
@@ -15,9 +29,11 @@
     "background_ip_and_provenance": "legal/BACKGROUND_IP_AND_PROVENANCE.md",
     "third_party_notices": "THIRD_PARTY_NOTICES.md",
     "due_diligence_contract": ".janus/HELIOS_DUE_DILIGENCE.json",
+    "buyer_critic_audit": ".janus/HELIOS_BUYER_CRITIC_AUDIT_2026-08-27.json",
     "other_janus_repositories_included_by_default": false,
     "specialized_children_included_by_default": false,
     "future_inventions_included_by_default": false,
+    "seller_general_know_how_included_by_default": false,
     "seller_personal_accounts_or_credentials_included": false,
     "provider_outreach_or_intro_equals_assigned_contract": false
   },
@@ -78,6 +94,66 @@
     "BROWSER_PROVIDER_SECRETS_FORBIDDEN",
     "UNVERIFIED_RECEIPT_HAS_ZERO_LEDGER_VALUE"
   ],
+  "desktop_execution_boundary": {
+    "fabric_version": "2.1.0",
+    "agent_version": "1.1.0",
+    "target": "DESKTOP_WORKSTATION_CPU_GPU_HYBRID",
+    "generic_remote_shell_runtime": false,
+    "exact_provider_task_artifact_executor_binding": true,
+    "controller_may_widen_local_user_resource_policy": false,
+    "stale_lease_may_regain_authority": false,
+    "provider_result_verifier_required": true,
+    "active_dependency_on_janus_distributed_ai_swarm": false,
+    "active_dependency_on_buzz_esp32_firmware": false
+  },
+  "adaptive_policy_boundary": {
+    "contract": ".janus/HELIOS_ADAPTIVE_POLICY.json",
+    "principle": "IMMUTABLE_EXECUTION_TRUTH_PLUS_LEARNABLE_BOUNDED_POLICY_AROUND_IT",
+    "safe_arm_allowlist_required": true,
+    "may_change_artifact_identity": false,
+    "may_change_verifier_or_signature_truth": false,
+    "may_widen_local_user_resource_policy": false,
+    "may_change_game_math": false
+  },
+  "dual_stream_safety_boundary": {
+    "contract": ".janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json",
+    "mapping": "CHANGE_OPTIMIZATION_PRESSURE_TO_VERIFIED_SAFETY_RESERVE",
+    "missing_safety_may_be_fabricated": false,
+    "safety_reserve_model": "BOTTLENECK_MINIMUM",
+    "insufficient_safety_action": "LIMIT_OR_REJECT_CHANGE_PRESSURE",
+    "player_emotional_state_or_vulnerability_input": "FORBIDDEN",
+    "may_widen_local_user_resource_policy": false
+  },
+  "presentation_director_boundary": {
+    "module_version": "1.1.0",
+    "contract": ".janus/HELIOS_DUAL_STREAM_DIRECTOR.json",
+    "mapping": "DIVERGENCE_TO_MANDATORY_RESOLUTION",
+    "presentation_only": true,
+    "authoritative_loader": "index.html",
+    "mobile_layer_may_load_feature_scripts": false,
+    "owns_only_dedicated_director_stage_transform": true,
+    "may_override_core_reel_cell_transforms": false,
+    "may_read_bet_balance_loss_near_miss_or_vulnerability": false,
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  },
+  "public_bonus_boundary": {
+    "tiers": [
+      {"id": "standard", "cost_bet_multiplier": 50, "starting_spins": 10},
+      {"id": "radiant", "cost_bet_multiplier": 100, "starting_spins": 12},
+      {"id": "solar_flare", "cost_bet_multiplier": 175, "starting_spins": 15}
+    ],
+    "visual_activation_wheel_changes_selected_award": false,
+    "forced_win_or_scatter": false,
+    "near_miss_shaping": false,
+    "compute_dependent_outcome": false,
+    "real_money_enabled": false,
+    "prototype_balance_refund_bridge": true,
+    "production_first_class_bonus_core_source_required": true
+  },
   "integration_unit": "PROVIDER_MANIFEST_PLUS_ADAPTER_PLUS_VERIFIER_PLUS_AUDITED_SINK",
   "specialized_child_rule": "If the buyer wants a fixed science product use DIVINE_REALM; if the buyer wants a fixed pooled Treasury/jackpot product use SSlot; those repositories require separate explicit inclusion/pricing. HELIOS remains the universal redirectable asset.",
   "production_admission_gate": [
@@ -98,8 +174,11 @@
     "exact_tree_sha_required": true,
     "per_file_sha256_manifest_required": true,
     "complete_test_run_on_closing_snapshot_required_before_claiming_pass": true,
+    "strict_buyer_preflight_required": true,
+    "independent_sbom_license_review_as_agreed": true,
     "signed_release_preferred": true,
-    "signed_release_already_claimed": false
+    "signed_release_already_claimed": false,
+    "host_level_branch_protection_currently_claimed": false
   },
   "acceptance": {
     "document": "legal/ACCEPTANCE_AND_HANDOVER.md",
@@ -130,5 +209,17 @@
     "rng_rtp_certification_included_by_default": false,
     "crypto_financial_licence_included_by_default": false,
     "qualified_transaction_counsel_review_required_for_definitive_agreement": true
-  }
+  },
+  "known_open_gates": [
+    "BRANCH_PROTECTION_OR_EQUIVALENT_CLOSING_FREEZE",
+    "SIGNED_CLOSING_RELEASE_OR_EQUIVALENT_ATTESTATION",
+    "FIRST_CLASS_BONUS_CORE_SOURCE",
+    "REAL_PROVIDER_ADAPTER",
+    "AUTHENTICATED_PRODUCTION_AGENT_TRANSPORT",
+    "DURABLE_MULTI_HOST_LEASE_REPLAY_STATE",
+    "AUTHORITATIVE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
+    "REAL_TELEMETRY_AND_NON_MONEY_PILOT",
+    "INDEPENDENT_SECURITY_PRIVACY_LICENSE_LEGAL_REVIEW"
+  ],
+  "handoff_invariant": "TRANSFER_EXACTLY_LISTED_HELIOS_ASSETS_AND_EXACTLY_VERIFIED_SNAPSHOT; DO_NOT TRANSFER PERSONAL ACCOUNTS OR UNRELATED JANUS IP; DO NOT ALLOW COMPUTE, ADAPTIVE POLICY, SAFETY POLICY OR PRESENTATION LAYERS TO ACQUIRE UNDISCLOSED GAME-MATH AUTHORITY."
 }
