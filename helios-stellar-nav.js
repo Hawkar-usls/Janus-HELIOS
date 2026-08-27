@@ -2,7 +2,7 @@
   'use strict';
 
   const VERSION = '1.1.0';
-  const PATCH_LEVEL = 'SMOOTH_FLOW_1';
+  const PATCH_LEVEL = 'SMOOTH_FLOW_BLACK_HOLE_1';
   const DEG = Math.PI / 180;
   const TAU = Math.PI * 2;
   const MAX_DPR = 1.5;
@@ -118,23 +118,80 @@
       .cosmos:before{transition:opacity 2.4s cubic-bezier(.22,.61,.36,1)!important}
       .cosmos.stellar-active:before{opacity:0!important}
       .cosmos>.sun,.cosmos>.orbit-field,.cosmos>.planet-horizon{position:absolute;z-index:1;filter:hue-rotate(0deg) saturate(1) brightness(1);will-change:filter}
+
+      /* Lower-right decorative planet becomes a centered event-horizon black-hole body.
+         It stays behind .shell (z-index 2), so the lower cards visually sit over the arc. */
+      .cosmos>.planet-horizon{
+        width:clamp(700px,58vw,1180px)!important;
+        height:clamp(280px,23vw,430px)!important;
+        left:50%!important;
+        right:auto!important;
+        bottom:clamp(-300px,-15vw,-205px)!important;
+        transform:translateX(-50%);
+        border-radius:50%;
+        overflow:visible;
+        isolation:isolate;
+        background:
+          radial-gradient(ellipse at 50% 1%,rgba(248,251,255,.74) 0 1.0%,rgba(179,196,231,.34) 1.7%,rgba(101,120,164,.22) 4.2%,transparent 9%),
+          radial-gradient(ellipse at 44% 5%,rgba(164,183,222,.12) 0 3%,transparent 16%),
+          radial-gradient(ellipse at 57% 6%,rgba(202,215,241,.10) 0 2%,transparent 15%),
+          radial-gradient(ellipse at 50% 10%,#18202d 0 7%,#0b1019 17%,#030509 39%,#010102 68%,#000 100%)!important;
+        box-shadow:
+          0 -2px 5px rgba(236,243,255,.28),
+          0 -9px 24px rgba(129,151,205,.18),
+          0 -30px 88px rgba(69,91,151,.14),
+          inset 0 22px 44px rgba(117,139,188,.08),
+          inset 0 58px 110px rgba(0,0,0,.86)!important;
+      }
+      .cosmos>.planet-horizon::before{
+        content:"";
+        position:absolute;
+        inset:-8px -12px -18px;
+        border-radius:50%;
+        border-top:2px solid rgba(235,243,255,.72);
+        border-left:1px solid rgba(124,148,199,.08);
+        border-right:1px solid rgba(124,148,199,.08);
+        box-shadow:
+          0 -1px 4px rgba(250,252,255,.54),
+          0 -8px 22px rgba(131,157,218,.24),
+          0 -20px 54px rgba(80,105,170,.14),
+          inset 0 18px 34px rgba(118,142,194,.08);
+        opacity:.92;
+        pointer-events:none;
+      }
+      .cosmos>.planet-horizon::after{
+        content:"";
+        position:absolute;
+        left:8%;right:8%;top:-17px;height:44px;
+        border-radius:50%;
+        background:radial-gradient(ellipse at 50% 58%,rgba(255,255,255,.38) 0 2%,rgba(181,198,232,.20) 9%,rgba(98,122,178,.09) 31%,transparent 68%);
+        filter:blur(5px);
+        transform:scaleY(.44);
+        opacity:.72;
+        pointer-events:none;
+      }
+
       .cosmos.stellar-active>.sun{animation:helios-stellar-sun-flow 28s ease-in-out infinite alternate}
-      .cosmos.stellar-active>.planet-horizon{animation:helios-stellar-planet-flow 36s ease-in-out -7s infinite alternate}
+      .cosmos.stellar-active>.planet-horizon{animation:helios-stellar-blackhole-flow 36s ease-in-out -7s infinite alternate}
       .cosmos.stellar-active>.orbit-field{animation:helios-stellar-orbit-flow 42s ease-in-out -13s infinite alternate}
       @keyframes helios-stellar-sun-flow{
         0%{filter:hue-rotate(0deg) saturate(1) brightness(1)}
         45%{filter:hue-rotate(2.2deg) saturate(1.018) brightness(1.018)}
         100%{filter:hue-rotate(-1.8deg) saturate(.992) brightness(.988)}
       }
-      @keyframes helios-stellar-planet-flow{
-        0%{filter:hue-rotate(0deg) saturate(1) brightness(1)}
-        48%{filter:hue-rotate(-3.2deg) saturate(1.025) brightness(1.014)}
-        100%{filter:hue-rotate(2.6deg) saturate(.985) brightness(.992)}
+      @keyframes helios-stellar-blackhole-flow{
+        0%{filter:hue-rotate(0deg) saturate(.98) brightness(.995)}
+        48%{filter:hue-rotate(-2.2deg) saturate(1.018) brightness(1.012)}
+        100%{filter:hue-rotate(1.8deg) saturate(.99) brightness(.988)}
       }
       @keyframes helios-stellar-orbit-flow{
         0%{filter:hue-rotate(0deg) saturate(1) brightness(1)}
         50%{filter:hue-rotate(2deg) saturate(1.02) brightness(1.01)}
         100%{filter:hue-rotate(-2deg) saturate(.99) brightness(.995)}
+      }
+      @media(max-width:720px){
+        .cosmos>.planet-horizon{width:820px!important;height:300px!important;bottom:-225px!important}
+        .cosmos>.planet-horizon::after{left:14%;right:14%;opacity:.56}
       }
       @media(prefers-reduced-motion:reduce){
         .helios-stellar-canvas{opacity:0;transition:opacity .35s ease}
@@ -282,6 +339,9 @@
         real_anchor_count:state.anchors.length,
         brightness_smoothing_ms:STAR_ALPHA_SMOOTH_MS,
         background_body_color_flow:true,
+        central_black_hole:true,
+        event_horizon_visible:true,
+        mercury_reflection:true,
         presentation_only:true,
         gameplay_input_count:0,
         rng_effect:'NONE',
@@ -290,7 +350,7 @@
         compute_routing_effect:'NONE'
       })
     });
-    dispatchEvent(new CustomEvent('helios:stellar-ready',{detail:{version:VERSION,patch:PATCH_LEVEL,presentation_only:true,passive_background_only:true,brightness_smoothed:true,background_body_color_flow:true,scientific_catalog:false,external_code_imported:false}}));
+    dispatchEvent(new CustomEvent('helios:stellar-ready',{detail:{version:VERSION,patch:PATCH_LEVEL,presentation_only:true,passive_background_only:true,brightness_smoothed:true,background_body_color_flow:true,central_black_hole:true,event_horizon_visible:true,mercury_reflection:true,scientific_catalog:false,external_code_imported:false}}));
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
