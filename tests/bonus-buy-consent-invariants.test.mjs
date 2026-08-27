@@ -11,7 +11,8 @@ const cfg = JSON.parse(config);
 const buy = cfg.demo_bonus_buy;
 
 assert.match(html, /helios-bonus\.js\?v=1\.3\.0/);
-assert.match(html, /helios-bonus-confirm\.js\?v=2\.0\.0/);
+assert.match(html, /id="helios-bonus-confirm-script"/);
+assert.match(html, /helios-bonus-confirm\.js\?v=2\.1\.0/);
 assert.match(confirm, /CHOOSE SOLAR FREE SPINS/);
 assert.match(confirm, /TOTAL BONUS COST/);
 assert.match(confirm, /CURRENT BET/);
@@ -57,4 +58,4 @@ assert.deepEqual(buy.tiers.map(x=>x.id), ['standard','radiant','solar_flare']);
 assert.deepEqual(buy.tiers.map(x=>x.cost_multiplier_of_demo_bet), [50,100,175]);
 assert.deepEqual(buy.tiers.map(x=>x.free_spins_count), [10,12,15]);
 
-console.log('HELIOS Bonus Buy consent + tier chooser + wheel activation invariants: PASS');
+console.log('HELIOS Bonus Buy consent + tier chooser + cache-safe wheel activation invariants: PASS');
