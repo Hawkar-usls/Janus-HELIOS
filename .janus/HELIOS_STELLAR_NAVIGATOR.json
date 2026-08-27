@@ -4,7 +4,7 @@
   "version": "1.1.0",
   "patch_level": "SMOOTH_FLOW_BLACK_HOLE_DYSON_1",
   "classification": "PRESENTATION_ONLY_ASTRONOMY_INSPIRED_STELLAR_NAVIGATION_BACKGROUND",
-  "purpose": "Replace the tiled decorative star pattern with a deterministic passive moving sky sphere while keeping all gameplay, bonus and compute surfaces untouched, with deliberately smoothed exposure, continuous colour flow, a centered lower event-horizon black-hole presentation, and a passive Dyson-swarm/lattice sphere behind the slot UI.",
+  "purpose": "Replace the tiled decorative star pattern with a deterministic passive moving sky sphere while keeping all gameplay, bonus and compute surfaces untouched, with deliberately smoothed exposure, continuous colour flow, a centered lower event-horizon black-hole presentation, and a Dyson-swarm/lattice sphere that may be presentation-bridged to UI geometry without gaining gameplay authority.",
   "deployment_phase": "PASSIVE_BACKGROUND_ONLY",
   "rendering": {
     "surface": "CANVAS_2D_PLUS_CSS_DECORATIVE_BODIES",
@@ -29,6 +29,7 @@
     "black_hole_behind_shell": true,
     "dyson_sphere": "CENTERED_SLOT_BACKDROP_PARTIAL_SWARM_LATTICE",
     "dyson_viewport_anchor_percent_x": 35.5,
+    "dyson_runtime_anchor_when_bridge_active": "MIDPOINT_BETWEEN_GAME_AND_ROUTER_COLUMNS",
     "dyson_behind_shell": true,
     "dyson_external_assets": false,
     "dyson_network_requests": false,
@@ -54,8 +55,58 @@
     "CENTERED_LOWER_BLACK_HOLE_WITH_STATIC_EVENT_HORIZON_GEOMETRY",
     "SLOW_DYSON_LATTICE_RING_ROTATION",
     "SLOW_DYSON_COLOUR_BREATHING",
-    "NO_GAME_EVENT_REACTIVITY_IN_V1_1"
+    "NO_DIRECT_GAME_EVENT_REACTIVITY_INSIDE_NAVIGATOR_V1_1"
   ],
+  "presentation_bridge": {
+    "module": "helios-stellar-bridge.js",
+    "version": "1.0.0",
+    "classification": "PRESENTATION_ONLY_LAYOUT_AND_EVENT_BRIDGE",
+    "ui_anchor": "MIDPOINT_BETWEEN_GAME_AND_ROUTER_COLUMNS",
+    "stacked_layout_anchor": "GAME_PANEL_CENTER",
+    "geometry_reads": [
+      "GAME_PANEL_BOUNDING_RECT",
+      "ROUTER_PANEL_BOUNDING_RECT"
+    ],
+    "presentation_inputs": [
+      "REELS_SPINNING_CLASS",
+      "REEL_STOP_CLASS",
+      "CASCADE_PRESENTATION_EVENT",
+      "SETTLED_PAID_WIN_BOOLEAN",
+      "GAME_MODE_PRESENTATION_STATE",
+      "BONUS_PRESENTATION_START_EVENTS"
+    ],
+    "forbidden_inputs": [
+      "BET_SIZE",
+      "BALANCE",
+      "LOSS_STREAK",
+      "NEAR_MISS",
+      "WAGER_HISTORY",
+      "INFERRED_VULNERABILITY",
+      "PROBLEM_GAMBLING_LABEL",
+      "RNG_INTERNAL_STATE",
+      "PAYTABLE_MUTATION",
+      "COMPUTE_ROUTE_MUTATION"
+    ],
+    "camera_mode_flyby": true,
+    "camera_target": "STELLAR_CANVAS_PRESENTATION_TRANSFORM_ONLY",
+    "dyson_reel_reactivity": true,
+    "dyson_cascade_reactivity": true,
+    "dyson_paid_win_reactivity": true,
+    "dyson_event_effect": "BOUNDED_ROTATION_AND_SCALE_PULSE_ONLY",
+    "contrast_pumping": "DISABLED",
+    "mode_palette_transition": "SMOOTH_LOW_AMPLITUDE",
+    "black_hole_geometry_effect": "NONE",
+    "reduced_motion_supported": true,
+    "network_requests": false,
+    "authority": {
+      "rng_effect": "NONE",
+      "rtp_effect": "NONE",
+      "payout_effect": "NONE",
+      "bet_effect": "NONE",
+      "bonus_probability_effect": "NONE",
+      "compute_routing_effect": "NONE"
+    }
+  },
   "forbidden_authority_inputs": [
     "SPIN_BUTTON",
     "CASCADE_EVENT",
@@ -101,7 +152,10 @@
   "buyer_invariants": [
     "STELLAR_NAVIGATOR_IS_PRESENTATION_ONLY",
     "PASSIVE_BACKGROUND_ONLY_IN_CURRENT_PHASE",
-    "NO_GAME_OR_BONUS_DOM_COUPLING",
+    "NAVIGATOR_ITSELF_HAS_NO_GAME_OR_BONUS_DOM_COUPLING",
+    "BRIDGE_IS_PRESENTATION_ONLY_AND_SEPARATELY_REMOVABLE",
+    "BRIDGE_CANNOT_READ_BET_BALANCE_OR_PLAYER_VULNERABILITY_SIGNALS",
+    "BRIDGE_CANNOT_MODIFY_BLACK_HOLE_GEOMETRY",
     "NO_EXTERNAL_NETWORK_OR_RUNTIME_DEPENDENCY",
     "NO_UNLICENSED_STELLAR_MAP_CODE_DATA_OR_ASSETS_IN_ACTIVE_SNAPSHOT",
     "NO_GAME_MATH_OR_COMPUTE_AUTHORITY",
@@ -114,6 +168,7 @@
     "DYSON_SPHERE_REMAINS_BEHIND_UI_SHELL",
     "DYSON_SPHERE_HAS_NO_GAMEPLAY_OR_COMPUTE_AUTHORITY",
     "DYSON_SPHERE_USES_NO_EXTERNAL_ASSET_OR_NETWORK_REQUEST",
+    "DYSON_UI_ANCHOR_USES_LAYOUT_GEOMETRY_NOT_GAME_STATE",
     "CURRENT_SKY_IS_NOT_MARKETED_AS_A_SCIENTIFIC_PLANETARIUM"
   ]
 }
