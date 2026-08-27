@@ -1,0 +1,84 @@
+{
+  "schema": "janus.helios.dual-stream-director.v1",
+  "artifact_id": "JANUS-HELIOS-DUAL-STREAM-DIRECTOR-2026-08-27-v1.0",
+  "implementation": "helios-dual-stream-director.js",
+  "classification": "PRESENTATION_ONLY_PROCEDURAL_VISUAL_AUDIO_NARRATIVE_DIRECTOR",
+  "conceptual_origin": {
+    "source_artifact": "JANUS-HOLY-CRINGE-LOVE-DUAL-STREAM-CONVERTER-2026-08-27-v1.0",
+    "source_repository": "Hawkar-usls/janus-meta-registry",
+    "canonical_payload_sha256": "41eda5324c64e2e8f3080e9c980b7a39df15c6bdc9eaf666c5bdc20120af9724",
+    "mapping": {
+      "C": "DIVERGENCE / controlled presentation script-break",
+      "L": "RESOLUTION / coherence and return-to-readable-state",
+      "R": "presentation repetition",
+      "P": "presentation stress / density",
+      "hard_balance": "RESOLUTION >= rho * DIVERGENCE"
+    }
+  },
+  "presentation_model": {
+    "rho": 1.2,
+    "motifs": [
+      "ORBITAL_SHEAR",
+      "GRID_BREATHE",
+      "SOLAR_FOLD",
+      "SIGNAL_TILT"
+    ],
+    "sequence": [
+      "READ_ONLY_SETTLED_EVENT",
+      "REPETITION_AND_PRESENTATION_STRESS_UPDATE",
+      "BOUNDED_DIVERGENCE",
+      "MANDATORY_RESOLUTION",
+      "SETTLED_STATE"
+    ],
+    "resolution_is_mandatory": true,
+    "divergence_is_bounded": true,
+    "reduced_motion_respected": true,
+    "procedural_audio_accent_requires_existing_music_opt_in": true
+  },
+  "event_inputs": {
+    "allowed": [
+      "CASCADE_MULTIPLIER_AS_SETTLED_PRESENTATION_SIGNAL",
+      "PAID_WIN_BOOLEAN_ONLY",
+      "SOLAR_CORONA_EVENT",
+      "BONUS_WHEEL_PHASE",
+      "BONUS_SESSION_PHASE",
+      "MODE_CHANGE",
+      "ROUTE_CHANGE"
+    ],
+    "forbidden_player_inputs": [
+      "FEAR",
+      "ANGER",
+      "DESPAIR",
+      "SADNESS",
+      "INFERRED_VULNERABILITY",
+      "PROBLEM_GAMBLING_LABEL",
+      "LOSS_STREAK",
+      "NEAR_MISS",
+      "WAGER_HISTORY",
+      "BET_SIZE",
+      "BALANCE_PRESSURE"
+    ]
+  },
+  "authority_boundary": {
+    "presentation_only": true,
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "paytable_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE",
+    "provider_selection_effect": "NONE",
+    "player_retention_targeting": "FORBIDDEN",
+    "near_miss_shaping": "FORBIDDEN",
+    "loss_recovery_targeting": "FORBIDDEN"
+  },
+  "audio_boundary": {
+    "main_music_engine_not_modified": true,
+    "director_audio_is_low_gain_one_shot_accent_layer": true,
+    "audio_enabled_only_after_helios_music_state_opt_in": true,
+    "no_bet_or_loss_inputs": true
+  },
+  "design_law": "HELIOS MAY LEAVE THE EXPECTED PRESENTATION TRACK, BUT EVERY DIVERGENCE MUST RESOLVE INTO A CLEAR READABLE STATE.",
+  "canonical_equation": "L >= rho*C",
+  "canonical_phrase": "MORE DIVERGENCE => MORE REQUIRED RESOLUTION"
+}
