@@ -1,16 +1,29 @@
 {
-  "schema": "janus.helios.buyer-handoff.v2",
+  "schema": "janus.helios.buyer-handoff.v3",
   "product": "JANUS HELIOS",
   "ecosystem": "JANUS_HELIOS_ECOSYSTEM",
-  "purpose": "Make HELIOS reconfigurable for a licensed buyer without rewriting slot/game mathematics.",
+  "purpose": "Make HELIOS reconfigurable and transferable for a licensed buyer without rewriting slot/game mathematics and without accidentally transferring unrelated JANUS assets.",
   "delivery_model": {
     "web_first": true,
     "telegram_required": false,
     "allowed_host_examples": ["GITHUB_PAGES", "OPERATOR_WEB", "WHITE_LABEL_WEB", "APP_WEBVIEW", "OTHER_APPROVED_FRONTEND"]
   },
+  "transaction_boundary": {
+    "default_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
+    "purchased_assets_schedule": "legal/PURCHASED_ASSETS_SCHEDULE.md",
+    "excluded_assets_schedule": "legal/EXCLUDED_ASSETS_SCHEDULE.md",
+    "background_ip_and_provenance": "legal/BACKGROUND_IP_AND_PROVENANCE.md",
+    "third_party_notices": "THIRD_PARTY_NOTICES.md",
+    "due_diligence_contract": ".janus/HELIOS_DUE_DILIGENCE.json",
+    "other_janus_repositories_included_by_default": false,
+    "specialized_children_included_by_default": false,
+    "future_inventions_included_by_default": false,
+    "seller_personal_accounts_or_credentials_included": false,
+    "provider_outreach_or_intro_equals_assigned_contract": false
+  },
   "specialized_children": {
-    "Hawkar-usls/DIVINE_REALM": "FIXED_SCIENCE_PUBLIC_GOOD_CHILD",
-    "Hawkar-usls/SSlot": "FIXED_SHARED_MINING_POOL_JACKPOT_CHILD"
+    "Hawkar-usls/DIVINE_REALM": "FIXED_SCIENCE_PUBLIC_GOOD_CHILD_EXCLUDED_UNLESS_EXPRESSLY_LISTED",
+    "Hawkar-usls/SSlot": "FIXED_SHARED_MINING_POOL_JACKPOT_CHILD_EXCLUDED_UNLESS_EXPRESSLY_LISTED"
   },
   "public_buyer_editable": [
     "config/helios.public.json.branding",
@@ -44,6 +57,13 @@
     "private_partner_pricing",
     "private_workload_payloads"
   ],
+  "credential_handover": {
+    "seller_personal_passwords_transferred": false,
+    "seller_personal_mfa_or_recovery_codes_transferred": false,
+    "buyer_owned_accounts_required_for_production": true,
+    "old_secrets_should_be_revoked": true,
+    "buyer_should_generate_new_secrets": true
+  },
   "immutable_compute_game_boundary": [
     "COMPUTE_OFF_BY_DEFAULT",
     "EXPLICIT_OPT_IN",
@@ -59,7 +79,7 @@
     "UNVERIFIED_RECEIPT_HAS_ZERO_LEDGER_VALUE"
   ],
   "integration_unit": "PROVIDER_MANIFEST_PLUS_ADAPTER_PLUS_VERIFIER_PLUS_AUDITED_SINK",
-  "specialized_child_rule": "If the buyer wants a fixed science product use DIVINE_REALM; if the buyer wants a fixed pooled Treasury/jackpot product use SSlot; HELIOS remains the universal redirectable asset.",
+  "specialized_child_rule": "If the buyer wants a fixed science product use DIVINE_REALM; if the buyer wants a fixed pooled Treasury/jackpot product use SSlot; those repositories require separate explicit inclusion/pricing. HELIOS remains the universal redirectable asset.",
   "production_admission_gate": [
     "PROVIDER_IDENTITY",
     "SIGNED_MANIFEST",
@@ -71,5 +91,44 @@
     "SETTLEMENT_ACCOUNTING_IF_APPLICABLE",
     "ENERGY_THERMAL_POLICY",
     "LEGAL_REGULATORY_PLATFORM_REVIEW"
-  ]
+  ],
+  "closing_release": {
+    "procedure": "docs/RELEASE_AND_HASHING.md",
+    "exact_commit_sha_required": true,
+    "exact_tree_sha_required": true,
+    "per_file_sha256_manifest_required": true,
+    "complete_test_run_on_closing_snapshot_required_before_claiming_pass": true,
+    "signed_release_preferred": true,
+    "signed_release_already_claimed": false
+  },
+  "acceptance": {
+    "document": "legal/ACCEPTANCE_AND_HANDOVER.md",
+    "objective_and_reproducible": true,
+    "subjective_commercial_satisfaction_is_default": false,
+    "profitability_is_default_acceptance_condition": false,
+    "regulator_approval_is_default_acceptance_condition": false,
+    "future_provider_integration_is_default_acceptance_condition": false
+  },
+  "transition_support": {
+    "document": "legal/TRANSITION_SUPPORT_SCOPE.md",
+    "unlimited_support_by_default": false,
+    "new_feature_development_included_by_default": false,
+    "production_operations_included_by_default": false,
+    "new_work_requires_separate_sow": true
+  },
+  "commercial_truth_boundary": {
+    "illustrative_economics_are_guaranteed_returns": false,
+    "token_price_appreciation_claimed": false,
+    "datacenter_offload_measured": false,
+    "production_profitability_validated": false,
+    "sponsor_provider_pilot_required_for_measured_unit_economics": true
+  },
+  "legal_status_boundary": {
+    "patent_status_claimed": false,
+    "brand_transfer_requires_explicit_listing": true,
+    "real_money_gambling_approval_included_by_default": false,
+    "rng_rtp_certification_included_by_default": false,
+    "crypto_financial_licence_included_by_default": false,
+    "qualified_transaction_counsel_review_required_for_definitive_agreement": true
+  }
 }
