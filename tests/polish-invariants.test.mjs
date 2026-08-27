@@ -7,7 +7,7 @@ const [html, core, polish] = await Promise.all([
   readFile(new URL('../helios-polish.js', import.meta.url), 'utf8')
 ]);
 
-assert.match(html, /<script src="\.\/helios\.js\?v=[^"]+"><\/script>/);
+assert.match(html, /<script src="\.\/helios\.js\?v=1\.7\.1"><\/script>/);
 assert.match(html, /<script src="\.\/helios-polish\.js\?v=[^"]+"><\/script>/);
 assert.equal(polish.includes('Telegram.WebApp'), false);
 assert.equal(polish.includes('telegram.org'), false);
@@ -34,10 +34,11 @@ assert.match(polish, /function currentSpinWin\(\)/);
 assert.match(polish, /function persistLastWin\(\)/);
 assert.match(polish, /if\(lastNonZeroWin>0\)\s*el\.textContent=lastNonZeroWin\.toFixed\(2\)/);
 
-assert.match(core, /READY · CONSENT OFF/);
-assert.match(core, /ROUTE ARMED/);
-assert.match(core, /function updatePowerCTA/);
-assert.match(core, /game_event_weighting:'FORBIDDEN'/);
+// Current core feedback semantics: explicit consent gates compute, and the status is rendered from compute authority state.
+assert.match(core, /\$\('compute-state'\)\.textContent=computeOn\?'ACTIVE':'OFF'/);
+assert.match(core, /async function toggleCompute\(on\)/);
+assert.match(core, /if\(on\)\{if\(!\$\('consent'\)\.checked\)return;computeOn=true;/);
+assert.match(core, /\$\('power-off'\)\.disabled=!computeOn/);
 assert.match(core, /game_effect:'NONE'/);
 assert.match(core, /automatic_wager_conversion:false/);
 assert.match(core, /auto_play_from_bank:false/);
