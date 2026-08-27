@@ -1,7 +1,7 @@
 {
-  "schema": "janus.helios.architecture.v12",
+  "schema": "janus.helios.architecture.v16",
   "project": "Janus-HELIOS",
-  "version": "1.12.0",
+  "version": "1.16.0",
   "role": "UNIVERSAL_CONFIGURABLE_COMPUTE_ROUTING_SLOT_ASSET",
   "delivery_model": "WEB_FIRST_UNIVERSAL",
   "telegram_required": false,
@@ -12,7 +12,8 @@
       "DIVINE_REALM": "FIXED_SCIENCE_PUBLIC_GOOD_CHILD",
       "SSlot": "FIXED_SHARED_MINING_POOL_JACKPOT_CHILD"
     },
-    "canonical_ecosystem_manifest": ".janus/HELIOS_ECOSYSTEM.json"
+    "canonical_ecosystem_manifest": ".janus/HELIOS_ECOSYSTEM.json",
+    "children_included_in_helios_only_transaction_by_default": false
   },
   "routing_model": {
     "source": "EXPLICITLY_CONSENTED_DEVICE_OR_OPERATOR_COMPUTE",
@@ -34,7 +35,9 @@
     "reel_stop_timing_depends_on_near_miss": false,
     "cascade_rng_reads_compute_state": false,
     "cascade_rng_reads_compute_route": false,
-    "spin_can_start_or_weight_compute": false
+    "spin_can_start_or_weight_compute": false,
+    "real_money_enabled": false,
+    "value_storage": "LOCAL_DEMO_ONLY"
   },
   "solar_feature_family": {
     "natural_corona": {
@@ -46,21 +49,23 @@
       "compute_effect": "NONE"
     },
     "purchased_bonus": {
-      "classification": "TRUE_AUTO_FREE_SPINS_PUBLIC_DEMO",
+      "classification": "TIERED_AUTO_FREE_SPINS_PUBLIC_CAPABILITY_DEMO",
       "feature": "SOLAR_CORONA_FREE_SPINS",
       "entry": "BUY_BONUS_WITH_DEMO_PRESENTATION_UNITS",
-      "cost_multiplier_of_bet": 50,
-      "base_spins": 10,
-      "auto_run": true,
-      "retrigger": {
-        "trigger": "THREE_OR_MORE_SUNS_DURING_BONUS",
-        "extra_spins": 2,
-        "max_total_spins": 16
-      },
+      "purchase_contract": "REQUEST_TO_REVIEW_TO_EXPLICIT_CONSENT_TO_VISUAL_ACTIVATION_TO_CORE_AUTHORIZATION",
+      "tiers": [
+        {"id": "standard", "cost_multiplier_of_bet": 50, "base_spins": 10, "retrigger_spins": 2, "max_total_spins": 16},
+        {"id": "radiant", "cost_multiplier_of_bet": 100, "base_spins": 12, "retrigger_spins": 2, "max_total_spins": 20},
+        {"id": "solar_flare", "cost_multiplier_of_bet": 175, "base_spins": 15, "retrigger_spins": 3, "max_total_spins": 24}
+      ],
+      "visual_activation_wheel": "PRESENTATION_ONLY_ALREADY_DISCLOSED_TIER_AWARD",
+      "visual_activation_rng_effect": "NONE",
+      "seamless_overlay_handoff": true,
       "game_math": "EXISTING_STANDARD_GAME_RNG_PLUS_EXISTING_CASCADE_ENGINE",
       "forced_win": false,
       "forced_scatter": false,
       "near_miss_shaping": false,
+      "personalized_outcome_shaping": false,
       "compute_dependent_outcome_shaping": false,
       "session_ledger": "DEMO_SOLAR_FREE_SPINS",
       "session_hud": ["SPINS_LEFT", "BONUS_WIN", "CURRENT_EVENT"],
@@ -79,13 +84,30 @@
     "classification": "LIVE_MODE_ROUTE_EVENT_BONUS_GENERATIVE_PRESENTATION_SEQUENCER",
     "transport": "SESSION_SEEDED_16_STEP_4_4_LOOKAHEAD_SCHEDULER",
     "continuous_layers": ["SOLAR_PULSE", "SUB_BASS", "ORBITAL_BASS", "ARPEGGIATOR", "COSMIC_PAD", "STARFIELD_BELLS", "COMPUTE_DRONE", "EVENT_FILLS"],
-    "event_inputs": ["GAME_MODE", "SPIN_START", "PAID_CASCADE", "SPIN_COMPLETE", "SOLAR_CORONA", "SPIN_ENERGY_EARNED", "LUCKY_CONTRIBUTION", "BONUS_BUY", "BONUS_SESSION_START", "BONUS_SPIN", "BONUS_SESSION_COMPLETE", "ROUTE_CHANGE", "COMPUTE_STATE"],
-    "bonus_session_behavior": "SUSTAIN_HIGHER_TEMPO_AND_DENSITY_THEN_MUTATE_MOTIF_AND_FILLS_PER_BONUS_SPIN_RETRIGGER_AND_CASCADE_PEAK",
     "forbidden_adaptation_inputs": ["BET_SIZE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "COMPUTE_VOLUME_TO_GAME_ODDS"],
     "may_change_rng": false,
     "may_change_payout": false,
     "may_change_rtp": false,
     "may_change_compute_route": false
+  },
+  "dual_stream_director": {
+    "module": "helios-dual-stream-director.js",
+    "version": "1.1.0",
+    "contract": ".janus/HELIOS_DUAL_STREAM_DIRECTOR.json",
+    "classification": "PRESENTATION_ONLY_PROCEDURAL_VISUAL_AUDIO_NARRATIVE_DIRECTOR",
+    "streams": {"C": "DIVERGENCE", "L": "RESOLUTION", "R": "PRESENTATION_REPETITION", "P": "PRESENTATION_STRESS"},
+    "hard_balance": "L >= 1.2*C",
+    "authoritative_loader": "index.html",
+    "mobile_layer_is_feature_loader": false,
+    "owns_only_dedicated_director_stage_transform": true,
+    "may_override_core_reel_cell_transforms": false,
+    "reads_paid_win_amount_for_intensity": false,
+    "forbidden_player_inputs": ["FEAR", "ANGER", "DESPAIR", "SADNESS", "INFERRED_VULNERABILITY", "PROBLEM_GAMBLING_LABEL", "LOSS_STREAK", "NEAR_MISS", "WAGER_HISTORY", "BET_SIZE", "BALANCE_PRESSURE"],
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE"
   },
   "demo_spin_energy": {
     "supporting_mode": "GRIDJACK",
@@ -107,20 +129,64 @@
     "may_change_bonus_probability": false,
     "may_change_personal_jackpot_weight": false
   },
-  "miner_profile": {
-    "module": "helios-profile.js",
-    "surface": "MY_HELIOS",
-    "sections": ["OVERVIEW", "WORK_HISTORY", "LIVE_OFFERS", "NOTIFICATIONS"],
-    "offer_board": "SIMULATED_REALTIME_MARKET_BOARD_UNTIL_LIVE_PROVIDER_API"
+  "desktop_compute_plane": {
+    "fabric_module": "src/helios-desktop-fabric.js",
+    "fabric_version": "2.1.0",
+    "agent_module": "src/helios-desktop-agent.js",
+    "agent_version": "1.1.0",
+    "contract": ".janus/HELIOS_DESKTOP_FABRIC.json",
+    "target_resource_classes": ["CPU", "GPU", "HYBRID"],
+    "memory_and_vram_admission": true,
+    "thermal_battery_power_guards": true,
+    "bounded_backpressure": true,
+    "priority_aging": true,
+    "provider_circuit_breaker": true,
+    "dispatch_policy": "HIGHEST_PRIORITY_CURRENTLY_DISPATCHABLE_SLICE",
+    "lease_fencing": true,
+    "stale_result_rejection": true,
+    "mandatory_provider_result_verification": true,
+    "verified_agent_id_per_slice": true,
+    "exact_provider_task_artifact_executor_binding": true,
+    "generic_remote_shell_runtime": false,
+    "controller_may_widen_local_user_policy": false,
+    "active_dependency_on_janus_distributed_ai_swarm": false,
+    "active_dependency_on_buzz_esp32_code": false
+  },
+  "adaptive_policy_plane": {
+    "module": "src/helios-adaptive-policy.js",
+    "version": "1.0.0",
+    "contract": ".janus/HELIOS_ADAPTIVE_POLICY.json",
+    "principle": "IMMUTABLE_EXECUTION_TRUTH_PLUS_LEARNABLE_BOUNDED_POLICY_AROUND_IT",
+    "primary_mission_bounded_side_quests": true,
+    "quiet_canary": true,
+    "self_tested_acceleration_only": true,
+    "bounded_safe_action_bandit": true,
+    "persistent_learning_memory_throttled": true,
+    "local_autonomy_reports_decisions": true,
+    "may_change_artifact_identity": false,
+    "may_change_verifier": false,
+    "may_change_game_math": false
+  },
+  "dual_stream_safety_guard": {
+    "module": "src/helios-dual-stream-guard.js",
+    "contract": ".janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json",
+    "mapping": {"C": "CHANGE_OR_OPTIMIZATION_PRESSURE", "L": "SAFETY_RESERVE"},
+    "hard_balance": "SAFETY_RESERVE >= rho*CHANGE_PRESSURE",
+    "safety_reserve_model": "BOTTLENECK_MINIMUM_OF_CRITICAL_HEADROOMS",
+    "may_fabricate_missing_safety_evidence": false,
+    "insufficient_safety_action": "LIMIT_OR_REJECT_CHANGE_PRESSURE",
+    "player_emotional_state_inputs": "FORBIDDEN"
   },
   "mobile_showcase_layer": {
     "module": "helios-mobile.js",
+    "version": "1.1.0",
     "classification": "RESPONSIVE_PRESENTATION_ONLY",
     "targets": ["IPHONE_SAFARI", "ANDROID_CHROMIUM", "MOBILE_EMAIL_WEBVIEW", "PHONE_LANDSCAPE"],
     "safe_area_insets": true,
     "dynamic_viewport_height": "100DVH_WHERE_SUPPORTED",
     "minimum_touch_target_px": 44,
     "solar_free_spins_hud_phone_layout": true,
+    "loads_other_feature_scripts": false,
     "may_change_rng_or_compute": false
   },
   "immutable_boundaries": [
@@ -136,8 +202,27 @@
     "BONUS_SESSION_HAS_NO_FORCED_WIN_NEAR_MISS_OR_FORCED_SCATTER_LOGIC",
     "REAL_MONEY_BONUS_BUY_IS_NOT_ENABLED_BY_PUBLIC_DEMO",
     "PROCEDURAL_AUDIO_HAS_NO_RNG_PAYOUT_RTP_OR_COMPUTE_AUTHORITY",
+    "DUAL_STREAM_DIRECTOR_HAS_PRESENTATION_AUTHORITY_ONLY",
+    "PLAYER_VULNERABILITY_AND_LOSS_HISTORY_ARE_FORBIDDEN_DIRECTOR_POLICY_INPUTS",
+    "ADAPTIVE_POLICY_CANNOT_MUTATE_EXECUTION_TRUTH",
+    "SAFETY_GUARD_CANNOT_INVENT_MISSING_SAFETY_RESERVE",
+    "CONTROLLER_CANNOT_WIDEN_LOCAL_DESKTOP_RESOURCE_POLICY",
+    "GENERIC_REMOTE_SHELL_IS_NOT_AN_AGENT_RUNTIME",
     "LUCKY_CONTRIBUTION_REQUIRES_AUTHORITATIVE_PROOF_IN_PRODUCTION",
     "PROFILE_OFFER_BOARD_CANNOT_CLAIM_LIVE_EXTERNAL_PRICES_WITHOUT_PROVIDER_API"
   ],
-  "production_gate": "BLOCKED_PENDING_FIRST_CLASS_BONUS_CORE_INTEGRATION_REAL_ADAPTERS_PROVIDER_APIS_VERIFICATION_AND_INDEPENDENT_REVIEW"
+  "production_gate": {
+    "status": "NOT_ESTABLISHED",
+    "blocked_pending": [
+      "FIRST_CLASS_BONUS_CORE_SOURCE",
+      "REAL_PROVIDER_ADAPTER",
+      "AUTHENTICATED_PRODUCTION_AGENT_TRANSPORT",
+      "DURABLE_MULTI_HOST_COORDINATOR_STATE",
+      "SIGNED_PROVIDER_MANIFEST",
+      "AUTHORITATIVE_RECEIPT_SIGNATURE_AND_ANTI_REPLAY",
+      "REAL_ENERGY_THERMAL_TELEMETRY_VALIDATION",
+      "INDEPENDENT_SECURITY_PRIVACY_LEGAL_REVIEW",
+      "NON_MONEY_PILOT"
+    ]
+  }
 }
