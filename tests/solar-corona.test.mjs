@@ -25,12 +25,21 @@ assert.match(bonus, /helios:bonus-session-start/);
 assert.match(bonus, /helios:bonus-spin/);
 assert.match(bonus, /helios:bonus-session-complete/);
 assert.match(bonus, /helios:bonus-buy-complete/);
-assert.match(bonus, /retrigger_spins_added/);
 assert.match(bonus, /DEMO_SOLAR_FREE_SPINS/);
-assert.match(bonus, /production_enabled: false/);
-assert.match(bonus, /compute_effect: 'NONE'/);
+assert.match(bonus, /production_enabled:false/);
+assert.match(bonus, /compute_effect:'NONE'/);
 assert.match(bonus, /first_class_bonus_core_source:true/);
 assert.match(bonus, /stake_refund_bridge:false/);
+
+// Current retrigger semantics: settled trigger count is evaluated, bounded by the tier max,
+// then granted through the authoritative game-core bonus entitlement rather than a presentation counter.
+assert.match(bonus, /function possibleRetrigger\(triggerCount,tier,totalGranted\)/);
+assert.match(bonus, /triggerCount>=buyPolicy\.retrigger_minimum_count/);
+assert.match(bonus, /Math\.max\(0,tier\.max_total_spins-totalGranted\)/);
+assert.match(bonus, /coreBonus\.grantSpins\(coreToken,retrigger\.added\)/);
+assert.match(bonus, /retrigger:granted/);
+assert.match(bonus, /retrigger_kind:retrigger\.kind/);
+assert.match(bonus, /stake_charge:'NONE'/);
 
 // Bonus execution belongs to the game core, not a balance-source refund bridge.
 assert.match(core, /const VALID_SPIN_SOURCES = new Set\(\['balance','energy','bonus'\]\)/);
@@ -69,6 +78,8 @@ assert.deepEqual(tiers.map(x=>x.id), ['standard','radiant','solar_flare']);
 assert.deepEqual(tiers.map(x=>x.free_spins_count), [10,12,15]);
 assert.deepEqual(tiers.map(x=>x.retrigger_spins), [2,2,3]);
 assert.deepEqual(tiers.map(x=>x.max_total_spins), [16,20,24]);
+// Public config intentionally disables extra probabilistic retriggers; premium value comes
+// from disclosed starting spins / natural-sun retrigger budget.
 assert.deepEqual(tiers.map(x=>x.extra_retrigger_chance), [0,0,0]);
 
 for (const event of ['helios:bonus-session-start','helios:bonus-spin','helios:bonus-session-complete']) {
