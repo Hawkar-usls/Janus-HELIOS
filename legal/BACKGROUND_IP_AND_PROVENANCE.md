@@ -64,10 +64,12 @@ The separate swarm repository records this in `LICENSE_HISTORY.md`, `IP_NOTICE.m
 
 The active execution plane is now:
 
-- `src/helios-desktop-fabric.js`;
-- `.janus/HELIOS_DESKTOP_FABRIC.json`;
-- `docs/DESKTOP_FABRIC.md`;
-- `tests/desktop-fabric-invariants.test.mjs`.
+- `src/helios-desktop-fabric.js` — desktop/workstation scheduler and coordination core;
+- `src/helios-desktop-agent.js` — local fail-closed desktop runtime;
+- `.janus/HELIOS_DESKTOP_FABRIC.json` — machine-readable active contract;
+- `docs/DESKTOP_FABRIC.md` — architecture and production boundary;
+- `tests/desktop-fabric-invariants.test.mjs` — scheduler/resource/provenance invariants;
+- `tests/desktop-agent-invariants.test.mjs` — local lease/resource/executor invariants.
 
 It is maintained as a **HELIOS requirements-first desktop/workstation implementation** and has no active code dependency on `janus-distributed-ai-swarm` or Buzz ESP32 firmware.
 
@@ -81,8 +83,15 @@ Its target model is materially different from the historical microcontroller wor
 - provider adapter circuit breaking;
 - bounded queue backpressure;
 - priority aging;
+- dispatchable-work selection that prevents an unavailable GPU class from head-of-line blocking runnable CPU work;
 - provider-specific result verification;
-- fenced leases and stale-result rejection.
+- fenced leases and stale-result rejection;
+- per-slice verified agent provenance;
+- exact provider/task/artifact-SHA executor binding on the local desktop agent;
+- a controller execution budget that may be stricter than, but may not widen, the local user's resource policy;
+- local rechecking of lease expiry, cores, RAM, VRAM, thermals, power, battery state and consent immediately before execution.
+
+The active desktop agent is not implemented as a generic remote shell. Its buyer gate rejects generic process-execution primitives in the active runtime and rejects command/script/credential-bearing assignment fields.
 
 The active snapshot therefore does not require assignment of the `janus-distributed-ai-swarm` repository for a HELIOS-only transaction.
 
@@ -90,7 +99,7 @@ The active snapshot therefore does not require assignment of the `janus-distribu
 
 This separation is **not** represented as a magical erasure of Git history or of historical MIT grants. A buyer can inspect the historical repository record.
 
-It also does not claim exclusive ownership of broad distributed-systems ideas such as heartbeats, queues, leases, retries, worker pools or fencing tokens. The transaction value lies in the concrete HELIOS implementation, product architecture, maintained versions, documentation, tests, integration work, brand assets and any separately protected rights.
+It also does not claim exclusive ownership of broad distributed-systems ideas such as heartbeats, queues, leases, retries, worker pools, scheduling or fencing tokens. The transaction value lies in the concrete HELIOS implementation, product architecture, maintained versions, documentation, tests, integration work, brand assets and any separately protected rights.
 
 If a future closing snapshot re-introduces source copied/adapted from an historical MIT-covered swarm revision, the applicable MIT notice must remain with that covered material. If source from later source-available swarm revisions is incorporated, the definitive agreement must expressly address the required background-IP licence or assignment.
 
@@ -121,7 +130,7 @@ Before signing a definitive IP Assignment, complete a contribution provenance re
 6. AI-assisted code-generation disclosures relevant to buyer policy;
 7. background repositories materially incorporated into the closing snapshot;
 8. the exact historical/current licence boundary for any incorporated swarm material;
-9. confirmation that the closing snapshot's active desktop fabric does not silently re-introduce removed Buzz/ESP32 source.
+9. confirmation that the closing snapshot's active desktop fabric/agent does not silently re-introduce removed Buzz/ESP32 source.
 
 For each non-seller contributor with copyrightable material not already covered by a compatible inbound licence, obtain an assignment or sufficient licence before closing.
 
