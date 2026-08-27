@@ -1,4 +1,4 @@
-# JANUS HELIOS Source-Available Evaluation License v1.1
+# JANUS HELIOS Source-Available Evaluation License v1.2
 
 Copyright (c) 2026 Hawkar-usls. All rights reserved.
 
@@ -15,47 +15,73 @@ You are granted a limited, revocable, non-exclusive, non-transferable and non-su
 Without a separate written agreement from the copyright holder, you may **not**:
 
 - use the Materials or substantial derivatives in production;
-- operate or offer a gambling, gaming, wagering, distributed-compute, mining, marketplace, jackpot, data-center, cloud, SaaS, white-label or other commercial service based on the Materials;
+- operate or offer a gambling, gaming, wagering, distributed-compute, mining, marketplace, jackpot, data-center, cloud, SaaS, white-label or other commercial service based on protected Materials;
 - sell, sublicense, lease, monetize, redistribute or commercially exploit the Materials or derivative works;
 - use substantial portions of the implementation or documentation to build a competing commercial product or service;
 - remove or obscure copyright, attribution, provenance, audit, safety or licensing notices;
 - represent the Materials as your own original work.
 
-## 4. Evaluation copies
+## 4. Evaluation copies and hosting-platform rights
 
-You may make the minimum copies reasonably necessary for permitted internal evaluation. Rights required solely for ordinary operation of the hosting platform, including GitHub repository functionality, are unaffected. No broader redistribution right is granted.
+You may make the minimum copies reasonably necessary for permitted internal evaluation.
 
-## 5. Contributions
+Nothing in this license is intended to contradict technical rights that a hosting platform such as GitHub requires solely for ordinary operation of a public repository under its applicable terms, including platform functionality such as viewing or forking where required by those terms.
 
-Submitting a contribution does not transfer ownership of the existing Materials. Contributors represent that they have the right to submit their contribution. Acceptance of a contribution does not grant commercial rights to the project as a whole.
+Those platform-level rights do not create a broader permission to deploy, monetize, sublicense, white-label, redistribute outside the permitted context, or commercially exploit the Materials.
+
+## 5. Contributions and inbound rights
+
+Submitting an issue, pull request, patch, discussion, code sample, asset or other contribution does not transfer ownership of the existing Materials and does not make the submission automatically accepted into HELIOS.
+
+Contributors represent that they have the right to submit their contribution and must identify applicable third-party licences or restrictions.
+
+Before copyrightable third-party contributions are merged, the project owner may require a separate contributor agreement, assignment or licence sufficient for HELIOS to use, modify, commercially license, sublicense as part of HELIOS, and transfer the accepted contribution as part of a future acquisition.
+
+See `CONTRIBUTING.md` for the repository's transaction-readiness contribution policy.
+
+Acceptance of a contribution does not grant the contributor or any other person commercial rights to the project as a whole.
 
 ## 6. Names and branding
 
 No trademark, trade-name, endorsement or publicity right is granted. Names including **JANUS HELIOS**, **HELIOS**, **PLAYGRID**, **DIVINE_REALM**, **SSlot**, **GRIDJACK** and successor branding may not be used to imply affiliation, approval or sponsorship without written permission.
 
-## 7. Patents and know-how
+A repository name or copyright notice is not itself a representation that a mark is registered. Any trademark assignment in a transaction requires explicit identification and appropriate clearance.
 
-No patent license, covenant not to sue, trade-secret license or other implied intellectual-property license is granted. Publication of these Materials does not grant permission to commercially practice any method beyond rights that cannot lawfully be reserved.
+## 7. Patents, ideas and know-how
 
-## 8. Regulated and safety-sensitive deployment
+No patent license, covenant not to sue, trade-secret license or other implied intellectual-property license is granted.
 
-This license does not authorize real-money gambling, financial services, cryptocurrency operations, medical use, scientific claims, or deployment in a regulated environment. Any such activity requires separate legal, regulatory, security, fairness, privacy, accounting and responsible-gaming review, plus any commercial license required by the copyright holder.
+Copyright protects copyrightable expression; it does **not** by itself create an exclusive right over every abstract idea, algorithm, architecture, workflow, protocol concept, mathematical method or business model described by the Materials. Independent implementation of an unprotected idea is a separate legal question from copying protected expression.
 
-## 9. Termination
+No patent or patent-pending status is claimed unless supported by a separately verified filing. Public disclosure may affect patent or trade-secret strategy in some jurisdictions, so those issues should be reviewed separately before relying on them in a transaction.
 
-Rights under this license terminate automatically upon breach. On termination you must stop use of the Materials and delete copies not required by law, except immutable records retained solely for compliance or evidentiary purposes.
+## 8. Third-party and background material
 
-## 10. No warranty
+Third-party libraries, services, SDKs, trademarks, background repositories and other external material retain their own rights and licences. This repository-level license does not override them.
 
-THE MATERIALS ARE PROVIDED **AS IS**, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, ACCURACY, SECURITY OR FITNESS FOR REGULATED DEPLOYMENT.
+`THIRD_PARTY_NOTICES.md` and `legal/BACKGROUND_IP_AND_PROVENANCE.md` organize the currently known diligence boundary. A closing transaction must still verify the exact snapshot with an SBOM/licence and contribution review.
 
-## 11. Commercial licensing
+## 9. Regulated and safety-sensitive deployment
+
+This license does not authorize real-money gambling, financial services, cryptocurrency operations, medical use, scientific claims, production distributed-compute operation, or deployment in a regulated environment.
+
+Any such activity requires separate legal, regulatory, security, fairness, privacy, accounting, platform-policy, workload-owner and responsible-gaming review as applicable, plus any commercial licence required by the copyright holder.
+
+## 10. Termination
+
+Rights under this license terminate automatically upon material breach. On termination you must stop uses that depend on this license and delete evaluation copies not required by law, except immutable records retained solely for compliance or evidentiary purposes.
+
+Independent rights validly granted under a separate third-party or historical licence are not purported to be terminated by this section.
+
+## 11. No warranty
+
+THE MATERIALS ARE PROVIDED **AS IS**, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, ACCURACY, SECURITY, AVAILABILITY, COMMERCIAL SUCCESS OR FITNESS FOR PRODUCTION OR REGULATED DEPLOYMENT.
+
+Illustrative economics, prototypes, demos, roadmaps and proposed integrations are not warranties of revenue, profitability, datacenter savings, provider availability, regulatory approval or token-price performance.
+
+## 12. Commercial licensing
 
 Commercial, pilot, OEM, operator, platform, hosted, white-label, exclusive field-of-use or production rights are available only under a separate written agreement with the copyright holder.
-
-## 12. Reservation of rights
-
-All rights not expressly granted are reserved.
 
 ## 13. Acquisition / assignment boundary
 
@@ -70,5 +96,11 @@ Any acquisition, IP assignment or asset sale requires a separate signed definiti
 - `.janus/HELIOS_DUE_DILIGENCE.json`.
 
 Third-party and open-source rights remain governed by their original terms. Any required notices survive a commercial transfer.
+
+## 14. Separate agreements and reservation of rights
+
+A separately signed agreement may grant additional rights and, to the extent of a conflict, controls for that contracting party.
+
+All rights not expressly granted are reserved.
 
 **This is a source-available evaluation license, not an open-source license.**
