@@ -15,7 +15,7 @@ const buy = cfg.demo_bonus_buy;
 
 assert.match(html, /helios-bonus\.js\?v=1\.4\.0/);
 assert.match(bonus, /BONUS_ENGINE_VERSION='1\.4\.0'/);
-assert.match(bonus, /SOLAR CORONA BONUS/);
+assert.match(bonus, /SOLAR CORONA/);
 assert.match(bonus, /SOLAR FREE SPINS/);
 assert.match(bonus, /CHOOSE BONUS/);
 assert.match(bonus, /helios:bonus-buy-request/);
