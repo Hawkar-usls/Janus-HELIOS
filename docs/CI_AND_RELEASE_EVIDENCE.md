@@ -1,6 +1,6 @@
 # JANUS HELIOS — CI & Release Evidence
 
-This document records reproducible integrity evidence for specific repository snapshots. It does **not** turn HELIOS into a production-certified product and does not replace transaction counsel, an independent security review, regulated-game certification, a provider pilot, or a closing-time SBOM/licence review.
+This document records reproducible integrity evidence for specific repository snapshots. It does **not** turn HELIOS into a production-certified product and does not replace transaction counsel, an independent security review, regulated-game certification, a provider pilot, or a closing-time independent SBOM/licence review.
 
 ## Latest recorded integrity snapshot
 
@@ -8,13 +8,13 @@ Repository: `Hawkar-usls/Janus-HELIOS`
 
 Commit:
 
-`19e451d8aae6896bdce417917c13dc844803e2fa`
+`ab859cd7207aacfc6b97541aad340c41b3cfe03c`
 
 GitHub Actions workflow: `HELIOS Integrity`
 
 Run ID:
 
-`33074728052`
+`33080312910`
 
 Execution environment:
 
@@ -33,25 +33,36 @@ The following stages all completed with `success`:
 1. syntax / public-surface checks;
 2. configured invariant test suite;
 3. high-confidence tracked-file secret scan;
-4. buyer due-diligence preflight;
-5. strict closing-manifest generation;
-6. closing-manifest artifact upload.
+4. declared dependency SBOM generation;
+5. buyer due-diligence preflight;
+6. strict closing-manifest generation;
+7. buyer-integrity artifact upload.
 
-## Closing manifest artifact
+This exact snapshot includes the HELIOS-native desktop compute plane:
+
+- `src/helios-desktop-fabric.js` — Fabric `2.1.0`;
+- `src/helios-desktop-agent.js` — Agent `1.1.0`;
+- scheduler fairness regression preventing an unavailable resource class from head-of-line blocking runnable work;
+- per-slice verified-agent receipt provenance;
+- local assignment lease-expiry and resource-capacity rechecks;
+- fail-closed controller-budget checks preventing a coordinator from widening the user's local resource policy;
+- buyer preflight guards that fail if the removed Buzz-derived active dispatcher paths are silently reintroduced.
+
+## Buyer-integrity artifact
 
 Artifact name:
 
-`helios-closing-manifest-19e451d8aae6896bdce417917c13dc844803e2fa`
+`helios-buyer-integrity-ab859cd7207aacfc6b97541aad340c41b3cfe03c`
 
 Artifact ID:
 
-`9647331064`
+`9649711471`
 
 Artifact archive digest reported by GitHub:
 
-`sha256:3afd566a52deb051023159b64f29523e1101461b6b4604afc4b31cbc47fb51be`
+`sha256:a410bb7a8f4e0f37103f8e8316cebd122cddb10e1e6a5d078c33fa1b77af9d23`
 
-Artifact retention for this CI run was configured to 30 days. A real transaction should regenerate and separately preserve a closing manifest for the exact final closing commit rather than rely indefinitely on this temporary CI artifact.
+The artifact is temporary CI evidence. A real transaction should regenerate and separately preserve buyer-integrity evidence for the exact final closing commit rather than rely indefinitely on CI retention.
 
 ## What the strict closing manifest proves
 
@@ -78,16 +89,19 @@ It proves snapshot identity/integrity. It does **not** by itself prove:
 
 Those are separate diligence questions.
 
+## Declared dependency SBOM boundary
+
+The CI-generated CycloneDX-formatted SBOM reflects dependencies declared by `package.json`. At the recorded snapshot, the package declares no npm runtime/development dependencies.
+
+This is useful reproducible evidence but is **not** represented as an independent complete software-composition analysis. A closing review should still scan for vendored, undeclared, generated, browser-loaded, operating-system and other third-party components as applicable.
+
 ## Audit history
 
-The integrity workflow was intentionally introduced as a hard gate instead of declaring the existing tests green without execution.
+The integrity workflow was intentionally introduced as a hard gate instead of declaring tests green without execution.
 
-Early audit runs exposed stale source-text assertions in `tests/polish-invariants.test.mjs`. Those failures were treated as failures, inspected, and corrected without weakening the underlying product boundaries:
+Early audit runs exposed stale source-text assertions. Later desktop-fabric work exposed another useful class of buyer-level review findings: scheduler fairness and execution-plane provenance. Those findings were corrected with code plus regression tests rather than papered over in documentation.
 
-- the Mode Matrix continues to state that game modes do not select compute routes or alter compute rate;
-- LAST PAID WIN persistence remains tested, while the assertion was made robust to irrelevant source whitespace.
-
-The first complete all-stage pass was achieved before this evidence record was written. This history is retained because a buyer should be able to distinguish actual execution evidence from a retroactive claim that tests were always green.
+Historical Buzz/ESP32 lineage remains disclosed in `legal/BACKGROUND_IP_AND_PROVENANCE.md`; the active desktop fabric/agent does not pretend Git history or historical MIT grants disappeared.
 
 ## Closing rule
 
