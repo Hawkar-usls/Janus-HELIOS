@@ -246,8 +246,8 @@
   },
   "integrity_ci": {
     "workflow": ".github/workflows/helios-integrity.yml",
-    "latest_recorded_success_commit": "32e05f827ffcaeab7a996fbca5f0783bdde5dc71",
-    "latest_recorded_success_run_id": 33079098938,
+    "latest_recorded_success_commit": "ab859cd7207aacfc6b97541aad340c41b3cfe03c",
+    "latest_recorded_success_run_id": 33080312910,
     "latest_recorded_success_environment": "GITHUB_HOSTED_UBUNTU_NODE_24",
     "syntax_public_checks": "PASS_ON_RECORDED_SNAPSHOT",
     "configured_invariant_suite": "PASS_ON_RECORDED_SNAPSHOT",
@@ -256,13 +256,13 @@
     "buyer_due_diligence_preflight": "PASS_ON_RECORDED_SNAPSHOT",
     "strict_closing_manifest_generation": "PASS_ON_RECORDED_SNAPSHOT",
     "manifest_artifact_upload": "PASS_ON_RECORDED_SNAPSHOT",
-    "manifest_artifact_id": 9649189758,
-    "manifest_artifact_archive_digest": "sha256:c46b55e1b892d52893c15aac9ace783136c36ede0d5b853dd7d79bad1d10dbaa",
+    "manifest_artifact_id": 9649711471,
+    "manifest_artifact_archive_digest": "sha256:a410bb7a8f4e0f37103f8e8316cebd122cddb10e1e6a5d078c33fa1b77af9d23",
     "evidence_document": "docs/CI_AND_RELEASE_EVIDENCE.md",
     "scope_rule": "A_GREEN_COMMIT_DOES_NOT_CERTIFY_A_LATER_COMMIT; RE_RUN_FOR_EACH_CLOSING_SNAPSHOT"
   },
   "test_suites_present": ["ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "DESKTOP_FABRIC", "DESKTOP_AGENT", "DUE_DILIGENCE"],
-  "full_test_suite_execution_status": "PASS_ON_RECORDED_32E05F_INTEGRITY_SNAPSHOT; CURRENT_HEAD_REQUIRES_NEW_INTEGRITY_RUN",
+  "full_test_suite_execution_status": "PASS_ON_RECORDED_AB859_INTEGRITY_SNAPSHOT; RE_RUN_REQUIRED_FOR_ANY_LATER_HEAD_OR_CLOSING_SNAPSHOT",
   "production_readiness": "NOT_ESTABLISHED",
   "planned_outreach": {
     "NiceHash": {
