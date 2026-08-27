@@ -1,0 +1,21 @@
+# JANUS HELIOS — default ownership review
+#
+# This file is advisory unless GitHub branch protection / rulesets require
+# Code Owner review. Transaction closing still requires repository-level
+# protection to make this policy enforceable.
+
+* @Hawkar-usls
+
+# High-risk transaction and IP surfaces
+/LICENSE.md @Hawkar-usls
+/IP_NOTICE.md @Hawkar-usls
+/THIRD_PARTY_NOTICES.md @Hawkar-usls
+/BUYER_HANDOFF_SPEC.json @Hawkar-usls
+/PROJECT_STATUS.json @Hawkar-usls
+/SECURITY.md @Hawkar-usls
+/CONTRIBUTING.md @Hawkar-usls
+/legal/ @Hawkar-usls
+/.janus/ @Hawkar-usls
+/.github/workflows/ @Hawkar-usls
+/src/helios-router.js @Hawkar-usls
+/src/helios-swarm-dispatcher.js @Hawkar-usls
