@@ -5,7 +5,7 @@ import {
   assertNoClientSecrets
 } from './helios-router.js';
 
-export const HELIOS_DESKTOP_FABRIC_VERSION = '2.0.0';
+export const HELIOS_DESKTOP_FABRIC_VERSION = '2.1.0';
 export const FABRIC_ASSIGNMENT_SCHEMA = 'janus.helios.fabric.assignment.v2';
 export const FABRIC_RECEIPT_SCHEMA = 'janus.helios.fabric.receipt.v2';
 
@@ -221,15 +221,33 @@ export function scoreDesktopAgent(agent, requirements = {}) {
   return headroom * 0.28 + reliability * 0.28 + concurrency * 0.18 + memory * 0.10 + vram * 0.10 - latencyPenalty * 0.03 - thermalPenalty * 0.03;
 }
 
+function freshSlice({ slice_id, index, units, payload }) {
+  return {
+    slice_id,
+    index,
+    units,
+    payload: clone(payload),
+    state: 'QUEUED',
+    attempt: 0,
+    lease: null,
+    result: null,
+    verified_agent_id: null,
+    verified_at_ms: null,
+    last_error: null
+  };
+}
+
 export function buildFabricSlices(workload, limits = {}) {
   assertObject(workload, 'WORKLOAD');
   const maxSlices = Number(limits.max_slices || DEFAULTS.max_slices);
   const workloadId = stableId(workload.workload_id, 'WORKLOAD_ID');
   if (Array.isArray(workload.partitions) && workload.partitions.length) {
     if (workload.partitions.length > maxSlices) throw new Error('TOO_MANY_SLICES');
-    return workload.partitions.map((payload, index) => ({
-      slice_id: `${workloadId}:p${String(index).padStart(6, '0')}`, index, units: 1,
-      payload: clone(payload), state: 'QUEUED', attempt: 0, lease: null, result: null, last_error: null
+    return workload.partitions.map((payload, index) => freshSlice({
+      slice_id: `${workloadId}:p${String(index).padStart(6, '0')}`,
+      index,
+      units: 1,
+      payload
     }));
   }
   const total = Math.floor(finite(workload.total_units, 'TOTAL_UNITS', { min: 1 }));
@@ -239,7 +257,12 @@ export function buildFabricSlices(workload, limits = {}) {
   const out = [];
   for (let index = 0, offset = 0; offset < total; index += 1, offset += shard) {
     const units = Math.min(shard, total - offset);
-    out.push({ slice_id: `${workloadId}:r${String(index).padStart(6, '0')}`, index, units, payload: { offset, units }, state: 'QUEUED', attempt: 0, lease: null, result: null, last_error: null });
+    out.push(freshSlice({
+      slice_id: `${workloadId}:r${String(index).padStart(6, '0')}`,
+      index,
+      units,
+      payload: { offset, units }
+    }));
   }
   return out;
 }
@@ -248,12 +271,17 @@ function normalizeRequirements(input = {}) {
   assertObject(input, 'REQUIREMENTS');
   const resourceClass = String(input.resource_class || 'CPU').toUpperCase();
   if (!RESOURCE_CLASSES.includes(resourceClass)) throw new Error('INVALID_RESOURCE_CLASS');
+  const defaultCaps = resourceClass === 'GPU'
+    ? ['GENERAL_GPU']
+    : resourceClass === 'HYBRID'
+      ? ['GENERAL_CPU', 'GENERAL_GPU']
+      : ['GENERAL_CPU'];
   return {
     resource_class: resourceClass,
     min_logical_cores: Math.max(1, Math.floor(Number(input.min_logical_cores || 1))),
     min_memory_mb: Math.max(0, Number(input.min_memory_mb || 0)),
     min_vram_mb: Math.max(0, Number(input.min_vram_mb || 0)),
-    required_capabilities: normalizeCapabilities(input.required_capabilities || (resourceClass === 'GPU' ? ['GENERAL_GPU'] : ['GENERAL_CPU']))
+    required_capabilities: normalizeCapabilities(input.required_capabilities || defaultCaps)
   };
 }
 
@@ -322,7 +350,11 @@ export class HeliosDesktopFabric {
     if (!this.adapters.has(workload.provider_id)) throw new Error(`PROVIDER_ADAPTER_NOT_REGISTERED:${workload.provider_id}`);
     const queued = [...this.workloads.values()].reduce((n, w) => n + w.slices.filter(s => s.state === 'QUEUED').length, 0);
     if (queued + workload.slices.length > this.policy.max_slices) throw new Error('FABRIC_BACKPRESSURE_QUEUE_FULL');
-    workload.state = 'QUEUED'; workload.started_at_ms = null; workload.completed_at_ms = null; workload.receipt = null; workload.retry_count = 0;
+    workload.state = 'QUEUED';
+    workload.started_at_ms = null;
+    workload.completed_at_ms = null;
+    workload.receipt = null;
+    workload.retry_count = 0;
     this.workloads.set(workload.workload_id, workload);
     return this.workloadSnapshot(workload.workload_id);
   }
@@ -332,7 +364,10 @@ export class HeliosDesktopFabric {
     return Number(at) >= Number(h.open_until_ms || 0);
   }
 
-  providerSuccess(providerId) { this.providerHealth.set(providerId, { failures: 0, open_until_ms: 0 }); }
+  providerSuccess(providerId) {
+    this.providerHealth.set(providerId, { failures: 0, open_until_ms: 0 });
+  }
+
   providerFailure(providerId, at) {
     const h = this.providerHealth.get(providerId) || { failures: 0, open_until_ms: 0 };
     h.failures += 1;
@@ -346,40 +381,66 @@ export class HeliosDesktopFabric {
         if (slice.state !== 'LEASED' && slice.state !== 'RUNNING') continue;
         if (Number(at) <= Number(slice.lease?.expires_at_ms || 0)) continue;
         this.directory.release(slice.lease.agent_id, { failed: true });
-        slice.last_error = 'LEASE_EXPIRED'; slice.lease = null; slice.attempt += 1; workload.retry_count += 1;
+        slice.last_error = 'LEASE_EXPIRED';
+        slice.lease = null;
+        slice.attempt += 1;
+        workload.retry_count += 1;
         slice.state = slice.attempt >= this.policy.max_attempts ? 'FAILED' : 'QUEUED';
       }
       this.refreshWorkloadState(workload, at);
     }
   }
 
-  selectQueuedSlice(at = Date.now()) {
+  queuedCandidates(at = Date.now()) {
     const candidates = [];
     for (const workload of this.workloads.values()) {
-      if (!['QUEUED', 'RUNNING'].includes(workload.state) || !this.providerAvailable(workload.provider_id, at)) continue;
-      for (const slice of workload.slices) if (slice.state === 'QUEUED') {
+      if (!['QUEUED', 'RUNNING'].includes(workload.state)) continue;
+      if (!this.providerAvailable(workload.provider_id, at)) continue;
+      if (workload.deadline_ms != null && Number(at) > workload.deadline_ms) continue;
+      for (const slice of workload.slices) {
+        if (slice.state !== 'QUEUED') continue;
         const ageBoost = Math.floor(Math.max(0, Number(at) - workload.submitted_at_ms) / this.policy.priority_aging_ms);
         candidates.push({ workload, slice, effectivePriority: workload.priority + ageBoost });
       }
     }
-    candidates.sort((a, b) => b.effectivePriority - a.effectivePriority || a.workload.submitted_at_ms - b.workload.submitted_at_ms || a.slice.index - b.slice.index);
-    return candidates[0] || null;
+    candidates.sort((a, b) =>
+      b.effectivePriority - a.effectivePriority ||
+      a.workload.submitted_at_ms - b.workload.submitted_at_ms ||
+      a.slice.index - b.slice.index
+    );
+    return candidates;
+  }
+
+  selectDispatchableSlice(at = Date.now()) {
+    for (const candidate of this.queuedCandidates(at)) {
+      const agent = this.directory.eligible(candidate.workload.requirements, at)[0] || null;
+      if (agent) return { ...candidate, agent };
+    }
+    return null;
   }
 
   async dispatchReady({ now = Date.now(), limit = this.policy.max_dispatch_per_tick } = {}) {
     this.sweepExpired(now);
     const dispatched = [];
-    const blocked = new Set();
     for (let i = 0; i < Math.max(0, Number(limit)); i += 1) {
-      const next = this.selectQueuedSlice(now);
+      const next = this.selectDispatchableSlice(now);
       if (!next) break;
-      const key = `${next.workload.workload_id}:${next.slice.slice_id}`;
-      if (blocked.has(key)) break;
-      const agents = this.directory.eligible(next.workload.requirements, now);
-      const agent = agents[0];
-      if (!agent) { blocked.add(key); break; }
+      const agent = next.agent;
       const leaseId = secureToken();
-      const lease = { lease_id: leaseId, agent_id: agent.agent_id, issued_at_ms: Number(now), ack_deadline_ms: Number(now) + this.policy.ack_timeout_ms, expires_at_ms: Number(now) + this.policy.lease_ttl_ms };
+      const lease = {
+        lease_id: leaseId,
+        agent_id: agent.agent_id,
+        issued_at_ms: Number(now),
+        ack_deadline_ms: Number(now) + this.policy.ack_timeout_ms,
+        expires_at_ms: Number(now) + this.policy.lease_ttl_ms
+      };
+      const executionBudget = {
+        cpu_limit_percent: Number(agent.resource_policy.cpu_limit_percent),
+        gpu_limit_percent: Number(agent.resource_policy.gpu_limit_percent),
+        max_temp_c: Number(agent.resource_policy.max_temp_c),
+        max_watts: Number(agent.resource_policy.max_watts || 0),
+        max_concurrent: Number(agent.resource_policy.max_concurrent)
+      };
       const assignment = {
         schema: FABRIC_ASSIGNMENT_SCHEMA,
         fabric_version: HELIOS_DESKTOP_FABRIC_VERSION,
@@ -391,6 +452,7 @@ export class HeliosDesktopFabric {
         route_class: next.workload.route_class,
         artifact_digest: next.workload.artifact_digest,
         requirements: clone(next.workload.requirements),
+        execution_budget: executionBudget,
         payload: clone(next.slice.payload),
         lease_id: leaseId,
         lease_expires_at_ms: lease.expires_at_ms,
@@ -406,13 +468,17 @@ export class HeliosDesktopFabric {
         this.providerSuccess(next.workload.provider_id);
       } catch (error) {
         this.providerFailure(next.workload.provider_id, now);
-        next.slice.last_error = String(error?.message || error); next.slice.attempt += 1; next.workload.retry_count += 1;
+        next.slice.last_error = String(error?.message || error);
+        next.slice.attempt += 1;
+        next.workload.retry_count += 1;
         if (next.slice.attempt >= this.policy.max_attempts) next.slice.state = 'FAILED';
         this.refreshWorkloadState(next.workload, now);
         continue;
       }
-      next.slice.lease = lease; next.slice.state = 'LEASED';
-      next.workload.state = 'RUNNING'; next.workload.started_at_ms ??= Number(now);
+      next.slice.lease = lease;
+      next.slice.state = 'LEASED';
+      next.workload.state = 'RUNNING';
+      next.workload.started_at_ms ??= Number(now);
       this.directory.acquire(agent.agent_id);
       dispatched.push({ agent_id: agent.agent_id, assignment: clone(assignment) });
     }
@@ -436,7 +502,8 @@ export class HeliosDesktopFabric {
   acknowledge({ workload_id, slice_id, agent_id, lease_id }, at = Date.now()) {
     const { slice } = this.getSlice(workload_id, slice_id);
     this.assertLease(slice, agent_id, lease_id, at, { requireAckWindow: true });
-    slice.state = 'RUNNING'; return true;
+    slice.state = 'RUNNING';
+    return true;
   }
 
   renewLease({ workload_id, slice_id, agent_id, lease_id }, at = Date.now()) {
@@ -450,27 +517,62 @@ export class HeliosDesktopFabric {
     const { workload, slice } = this.getSlice(workload_id, slice_id);
     this.assertLease(slice, agent_id, lease_id, at);
     finite(result_bytes, 'RESULT_BYTES', { max: this.policy.max_result_bytes });
-    assertNoGameCoupling(output || {}, 'result'); assertNoClientSecrets(output || {}, 'result'); walkForbidden(output || {}, 'result');
+    assertNoGameCoupling(output || {}, 'result');
+    assertNoClientSecrets(output || {}, 'result');
+    walkForbidden(output || {}, 'result');
     slice.state = 'VERIFYING';
     const adapter = this.adapters.get(workload.provider_id);
-    const verified = await adapter.verify({ workload: clone(workload), slice: clone(slice), agent_id: String(agent_id), output: clone(output), at: Number(at) });
+    const verified = await adapter.verify({
+      workload: clone(workload),
+      slice: clone(slice),
+      agent_id: String(agent_id),
+      output: clone(output),
+      at: Number(at)
+    });
     if (verified !== true) {
       this.directory.release(agent_id, { failed: true });
-      slice.last_error = 'RESULT_VERIFICATION_FAILED'; slice.result = null; slice.lease = null; slice.attempt += 1; workload.retry_count += 1;
+      slice.last_error = 'RESULT_VERIFICATION_FAILED';
+      slice.result = null;
+      slice.verified_agent_id = null;
+      slice.verified_at_ms = null;
+      slice.lease = null;
+      slice.attempt += 1;
+      workload.retry_count += 1;
       slice.state = slice.attempt >= this.policy.max_attempts ? 'FAILED' : 'QUEUED';
       this.refreshWorkloadState(workload, at);
       return { accepted: false, requeued: slice.state === 'QUEUED' };
     }
-    slice.state = 'VERIFIED'; slice.result = clone(output); slice.verified_at_ms = Number(at);
-    this.directory.release(agent_id, { completed: true }); slice.lease = null;
+    slice.state = 'VERIFIED';
+    slice.result = clone(output);
+    slice.verified_agent_id = String(agent_id);
+    slice.verified_at_ms = Number(at);
+    this.directory.release(agent_id, { completed: true });
+    slice.lease = null;
     this.refreshWorkloadState(workload, at);
-    return { accepted: true, workload_complete: workload.state === 'COMPLETE', receipt: workload.receipt ? clone(workload.receipt) : null };
+    return {
+      accepted: true,
+      workload_complete: workload.state === 'COMPLETE',
+      receipt: workload.receipt ? clone(workload.receipt) : null
+    };
   }
 
   refreshWorkloadState(workload, at = Date.now()) {
+    if (workload.deadline_ms != null && Number(at) > workload.deadline_ms && !workload.slices.every(s => s.state === 'VERIFIED')) {
+      const active = workload.slices.some(s => ['LEASED', 'RUNNING', 'VERIFYING'].includes(s.state));
+      if (!active) {
+        for (const slice of workload.slices) if (slice.state === 'QUEUED') {
+          slice.state = 'FAILED';
+          slice.last_error = 'WORKLOAD_DEADLINE_EXCEEDED';
+        }
+        workload.state = 'FAILED';
+        return;
+      }
+    }
+
     if (workload.slices.every(s => s.state === 'VERIFIED')) {
-      workload.state = 'COMPLETE'; workload.completed_at_ms = Number(at);
-      const agents = [...new Set(workload.slices.map(s => s.result?.agent_id).filter(Boolean))];
+      workload.state = 'COMPLETE';
+      workload.completed_at_ms = Number(at);
+      const agents = [...new Set(workload.slices.map(s => s.verified_agent_id).filter(Boolean))].sort();
       workload.receipt = {
         schema: FABRIC_RECEIPT_SCHEMA,
         fabric_version: HELIOS_DESKTOP_FABRIC_VERSION,
@@ -486,7 +588,12 @@ export class HeliosDesktopFabric {
         started_at_ms: workload.started_at_ms,
         completed_at_ms: workload.completed_at_ms,
         duration_ms: Math.max(0, workload.completed_at_ms - (workload.started_at_ms || workload.submitted_at_ms)),
-        participating_agents_reported_by_result: agents,
+        participating_agents: agents,
+        slice_provenance: workload.slices.map(s => ({
+          slice_id: s.slice_id,
+          verified_agent_id: s.verified_agent_id,
+          verified_at_ms: s.verified_at_ms
+        })),
         provider_settlement_authoritative: false,
         scheduling_basis: 'CONSENT_RESOURCE_POLICY_PROVIDER_CAPACITY_WORKLOAD_ADMISSION_AND_DESKTOP_TELEMETRY',
         game_event_weighting: 'FORBIDDEN',
@@ -505,13 +612,22 @@ export class HeliosDesktopFabric {
     const adapter = this.adapters.get(workload.provider_id);
     for (const slice of workload.slices) {
       if (slice.lease) {
-        try { if (typeof adapter.cancel === 'function') await adapter.cancel(slice.lease.agent_id, { workload_id: workload.workload_id, slice_id: slice.slice_id, lease_id: slice.lease.lease_id }); } catch (_) {}
+        try {
+          if (typeof adapter.cancel === 'function') {
+            await adapter.cancel(slice.lease.agent_id, {
+              workload_id: workload.workload_id,
+              slice_id: slice.slice_id,
+              lease_id: slice.lease.lease_id
+            });
+          }
+        } catch (_) {}
         this.directory.release(slice.lease.agent_id);
       }
       if (slice.state !== 'VERIFIED') slice.state = 'CANCELLED';
       slice.lease = null;
     }
-    workload.state = 'CANCELLED'; return true;
+    workload.state = 'CANCELLED';
+    return true;
   }
 
   workloadSnapshot(workloadId) {
