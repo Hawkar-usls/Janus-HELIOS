@@ -7,7 +7,7 @@ const [source,indexHtml,contract] = await Promise.all([
   readFile(new URL('../.janus/HELIOS_STELLAR_NAVIGATOR.json', import.meta.url),'utf8').then(JSON.parse)
 ]);
 
-assert.match(source,/BRIDGE_VERSION = '1\.0\.2'/);
+assert.match(source,/BRIDGE_VERSION = '1\.0\.3'/);
 assert.match(indexHtml,/id="helios-stellar-nav-script"[^>]+helios-stellar-nav\.js\?v=1\.1\.0/);
 assert.match(indexHtml,/id="helios-stellar-bridge-script"[^>]+helios-stellar-bridge\.js\?v=1\.0\.1/);
 assert.ok(indexHtml.indexOf('id="helios-stellar-nav-script"') < indexHtml.indexOf('id="helios-stellar-bridge-script"'));
@@ -20,7 +20,7 @@ assert.match(source,/BETWEEN_COLUMNS/);
 assert.match(source,/ResizeObserver/);
 assert.match(source,/STACKED_GAME_CENTER/);
 
-// Mode changes drive a bounded camera flight while the palette itself is frame-interpolated.
+// Mode changes drive a bounded camera flight while UI accent colour is frame-interpolated.
 for(const mode of ['helios','divine','gridjack','custom']) assert.match(source,new RegExp(`${mode}:\\{x:`));
 assert.match(source,/attributeFilter:\['data-game-mode'\]/);
 assert.match(source,/translate3d\(/);
@@ -31,15 +31,23 @@ assert.match(source,/transitionPalette\(next\)/);
 assert.match(source,/body\.style\.setProperty\('--mode'/);
 assert.match(source,/body\.style\.setProperty\('--mode-soft'/);
 assert.doesNotMatch(source,/@property --mode/);
-assert.doesNotMatch(source,/body\[data-game-mode="divine"\]\{--mode/);
+
+// Global astronomical illumination is deliberately NOT coupled to mode changes.
+assert.match(source,/global_lighting_mode_coupling:'NONE'/);
+assert.match(source,/helios-bridge-sun-ambient/);
+assert.match(source,/helios-bridge-orbit-ambient/);
+assert.match(source,/AUTONOMOUS_CONTINUOUS_AMBIENT_ONLY/);
+assert.doesNotMatch(source,/--helios-ambient-hue/);
+assert.doesNotMatch(source,/--helios-ambient-bright/);
 
 // Exposure pumping from Director/win impacts is neutralized instead of merely made faster/slower.
 assert.match(source,/body\.director-divergence \.helios-director-stage/);
+assert.match(source,/body\.director-resolution \.core\{filter:none!important\}/);
 assert.match(source,/filter:none!important/);
 assert.match(source,/box-shadow:none!important/);
 assert.match(source,/\.game-panel\.win-impact\{box-shadow:var\(--shadow\)!important\}/);
 assert.match(source,/reels\.win-focus \.cell/);
-assert.match(source,/opacity:\.72!important/);
+assert.match(source,/opacity:\.76!important/);
 assert.doesNotMatch(source,/brightness\(\.90\)/);
 
 // CPU policy is a presentation-size input; compute ACTIVE gates Dyson motion.
@@ -84,13 +92,15 @@ assert.doesNotMatch(source,/getElementById\(['"]balance['"]\)/);
 assert.doesNotMatch(source,/loss_streak|near_miss|wager_history|inferred_vulnerability|problem_gambling_label/i);
 
 assert.equal(contract.presentation_bridge?.module,'helios-stellar-bridge.js');
-assert.equal(contract.presentation_bridge?.version,'1.0.2');
+assert.equal(contract.presentation_bridge?.version,'1.0.3');
 assert.equal(contract.presentation_bridge?.ui_anchor,'MIDPOINT_BETWEEN_GAME_AND_ROUTER_COLUMNS');
 assert.equal(contract.presentation_bridge?.black_hole_geometry_effect,'STATIC_BASELINE_OFFSET_ONLY');
 assert.equal(contract.presentation_bridge?.black_hole_event_coupling,false);
 assert.equal(contract.presentation_bridge?.contrast_pumping,'DISABLED');
 assert.equal(contract.presentation_bridge?.palette_interpolation,'REQUEST_ANIMATION_FRAME_RGB_INTERPOLATION');
 assert.equal(contract.presentation_bridge?.palette_duration_ms,3200);
+assert.equal(contract.presentation_bridge?.global_lighting_mode_coupling,'NONE');
+assert.equal(contract.presentation_bridge?.global_lighting_motion,'AUTONOMOUS_CONTINUOUS_AMBIENT_ONLY');
 assert.equal(contract.presentation_bridge?.win_exposure_pumping,false);
 assert.equal(contract.presentation_bridge?.camera_mode_flyby,true);
 assert.equal(contract.presentation_bridge?.dyson_cpu_policy_scaling,true);
@@ -100,4 +110,4 @@ assert.equal(contract.presentation_bridge?.authority.rng_effect,'NONE');
 assert.equal(contract.presentation_bridge?.authority.rtp_effect,'NONE');
 assert.equal(contract.presentation_bridge?.authority.compute_routing_effect,'NONE');
 
-console.log('HELIOS Stellar UI bridge RAF-palette + CPU-bound Dyson invariants: PASS');
+console.log('HELIOS Stellar UI bridge mode-neutral lighting + CPU-bound Dyson invariants: PASS');
