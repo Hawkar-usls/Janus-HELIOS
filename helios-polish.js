@@ -41,7 +41,7 @@
     document.head.appendChild(style);
   }
 
-  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function modeMeta(){return MODE_META[document.body.dataset.gameMode||'helios']||MODE_META.helios;}
   function pushActivity(text,kind='normal'){
     const stamp=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
