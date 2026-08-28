@@ -1,16 +1,21 @@
 (() => {
   'use strict';
 
-  const VERSION = '1.0.0';
+  const VERSION = '1.0.1';
   const CAMERA_DURATION_MS = 2400;
   const TINT_DURATION_MS = 1900;
+  const SUN_OPACITY = 0.76;
+  const ORBIT_OPACITY = 0.72;
+  const HORIZON_OPACITY = 0.86;
+  const AMBIENT_DARK = 'rgba(1,4,9,.13)';
+  const EDGE_DARK = 'rgba(0,2,7,.38)';
   const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)') || null;
 
   const CUES = Object.freeze({
-    helios:Object.freeze({x:0,y:0,rotate:0,scale:1.055,tint:'rgba(255,176,66,.045)',glow:'rgba(255,155,35,.10)'}),
-    divine:Object.freeze({x:-42,y:18,rotate:-1.15,scale:1.072,tint:'rgba(177,105,255,.115)',glow:'rgba(218,167,255,.15)'}),
-    gridjack:Object.freeze({x:38,y:-14,rotate:1.05,scale:1.068,tint:'rgba(57,255,157,.095)',glow:'rgba(77,255,195,.14)'}),
-    custom:Object.freeze({x:-28,y:-24,rotate:.78,scale:1.076,tint:'rgba(66,181,255,.105)',glow:'rgba(93,214,255,.15)'})
+    helios:Object.freeze({x:0,y:0,rotate:0,scale:1.055,tint:'rgba(255,176,66,.028)',glow:'rgba(255,155,35,.065)'}),
+    divine:Object.freeze({x:-42,y:18,rotate:-1.15,scale:1.072,tint:'rgba(177,105,255,.068)',glow:'rgba(218,167,255,.095)'}),
+    gridjack:Object.freeze({x:38,y:-14,rotate:1.05,scale:1.068,tint:'rgba(57,255,157,.060)',glow:'rgba(77,255,195,.090)'}),
+    custom:Object.freeze({x:-28,y:-24,rotate:.78,scale:1.076,tint:'rgba(66,181,255,.064)',glow:'rgba(93,214,255,.095)'})
   });
 
   const state = {
@@ -18,6 +23,9 @@
     reducedMotion:Boolean(motionQuery?.matches),
     cosmos:null,
     canvas:null,
+    sun:null,
+    orbit:null,
+    horizon:null,
     veil:null,
     modeObserver:null,
     mode:'helios'
@@ -25,6 +33,7 @@
 
   function cueFor(mode){ return CUES[mode] || CUES.helios; }
   function transformFor(cue){ return `translate3d(${cue.x}px,${cue.y}px,0) scale(${cue.scale}) rotate(${cue.rotate}deg)`; }
+  function veilShadow(glow){ return `inset 0 0 0 9999px ${AMBIENT_DARK},inset 0 0 220px ${glow}`; }
 
   function ensureVeil(){
     let veil=state.cosmos?.querySelector('.helios-mode-veil');
@@ -32,11 +41,17 @@
       veil=document.createElement('div');
       veil.className='helios-mode-veil';
       veil.setAttribute('aria-hidden','true');
-      veil.style.cssText='position:absolute;inset:0;z-index:2;pointer-events:none;opacity:1;background-color:rgba(255,176,66,.045);box-shadow:inset 0 0 220px rgba(255,155,35,.10);will-change:background-color,box-shadow;';
+      veil.style.cssText=`position:absolute;inset:0;z-index:2;pointer-events:none;opacity:1;background-color:rgba(255,176,66,.028);background-image:radial-gradient(circle at 50% 45%,transparent 0 24%,rgba(1,4,9,.055) 52%,${EDGE_DARK} 100%);box-shadow:${veilShadow('rgba(255,155,35,.065)')};will-change:background-color,box-shadow;`;
       state.cosmos.appendChild(veil);
     }
     state.veil=veil||null;
     return state.veil;
+  }
+
+  function applyComfortLighting(){
+    if(state.sun) state.sun.style.setProperty('opacity',String(SUN_OPACITY),'important');
+    if(state.orbit) state.orbit.style.setProperty('opacity',String(ORBIT_OPACITY),'important');
+    if(state.horizon) state.horizon.style.setProperty('opacity',String(HORIZON_OPACITY),'important');
   }
 
   function setTransitions(){
@@ -60,12 +75,13 @@
     state.cosmos.style.setProperty('filter','none','important');
     state.canvas.style.setProperty('transform-origin','50% 50%','important');
     state.canvas.style.setProperty('will-change','transform, opacity','important');
+    applyComfortLighting();
 
     if(state.reducedMotion){
       setTransitions();
       state.canvas.style.setProperty('transform','none','important');
       state.veil.style.backgroundColor=cue.tint;
-      state.veil.style.boxShadow=`inset 0 0 220px ${cue.glow}`;
+      state.veil.style.boxShadow=veilShadow(cue.glow);
       state.veil.dataset.mode=next;
       return;
     }
@@ -75,7 +91,7 @@
       state.veil.style.transition='none';
       state.canvas.style.setProperty('transform',transformFor(cue),'important');
       state.veil.style.backgroundColor=cue.tint;
-      state.veil.style.boxShadow=`inset 0 0 220px ${cue.glow}`;
+      state.veil.style.boxShadow=veilShadow(cue.glow);
       void state.canvas.offsetWidth;
       void state.veil.offsetWidth;
       setTransitions();
@@ -83,7 +99,7 @@
       setTransitions();
       state.canvas.style.setProperty('transform',transformFor(cue),'important');
       state.veil.style.backgroundColor=cue.tint;
-      state.veil.style.boxShadow=`inset 0 0 220px ${cue.glow}`;
+      state.veil.style.boxShadow=veilShadow(cue.glow);
     }
     state.veil.dataset.mode=next;
   }
@@ -110,6 +126,9 @@
   function resolveNodes(){
     state.cosmos=document.querySelector('.cosmos');
     state.canvas=document.querySelector('.helios-stellar-canvas');
+    state.sun=state.cosmos?.querySelector('.sun')||null;
+    state.orbit=state.cosmos?.querySelector('.orbit-field')||null;
+    state.horizon=state.cosmos?.querySelector('.planet-horizon')||null;
     return Boolean(state.cosmos&&state.canvas&&ensureVeil());
   }
 
@@ -130,6 +149,10 @@
         reduced_motion:state.reducedMotion,
         camera_duration_ms:state.reducedMotion?0:CAMERA_DURATION_MS,
         tint_duration_ms:state.reducedMotion?180:TINT_DURATION_MS,
+        sun_opacity:SUN_OPACITY,
+        orbit_opacity:ORBIT_OPACITY,
+        horizon_opacity:HORIZON_OPACITY,
+        ambient_darkness:'COSMIC_COMFORT',
         presentation_only:true,
         reads_mode:true,
         reads_spin:false,
@@ -150,6 +173,7 @@
       presentation_only:true,
       mode_camera_turn:true,
       tint_crossfade:true,
+      cosmic_comfort_darkness:true,
       game_event_reactivity:false,
       rng_effect:'NONE',
       rtp_effect:'NONE',
