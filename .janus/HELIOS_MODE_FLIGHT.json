@@ -1,0 +1,26 @@
+{
+  "schema": "janus.helios.mode_flight.v1",
+  "module": "helios-mode-flight.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_MODE_CAMERA_AND_TINT_CROSSFADE",
+  "purpose": "Restore a smooth mode-change camera turn while replacing abrupt root hue switching with a presentation-only tint crossfade.",
+  "camera_duration_ms": 2400,
+  "tint_duration_ms": 1900,
+  "mode_camera_cues": {
+    "helios": {"x":0,"y":0,"rotate_deg":0,"scale":1.055},
+    "divine": {"x":-42,"y":18,"rotate_deg":-1.15,"scale":1.072},
+    "gridjack": {"x":38,"y":-14,"rotate_deg":1.05,"scale":1.068},
+    "custom": {"x":-28,"y":-24,"rotate_deg":0.78,"scale":1.076}
+  },
+  "reads": ["GAME_MODE_PRESENTATION_STATE"],
+  "forbidden_inputs": ["SPIN_STATE","CASCADE_EVENT","SETTLED_WIN_STATE","BONUS_EVENT","BET_SIZE","BALANCE","COMPUTE_ROUTE","RNG_INTERNAL_STATE"],
+  "reduced_motion_supported": true,
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
