@@ -29,8 +29,8 @@
     style.textContent=`
       /*
        * EVENT-DECOUPLED STELLAR BRIDGE.
-       * The astronomical presentation is not allowed to react to MODE, SPIN, REEL STOP,
-       * CASCADE, PAID WIN or BONUS events. The navigator owns autonomous sky motion.
+       * This bridge does not react to MODE, SPIN, REEL STOP, CASCADE, PAID WIN or BONUS events.
+       * Optional mode camera/tint presentation is owned by helios-mode-flight.js.
        */
       .helios-stellar-canvas{
         transform:none!important;
@@ -53,7 +53,7 @@
       body.director-divergence .core,
       body.director-resolution .core{filter:none!important}
 
-      /* Astronomical illumination is mode-neutral and game-event-neutral. */
+      /* Astronomical illumination is game-event-neutral inside this bridge. */
       .cosmos>.sun,.cosmos>.orbit-field{filter:none!important}
 
       /* Win feedback stays local; no reel-field dimming or whole-panel glow. */
@@ -196,6 +196,15 @@
     });
   }
 
+  function loadModeFlight(){
+    if(document.getElementById('helios-mode-flight-script')) return;
+    const script=document.createElement('script');
+    script.id='helios-mode-flight-script';
+    script.src='./helios-mode-flight.js?v=1.0.0';
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
   function attach(){
     if(state.attached) return true;
     injectStyles();
@@ -205,6 +214,7 @@
     bindLayout();
     bindComputePolicy();
     bindMotionPreference();
+    loadModeFlight();
     window.HELIOS_STELLAR_BRIDGE=Object.freeze({
       version:BRIDGE_VERSION,
       getState:()=>({
