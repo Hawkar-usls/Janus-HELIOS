@@ -23,13 +23,21 @@ assert.match(polish, /visual event only/);
 assert.match(polish, /DEMO GAME PROFILE ONLY/);
 assert.match(polish, /Modes do not select compute routes or alter compute rate/);
 
-// Game modes may change symbols/rules, but must not snap-recolour astronomical background bodies.
-assert.doesNotMatch(polish, /body\[data-game-mode="divine"\] \.sun/);
-assert.doesNotMatch(polish, /body\[data-game-mode="divine"\] \.orbit-field/);
-assert.doesNotMatch(polish, /body\[data-game-mode="gridjack"\] \.orbit-field/);
-assert.doesNotMatch(polish, /body\[data-game-mode="custom"\] \.sun/);
-assert.doesNotMatch(polish, /body\[data-game-mode="custom"\] \.orbit-field/);
-assert.match(polish, /Astronomical background is mode-neutral/);
+// Game modes are allowed to recolour the presentation, but the astronomical scene must interpolate smoothly.
+assert.match(html, /@property --mode\{syntax:"<color>"/);
+assert.match(html, /--mode-transition:1100ms cubic-bezier\(\.22,\.61,\.36,1\)/);
+assert.match(html, /\.cosmos\{[^}]*transition:filter var\(--mode-transition\)/s);
+assert.match(html, /\.sun\{[^}]*transition:[^}]*var\(--mode-transition\)/s);
+assert.match(html, /\.orbit-field\{[^}]*transition:[^}]*var\(--mode-transition\)/s);
+assert.match(html, /\.planet-horizon\{[^}]*transition:[^}]*var\(--mode-transition\)/s);
+assert.match(html, /body\[data-game-mode="helios"\]\{--mode:#ffc24b;--mode-soft:#ffc24b20\}/);
+assert.match(html, /body\[data-game-mode="gridjack"\]\{--mode:#95ff9a;--mode-soft:#95ff9a22\}/);
+assert.match(html, /body\[data-game-mode="divine"\]\{--mode:#d7a7ff;--mode-soft:#d7a7ff22\}/);
+assert.match(html, /body\[data-game-mode="custom"\]\{--mode:#80d7ff;--mode-soft:#80d7ff22\}/);
+assert.match(html, /body\[data-game-mode="gridjack"\] \.cosmos\{filter:hue-rotate\(82deg\) saturate\(1\.14\) brightness\(\.96\)\}/);
+assert.match(html, /body\[data-game-mode="divine"\] \.cosmos\{filter:hue-rotate\(-112deg\) saturate\(1\.12\) brightness\(\.97\)\}/);
+assert.match(html, /body\[data-game-mode="custom"\] \.cosmos\{filter:hue-rotate\(154deg\) saturate\(1\.08\) brightness\(\.98\)\}/);
+assert.match(html, /@media\(prefers-reduced-motion:reduce\)/);
 
 assert.match(polish, /function buildBetPicker\(\)/);
 assert.match(polish, /helios-native-bet/);
