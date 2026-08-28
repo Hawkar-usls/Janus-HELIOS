@@ -12,7 +12,7 @@
     .station{display:none!important;}
     button,[role="button"],input,select{touch-action:manipulation;}
     .game-panel.impact{animation:mobileMachineImpact .24s cubic-bezier(.2,.8,.3,1)}
-    .game-panel.win-impact{box-shadow:0 0 0 1px #8f6b2a,0 0 44px #ffc95c2d,var(--shadow)}
+    .game-panel.win-impact{box-shadow:var(--shadow)!important}
     .reel-spinning{animation:mobileReelFloat .11s linear infinite alternate}.reel-stop{animation:mobileReelStop .28s cubic-bezier(.2,.9,.25,1.35)}
     .cell.spin{filter:blur(1.4px);transform:translateY(2px);opacity:.72}
     .solar-particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--mode);box-shadow:0 0 7px var(--mode);animation:mobileParticle .62s ease-out forwards;z-index:5;pointer-events:none}
@@ -21,7 +21,40 @@
     @keyframes mobileReelStop{0%{transform:translateY(-10px) scaleY(1.02)}65%{transform:translateY(4px) scaleY(.98)}100%{transform:none}}
     @keyframes mobileMachineImpact{0%{transform:none}35%{transform:translateY(3px)}70%{transform:translateY(-1px)}100%{transform:none}}
     @keyframes mobileParticle{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}
-    @keyframes mobileWinPop{0%{transform:scale(.98)}32%{transform:scale(1.035);box-shadow:0 0 24px var(--mode-soft)}100%{transform:none}}
+    @keyframes mobileWinPop{0%{transform:scale(.99)}42%{transform:scale(1.018)}100%{transform:none}}
+
+    /*
+     * FINAL EXPOSURE LOCK.
+     * This stylesheet is intentionally loaded last. Mode changes may move the stellar camera and
+     * interpolate UI accent colours, but they cannot snap astronomical hue/brightness. Win/cascade
+     * presentation may move local geometry, but it cannot dim or brighten the whole machine.
+     */
+    .cosmos>.sun,.cosmos>.orbit-field{filter:none!important;}
+    .cosmos.stellar-active>.sun{animation:heliosFinalSunBreath 34s ease-in-out -7s infinite alternate!important;}
+    .cosmos.stellar-active>.orbit-field{animation:heliosFinalOrbitBreath 41s ease-in-out -13s infinite alternate!important;}
+    @keyframes heliosFinalSunBreath{
+      0%{box-shadow:0 0 68px #ff9b2868,0 0 174px #ff8d1625}
+      48%{box-shadow:0 0 74px #ff9b2870,0 0 184px #ff8d162b}
+      100%{box-shadow:0 0 70px #ff9b286b,0 0 178px #ff8d1627}
+    }
+    @keyframes heliosFinalOrbitBreath{
+      0%{box-shadow:inset 0 0 78px #ffb13d08}
+      52%{box-shadow:inset 0 0 84px #a8c9e20a}
+      100%{box-shadow:inset 0 0 80px #ffb13d09}
+    }
+    .helios-director-stage,
+    body.director-divergence .helios-director-stage,
+    body.director-resolution .helios-director-stage{filter:none!important;box-shadow:none!important;}
+    body.director-divergence .core,body.director-resolution .core{filter:none!important;}
+    .reels.win-focus .cell,
+    .reels.win-focus .cell.hit,
+    .reels.win-focus .cell.cascade-out,
+    .reels.win-focus .cell.cascade-in{opacity:1!important;filter:none!important;}
+    .reels.win-focus .cell{transition:opacity .7s ease,filter .7s ease,border-color .7s ease,box-shadow .7s ease,color .7s ease,transform .18s ease!important;}
+    .reels .cell.hit{box-shadow:0 0 12px var(--mode-soft),inset 0 0 10px var(--mode-soft)!important;transition:border-color .7s ease,box-shadow .7s ease,color .7s ease,transform .18s ease!important;}
+    .game-panel.win-impact{box-shadow:var(--shadow)!important;}
+    .last-win-card.win{animation:heliosFinalWinPop .82s cubic-bezier(.22,.61,.36,1)!important;}
+    @keyframes heliosFinalWinPop{0%{transform:scale(.995)}48%{transform:scale(1.012)}100%{transform:none}}
 
     @supports(height:100dvh){
       .profile-drawer{height:100dvh!important;}
@@ -157,6 +190,11 @@
       .cell{min-height:42px!important;font-size:18px!important;}
       .profile-drawer{height:100dvh!important;}
     }
+
+    @media(prefers-reduced-motion:reduce){
+      .cosmos.stellar-active>.sun,.cosmos.stellar-active>.orbit-field{animation:none!important;}
+      .last-win-card.win{animation:none!important;}
+    }
   `;
   document.head.appendChild(style);
 
@@ -166,5 +204,5 @@
   else applyInputMode();
   coarse?.addEventListener?.('change', applyInputMode);
 
-  // This module owns responsive/mobile presentation only. Feature scripts are loaded explicitly by index.html.
+  // This module owns responsive/mobile presentation plus the final exposure-stability lock.
 })();
