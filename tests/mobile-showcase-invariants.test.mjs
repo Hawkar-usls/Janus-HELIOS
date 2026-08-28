@@ -8,7 +8,7 @@ const [html, mobile, bonus] = await Promise.all([
 ]);
 
 assert.match(html, /width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover/);
-assert.match(html, /helios-mobile\.js\?v=1\.1\.1/);
+assert.match(html, /helios-mobile\.js\?v=1\.1\.2/);
 assert.match(html, /grid-template-columns:minmax\(0,1\.07fr\) minmax\(0,\.93fr\)/);
 assert.match(html, /@media\(max-width:980px\)/);
 assert.match(html, /overflow-x:hidden/);
@@ -27,8 +27,20 @@ assert.match(mobile, /\.profile-drawer\{width:100vw!important/);
 assert.match(mobile, /\.solar-corona-overlay/);
 assert.match(mobile, /\.spin-btn\{grid-column:1\/-1!important/);
 
+// Final-loaded presentation layer owns the exposure-stability lock while tactile reel motion remains intact.
+assert.match(mobile, /FINAL EXPOSURE LOCK/);
+assert.match(mobile, /\.cosmos>\.sun,\.cosmos>\.orbit-field\{filter:none!important/);
+assert.match(mobile, /body\.director-divergence \.helios-director-stage/);
+assert.match(mobile, /\.reels\.win-focus \.cell/);
+assert.match(mobile, /opacity:1!important;filter:none!important/);
+assert.match(mobile, /\.game-panel\.win-impact\{box-shadow:var\(--shadow\)!important\}/);
+assert.match(mobile, /@keyframes heliosFinalWinPop/);
+assert.doesNotMatch(mobile, /\.game-panel\.win-impact\{box-shadow:0 0 0 1px/);
+assert.match(mobile, /\.reel-spinning\{animation:mobileReelFloat/);
+assert.match(mobile, /\.reel-stop\{animation:mobileReelStop/);
+
 // Mobile is a responsive presentation layer, not a hidden dependency loader.
-assert.match(mobile, /responsive\/mobile presentation only/);
+assert.match(mobile, /responsive\/mobile presentation plus the final exposure-stability lock/);
 assert.doesNotMatch(mobile, /createElement\(['"]script['"]\)/);
 assert.doesNotMatch(mobile, /helios-bonus-confirm\.js/);
 assert.doesNotMatch(mobile, /helios-dual-stream-director\.js/);
@@ -41,4 +53,4 @@ assert.match(bonus, /@media\(max-width:520px\)/);
 assert.match(bonus, /\.solar-free-spins-hud\{grid-template-columns:1fr 1fr\}/);
 assert.match(bonus, /\.bonus-buy-btn\{width:100%\}/);
 
-console.log('HELIOS mobile showcase + explicit-loader + Solar Free Spins HUD invariants: PASS');
+console.log('HELIOS mobile showcase + final exposure lock + explicit-loader + Solar Free Spins HUD invariants: PASS');
