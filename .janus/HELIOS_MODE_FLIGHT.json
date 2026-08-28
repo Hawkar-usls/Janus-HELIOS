@@ -1,11 +1,20 @@
 {
   "schema": "janus.helios.mode_flight.v1",
   "module": "helios-mode-flight.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "classification": "PRESENTATION_ONLY_MODE_CAMERA_AND_TINT_CROSSFADE",
-  "purpose": "Restore a smooth mode-change camera turn while replacing abrupt root hue switching with a presentation-only tint crossfade.",
+  "purpose": "Restore a smooth mode-change camera turn while replacing abrupt root hue switching with a presentation-only tint crossfade and a low-glare cosmic comfort ambience.",
   "camera_duration_ms": 2400,
   "tint_duration_ms": 1900,
+  "comfort_lighting": {
+    "profile": "COSMIC_COMFORT",
+    "sun_opacity": 0.76,
+    "orbit_opacity": 0.72,
+    "horizon_opacity": 0.86,
+    "ambient_dark_alpha": 0.13,
+    "edge_dark_alpha": 0.38,
+    "principle": "PRESERVE_MODE_IDENTITY_REDUCE_GLARE_ADD_EDGE_DEPTH"
+  },
   "mode_camera_cues": {
     "helios": {"x":0,"y":0,"rotate_deg":0,"scale":1.055},
     "divine": {"x":-42,"y":18,"rotate_deg":-1.15,"scale":1.072},
