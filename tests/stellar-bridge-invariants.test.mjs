@@ -9,7 +9,8 @@ const [source,indexHtml,contract] = await Promise.all([
 
 assert.match(source,/BRIDGE_VERSION = '1\.0\.3'/);
 assert.match(indexHtml,/id="helios-stellar-nav-script"[^>]+helios-stellar-nav\.js\?v=1\.1\.0/);
-assert.match(indexHtml,/id="helios-stellar-bridge-script"[^>]+helios-stellar-bridge\.js\?v=1\.0\.1/);
+assert.match(indexHtml,/id="helios-stellar-bridge-script"[^>]+helios-stellar-bridge\.js\?v=1\.0\.3/);
+assert.doesNotMatch(indexHtml,/body\[data-game-mode="(?:divine|gridjack|custom)"\]\{--mode:/);
 assert.ok(indexHtml.indexOf('id="helios-stellar-nav-script"') < indexHtml.indexOf('id="helios-stellar-bridge-script"'));
 
 // Physical UI anchor: the sphere follows the real midpoint between game and router columns.
