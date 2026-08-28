@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const BRIDGE_VERSION = '1.0.2';
+  const BRIDGE_VERSION = '1.0.3';
   const PALETTE_DURATION_MS = 3200;
   const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)') || null;
   const clamp = (n,min,max) => Math.max(min,Math.min(max,Number(n)||0));
@@ -14,14 +14,15 @@
     custom:{x:-28,y:-24,rotate:.78,scale:1.076}
   });
 
+  // Mode colour is an interface accent only. Global illumination is intentionally mode-neutral.
   const PALETTES = Object.freeze({
-    helios:{mode:[255,194,75],soft:[255,194,75,.125],hue:0,sat:1,bright:1,orbit:[255,177,61,.031]},
-    divine:{mode:[121,223,255],soft:[121,223,255,.141],hue:12,sat:.992,bright:1.004,orbit:[121,223,255,.063]},
-    gridjack:{mode:[149,255,154],soft:[149,255,154,.125],hue:-4,sat:1.008,bright:1.002,orbit:[149,255,154,.051]},
-    custom:{mode:[201,152,255],soft:[201,152,255,.125],hue:-9,sat:.996,bright:.999,orbit:[201,152,255,.063]}
+    helios:{mode:[255,194,75],soft:[255,194,75,.125]},
+    divine:{mode:[121,223,255],soft:[121,223,255,.141]},
+    gridjack:{mode:[149,255,154],soft:[149,255,154,.125]},
+    custom:{mode:[201,152,255],soft:[201,152,255,.125]}
   });
 
-  const clonePalette = p => ({mode:[...p.mode],soft:[...p.soft],hue:p.hue,sat:p.sat,bright:p.bright,orbit:[...p.orbit]});
+  const clonePalette = p => ({mode:[...p.mode],soft:[...p.soft]});
   const mixArray = (a,b,t) => a.map((v,i)=>lerp(v,b[i],t));
   const rgba = a => `rgba(${Math.round(a[0])},${Math.round(a[1])},${Math.round(a[2])},${Number(a[3]??1).toFixed(4)})`;
   const rgb = a => `rgb(${Math.round(a[0])},${Math.round(a[1])},${Math.round(a[2])})`;
@@ -64,46 +65,63 @@
     const style=document.createElement('style');
     style.id='helios-stellar-bridge-styles';
     style.textContent=`
-      /* Palette values are written every animation frame by the bridge. No data-game-mode selector owns exposure. */
+      /* Camera motion is presentation-only and never changes outcome timing. */
       .helios-stellar-canvas{
         transform-origin:50% 50%;
         will-change:transform,opacity;
         transition:opacity 2.4s cubic-bezier(.22,.61,.36,1),transform 2.8s cubic-bezier(.16,.78,.22,1)!important;
       }
 
-      /* Director keeps geometric choreography only; no contrast/brightness/glow pumping. */
-      .helios-director-stage{
-        will-change:transform!important;
-        filter:none!important;
-        box-shadow:none!important;
-        transition:transform .46s cubic-bezier(.2,.76,.22,1)!important;
-      }
+      /* Director owns geometry/narrative only. No exposure, contrast, core-light or shadow pumping. */
+      .helios-director-stage,
       body.director-divergence .helios-director-stage,
       body.director-resolution .helios-director-stage{
         filter:none!important;
         box-shadow:none!important;
       }
+      .helios-director-stage{
+        will-change:transform!important;
+        transition:transform .46s cubic-bezier(.2,.76,.22,1)!important;
+      }
+      body.director-divergence .core,
+      body.director-resolution .core{filter:none!important}
 
-      .cosmos>.sun{
-        filter:hue-rotate(calc(var(--helios-ambient-hue,0)*1deg)) saturate(var(--helios-ambient-sat,1)) brightness(var(--helios-ambient-bright,1))!important;
+      /*
+       * SINGLE LIGHT AUTHORITY:
+       * modes do not touch astronomical illumination at all.
+       * Sun/orbit motion is a long-period autonomous ambient cycle, so changing mode cannot restart
+       * or snap hue/brightness. These animations override the old polish mode selectors without
+       * changing planet geometry.
+       */
+      .cosmos.stellar-active>.sun{
+        animation:helios-bridge-sun-ambient 32s ease-in-out -5s infinite alternate!important;
         transition:none!important;
       }
-      .cosmos>.orbit-field{
-        filter:none!important;
-        box-shadow:inset 0 0 82px var(--helios-orbit-glow,#ffb13d08)!important;
+      .cosmos.stellar-active>.orbit-field{
+        animation:helios-bridge-orbit-ambient 39s ease-in-out -11s infinite alternate!important;
         transition:none!important;
       }
+      @keyframes helios-bridge-sun-ambient{
+        0%{filter:hue-rotate(-1deg) saturate(.995) brightness(.992)}
+        46%{filter:hue-rotate(1.4deg) saturate(1.012) brightness(1.010)}
+        100%{filter:hue-rotate(-.7deg) saturate(1.002) brightness(.998)}
+      }
+      @keyframes helios-bridge-orbit-ambient{
+        0%{filter:hue-rotate(-1deg) saturate(.995) brightness(.997);box-shadow:inset 0 0 78px rgba(255,177,61,.035)}
+        52%{filter:hue-rotate(1.2deg) saturate(1.012) brightness(1.006);box-shadow:inset 0 0 86px rgba(144,183,222,.045)}
+        100%{filter:hue-rotate(-.6deg) saturate(1.002) brightness(.999);box-shadow:inset 0 0 80px rgba(255,177,61,.032)}
+      }
 
-      /* Win feedback stays readable without changing perceived exposure of the whole machine. */
+      /* Win feedback is local only; no whole-machine exposure shifts. */
       .reels.win-focus .cell{
-        opacity:.72!important;
+        opacity:.76!important;
         filter:none!important;
         transition:opacity 1.25s cubic-bezier(.22,.61,.36,1),box-shadow .9s ease,border-color .9s ease,color .9s ease!important;
       }
       .reels.win-focus .cell.hit{opacity:1!important;filter:none!important}
       .reels.win-focus .cell.cascade-out,.reels.win-focus .cell.cascade-in{opacity:1!important;filter:none!important}
       .cell.hit{transition:border-color .9s ease,box-shadow .9s ease,color .9s ease,transform .18s ease!important}
-      .energy-step,.mode-btn,.route,.reels{transition:border-color .8s ease,box-shadow .8s ease,color .8s ease,background-color .8s ease!important}
+      .energy-step,.mode-btn,.route,.reels{transition:border-color .9s ease,box-shadow .9s ease,color .9s ease,background-color .9s ease!important}
       .game-panel{transition:box-shadow .9s ease!important}
       .game-panel.win-impact{box-shadow:var(--shadow)!important}
       @keyframes heliosSoftWinPop{0%{transform:scale(.995)}45%{transform:scale(1.012)}100%{transform:none}}
@@ -121,12 +139,14 @@
       .cosmos>.helios-dyson-sphere.dyson-dormant,
       .cosmos>.helios-dyson-sphere.dyson-dormant *{animation-play-state:paused!important}
 
-      /* Static baseline trim only: black-hole size/aspect stay untouched. */
+      /* Black-hole geometry remains the approved one-step-lower static baseline. */
       .cosmos>.planet-horizon{bottom:clamp(-328px,-13.8vw,-205px)!important}
       @media(max-width:720px){.cosmos>.planet-horizon{bottom:-250px!important}}
 
       @media(prefers-reduced-motion:reduce){
         .helios-stellar-canvas{transform:none!important;transition:opacity .35s ease!important}
+        .cosmos.stellar-active>.sun,.cosmos.stellar-active>.orbit-field{animation:none!important;filter:none!important}
+        .cosmos>.orbit-field{box-shadow:inset 0 0 82px rgba(255,177,61,.035)!important}
         .cosmos>.helios-dyson-sphere{transition:left .18s ease,top .18s ease,width .18s ease,height .18s ease,opacity .18s ease!important}
         .reels.win-focus .cell,.game-panel,.helios-director-stage{transition-duration:.22s!important}
       }
@@ -147,13 +167,10 @@
   }
 
   function writePalette(p){
+    // Only interface accent colours are mode-coupled. Astronomical light is not.
     const body=document.body;
     body.style.setProperty('--mode',rgb(p.mode));
     body.style.setProperty('--mode-soft',rgba(p.soft));
-    body.style.setProperty('--helios-ambient-hue',p.hue.toFixed(4));
-    body.style.setProperty('--helios-ambient-sat',p.sat.toFixed(5));
-    body.style.setProperty('--helios-ambient-bright',p.bright.toFixed(5));
-    body.style.setProperty('--helios-orbit-glow',rgba(p.orbit));
   }
 
   function paletteFrame(now){
@@ -163,11 +180,7 @@
     const e=ease(t);
     state.paletteCurrent={
       mode:mixArray(state.paletteFrom.mode,state.paletteTarget.mode,e),
-      soft:mixArray(state.paletteFrom.soft,state.paletteTarget.soft,e),
-      hue:lerp(state.paletteFrom.hue,state.paletteTarget.hue,e),
-      sat:lerp(state.paletteFrom.sat,state.paletteTarget.sat,e),
-      bright:lerp(state.paletteFrom.bright,state.paletteTarget.bright,e),
-      orbit:mixArray(state.paletteFrom.orbit,state.paletteTarget.orbit,e)
+      soft:mixArray(state.paletteFrom.soft,state.paletteTarget.soft,e)
     };
     writePalette(state.paletteCurrent);
     if(t<1) state.paletteRaf=requestAnimationFrame(paletteFrame);
@@ -394,8 +407,10 @@
         cpu_policy_percent:state.cpuPercent,
         dyson_compute_active:state.computeActive,
         dyson_angle_deg:state.dysonAngle,
-        palette_transition:'REQUEST_ANIMATION_FRAME_RGB_INTERPOLATION',
+        ui_palette_transition:'REQUEST_ANIMATION_FRAME_RGB_INTERPOLATION',
         palette_duration_ms:PALETTE_DURATION_MS,
+        global_lighting_mode_coupling:'NONE',
+        global_lighting_motion:'AUTONOMOUS_CONTINUOUS_AMBIENT_ONLY',
         black_hole_offset:'STATIC_ONE_STEP_LOWER',
         presentation_only:true,
         reads_bet:false,
@@ -406,7 +421,7 @@
         compute_routing_effect:'NONE'
       })
     });
-    dispatchEvent(new CustomEvent('helios:stellar-bridge-ready',{detail:{version:BRIDGE_VERSION,presentation_only:true,ui_bound_dyson:true,cpu_policy_scaled_dyson:true,compute_gated_dyson_motion:true,mode_camera_flyby:true,raf_palette_interpolation:true,win_exposure_pumping:false,black_hole_static_lower_step:true,rng_effect:'NONE',rtp_effect:'NONE'}}));
+    dispatchEvent(new CustomEvent('helios:stellar-bridge-ready',{detail:{version:BRIDGE_VERSION,presentation_only:true,ui_bound_dyson:true,cpu_policy_scaled_dyson:true,compute_gated_dyson_motion:true,mode_camera_flyby:true,raf_ui_palette_interpolation:true,global_lighting_mode_coupling:'NONE',autonomous_ambient_lighting:true,win_exposure_pumping:false,black_hole_static_lower_step:true,rng_effect:'NONE',rtp_effect:'NONE'}}));
     return true;
   }
 
