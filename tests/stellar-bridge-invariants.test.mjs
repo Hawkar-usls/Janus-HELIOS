@@ -10,7 +10,8 @@ const [source,indexHtml,contract] = await Promise.all([
 assert.match(source,/BRIDGE_VERSION = '1\.0\.4'/);
 assert.match(indexHtml,/id="helios-stellar-nav-script"[^>]+helios-stellar-nav\.js\?v=1\.1\.0/);
 assert.match(indexHtml,/id="helios-stellar-bridge-script"[^>]+helios-stellar-bridge\.js\?v=1\.0\.4/);
-assert.doesNotMatch(indexHtml,/body\[data-game-mode="(?:divine|gridjack|custom)"\]\{--mode:/);
+assert.match(indexHtml,/--mode-transition:1100ms cubic-bezier\(\.22,\.61,\.36,1\)/);
+assert.match(indexHtml,/body\[data-game-mode="gridjack"\]\{--mode:#95ff9a/);
 assert.ok(indexHtml.indexOf('id="helios-stellar-nav-script"') < indexHtml.indexOf('id="helios-stellar-bridge-script"'));
 
 // Physical UI anchor remains layout-derived, not game-state-derived.
@@ -21,7 +22,7 @@ assert.match(source,/BETWEEN_COLUMNS/);
 assert.match(source,/ResizeObserver/);
 assert.match(source,/STACKED_GAME_CENTER/);
 
-// Root-cause guard: mode changes cannot alter palette, Stellar camera or astronomical light.
+// The bridge itself remains mode-blind: root CSS may smoothly theme the scene, but this module cannot own palette or camera changes.
 assert.doesNotMatch(source,/PALETTES/);
 assert.doesNotMatch(source,/PALETTE_DURATION_MS/);
 assert.doesNotMatch(source,/transitionPalette/);
@@ -38,6 +39,11 @@ assert.match(source,/global_lighting_mode_coupling:'NONE'/);
 assert.match(source,/global_lighting_game_event_coupling:'NONE'/);
 assert.match(source,/ui_palette_transition:'NONE_STATIC_ROOT_THEME'/);
 assert.match(source,/camera_mode_flyby:false/);
+
+// Root mode theming is intentionally smooth and presentation-only; bridge remains isolated from the mode state.
+assert.match(indexHtml,/body\[data-game-mode="divine"\][^\n]+\.cosmos\{filter:hue-rotate\(-112deg\)/);
+assert.match(indexHtml,/body\[data-game-mode="custom"\][^\n]+\.cosmos\{filter:hue-rotate\(154deg\)/);
+assert.match(indexHtml,/\.cosmos\{[^}]*transition:filter var\(--mode-transition\)/s);
 
 // Root-cause guard: gameplay/bonus events cannot pulse the Dyson or alter global exposure.
 assert.doesNotMatch(source,/helios:cascade/);
