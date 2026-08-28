@@ -1,9 +1,11 @@
 (() => {
   'use strict';
 
-  const BRIDGE_VERSION = '1.0.1';
+  const BRIDGE_VERSION = '1.0.2';
+  const PALETTE_DURATION_MS = 3200;
   const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)') || null;
   const clamp = (n,min,max) => Math.max(min,Math.min(max,Number(n)||0));
+  const lerp = (a,b,t) => a+(b-a)*t;
 
   const CAMERA = Object.freeze({
     helios:{x:0,y:0,rotate:0,scale:1.055},
@@ -12,6 +14,20 @@
     custom:{x:-28,y:-24,rotate:.78,scale:1.076}
   });
 
+  const PALETTES = Object.freeze({
+    helios:{mode:[255,194,75],soft:[255,194,75,.125],hue:0,sat:1,bright:1,orbit:[255,177,61,.031]},
+    divine:{mode:[121,223,255],soft:[121,223,255,.141],hue:12,sat:.992,bright:1.004,orbit:[121,223,255,.063]},
+    gridjack:{mode:[149,255,154],soft:[149,255,154,.125],hue:-4,sat:1.008,bright:1.002,orbit:[149,255,154,.051]},
+    custom:{mode:[201,152,255],soft:[201,152,255,.125],hue:-9,sat:.996,bright:.999,orbit:[201,152,255,.063]}
+  });
+
+  const clonePalette = p => ({mode:[...p.mode],soft:[...p.soft],hue:p.hue,sat:p.sat,bright:p.bright,orbit:[...p.orbit]});
+  const mixArray = (a,b,t) => a.map((v,i)=>lerp(v,b[i],t));
+  const rgba = a => `rgba(${Math.round(a[0])},${Math.round(a[1])},${Math.round(a[2])},${Number(a[3]??1).toFixed(4)})`;
+  const rgb = a => `rgb(${Math.round(a[0])},${Math.round(a[1])},${Math.round(a[2])})`;
+  const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+
+  const initialMode = document.body.dataset.gameMode||'helios';
   const state = {
     attached:false,
     reducedMotion:Boolean(motionQuery?.matches),
@@ -21,16 +37,26 @@
     gamePanel:null,
     router:null,
     reels:null,
+    cpuInput:null,
+    computeState:null,
     resizeObserver:null,
     mutationObserver:null,
     modeObserver:null,
+    computeObserver:null,
     anchorRaf:0,
+    paletteRaf:0,
+    paletteStart:0,
+    paletteFrom:clonePalette(PALETTES[initialMode]||PALETTES.helios),
+    paletteCurrent:clonePalette(PALETTES[initialMode]||PALETTES.helios),
+    paletteTarget:clonePalette(PALETTES[initialMode]||PALETTES.helios),
     pulseTimer:0,
     spinning:false,
     reelStopState:new WeakMap(),
     dysonAngle:0,
     dysonScale:1,
-    mode:document.body.dataset.gameMode||'helios'
+    cpuPercent:0,
+    computeActive:false,
+    mode:initialMode
   };
 
   function injectStyles(){
@@ -38,97 +64,71 @@
     const style=document.createElement('style');
     style.id='helios-stellar-bridge-styles';
     style.textContent=`
-      @property --mode{syntax:'<color>';inherits:true;initial-value:#ffc24b}
-      @property --mode-soft{syntax:'<color>';inherits:true;initial-value:#ffc24b20}
-      @property --helios-ambient-hue{syntax:'<number>';inherits:true;initial-value:0}
-      @property --helios-ambient-sat{syntax:'<number>';inherits:true;initial-value:1}
-      @property --helios-ambient-bright{syntax:'<number>';inherits:true;initial-value:1}
-      @property --helios-orbit-glow{syntax:'<color>';inherits:true;initial-value:#ffb13d08}
-
-      /* Registered presentation variables interpolate instead of snapping when a mode changes. */
-      body{
-        --helios-ambient-hue:0;
-        --helios-ambient-sat:1;
-        --helios-ambient-bright:1;
-        --helios-orbit-glow:#ffb13d08;
-        transition:
-          --mode 2.65s cubic-bezier(.22,.61,.36,1),
-          --mode-soft 2.65s cubic-bezier(.22,.61,.36,1),
-          --helios-ambient-hue 3.1s cubic-bezier(.22,.61,.36,1),
-          --helios-ambient-sat 3.1s cubic-bezier(.22,.61,.36,1),
-          --helios-ambient-bright 3.1s cubic-bezier(.22,.61,.36,1),
-          --helios-orbit-glow 3.1s cubic-bezier(.22,.61,.36,1);
-      }
-      body[data-game-mode="helios"]{--mode:#ffc24b;--mode-soft:#ffc24b20;--helios-ambient-hue:0;--helios-ambient-sat:1;--helios-ambient-bright:1;--helios-orbit-glow:#ffb13d08}
-      body[data-game-mode="divine"]{--mode:#79dfff;--mode-soft:#79dfff24;--helios-ambient-hue:12;--helios-ambient-sat:.992;--helios-ambient-bright:1.004;--helios-orbit-glow:#79dfff10}
-      body[data-game-mode="gridjack"]{--mode:#95ff9a;--mode-soft:#95ff9a20;--helios-ambient-hue:-4;--helios-ambient-sat:1.008;--helios-ambient-bright:1.002;--helios-orbit-glow:#95ff9a0d}
-      body[data-game-mode="custom"]{--mode:#c998ff;--mode-soft:#c998ff20;--helios-ambient-hue:-9;--helios-ambient-sat:.996;--helios-ambient-bright:.999;--helios-orbit-glow:#c998ff10}
-
-      /* The bridge never changes game outcome/RTP/compute state. It owns only presentation easing. */
+      /* Palette values are written every animation frame by the bridge. No data-game-mode selector owns exposure. */
       .helios-stellar-canvas{
         transform-origin:50% 50%;
         will-change:transform,opacity;
         transition:opacity 2.4s cubic-bezier(.22,.61,.36,1),transform 2.8s cubic-bezier(.16,.78,.22,1)!important;
       }
 
-      /* Director keeps geometry/narrative, but exposure pumping is removed completely. */
+      /* Director keeps geometric choreography only; no contrast/brightness/glow pumping. */
       .helios-director-stage{
-        will-change:transform,box-shadow!important;
-        box-shadow:0 0 0 rgba(0,0,0,0);
-        transition:transform .42s cubic-bezier(.2,.76,.22,1),box-shadow 1.05s cubic-bezier(.22,.61,.36,1)!important;
+        will-change:transform!important;
+        filter:none!important;
+        box-shadow:none!important;
+        transition:transform .46s cubic-bezier(.2,.76,.22,1)!important;
       }
       body.director-divergence .helios-director-stage,
       body.director-resolution .helios-director-stage{
         filter:none!important;
-        box-shadow:0 0 calc(4px + var(--director-l)*8px) var(--mode-soft)!important;
+        box-shadow:none!important;
       }
 
-      /* One source of truth for atmospheric colour: registered variables, not instant filter swaps. */
       .cosmos>.sun{
-        filter:hue-rotate(calc(var(--helios-ambient-hue)*1deg)) saturate(var(--helios-ambient-sat)) brightness(var(--helios-ambient-bright))!important;
+        filter:hue-rotate(calc(var(--helios-ambient-hue,0)*1deg)) saturate(var(--helios-ambient-sat,1)) brightness(var(--helios-ambient-bright,1))!important;
         transition:none!important;
       }
       .cosmos>.orbit-field{
         filter:none!important;
-        box-shadow:inset 0 0 82px var(--helios-orbit-glow)!important;
+        box-shadow:inset 0 0 82px var(--helios-orbit-glow,#ffb13d08)!important;
         transition:none!important;
       }
 
-      /* Paid-win focus is still readable, but no longer flashes the reels from bright to dark in 160 ms. */
+      /* Win feedback stays readable without changing perceived exposure of the whole machine. */
       .reels.win-focus .cell{
-        opacity:.48!important;
-        filter:saturate(.82) brightness(.90)!important;
-        transition:opacity .82s cubic-bezier(.22,.61,.36,1),filter .92s cubic-bezier(.22,.61,.36,1),transform .28s ease,box-shadow .82s ease,border-color .82s ease,color .82s ease!important;
+        opacity:.72!important;
+        filter:none!important;
+        transition:opacity 1.25s cubic-bezier(.22,.61,.36,1),box-shadow .9s ease,border-color .9s ease,color .9s ease!important;
       }
       .reels.win-focus .cell.hit{opacity:1!important;filter:none!important}
       .reels.win-focus .cell.cascade-out,.reels.win-focus .cell.cascade-in{opacity:1!important;filter:none!important}
-      .cell,.energy-step,.last-win-card,.mode-btn,.route,.reels{
-        transition-property:opacity,filter,transform,box-shadow,border-color,color,background-color!important;
-        transition-duration:.72s!important;
-        transition-timing-function:cubic-bezier(.22,.61,.36,1)!important;
-      }
-      .game-panel{transition:box-shadow 1.1s cubic-bezier(.22,.61,.36,1)!important}
-      .game-panel.win-impact{box-shadow:0 0 0 1px #8f6b2a99,0 0 28px #ffc95c18,var(--shadow)!important}
+      .cell.hit{transition:border-color .9s ease,box-shadow .9s ease,color .9s ease,transform .18s ease!important}
+      .energy-step,.mode-btn,.route,.reels{transition:border-color .8s ease,box-shadow .8s ease,color .8s ease,background-color .8s ease!important}
+      .game-panel{transition:box-shadow .9s ease!important}
+      .game-panel.win-impact{box-shadow:var(--shadow)!important}
+      @keyframes heliosSoftWinPop{0%{transform:scale(.995)}45%{transform:scale(1.012)}100%{transform:none}}
+      .last-win-card.win{animation:heliosSoftWinPop .82s cubic-bezier(.22,.61,.36,1)!important}
+      .helios-overlay{transition:opacity .55s cubic-bezier(.22,.61,.36,1)!important}
+      .helios-overlay-card{transition:transform .55s cubic-bezier(.22,.61,.36,1),box-shadow .9s ease!important}
 
-      /* Dyson coordinates are supplied from actual UI geometry, not viewport percentages. */
+      /* Dyson follows actual UI geometry; CPU policy controls its physical presentation size. */
       .cosmos>.helios-dyson-sphere{
-        transition:left .72s cubic-bezier(.2,.76,.22,1),top .72s cubic-bezier(.2,.76,.22,1),width .78s cubic-bezier(.2,.76,.22,1),height .78s cubic-bezier(.2,.76,.22,1),transform .72s cubic-bezier(.14,.82,.25,1),opacity 1.1s ease!important;
+        transition:left .72s cubic-bezier(.2,.76,.22,1),top .72s cubic-bezier(.2,.76,.22,1),width 1.05s cubic-bezier(.2,.76,.22,1),height 1.05s cubic-bezier(.2,.76,.22,1),transform .72s cubic-bezier(.14,.82,.25,1),opacity 1.15s ease!important;
         transform-origin:50% 50%;
       }
+      .cosmos>.helios-dyson-sphere.dyson-active{opacity:.82!important}
+      .cosmos>.helios-dyson-sphere.dyson-dormant{opacity:.30!important}
+      .cosmos>.helios-dyson-sphere.dyson-dormant,
+      .cosmos>.helios-dyson-sphere.dyson-dormant *{animation-play-state:paused!important}
 
-      /* Static baseline trim only: one small step lower, with size/aspect untouched. */
+      /* Static baseline trim only: black-hole size/aspect stay untouched. */
       .cosmos>.planet-horizon{bottom:clamp(-328px,-13.8vw,-205px)!important}
-
-      @media(max-width:720px){
-        .cosmos>.planet-horizon{bottom:-250px!important}
-      }
+      @media(max-width:720px){.cosmos>.planet-horizon{bottom:-250px!important}}
 
       @media(prefers-reduced-motion:reduce){
-        body{transition:none!important}
         .helios-stellar-canvas{transform:none!important;transition:opacity .35s ease!important}
-        .cosmos>.helios-dyson-sphere{transition:left .18s ease,top .18s ease,width .18s ease,height .18s ease!important}
-        .reels.win-focus .cell{transition-duration:.22s!important}
-        .game-panel,.helios-director-stage{transition-duration:.22s!important}
+        .cosmos>.helios-dyson-sphere{transition:left .18s ease,top .18s ease,width .18s ease,height .18s ease,opacity .18s ease!important}
+        .reels.win-focus .cell,.game-panel,.helios-director-stage{transition-duration:.22s!important}
       }
     `;
     document.head.appendChild(style);
@@ -141,19 +141,93 @@
     state.gamePanel=document.getElementById('game-panel');
     state.router=document.querySelector('.hero>.router')||document.querySelector('.router');
     state.reels=document.getElementById('reels');
-    return Boolean(state.cosmos&&state.canvas&&state.dyson&&state.gamePanel&&state.router&&state.reels);
+    state.cpuInput=document.getElementById('cpu');
+    state.computeState=document.getElementById('compute-state');
+    return Boolean(state.cosmos&&state.canvas&&state.dyson&&state.gamePanel&&state.router&&state.reels&&state.cpuInput&&state.computeState);
+  }
+
+  function writePalette(p){
+    const body=document.body;
+    body.style.setProperty('--mode',rgb(p.mode));
+    body.style.setProperty('--mode-soft',rgba(p.soft));
+    body.style.setProperty('--helios-ambient-hue',p.hue.toFixed(4));
+    body.style.setProperty('--helios-ambient-sat',p.sat.toFixed(5));
+    body.style.setProperty('--helios-ambient-bright',p.bright.toFixed(5));
+    body.style.setProperty('--helios-orbit-glow',rgba(p.orbit));
+  }
+
+  function paletteFrame(now){
+    state.paletteRaf=0;
+    const duration=state.reducedMotion?160:PALETTE_DURATION_MS;
+    const t=clamp((now-state.paletteStart)/duration,0,1);
+    const e=ease(t);
+    state.paletteCurrent={
+      mode:mixArray(state.paletteFrom.mode,state.paletteTarget.mode,e),
+      soft:mixArray(state.paletteFrom.soft,state.paletteTarget.soft,e),
+      hue:lerp(state.paletteFrom.hue,state.paletteTarget.hue,e),
+      sat:lerp(state.paletteFrom.sat,state.paletteTarget.sat,e),
+      bright:lerp(state.paletteFrom.bright,state.paletteTarget.bright,e),
+      orbit:mixArray(state.paletteFrom.orbit,state.paletteTarget.orbit,e)
+    };
+    writePalette(state.paletteCurrent);
+    if(t<1) state.paletteRaf=requestAnimationFrame(paletteFrame);
+  }
+
+  function transitionPalette(mode,{initial=false}={}){
+    const target=PALETTES[mode]||PALETTES.helios;
+    cancelAnimationFrame(state.paletteRaf);
+    state.paletteRaf=0;
+    state.paletteFrom=clonePalette(state.paletteCurrent);
+    state.paletteTarget=clonePalette(target);
+    if(initial||state.reducedMotion){
+      state.paletteCurrent=clonePalette(target);
+      writePalette(state.paletteCurrent);
+      return;
+    }
+    state.paletteStart=performance.now();
+    state.paletteRaf=requestAnimationFrame(paletteFrame);
+  }
+
+  function readCpuPercent(){
+    state.cpuPercent=clamp(Number(state.cpuInput?.value||0),0,100);
+    return state.cpuPercent;
+  }
+
+  function dysonPolicyScale(){
+    if(!state.cpuInput) return 1;
+    const min=Number(state.cpuInput.min||0);
+    const max=Math.max(min+1,Number(state.cpuInput.max||30));
+    const t=clamp((readCpuPercent()-min)/(max-min),0,1);
+    return .82+t*.42;
+  }
+
+  function syncDysonActivity(){
+    if(!state.dyson||!state.computeState) return;
+    readCpuPercent();
+    const active=state.cpuPercent>0&&state.computeState.textContent.includes('ACTIVE');
+    state.computeActive=active;
+    state.dyson.classList.toggle('dyson-active',active);
+    state.dyson.classList.toggle('dyson-dormant',!active);
+    state.dyson.dataset.computeActive=active?'1':'0';
+    state.dyson.dataset.cpuPolicyPercent=String(Math.round(state.cpuPercent));
+    if(!active){
+      clearTimeout(state.pulseTimer);
+      state.dysonScale=1;
+      renderDysonTransform();
+    }
+    scheduleAnchor();
   }
 
   function renderDysonTransform(){
     const sphere=state.dyson;
     if(!sphere) return;
-    const angle=state.reducedMotion?0:state.dysonAngle;
-    const scale=state.reducedMotion?1:state.dysonScale;
+    const angle=(state.reducedMotion||!state.computeActive)?0:state.dysonAngle;
+    const scale=(state.reducedMotion||!state.computeActive)?1:state.dysonScale;
     sphere.style.transform=`translate(-50%,-50%) rotate(${(-7+angle).toFixed(2)}deg) scale(${scale.toFixed(3)})`;
   }
 
   function pulseDyson(angleDelta=8,pulse=.01,holdMs=180){
-    if(state.reducedMotion||!state.dyson) return;
+    if(state.reducedMotion||!state.computeActive||!state.dyson) return;
     state.dysonAngle=(state.dysonAngle+angleDelta)%360;
     state.dysonScale=1+clamp(pulse,0,.05);
     renderDysonTransform();
@@ -186,6 +260,7 @@
       y=game.top+game.height*.52;
       size=clamp(Math.min(game.width*.92,game.height*.92),360,620);
     }
+    size*=dysonPolicyScale();
 
     state.dyson.style.left=`${x.toFixed(1)}px`;
     state.dyson.style.top=`${y.toFixed(1)}px`;
@@ -203,10 +278,7 @@
   function applyCamera(mode,{initial=false}={}){
     state.mode=CAMERA[mode]?mode:'helios';
     if(!state.canvas) return;
-    if(state.reducedMotion){
-      state.canvas.style.transform='none';
-      return;
-    }
+    if(state.reducedMotion){state.canvas.style.transform='none';return;}
     const cue=CAMERA[state.mode];
     if(initial){
       const previous=state.canvas.style.transition;
@@ -225,7 +297,6 @@
     const spinning=state.reels.classList.contains('spinning');
     if(spinning&&!state.spinning) pulseDyson(12,.014,170);
     state.spinning=spinning;
-
     for(const reel of state.reels.querySelectorAll('.reel')){
       const stopped=reel.classList.contains('reel-stop');
       const previous=state.reelStopState.get(reel)||false;
@@ -248,9 +319,20 @@
       const next=document.body.dataset.gameMode||'helios';
       if(next===previous) return;
       previous=next;
+      transitionPalette(next);
       applyCamera(next);
     });
     state.modeObserver.observe(document.body,{attributes:true,attributeFilter:['data-game-mode']});
+  }
+
+  function bindComputePolicy(){
+    if(!state.cpuInput||!state.computeState) return;
+    const onPolicy=()=>{readCpuPercent();scheduleAnchor();syncDysonActivity();};
+    state.cpuInput.addEventListener('input',onPolicy,{passive:true});
+    state.cpuInput.addEventListener('change',onPolicy,{passive:true});
+    state.computeObserver=new MutationObserver(syncDysonActivity);
+    state.computeObserver.observe(state.computeState,{childList:true,characterData:true,subtree:true});
+    syncDysonActivity();
   }
 
   function bindPresentationEvents(){
@@ -259,9 +341,7 @@
       const step=multiplier>=64?30:multiplier>=16?24:multiplier>=4?18:14;
       pulseDyson(step,multiplier>=16?.026:.018,230);
     });
-    window.addEventListener('helios:spin-complete',e=>{
-      if(Number(e.detail?.spin_win||0)>0) pulseDyson(28,.035,330);
-    });
+    window.addEventListener('helios:spin-complete',e=>{if(Number(e.detail?.spin_win||0)>0)pulseDyson(28,.035,330);});
     window.addEventListener('helios:bonus-wheel-start',()=>pulseDyson(36,.028,300));
     window.addEventListener('helios:bonus-session-start',()=>pulseDyson(42,.032,330));
   }
@@ -281,7 +361,8 @@
     motionQuery?.addEventListener?.('change',e=>{
       state.reducedMotion=Boolean(e.matches);
       state.dysonScale=1;
-      if(state.reducedMotion) state.dysonAngle=0;
+      if(state.reducedMotion)state.dysonAngle=0;
+      transitionPalette(document.body.dataset.gameMode||'helios',{initial:true});
       renderDysonTransform();
       applyCamera(document.body.dataset.gameMode||'helios',{initial:true});
     });
@@ -293,7 +374,9 @@
     if(!resolveNodes()) return false;
     state.attached=true;
     state.dyson.dataset.presentationBridge=BRIDGE_VERSION;
+    transitionPalette(document.body.dataset.gameMode||'helios',{initial:true});
     bindLayout();
+    bindComputePolicy();
     bindReels();
     bindMode();
     bindPresentationEvents();
@@ -308,8 +391,11 @@
         ui_anchor:state.dyson?.dataset.uiAnchor||'UNRESOLVED',
         mode:state.mode,
         reduced_motion:state.reducedMotion,
+        cpu_policy_percent:state.cpuPercent,
+        dyson_compute_active:state.computeActive,
         dyson_angle_deg:state.dysonAngle,
-        palette_transition:'REGISTERED_INTERPOLATED_CUSTOM_PROPERTIES',
+        palette_transition:'REQUEST_ANIMATION_FRAME_RGB_INTERPOLATION',
+        palette_duration_ms:PALETTE_DURATION_MS,
         black_hole_offset:'STATIC_ONE_STEP_LOWER',
         presentation_only:true,
         reads_bet:false,
@@ -320,7 +406,7 @@
         compute_routing_effect:'NONE'
       })
     });
-    dispatchEvent(new CustomEvent('helios:stellar-bridge-ready',{detail:{version:BRIDGE_VERSION,presentation_only:true,ui_bound_dyson:true,mode_camera_flyby:true,registered_palette_interpolation:true,win_focus_smoothed:true,black_hole_static_lower_step:true,abrupt_contrast_pumping:false,rng_effect:'NONE',rtp_effect:'NONE'}}));
+    dispatchEvent(new CustomEvent('helios:stellar-bridge-ready',{detail:{version:BRIDGE_VERSION,presentation_only:true,ui_bound_dyson:true,cpu_policy_scaled_dyson:true,compute_gated_dyson_motion:true,mode_camera_flyby:true,raf_palette_interpolation:true,win_exposure_pumping:false,black_hole_static_lower_step:true,rng_effect:'NONE',rtp_effect:'NONE'}}));
     return true;
   }
 
