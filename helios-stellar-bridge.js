@@ -200,7 +200,7 @@
     if(document.getElementById('helios-mode-flight-script')) return;
     const script=document.createElement('script');
     script.id='helios-mode-flight-script';
-    script.src='./helios-mode-flight.js?v=1.0.0';
+    script.src='./helios-mode-flight.js?v=1.0.1';
     script.async=false;
     document.head.appendChild(script);
   }
