@@ -35,13 +35,13 @@
       .energy-step{transition:.2s;opacity:.64}.energy-step.band-active{border-color:var(--mode)!important;background:linear-gradient(180deg,var(--mode-soft),#080d12)!important;box-shadow:0 0 20px var(--mode-soft),inset 0 0 12px var(--mode-soft)!important;transform:translateX(2px);opacity:1}.energy-step.band-active b{color:#fff3c5!important}.cell.alignment{animation:alignmentPulse .7s ease 2;border-color:var(--cold)!important;box-shadow:0 0 18px #80d7ff70,inset 0 0 16px #80d7ff18!important}.cell.hit{border-color:var(--mode)!important;box-shadow:0 0 18px var(--mode),inset 0 0 18px var(--mode-soft)!important}@keyframes alignmentPulse{0%,100%{transform:none}50%{transform:scale(1.045)}}
       .alignment-note{position:absolute;z-index:12;right:8px;top:8px;border:1px solid #356579;background:#07151dcc;color:#80d7ff;border-radius:999px;padding:4px 7px;font:800 7px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;pointer-events:none;animation:alignmentNote 1.5s ease forwards}@keyframes alignmentNote{0%{opacity:0;transform:translateY(-3px)}15%,75%{opacity:1;transform:none}100%{opacity:0}}
       .win-trace{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:visible}.win-trace polyline{fill:none;stroke:var(--mode);stroke-width:2;filter:drop-shadow(0 0 5px var(--mode));stroke-linecap:round;stroke-linejoin:round;animation:traceIn .35s ease forwards}.win-trace circle{fill:#fff3bd;filter:drop-shadow(0 0 5px var(--mode))}@keyframes traceIn{from{stroke-dasharray:8 18;opacity:0}to{stroke-dasharray:2 4;opacity:.9}}
-      body[data-game-mode="divine"] .sun{filter:hue-rotate(140deg) saturate(.7)}body[data-game-mode="divine"] .orbit-field{box-shadow:inset 0 0 90px #79dfff14}body[data-game-mode="gridjack"] .station{filter:hue-rotate(55deg) saturate(1.2)}body[data-game-mode="gridjack"] .orbit-field{box-shadow:inset 0 0 90px #95ff9a10}body[data-game-mode="custom"] .sun{filter:hue-rotate(245deg) saturate(.8)}body[data-game-mode="custom"] .orbit-field{box-shadow:inset 0 0 90px #c998ff14}
+      /* Astronomical background is mode-neutral. Do not couple sun/orbit/planet colour to data-game-mode. */
       @media(max-width:620px){.mode-matrix-grid{grid-template-columns:1fr}.helios-ticker{margin-top:0}.session-mini{width:100%;order:2}.game-tools{justify-content:flex-start}.helios-overlay-card{min-width:220px}.helios-overlay-value{font-size:34px}}
     `;
     document.head.appendChild(style);
   }
 
-  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));}
   function modeMeta(){return MODE_META[document.body.dataset.gameMode||'helios']||MODE_META.helios;}
   function pushActivity(text,kind='normal'){
     const stamp=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
