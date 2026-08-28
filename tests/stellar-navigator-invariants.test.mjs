@@ -22,8 +22,9 @@ assert.equal(cfg.authority.compute_routing_effect,'NONE');
 assert.equal(cfg.rendering.network_requests,false);
 assert.equal(cfg.rendering.fallback_crossfade_ms,2400);
 assert.equal(cfg.rendering.star_brightness_smoothing_ms,1250);
-assert.equal(cfg.rendering.background_body_colour_flow,'CONTINUOUS_LONG_PERIOD_FILTER_INTERPOLATION');
+assert.equal(cfg.rendering.background_body_colour_flow,'CONTINUOUS_LONG_PERIOD_AUTONOMOUS_INTERPOLATION');
 assert.equal(cfg.rendering.abrupt_palette_switching,false);
+assert.equal(cfg.rendering.global_lighting_mode_coupling,'NONE');
 assert.equal(cfg.rendering.lower_body,'CENTERED_EVENT_HORIZON_BLACK_HOLE_PRESENTATION');
 assert.equal(cfg.rendering.black_hole_centered,true);
 assert.equal(cfg.rendering.event_horizon_ring,true);
@@ -100,4 +101,4 @@ assert.match(docs,/partial Dyson swarm \/ lattice sphere/i);
 assert.match(docs,/no repository `LICENSE` file was found/i);
 assert.match(docs,/astronomy-inspired, not a scientific star catalogue/i);
 
-console.log('stellar navigator smooth-flow black-hole Dyson invariants: PASS');
+console.log('stellar navigator autonomous-light black-hole Dyson invariants: PASS');
