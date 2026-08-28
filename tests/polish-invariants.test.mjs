@@ -8,7 +8,7 @@ const [html, core, polish] = await Promise.all([
 ]);
 
 assert.match(html, /<script src="\.\/helios\.js\?v=1\.6\.0"><\/script>/);
-assert.match(html, /<script src="\.\/helios-polish\.js\?v=[^"]+"><\/script>/);
+assert.match(html, /<script src="\.\/helios-polish\.js\?v=1\.5\.2"><\/script>/);
 assert.equal(polish.includes('Telegram.WebApp'), false);
 assert.equal(polish.includes('telegram.org'), false);
 assert.match(polish, /LOCAL DEMO ACTIVITY/);
@@ -22,6 +22,14 @@ assert.match(polish, /STABLE WIN/);
 assert.match(polish, /visual event only/);
 assert.match(polish, /DEMO GAME PROFILE ONLY/);
 assert.match(polish, /Modes do not select compute routes or alter compute rate/);
+
+// Game modes may change symbols/rules, but must not snap-recolour astronomical background bodies.
+assert.doesNotMatch(polish, /body\[data-game-mode="divine"\] \.sun/);
+assert.doesNotMatch(polish, /body\[data-game-mode="divine"\] \.orbit-field/);
+assert.doesNotMatch(polish, /body\[data-game-mode="gridjack"\] \.orbit-field/);
+assert.doesNotMatch(polish, /body\[data-game-mode="custom"\] \.sun/);
+assert.doesNotMatch(polish, /body\[data-game-mode="custom"\] \.orbit-field/);
+assert.match(polish, /Astronomical background is mode-neutral/);
 
 assert.match(polish, /function buildBetPicker\(\)/);
 assert.match(polish, /helios-native-bet/);
