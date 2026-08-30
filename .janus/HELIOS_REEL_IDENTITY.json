@@ -1,0 +1,28 @@
+{
+  "schema": "janus.helios.reel_identity.v1",
+  "module": "helios-reel-identity.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_MODE_NATIVE_REEL_IDENTITY",
+  "purpose": "Give each HELIOS gameplay mode a distinctive reel and symbol visual language without changing symbol text, weights, paylines, RNG, RTP, payout, or compute routing.",
+  "mode_families": {
+    "helios": "SOLAR_BRASS_CORONA",
+    "divine": "RADIANT_CRYSTAL_LATTICE",
+    "gridjack": "TREASURY_TERMINAL_GRID",
+    "custom": "CYAN_MECHANICAL_BLUEPRINT"
+  },
+  "reads": ["GAME_MODE", "VISIBLE_SETTLED_OR_ANIMATING_SYMBOL_TEXT", "REEL_POSITION"],
+  "forbidden_inputs": ["SYMBOL_WEIGHT", "PAYLINE_RESULT", "BET_SIZE", "BALANCE", "COMPUTE_ROUTE_AUTHORITY", "RNG_INTERNAL_STATE"],
+  "visual_policy": {
+    "symbol_text_preserved": true,
+    "fullscreen_overlay": false,
+    "mode_native_reels": true,
+    "reduced_motion_supported": true
+  },
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bet_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
