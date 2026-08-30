@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION='1.0.0';
+  const VERSION='1.1.0';
   const state={attached:false,host:null,core:null,lastPlan:null};
   const text=(tag,value,className='')=>{const el=document.createElement(tag);if(className)el.className=className;el.textContent=String(value??'');return el;};
 
@@ -14,7 +14,7 @@
 
   async function loadCore(){
     if(state.core)return state.core;
-    state.core=await import('./src/helios-edge-constellation.js?v=1.0.0');
+    state.core=await import('./src/helios-edge-constellation.js?v=1.1.0');
     return state.core;
   }
 
@@ -33,10 +33,10 @@
         ${nodeMarkup('HELIOS DESKTOP CPU','DESKTOP FABRIC')}
         ${nodeMarkup('EXTERNAL ASIC GATEWAY','ASIC CLASS')}
       </div>
-      <div class="helios-edge-constellation-synthesis"><span>LOCAL EFFECT VECTOR × NODE</span><b>→ MEDIAN DELTA + DIRECTIONAL CONSISTENCY →</b><span>REPLICATION SIGNAL ONLY</span></div>
+      <div class="helios-edge-constellation-synthesis"><span>LOCAL EFFECT VECTOR × NODE</span><b>→ INDEPENDENCE GATE →</b><span>MEDIAN DELTA + DIRECTIONAL CONSISTENCY</span></div>
       <div class="helios-edge-constellation-actions"><button id="helios-edge-constellation-plan" class="helios-edge-constellation-btn primary" type="button">BUILD CONSTELLATION PLAN</button><button id="helios-edge-constellation-copy" class="helios-edge-constellation-btn" type="button">COPY CAMPAIGN JSON</button></div>
       <div id="helios-edge-constellation-output" class="helios-edge-constellation-output"><b>PUBLIC PLAN ONLY.</b> No device, pool, serial port, wallet, hashrate, temperature or watt telemetry is requested by this card.</div>
-      <div class="helios-edge-constellation-note"><strong>Replication law:</strong> raw checked work is normalized inside each node, then removed as a cross-node voting weight. A fast ASIC cannot overpower a slower ESP32 merely by producing more hashes. At least two complete independent node-local pairs are required before HELIOS emits any replication signal, and even then the result is explicitly not causal proof.</div>`;
+      <div class="helios-edge-constellation-note"><strong>Replication law:</strong> raw checked work is normalized inside each node, then removed as a cross-node voting weight. Completed reports still pass through Evidence Independence Engine; correlated lineage is preserved but cannot masquerade as extra independent replication.</div>`;
     const edge=document.getElementById('helios-edge-hash-lab-card');
     if(edge?.parentNode===body)edge.after(card);else body.prepend(card);
     state.host=card;state.attached=true;bind();return true;
@@ -46,8 +46,9 @@
     const out=state.host?.querySelector('#helios-edge-constellation-output');if(!out)return;
     out.replaceChildren();
     out.append(
-      text('b',`${plan.mode} · ${plan.nodes.length} REPLICATION UNITS`),
+      text('b',`${plan.mode} · ${plan.nodes.length} NODE-LOCAL UNITS`),
       text('div',`PAIRING ${plan.nodes[0].local_experiment.pairing}`),
+      text('div',`INDEPENDENCE ${plan.replication_law.independence_engine}`),
       text('div',`SYNTHESIS ${plan.replication_law.aggregation}`),
       text('div',`GATE ${plan.execution_gate}`)
     );
@@ -58,7 +59,7 @@
       const core=await loadCore();
       state.lastPlan=core.createEdgeConstellationPlan({campaign_id:'helios-public-constellation-preview'});
       renderPlan(state.lastPlan);
-      window.dispatchEvent(new CustomEvent('helios:edge-constellation-plan',{detail:{version:VERSION,node_count:state.lastPlan.nodes.length,execution_ready:false,node_power_not_evidence_weight:true,presentation_only:true,game_effect:'NONE'}}));
+      window.dispatchEvent(new CustomEvent('helios:edge-constellation-plan',{detail:{version:VERSION,node_count:state.lastPlan.nodes.length,execution_ready:false,node_power_not_evidence_weight:true,replication_count_not_equal_independent_root_count:true,presentation_only:true,game_effect:'NONE'}}));
     }catch(err){
       const out=state.host?.querySelector('#helios-edge-constellation-output');if(out)out.textContent=`PLAN ERROR · ${err?.message||err}`;
     }
@@ -76,8 +77,8 @@
   function bind(){
     state.host.querySelector('#helios-edge-constellation-plan')?.addEventListener('click',buildPlan);
     const copy=state.host.querySelector('#helios-edge-constellation-copy');copy?.addEventListener('click',()=>copyPlan(copy));
-    window.HELIOS_EDGE_CONSTELLATION_UI=Object.freeze({version:VERSION,getState:()=>({version:VERSION,attached:state.attached,node_classes:['NERDMINER_ESP32','DESKTOP_CPU','ASIC_GATEWAY'],node_power_not_evidence_weight:true,one_node_one_replication_unit:true,raw_hashrate_cross_node_weighting:false,last_plan:state.lastPlan?{mode:state.lastPlan.mode,node_count:state.lastPlan.nodes.length}:null,public_device_connection:false,public_pool_connection:false,presentation_only:true,game_effect:'NONE',rng_effect:'NONE',rtp_effect:'NONE',payout_effect:'NONE'})});
-    window.dispatchEvent(new CustomEvent('helios:edge-constellation-ready',{detail:{version:VERSION,node_local_strict_50_50:true,node_power_not_evidence_weight:true,one_node_one_replication_unit:true,median_local_delta:true,directional_consistency:true,public_device_connection:false,presentation_only:true,game_effect:'NONE'}}));
+    window.HELIOS_EDGE_CONSTELLATION_UI=Object.freeze({version:VERSION,getState:()=>({version:VERSION,attached:state.attached,node_classes:['NERDMINER_ESP32','DESKTOP_CPU','ASIC_GATEWAY'],node_power_not_evidence_weight:true,replication_count_not_equal_independent_root_count:true,unknown_lineage_not_independent:true,raw_hashrate_cross_node_weighting:false,last_plan:state.lastPlan?{mode:state.lastPlan.mode,node_count:state.lastPlan.nodes.length}:null,public_device_connection:false,public_pool_connection:false,presentation_only:true,game_effect:'NONE',rng_effect:'NONE',rtp_effect:'NONE',payout_effect:'NONE'})});
+    window.dispatchEvent(new CustomEvent('helios:edge-constellation-ready',{detail:{version:VERSION,node_local_strict_50_50:true,node_power_not_evidence_weight:true,independence_gate:true,unknown_lineage_not_independent:true,median_local_delta:true,directional_consistency:true,public_device_connection:false,presentation_only:true,game_effect:'NONE'}}));
   }
 
   function init(){let attempts=0;const retry=()=>{injectStyles();if(build()||++attempts>=200)return;setTimeout(retry,75);};retry();}
