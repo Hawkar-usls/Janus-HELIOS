@@ -34,6 +34,8 @@
        * Optional bonus-only orbit presentation is owned by helios-bonus-quasar.js.
        * Optional quasar sonification follows that presentation through helios-quasar-sonification.js.
        * Optional mode-native reel presentation is owned by helios-reel-identity.js.
+       * Optional procedural mode×route×seed reel surfaces are owned by helios-reel-forge.js.
+       * Optional active-route reel glow is owned by helios-route-aura.js.
        * Optional Energy Spin audio is owned by helios-energy-spin-sonification.js.
        */
       .helios-stellar-canvas{
@@ -236,6 +238,24 @@
     document.head.appendChild(script);
   }
 
+  function loadReelForge(){
+    if(document.getElementById('helios-reel-forge-script')) return;
+    const script=document.createElement('script');
+    script.id='helios-reel-forge-script';
+    script.src='./helios-reel-forge.js?v=1.0.0';
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
+  function loadRouteAura(){
+    if(document.getElementById('helios-route-aura-script')) return;
+    const script=document.createElement('script');
+    script.id='helios-route-aura-script';
+    script.src='./helios-route-aura.js?v=1.0.0';
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
   function loadEnergySpinSonification(){
     if(document.getElementById('helios-energy-spin-sonification-script')) return;
     const script=document.createElement('script');
@@ -258,6 +278,8 @@
     loadBonusQuasar();
     loadQuasarSonification();
     loadReelIdentity();
+    loadReelForge();
+    loadRouteAura();
     loadEnergySpinSonification();
     window.HELIOS_STELLAR_BRIDGE=Object.freeze({
       version:BRIDGE_VERSION,
