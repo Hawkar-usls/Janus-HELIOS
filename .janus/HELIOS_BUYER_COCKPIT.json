@@ -1,0 +1,76 @@
+{
+  "schema": "janus.helios.buyer_cockpit.v1",
+  "module": "helios-buyer-cockpit.js",
+  "version": "1.0.0",
+  "classification": "DEMO_BUYER_PRESENTATION_AND_POLICY_PREVIEW",
+  "purpose": "Expose TOPA Spider findings that materially improve the sellable HELIOS demo without pretending the static public page is a production compute marketplace or agent runtime.",
+  "visible_demo_surfaces": [
+    "TRUST_STRIP_WITH_NO_INVENTED_RELIABILITY",
+    "SIMULATED_COMPUTE_LIFECYCLE_PREVIEW",
+    "CAPABILITY_HINTS_ON_ROUTE_CARDS"
+  ],
+  "buyer_lab_surfaces": [
+    "ADVANCED_RESOURCE_GOVERNOR_POLICY_PREVIEW",
+    "QUIET_IDLE_AC_AND_INTERACTION_POLICY_PREVIEW",
+    "WEIGHTED_MULTI_ROUTE_ALLOCATION_MIXER_PREVIEW",
+    "OPT_IN_COARSE_LOCAL_CAPABILITY_SELF_TEST",
+    "VERIFICATION_AND_ATTESTATION_CHAIN_HOOKS",
+    "RESILIENCE_RETRY_REASSIGNMENT_HOOKS",
+    "COMPUTE_CONSTELLATION_FABRIC_VIEW",
+    "DEMO_COMPUTE_PASSPORT_EXPORT",
+    "SESSION_IDENTITY_MANIFEST",
+    "ONE_EXPLAIN_PANEL",
+    "EXTERNAL_ENERGY_SIGNAL_HOOK"
+  ],
+  "truth_boundary": {
+    "public_page_is_static_demo": true,
+    "real_provider_connected": false,
+    "real_verifier_connected": false,
+    "real_gpu_workload_executed_by_page": false,
+    "real_reputation_or_availability_invented": false,
+    "external_energy_signal_connected": false,
+    "allocation_mixer_changes_public_demo_routing": false,
+    "governor_controls_enforced_by_public_page": false,
+    "production_enforcement_point": "DESKTOP_AGENT_FABRIC_OR_APPROVED_ADAPTER"
+  },
+  "coarse_self_test": {
+    "requires_user_click": true,
+    "local_only": true,
+    "reports": ["CPU_THREAD_CLASS_BUCKET", "WEBGPU_API_VISIBILITY"],
+    "forbidden": ["GPU_VENDOR", "GPU_MODEL", "EXACT_ADAPTER_LIMITS", "AUTOMATIC_NETWORK_TRANSMISSION"]
+  },
+  "passport": {
+    "storage": "SESSION_STORAGE_ONLY",
+    "max_receipts": 24,
+    "authoritative": false,
+    "wagering_value": "NONE",
+    "exportable": true
+  },
+  "reads": [
+    "ACTIVE_ROUTE_PRESENTATION",
+    "COMPUTE_STATE_TEXT",
+    "DEMO_RECEIPT_TEXT",
+    "EXPLICIT_RESOURCE_POLICY_STATE",
+    "PRESENTATION_MODULE_STATES",
+    "OPT_IN_COARSE_BROWSER_CAPABILITY"
+  ],
+  "forbidden_inputs": [
+    "BET_SIZE",
+    "BALANCE",
+    "LOSS_STREAK",
+    "NEAR_MISS",
+    "WAGER_HISTORY",
+    "INFERRED_VULNERABILITY",
+    "GAME_RNG_INTERNAL_STATE"
+  ],
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE_FROM_BUYER_LAB",
+    "provider_verification_effect": "NONE",
+    "settlement_effect": "NONE"
+  },
+  "design_principle": "SELL_THE_DEPTH_WITHOUT_PRETENDING_THE_DEMO_IS_PRODUCTION"
+}
