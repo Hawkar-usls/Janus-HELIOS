@@ -1,6 +1,7 @@
 import { assertNoEdgeSecrets, compareI0Evidence } from './helios-edge-hash-lab.js';
+import { analyzeEvidenceIndependence, normalizeReplicationLineage } from './helios-evidence-independence.js';
 
-export const HELIOS_EDGE_CONSTELLATION_VERSION = '1.0.0';
+export const HELIOS_EDGE_CONSTELLATION_VERSION = '1.1.0';
 export const EDGE_CONSTELLATION_SCHEMA = 'janus.helios.edge-constellation-plan.v1';
 export const EDGE_CONSTELLATION_EVIDENCE_SCHEMA = 'janus.helios.edge-constellation-evidence.v1';
 
@@ -95,9 +96,10 @@ export function normalizeConstellationNode(input = {}) {
     conformance_verified: input.conformance_verified === true,
     authoritative_identity_verified: input.authoritative_identity_verified === true,
     evidence_role: 'NODE_LOCAL_PAIRED_REPLICATION_UNIT',
-    evidence_weight: 'ONE_NODE_ONE_REPLICATION_UNIT',
+    evidence_weight: 'ONE_NODE_ONE_REPLICATION_UNIT_BEFORE_INDEPENDENCE_GATE',
     advertised_performance_used_as_evidence_weight: false,
     raw_hashrate_used_as_cross_node_weight: false,
+    independent_evidence_requires_lineage_roots: true,
     local_pairing_required: 'JANUS_I0_50_PERCENT_VS_RANDOMIZED_MIRROR_50_PERCENT',
     public_demo_connected: false,
     public_demo_executes_hashing: false,
@@ -137,6 +139,14 @@ export function createEdgeConstellationPlan(input = {}) {
         same_wire_required: true,
         same_guardian_policy_required: true
       },
+      lineage_gate: {
+        required_before_independent_replication: true,
+        roots: [
+          'physical_device_root', 'execution_lineage_root', 'authority_root',
+          'site_network_root', 'observation_epoch_root', 'job_stream_root'
+        ],
+        unknown_counts_as_independent: false
+      },
       execution_ready: passport.research_bridge_declared && passport.conformance_verified && passport.authoritative_identity_verified
     };
   });
@@ -151,18 +161,21 @@ export function createEdgeConstellationPlan(input = {}) {
     mode: executionReady ? 'ADMITTED_MULTI_NODE_CAMPAIGN' : 'PRESENTATION_PLAN_ONLY',
     execution_ready: executionReady,
     execution_gate: executionReady
-      ? 'NODE_LOCAL_LEASES_AND_PROVIDER_AUTHORITY_STILL_REQUIRED'
+      ? 'NODE_LOCAL_LEASES_PROVIDER_AUTHORITY_AND_EVIDENCE_LINEAGE_STILL_REQUIRED'
       : 'EACH_NODE_REQUIRES_IDENTITY_BRIDGE_CONFORMANCE_AND_PRODUCTION_ADMISSION',
     nodes,
     replication_law: {
       node_power_not_evidence_weight: true,
-      one_node_one_replication_unit: true,
+      one_node_one_replication_unit_before_independence_gate: true,
+      replication_count_not_equal_independent_root_count: true,
+      unknown_lineage_not_independent: true,
       raw_hashrate_cross_node_weighting: false,
       raw_checked_work_cross_node_weighting: false,
       local_effects_required_before_cross_node_synthesis: true,
-      minimum_independent_complete_nodes: 2,
-      aggregation: 'MEDIAN_NODE_LOCAL_DELTA_PLUS_DIRECTIONAL_CONSISTENCY',
-      purpose: 'PREVENT_HIGH_THROUGHPUT_HARDWARE_FROM_DOMINATING_REPLICATION_BY_VOLUME_ALONE'
+      minimum_strongly_independent_complete_nodes: 2,
+      independence_engine: 'MAXIMUM_PAIRWISE_STRONGLY_INDEPENDENT_SET',
+      aggregation: 'MEDIAN_INDEPENDENT_NODE_LOCAL_DELTA_PLUS_DIRECTIONAL_CONSISTENCY',
+      purpose: 'PREVENT_VOLUME_OR_SHARED_LINEAGE_FROM_MASQUERADING_AS_INDEPENDENT_REPLICATION'
     },
     cross_node_controls: {
       same_job_stream_across_different_nodes_required: false,
@@ -170,7 +183,7 @@ export function createEdgeConstellationPlan(input = {}) {
       preserve_node_local_same_wire: true,
       preserve_node_local_same_pool: true,
       preserve_node_local_same_guardian_policy: true,
-      hardware_class_recorded: true,
+      hardware_class_recorded_but_not_independence_root: true,
       firmware_or_executor_digest_required_for_authoritative_evidence: true
     },
     claims: {
@@ -178,7 +191,8 @@ export function createEdgeConstellationPlan(input = {}) {
       sha256_break: false,
       nonce_prediction: false,
       guaranteed_profit: false,
-      stronger_hardware_equals_stronger_evidence: false
+      stronger_hardware_equals_stronger_evidence: false,
+      raw_replication_count_equals_independent_replications: false
     },
     public_demo: {
       connects_to_nodes: false,
@@ -205,14 +219,21 @@ function normalizeNodeEvidence(input = {}) {
   const acceptedDelta = comparison.deltas.accepted_per_mh;
   const z32Delta = comparison.deltas.z32_per_mh;
   const complete = comparison.janus_i0.checked_mh > 0 && comparison.randomized_mirror.checked_mh > 0;
+  const lineageInput = input.lineage && typeof input.lineage === 'object' ? input.lineage : input;
+  const lineage = normalizeReplicationLineage({
+    ...lineageInput,
+    node_id: passport.node_id,
+    node_class: passport.node_class
+  });
   return deepFreeze({
     node_id: passport.node_id,
     node_class: passport.node_class,
-    evidence_weight: 'ONE_NODE_ONE_REPLICATION_UNIT',
+    evidence_weight: 'PENDING_INDEPENDENCE_GATE',
     complete,
     accepted_per_mh_delta: acceptedDelta,
     z32_per_mh_delta: z32Delta,
     accepted_direction: complete ? direction(acceptedDelta) : 'INSUFFICIENT',
+    lineage,
     comparison
   });
 }
@@ -220,41 +241,53 @@ function normalizeNodeEvidence(input = {}) {
 export function compareEdgeConstellationEvidence(rawNodes = []) {
   const nodes = rawNodes.map(normalizeNodeEvidence);
   const complete = nodes.filter(node => node.complete);
+  const independence = analyzeEvidenceIndependence(complete.map(node => node.lineage));
+  const strongIds = new Set(independence.strong_independent_set.node_ids);
+  const independentComplete = complete.filter(node => strongIds.has(node.node_id));
   const directionCounts = { POSITIVE: 0, NEGATIVE: 0, FLAT: 0 };
-  for (const node of complete) directionCounts[node.accepted_direction] += 1;
-  const completeCount = complete.length;
+  for (const node of independentComplete) directionCounts[node.accepted_direction] += 1;
+  const independentCount = independentComplete.length;
   const dominant = Object.entries(directionCounts).sort((a, b) => b[1] - a[1])[0] || ['FLAT', 0];
-  const consistency = completeCount ? Number((dominant[1] / completeCount).toFixed(9)) : 0;
-  const medianAcceptedDelta = median(complete.map(node => node.accepted_per_mh_delta));
-  const medianZ32Delta = median(complete.map(node => node.z32_per_mh_delta));
-  const enoughNodes = completeCount >= 2;
-  const directionallyConsistent = enoughNodes && dominant[0] !== 'FLAT' && consistency >= (2 / 3);
+  const consistency = independentCount ? Number((dominant[1] / independentCount).toFixed(9)) : 0;
+  const medianAcceptedDelta = median(independentComplete.map(node => node.accepted_per_mh_delta));
+  const medianZ32Delta = median(independentComplete.map(node => node.z32_per_mh_delta));
+  const enoughComplete = complete.length >= 2;
+  const enoughIndependent = independentCount >= 2;
+  const directionallyConsistent = enoughIndependent && dominant[0] !== 'FLAT' && consistency >= (2 / 3);
 
   return deepFreeze({
     schema: EDGE_CONSTELLATION_EVIDENCE_SCHEMA,
     version: HELIOS_EDGE_CONSTELLATION_VERSION,
     node_count: nodes.length,
-    complete_node_count: completeCount,
-    incomplete_node_count: nodes.length - completeCount,
+    complete_node_count: complete.length,
+    incomplete_node_count: nodes.length - complete.length,
+    strongly_independent_complete_node_count: independentCount,
+    correlated_or_nonselected_complete_node_count: complete.length - independentCount,
     nodes,
+    independence,
     aggregation: {
-      unit: 'NODE_LOCAL_EFFECT_VECTOR',
+      unit: 'STRONGLY_INDEPENDENT_NODE_LOCAL_EFFECT_VECTOR',
+      selected_node_ids: independence.strong_independent_set.node_ids,
+      replication_count_not_equal_independent_root_count: true,
       node_power_not_evidence_weight: true,
-      one_node_one_replication_unit: true,
       raw_hashrate_weighting_used: false,
       raw_checked_mh_weighting_used: false,
+      unknown_lineage_counted_as_independent: false,
       median_accepted_per_mh_delta: medianAcceptedDelta,
       median_z32_per_mh_delta: medianZ32Delta,
       direction_counts: directionCounts,
       dominant_direction: dominant[0],
       directional_consistency: consistency
     },
-    verdict: !enoughNodes
-      ? 'INSUFFICIENT_INDEPENDENT_NODE_REPLICATION'
-      : directionallyConsistent
-        ? 'DIRECTIONALLY_CONSISTENT_REPLICATION_SIGNAL_NOT_CAUSAL_PROOF'
-        : 'HETEROGENEOUS_OR_INCONCLUSIVE',
+    verdict: !enoughComplete
+      ? 'INSUFFICIENT_COMPLETE_NODE_REPLICATION'
+      : !enoughIndependent
+        ? 'INSUFFICIENT_STRONG_INDEPENDENCE'
+        : directionallyConsistent
+          ? 'DIRECTIONALLY_CONSISTENT_INDEPENDENT_REPLICATION_SIGNAL_NOT_CAUSAL_PROOF'
+          : 'INDEPENDENT_BUT_HETEROGENEOUS_OR_INCONCLUSIVE',
     causal_proof: false,
+    probability_claim: 'NONE',
     profit_inference_allowed: false,
     isolated_rare_tail_is_proof: false,
     game_effect: 'NONE',
