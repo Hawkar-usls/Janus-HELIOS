@@ -1,0 +1,66 @@
+{
+  "schema": "janus.helios.hardware-guardian.v1",
+  "version": "1.0.0",
+  "classification": "LOCAL_HARDWARE_SOVEREIGNTY_AND_PRIVACY_SAFETY_LAYER",
+  "purpose": "Protect consenting user hardware by locally tightening or blocking compute execution using hardware-only telemetry while forbidding human-observation telemetry.",
+  "states": ["GREEN", "WATCH", "THROTTLE", "COOLDOWN", "BLOCK", "UNKNOWN"],
+  "principles": {
+    "hardware_aware": true,
+    "human_blind": true,
+    "controller_can_tighten_user_policy": true,
+    "controller_can_widen_user_policy": false,
+    "guardian_can_tighten_execution_budget": true,
+    "guardian_can_widen_execution_budget": false,
+    "unknown_is_safe": false,
+    "automatic_overclocking": false
+  },
+  "allowed_telemetry_families": [
+    "CPU_GPU_UTILIZATION",
+    "CPU_GPU_HOTSPOT_VRAM_TEMPERATURE",
+    "VENDOR_THERMAL_LIMITS",
+    "POWER_AND_ENERGY",
+    "RAM_VRAM_HEADROOM",
+    "BATTERY_AND_AC_STATE",
+    "FAN_PERCENT",
+    "TELEMETRY_RELIABILITY"
+  ],
+  "forbidden_human_observation_families": [
+    "SCREEN_OR_SCREENSHOT",
+    "KEYBOARD_OR_TYPED_TEXT",
+    "MOUSE_ACTIVITY",
+    "MICROPHONE_AUDIO_OR_VOICE",
+    "CAMERA_OR_WEBCAM",
+    "CLIPBOARD",
+    "BROWSER_HISTORY",
+    "ACTIVE_WINDOW_CONTENT",
+    "GAME_OR_PROCESS_NAMES"
+  ],
+  "decision_semantics": {
+    "GREEN": "normal requested budget within local policy",
+    "WATCH": "reduced budget while headroom narrows",
+    "THROTTLE": "stronger local budget reduction",
+    "COOLDOWN": "temporary stop after thermal block until recovery",
+    "BLOCK": "no new execution",
+    "UNKNOWN": "sensor uncertainty; limited mode or fail-closed according to local policy"
+  },
+  "default_missing_thermal_sensor_action": "LIMIT",
+  "production_recommended_missing_thermal_sensor_action": "BLOCK_WHERE_REQUIRED_BY_BUYER_POLICY",
+  "public_demo": {
+    "live_hardware_telemetry": false,
+    "surface": "POLICY_PREVIEW_ONLY",
+    "invented_temperature_or_watt_readings": false
+  },
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "provider_verification_effect": "NONE",
+    "local_execution_budget_effect": "TIGHTEN_OR_BLOCK_ONLY"
+  },
+  "lineage": {
+    "source": "Hawkar-usls/Janus-Demiurge system_monitor.py",
+    "retained_concepts": ["hardware telemetry", "thermal adaptation", "load contraction under pressure"],
+    "deliberately_not_retained": ["screen monitoring", "keyboard monitoring", "mouse monitoring", "audio monitoring", "game/process content observation"]
+  }
+}
