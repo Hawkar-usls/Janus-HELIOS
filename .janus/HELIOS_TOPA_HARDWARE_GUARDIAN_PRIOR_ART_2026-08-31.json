@@ -1,0 +1,112 @@
+{
+  "schema": "janus.helios.topa-hardware-guardian-prior-art.v1",
+  "generated_date": "2026-08-31",
+  "status": "ACTIVE_MOAT_MAP",
+  "question": "What should HELIOS borrow from predecessor compute systems, what should it avoid, and what combination can HELIOS credibly emphasize as its own product moat?",
+  "sources": [
+    {
+      "id": "JANUS_DEMIURGE_SYSTEM_MONITOR",
+      "url": "https://github.com/Hawkar-usls/Janus-Demiurge/blob/main/system_monitor.py",
+      "observed_strengths": ["NVML GPU telemetry", "CPU temperature probes", "load prediction", "thermal load contraction", "hardware stability measurements"],
+      "observed_weakness_for_HELIOS": ["screen monitoring", "keyboard monitoring", "mouse monitoring", "audio monitoring", "game/process content observation"],
+      "HELIOS_action": "retain hardware adaptation; reject human-observation telemetry"
+    },
+    {
+      "id": "BOINC_USER_PREFERENCES",
+      "url": "https://boinc.berkeley.edu/boinc_papers/internet/text.php",
+      "observed_strengths": ["participant-controlled battery policy", "active/idle behavior preferences", "computing-hour controls", "resource limits"],
+      "HELIOS_action": "elevate participant sovereignty into a local execution contract"
+    },
+    {
+      "id": "SALAD_HARDWARE_SELECTION",
+      "url": "https://support.salad.com/guides/using-salad/how-to-enable-and-disable-hardware/",
+      "observed_strengths": ["explicit CPU/GPU enable-disable choices"],
+      "HELIOS_action": "keep explicit resource-class consent and make it auditable"
+    },
+    {
+      "id": "SALAD_RESOURCE_CONTENTION",
+      "url": "https://support.salad.com/faq/jobs/should-i-enable-my-gpu-my-cpu-or-both/",
+      "observed_strengths": ["warns against competing GPU-intensive use", "blocks container workloads when resource conflicts are unresolved"],
+      "HELIOS_action": "treat host pressure as a local throttle/admission signal without observing user content"
+    },
+    {
+      "id": "SALAD_HARDWARE_HEALTH",
+      "url": "https://support.salad.com/faq/salad-app/is-salad-healthy-for-my-pc-yes/",
+      "observed_strengths": ["published device-care guidance", "temperature awareness", "discourages unsafe clock manipulation"],
+      "HELIOS_action": "convert guidance into enforceable local policy while avoiding one universal safe-temperature claim"
+    },
+    {
+      "id": "NICEHASH_OCTUNE",
+      "url": "https://www.nicehash.com/blog/post/how-to-use-nicehash-octune-with-quickminer-updated",
+      "observed_strengths": ["power-efficiency tuning", "fan-temperature profiles", "hardware error feedback", "power-limit awareness"],
+      "HELIOS_action": "borrow efficiency/headroom thinking; do not auto-overclock or mining-tune user hardware"
+    },
+    {
+      "id": "NVIDIA_NVML",
+      "url": "https://docs.nvidia.com/deploy/nvml-api/group__nvmlFieldValueEnums.html",
+      "observed_strengths": ["instant and average power", "power limits", "energy counters", "slowdown/shutdown/memory thermal limits"],
+      "HELIOS_action": "production telemetry adapter target"
+    },
+    {
+      "id": "AMD_SMI",
+      "url": "https://rocm.docs.amd.com/projects/amdsmi/en/latest/doxygen/docBin/html/group__tagGPUMonitor.html",
+      "observed_strengths": ["temperature metrics", "GPU activity", "power and voltage", "VRAM usage", "violation status"],
+      "HELIOS_action": "production telemetry adapter target"
+    },
+    {
+      "id": "PSUTIL_SENSORS",
+      "url": "https://psutil.readthedocs.io/stable/index.html",
+      "observed_strengths": ["portable temperature and battery primitives where supported"],
+      "HELIOS_action": "fallback platform sensor source"
+    }
+  ],
+  "moat_axes": [
+    {
+      "axis": "HARDWARE_CARE",
+      "common_elsewhere": "monitoring and published safety guidance",
+      "HELIOS_target": "local state machine that can tighten or block each execution budget before an approved executor runs"
+    },
+    {
+      "axis": "PRIVACY",
+      "common_elsewhere": "resource systems may inspect processes or activity to infer contention",
+      "HELIOS_target": "hardware-aware / human-blind telemetry contract; no screen, keyboard, mouse, microphone, content or process names"
+    },
+    {
+      "axis": "SOVEREIGNTY",
+      "common_elsewhere": "user preferences or app-level toggles",
+      "HELIOS_target": "controller can only tighten local policy; local user and Guardian remain final authority"
+    },
+    {
+      "axis": "PROVIDER_AGNOSTICISM",
+      "common_elsewhere": "safety policy is usually coupled to one compute/mining network",
+      "HELIOS_target": "same Guardian protects MARKET, SCIENCE, TREASURY, DATA_CENTER, OPERATOR and CUSTOM providers"
+    },
+    {
+      "axis": "GAME_BOUNDARY",
+      "common_elsewhere": "not relevant to conventional compute clients",
+      "HELIOS_target": "hardware health may change compute budget but can never change RNG, RTP, payout or bonus probability"
+    },
+    {
+      "axis": "TRUTHFUL_PUBLIC_UI",
+      "common_elsewhere": "live hardware dashboards depend on local agents",
+      "HELIOS_target": "browser demo shows policy preview only and refuses to invent temperatures, watts or health claims"
+    }
+  ],
+  "TOPA_verdict": {
+    "do_not_claim": [
+      "HELIOS invented hardware monitoring",
+      "HELIOS invented thermal throttling",
+      "HELIOS invented user compute preferences",
+      "HELIOS invented GPU power limits"
+    ],
+    "credible_emphasis": [
+      "local hardware sovereignty across replaceable compute providers",
+      "hardware-aware / human-blind telemetry",
+      "Guardian-enforced budget tightening before execution",
+      "provider-independent safety receipts",
+      "strict GAME RNG perpendicular to COMPUTE even when hardware pressure changes"
+    ],
+    "next_external_gate": "REAL_DEVICE_MATRIX_WITH_NVML_AMD_SMI_AND_OS_POWER_TELEMETRY",
+    "next_commercial_gate": "PARTNER_PILOT_WITH_AUTHORITATIVE_WORK_RECEIPTS_AND_DEVICE_HEALTH_TELEMETRY"
+  }
+}
