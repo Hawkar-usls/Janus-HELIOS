@@ -32,6 +32,7 @@
        * This bridge does not react to MODE, SPIN, REEL STOP, CASCADE, PAID WIN or BONUS events.
        * Optional mode camera/tint presentation is owned by helios-mode-flight.js.
        * Optional bonus-only orbit presentation is owned by helios-bonus-quasar.js.
+       * Optional quasar sonification follows that presentation through helios-quasar-sonification.js.
        */
       .helios-stellar-canvas{
         transform:none!important;
@@ -210,7 +211,16 @@
     if(document.getElementById('helios-bonus-quasar-script')) return;
     const script=document.createElement('script');
     script.id='helios-bonus-quasar-script';
-    script.src='./helios-bonus-quasar.js?v=1.0.0';
+    script.src='./helios-bonus-quasar.js?v=1.1.0';
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
+  function loadQuasarSonification(){
+    if(document.getElementById('helios-quasar-sonification-script')) return;
+    const script=document.createElement('script');
+    script.id='helios-quasar-sonification-script';
+    script.src='./helios-quasar-sonification.js?v=1.0.0';
     script.async=false;
     document.head.appendChild(script);
   }
@@ -226,6 +236,7 @@
     bindMotionPreference();
     loadModeFlight();
     loadBonusQuasar();
+    loadQuasarSonification();
     window.HELIOS_STELLAR_BRIDGE=Object.freeze({
       version:BRIDGE_VERSION,
       getState:()=>({
