@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION='1.0.0';
+  const VERSION='1.0.1';
   const state={attached:false,host:null,raw:null,status:null,summary:null,details:null,observer:null,statusObserver:null,lastFingerprint:''};
 
   const text=(tag,value,className='')=>{
@@ -124,17 +124,18 @@
     const fingerprint=`${status}\n${raw}`;
     if(fingerprint===state.lastFingerprint) return;
     state.lastFingerprint=fingerprint;
+    const preserveRawOpen=Boolean(state.details?.open);
     try{
       const obj=JSON.parse(raw);
       if(!obj||typeof obj!=='object') throw new Error('NOT_OBJECT');
       renderObject(obj);
-      state.details.open=false;
       state.host.dataset.receiptView='HUMAN_SUMMARY';
       window.dispatchEvent(new CustomEvent('helios:receipt-view',{detail:{version:VERSION,receipt_id:obj.receipt_id||null,mode:obj.mode||null,provider_route:obj.provider_route||obj.route_selected||null,presentation_only:true,raw_json_preserved:true}}));
     }catch(_){
       state.summary.replaceChildren(text('div',raw||'Waiting for compute receipt…','helios-receipt-empty'));
-      state.details.open=false;
       state.host.dataset.receiptView='TEXT';
+    }finally{
+      if(state.details) state.details.open=preserveRawOpen;
     }
   }
 
