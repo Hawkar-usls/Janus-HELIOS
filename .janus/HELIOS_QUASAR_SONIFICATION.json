@@ -1,0 +1,37 @@
+{
+  "schema": "janus.helios.quasar_sonification.v1",
+  "module": "helios-quasar-sonification.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_BONUS_QUASAR_AUDIO_SYNC",
+  "purpose": "Add a subtle generative Web Audio layer that follows the existing Cosmic Music enable state and is phase-derived from the bonus quasar visual rotation periods.",
+  "activation": {
+    "requires_cosmic_music_enabled": true,
+    "requires_bonus_quasar_active": true,
+    "autoplay_when_music_disabled": false,
+    "external_audio_assets_required": false
+  },
+  "kinematics": {
+    "primary_spin_ms": 3050,
+    "secondary_spin_ms": 4350,
+    "precess_ms": 5600,
+    "core_pulse_ms": 1900,
+    "particle_divisions_per_primary_rotation": 4
+  },
+  "audio_layers": [
+    "PRIMARY_ORBIT_GAIN_BREATH",
+    "COUNTER_ROTATION_STEREO_MOTION",
+    "PRECESSION_FILTER_SWEEP",
+    "CORE_PULSE_DETUNE",
+    "QUARTER_ORBIT_GENERATIVE_PARTICLES"
+  ],
+  "reads": ["COSMIC_MUSIC_ENABLE_STATE", "BONUS_QUASAR_PRESENTATION_STATE"],
+  "forbidden_inputs": ["SPIN_STATE", "CASCADE_EVENT", "SETTLED_WIN_STATE", "BET_SIZE", "BALANCE", "COMPUTE_ROUTE", "RNG_INTERNAL_STATE", "PLAYER_VULNERABILITY"],
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
