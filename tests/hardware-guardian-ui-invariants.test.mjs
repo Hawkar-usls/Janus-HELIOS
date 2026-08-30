@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [ui, contract] = await Promise.all([
+const [ui, contract, html] = await Promise.all([
   readFile(new URL('../helios-hardware-guardian-ui.js', import.meta.url), 'utf8'),
-  readFile(new URL('../.janus/HELIOS_HARDWARE_GUARDIAN.json', import.meta.url), 'utf8').then(JSON.parse)
+  readFile(new URL('../.janus/HELIOS_HARDWARE_GUARDIAN.json', import.meta.url), 'utf8').then(JSON.parse),
+  readFile(new URL('../index.html', import.meta.url), 'utf8')
 ]);
 
+assert.match(html, /id="helios-hardware-guardian-ui-script"[^>]+helios-hardware-guardian-ui\.js\?v=1\.0\.0/);
 assert.match(ui, /const VERSION='1\.0\.0'/);
 assert.match(ui, /HARDWARE GUARDIAN · HUMAN-BLIND/);
 assert.match(ui, /USER \+ VENDOR LIMITS/);
