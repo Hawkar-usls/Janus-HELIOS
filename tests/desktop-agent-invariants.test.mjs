@@ -5,7 +5,7 @@ import {
 } from '../src/helios-desktop-agent.js';
 import { FABRIC_ASSIGNMENT_SCHEMA } from '../src/helios-desktop-fabric.js';
 
-assert.equal(HELIOS_DESKTOP_AGENT_VERSION, '1.1.0');
+assert.equal(HELIOS_DESKTOP_AGENT_VERSION, '1.2.0');
 
 const artifact = `sha256:${'a'.repeat(64)}`;
 const agent = new HeliosDesktopAgentRuntime({
@@ -27,6 +27,7 @@ const agent = new HeliosDesktopAgentRuntime({
     cpu_load: 0.1,
     gpu_load: 0.1,
     temperature_c: 55,
+    gpu_temperature_c: 55,
     battery_percent: 100,
     on_ac_power: true,
     available_vram_mb: 15000,
@@ -41,13 +42,14 @@ agent.registerExecutor({
   task_type: 'GENERAL_COMPUTE_JOB',
   artifact_digest: artifact,
   capabilities: ['GENERAL_GPU', 'CUDA'],
-  handler: async ({ payload, resource_budget }) => ({
+  handler: async ({ payload, resource_budget, hardware_guardian }) => ({
     ok: true,
     doubled: Number(payload.value) * 2,
     cpu_budget: resource_budget.cpu_limit_percent,
     gpu_budget: resource_budget.gpu_limit_percent,
     thermal_budget: resource_budget.max_temp_c,
-    watt_budget: resource_budget.max_watts
+    watt_budget: resource_budget.max_watts,
+    guardian_state: hardware_guardian.state
   })
 });
 
@@ -56,8 +58,12 @@ assert.equal(heartbeat.agent_id, 'desktop-agent-test');
 assert.equal(heartbeat.resource_policy.compute_consent, true);
 assert.equal(heartbeat.capabilities.includes('GENERAL_CPU'), true);
 assert.equal(heartbeat.capabilities.includes('GENERAL_GPU'), true);
+assert.equal(heartbeat.capabilities.includes('HARDWARE_GUARDIAN'), true);
 assert.equal(heartbeat.capabilities.includes('CUDA'), true);
 assert.equal(heartbeat.gpus.length, 1);
+assert.equal(heartbeat.telemetry.telemetry_scope, 'HARDWARE_ONLY');
+assert.equal(heartbeat.telemetry.human_observation, 'FORBIDDEN');
+assert.equal(heartbeat.hardware_guardian.state, 'GREEN');
 
 const assignment = {
   schema: FABRIC_ASSIGNMENT_SCHEMA,
@@ -98,6 +104,10 @@ assert.equal(result.output.cpu_budget, 30);
 assert.equal(result.output.gpu_budget, 35);
 assert.equal(result.output.thermal_budget, 75);
 assert.equal(result.output.watt_budget, 200);
+assert.equal(result.output.guardian_state, 'GREEN');
+assert.equal(result.hardware_guardian.state, 'GREEN');
+assert.equal(result.hardware_guardian.sensor_scope, 'HARDWARE_ONLY');
+assert.equal(result.hardware_guardian.human_observation, 'FORBIDDEN');
 assert.equal(result.game_event_weighting, 'FORBIDDEN');
 assert.equal(result.game_effect, 'NONE');
 
@@ -144,4 +154,4 @@ await assert.rejects(
 agent.revoke();
 await assert.rejects(agent.executeAssignment(assignment), /COMPUTE_CONSENT_NOT_ACTIVE/);
 
-console.log('HELIOS desktop agent lease + local resource-policy invariants: PASS');
+console.log('HELIOS desktop agent lease + local resource-policy + Hardware Guardian invariants: PASS');
