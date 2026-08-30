@@ -45,6 +45,7 @@ const samples = (i0Accepted, randomAccepted) => [
   { group: 'RANDOMIZED_MIRROR', checked_mh: 50, accepted: randomAccepted, z28: 2, z30: 1, z32: 0, max_z: 30 }
 ];
 
+// Same hardware class can still provide independent evidence when the roots are distinct.
 const independent = compareEdgeConstellationEvidence([
   { node_id: 'gpu-a', node_class: 'DESKTOP_GPU', samples: samples(5, 4), lineage: roots('a') },
   { node_id: 'gpu-b', node_class: 'DESKTOP_GPU', samples: samples(6, 5), lineage: roots('b') }
@@ -58,16 +59,21 @@ assert.equal(independent.verdict, 'DIRECTIONALLY_CONSISTENT_INDEPENDENT_REPLICAT
 assert.equal(independent.causal_proof, false);
 assert.equal(independent.probability_claim, 'NONE');
 
+// Three complete ASIC reports sharing the same rack/network root are three reports,
+// but no pair is strongly independent under the frozen six-root rule.
 const sameRackClone = compareEdgeConstellationEvidence([
   { node_id: 'asic-a', node_class: 'ASIC_GATEWAY', samples: samples(5, 4), lineage: roots('x') },
   { node_id: 'asic-b', node_class: 'ASIC_GATEWAY', samples: samples(6, 5), lineage: { ...roots('y'), site_network_root: 'x-site' } },
   { node_id: 'asic-c', node_class: 'ASIC_GATEWAY', samples: samples(7, 6), lineage: { ...roots('z'), site_network_root: 'x-site' } }
 ]);
 assert.equal(sameRackClone.complete_node_count, 3);
-assert.equal(sameRackClone.strongly_independent_complete_node_count, 2);
-assert.equal(sameRackClone.correlated_or_nonselected_complete_node_count, 1);
+assert.equal(sameRackClone.strongly_independent_complete_node_count, 1);
+assert.equal(sameRackClone.correlated_or_nonselected_complete_node_count, 2);
+assert.equal(sameRackClone.independence.known_physical_root_count, 3);
+assert.equal(sameRackClone.verdict, 'INSUFFICIENT_STRONG_INDEPENDENCE');
 assert.notEqual(sameRackClone.strongly_independent_complete_node_count, sameRackClone.complete_node_count);
 
+// Different hardware classes do not rescue unknown lineage.
 const unresolved = compareEdgeConstellationEvidence([
   { node_id: 'esp', node_class: 'NERDMINER_ESP32', samples: samples(5, 4), lineage: { physical_device_root: 'esp-device' } },
   { node_id: 'asic', node_class: 'ASIC_GATEWAY', samples: samples(6, 5), lineage: { physical_device_root: 'asic-device' } }
