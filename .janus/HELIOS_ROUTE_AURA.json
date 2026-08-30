@@ -1,0 +1,21 @@
+{
+  "schema": "janus.helios.route_aura.v1",
+  "module": "helios-route-aura.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_LOCAL_REEL_ROUTE_AURA",
+  "purpose": "Render a local procedural glow around the reel field from the selected route, with bounded mode blending and session-seed variation.",
+  "inputs": ["ACTIVE_ROUTE", "GAME_MODE_PRESENTATION_STATE", "MUSIC_SESSION_SEED", "COMPUTE_ACTIVE_FOR_INTENSITY_ONLY"],
+  "locality": "REELS_ONLY",
+  "fullscreen_overlay": false,
+  "reads_game_math": false,
+  "reads_spin": false,
+  "reads_win": false,
+  "reads_bet": false,
+  "reads_balance": false,
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
