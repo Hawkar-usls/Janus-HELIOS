@@ -33,6 +33,8 @@
        * Optional mode camera/tint presentation is owned by helios-mode-flight.js.
        * Optional bonus-only orbit presentation is owned by helios-bonus-quasar.js.
        * Optional quasar sonification follows that presentation through helios-quasar-sonification.js.
+       * Optional mode-native reel presentation is owned by helios-reel-identity.js.
+       * Optional Energy Spin audio is owned by helios-energy-spin-sonification.js.
        */
       .helios-stellar-canvas{
         transform:none!important;
@@ -225,6 +227,24 @@
     document.head.appendChild(script);
   }
 
+  function loadReelIdentity(){
+    if(document.getElementById('helios-reel-identity-script')) return;
+    const script=document.createElement('script');
+    script.id='helios-reel-identity-script';
+    script.src='./helios-reel-identity.js?v=1.0.0';
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
+  function loadEnergySpinSonification(){
+    if(document.getElementById('helios-energy-spin-sonification-script')) return;
+    const script=document.createElement('script');
+    script.id='helios-energy-spin-sonification-script';
+    script.src='./helios-energy-spin-sonification.js?v=1.0.0';
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
   function attach(){
     if(state.attached) return true;
     injectStyles();
@@ -237,6 +257,8 @@
     loadModeFlight();
     loadBonusQuasar();
     loadQuasarSonification();
+    loadReelIdentity();
+    loadEnergySpinSonification();
     window.HELIOS_STELLAR_BRIDGE=Object.freeze({
       version:BRIDGE_VERSION,
       getState:()=>({
