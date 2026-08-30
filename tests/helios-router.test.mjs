@@ -1,10 +1,23 @@
 import assert from 'node:assert/strict';
 import {
+  HELIOS_ROUTER_VERSION,
+  ROUTER_RESOURCE_CLASSES,
   ProviderRegistry,
   createRoutingPlan,
   createRouteDecision,
+  normalizeResourceEnvelope,
   validateProviderManifest
 } from '../src/helios-router.js';
+
+assert.equal(HELIOS_ROUTER_VERSION,'2.0.0');
+assert.deepEqual(ROUTER_RESOURCE_CLASSES,['CPU','GPU','HYBRID']);
+assert.deepEqual(normalizeResourceEnvelope({cpu_percent:25,gpu_percent:0}),{
+  cpu_percent:25,gpu_percent:0,allow_cpu:true,allow_gpu:false,resource_class:'CPU',user_cap_only:true,throughput_scaling:'NOT_DERIVED_FROM_PERCENTAGES',game_event_weighting:'FORBIDDEN',game_effect:'NONE'
+});
+assert.equal(normalizeResourceEnvelope({cpu_percent:0,gpu_percent:70}).resource_class,'GPU');
+assert.equal(normalizeResourceEnvelope({cpu_percent:20,gpu_percent:60}).resource_class,'HYBRID');
+assert.throws(()=>normalizeResourceEnvelope({cpu_percent:0,gpu_percent:0}),/RESOURCE_ENVELOPE_REQUIRES_CPU_OR_GPU/);
+assert.throws(()=>normalizeResourceEnvelope({cpu_percent:10,gpu_percent:101}),/GPU_PERCENT_OUT_OF_RANGE/);
 
 const science = {
   provider_id: 'science',
@@ -43,12 +56,16 @@ const dcPlan = createRoutingPlan({
   allocations: [{ provider_id: 'dc', weight: 1 }],
   policy: {
     game_event_weighting: 'ALLOW',
-    scheduling_basis: 'SPIN_COUNT'
+    scheduling_basis: 'SPIN_COUNT',
+    resource_policy:{cpu_percent:20,gpu_percent:50}
   }
 });
 
+assert.equal(dcPlan.router_version,'2.0.0');
 assert.equal(dcPlan.policy.game_event_weighting, 'FORBIDDEN');
 assert.equal(dcPlan.policy.scheduling_basis, 'CONSENT_DEVICE_POLICY_PROVIDER_CAPACITY_AND_WORKLOAD_ADMISSION');
+assert.equal(dcPlan.policy.resource_policy.resource_class,'HYBRID');
+assert.equal(dcPlan.policy.resource_policy.gpu_percent,50);
 
 assert.throws(() => createRoutingPlan({
   allocations: [
@@ -71,6 +88,7 @@ const decision = createRouteDecision({
 });
 
 assert.equal(decision.provider_id, 'dc');
+assert.equal(decision.resource_policy.resource_class,'HYBRID');
 assert.equal(decision.game_effect, 'NONE');
 assert.equal(decision.game_event_weighting, 'FORBIDDEN');
 
@@ -88,4 +106,4 @@ assert.throws(() => createRouteDecision({
   registry
 }), /FORBIDDEN_GAME_COUPLING/);
 
-console.log('JANUS HELIOS routing invariants: PASS');
+console.log('JANUS HELIOS Router v2 routing + resource envelope invariants: PASS');
