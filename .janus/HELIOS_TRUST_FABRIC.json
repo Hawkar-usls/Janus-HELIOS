@@ -1,0 +1,208 @@
+{
+  "schema": "janus.helios.trust-fabric.v1",
+  "id": "HELIOS_TRUST_FABRIC",
+  "version": "1.0.0",
+  "status": "ACTIVE_CORE_P0A",
+  "purpose": "Unify provider admission, host-first quality of service, receipt provenance, true work accounting, verifier assurance, executor qualification, compute lineage and privacy-preserving device health history under one fail-closed trust layer.",
+  "donor_lineage": [
+    {
+      "source": "Hawkar-usls/Janus-Demiurge:system_monitor.py",
+      "transplant": "adaptive hardware-aware load contraction",
+      "helios_result": "Hardware Guardian plus host-first QoS"
+    },
+    {
+      "source": "Hawkar-usls/janus-io-public:docs/proof-of-observation.md",
+      "transplant": "facts-derived-claims separation, provenance, unknown remains unknown",
+      "helios_result": "Device Health Passport"
+    },
+    {
+      "source": "Hawkar-usls/AIFC",
+      "transplant": "authority receipt provenance and assurance monotonicity",
+      "helios_result": "Receipt Provenance Envelope plus verifier no-regression law"
+    },
+    {
+      "source": "Hawkar-usls/Janus_Genesis",
+      "transplant": "default-deny provider admission and authority epochs",
+      "helios_result": "Provider Authority Epoch"
+    },
+    {
+      "source": "Hawkar-usls/-Terminal-for-Janus",
+      "transplant": "capability is not effect; authority expansion fails closed",
+      "helios_result": "scoped non-transferable provider leases"
+    },
+    {
+      "source": "Hawkar-usls/janus-distributed-ai-swarm",
+      "transplant": "lease fencing, durable recovery, Quiet Canary host-first reserves and self-tested acceleration",
+      "helios_result": "stale authority rejection, host-first QoS and shadow executor qualification"
+    },
+    {
+      "source": "Hawkar-usls/Janus-Fundamentum",
+      "transplant": "independent replay discipline and true work accounting",
+      "helios_result": "independent provider qualification pattern and explicit work counters"
+    },
+    {
+      "source": "Hawkar-usls/Hrain",
+      "transplant": "typed structural provenance graph",
+      "helios_result": "Compute Lineage Graph"
+    }
+  ],
+  "provider_authority": {
+    "registration_is_authority": false,
+    "admission_default": "DENY",
+    "lease_transferable": false,
+    "scoped_capabilities_required": true,
+    "dispatch_budget_required": true,
+    "authority_epoch_required": true,
+    "epoch_rotation_invalidates_prior_leases": true,
+    "stale_provider_authority_may_execute": false,
+    "laws": [
+      "REGISTERED_PROVIDER_NE_ADMITTED_PROVIDER",
+      "CAPABILITY_NE_EFFECT",
+      "STALE_AUTHORITY_EPOCH_NE_EXECUTION_PERMISSION",
+      "AUTHORITY_EXPANSION_FAILS_CLOSED"
+    ]
+  },
+  "host_first_qos": {
+    "classification": "CONTENT_BLIND_LOCAL_HOST_RESERVE_POLICY",
+    "external_compute_is_side_mission": true,
+    "external_compute_yields_first": true,
+    "guardian_may_tighten_only": true,
+    "qos_may_widen_user_cap": false,
+    "busy_or_unknown_host_state_contracts_external_budget": true,
+    "law": "LOCAL_HOST_AND_USER_RESERVE_GT_EXTERNAL_PROVIDER_THROUGHPUT"
+  },
+  "receipt_provenance": {
+    "schema": "janus.helios.receipt-provenance.v1",
+    "authoritative_receipt_requires": [
+      "provider_id",
+      "provider_manifest_digest",
+      "adapter_digest",
+      "executor_digest",
+      "verifier_id",
+      "verifier_digest",
+      "guardian_policy_digest",
+      "lease_id",
+      "job_id",
+      "provider_execution_verified",
+      "settlement_authoritative"
+    ],
+    "digest_shape": "SHA256_HEX_64",
+    "missing_identity_or_digest_result": "NON_AUTHORITATIVE",
+    "law": "WORK_RESULT_EXISTS_NE_AUTHORITY_PROVEN"
+  },
+  "device_health_passport": {
+    "schema": "janus.helios.device-health-passport.v1",
+    "privacy_class": "HARDWARE_AWARE_HUMAN_BLIND",
+    "unknown_remains_unknown": true,
+    "integrity_is_sensor_truth": false,
+    "sealed_observation_windows": true,
+    "receipt_chain_references": true,
+    "summary_fields": [
+      "max_observed_temperature_c",
+      "measured_watt_hours",
+      "compute_hours",
+      "verified_work_hours",
+      "throttle_events",
+      "cooldown_events",
+      "thermal_or_power_blocks",
+      "user_revokes",
+      "unknown_temperature_windows",
+      "authoritative_receipts"
+    ],
+    "forbidden_content_history": [
+      "screen",
+      "keyboard",
+      "mouse",
+      "microphone",
+      "camera",
+      "clipboard",
+      "browser_history",
+      "window_title",
+      "process_name",
+      "game_name"
+    ]
+  },
+  "true_work_accounting": {
+    "separate_counters": [
+      "assigned_slices",
+      "admitted_slices",
+      "executed_slices",
+      "retry_attempts",
+      "stale_or_rejected_results",
+      "verified_results",
+      "failed_results",
+      "device_ms",
+      "measured_watt_hours",
+      "measured_watt_hours_samples"
+    ],
+    "laws": [
+      "ASSIGNED_WORK_NE_COMPLETED_WORK",
+      "COMPLETED_WORK_NE_VERIFIED_WORK",
+      "NOMINAL_RUNTIME_NE_MEASURED_DEVICE_TIME",
+      "NOMINAL_WATTS_NE_MEASURED_WATT_HOURS"
+    ]
+  },
+  "verifier_assurance": {
+    "successor_may_silently_remove_mandatory_rejections": false,
+    "intentional_weakening_requires": [
+      "EXPLICIT_SEMANTICS_CHANGE",
+      "REPLAYABLE_MIGRATION_PROOF",
+      "NEW_VERIFIER_IDENTITY"
+    ],
+    "law": "VERIFIER_SUCCESSOR_MAY_NOT_SILENTLY_FORGET_MANDATORY_REJECTIONS"
+  },
+  "accelerator_qualification": {
+    "fast_path_default": "SHADOW",
+    "qualification_requires": [
+      "REFERENCE_COMPARISONS_AT_OR_ABOVE_MINIMUM",
+      "ZERO_MISMATCHES",
+      "NEGATIVE_CONTROLS_PASS"
+    ],
+    "failed_qualification": "FALLBACK_REQUIRED"
+  },
+  "compute_lineage": {
+    "ordered_nodes": [
+      "CONSENT",
+      "PROVIDER",
+      "LEASE",
+      "GUARDIAN",
+      "EXECUTOR",
+      "WORK_RESULT",
+      "VERIFIER",
+      "RECEIPT",
+      "DEVICE_HEALTH_PASSPORT"
+    ],
+    "authority_delta_per_structural_edge": 0,
+    "laws": [
+      "STRUCTURAL_LINK_NE_TRUTH",
+      "STRUCTURAL_LINK_NE_AUTHORITY",
+      "UNKNOWN_REMAINS_UNKNOWN"
+    ]
+  },
+  "hardware_boundary": {
+    "human_blind": true,
+    "hardware_telemetry_allowed": true,
+    "content_telemetry_forbidden": true
+  },
+  "public_demo": {
+    "trust_fabric_card_visible_in_buyer_lab": true,
+    "real_provider_authority": false,
+    "real_provider_lease_issued": false,
+    "invented_sensor_readings": false,
+    "invented_measured_watt_hours": false,
+    "mock_receipt_promoted_to_authoritative": false,
+    "classification": "ARCHITECTURE_AND_INTEGRATION_DEMO_ONLY"
+  },
+  "game_boundary": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bonus_effect": "NONE",
+    "personal_jackpot_weight_effect": "NONE"
+  },
+  "implementation": {
+    "core": "src/helios-trust-fabric.js",
+    "buyer_ui": "helios-trust-fabric-ui.js",
+    "tests": "tests/trust-fabric-invariants.test.mjs"
+  }
+}
