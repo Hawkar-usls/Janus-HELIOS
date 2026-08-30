@@ -1,8 +1,12 @@
 (() => {
   'use strict';
 
-  const VERSION='1.0.0';
+  const VERSION='1.1.0';
   const TRANSIENT_CORONA_MS=3400;
+  const PRIMARY_SPIN_MS=3050;
+  const SECONDARY_SPIN_MS=4350;
+  const PRECESS_MS=5600;
+  const CORE_PULSE_MS=1900;
   const motionQuery=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')||null;
 
   const state={
@@ -14,7 +18,8 @@
     transientTimer:0,
     classObserver:null,
     active:false,
-    source:'IDLE'
+    source:'IDLE',
+    lastEmittedKey:''
   };
 
   function injectStyles(){
@@ -35,10 +40,10 @@
       .orbit-field.bonus-quasar-active{border-color:rgba(255,183,75,.24)!important;box-shadow:inset 0 0 30px rgba(255,143,37,.025),0 0 24px rgba(255,143,37,.025)!important;transition:border-color .8s ease,box-shadow .8s ease,opacity .8s ease!important}
       .orbit-field.bonus-quasar-active .helios-bonus-quasar{opacity:1}
       .orbit-field.bonus-quasar-active .helios-quasar-halo{opacity:.92;transform:translate(-50%,-50%) scale(1)}
-      .orbit-field.bonus-quasar-active .helios-quasar-axis{opacity:1;animation:heliosQuasarPrecess 5.6s ease-in-out infinite alternate}
-      .orbit-field.bonus-quasar-active .helios-quasar-disk{animation:heliosQuasarSpin 3.05s linear infinite}
-      .orbit-field.bonus-quasar-active .helios-quasar-disk-secondary{animation:heliosQuasarCounterSpin 4.35s linear infinite}
-      .orbit-field.bonus-quasar-active .helios-quasar-core{opacity:1;animation:heliosQuasarCore 1.9s ease-in-out infinite}
+      .orbit-field.bonus-quasar-active .helios-quasar-axis{opacity:1;animation:heliosQuasarPrecess ${PRECESS_MS}ms ease-in-out infinite alternate}
+      .orbit-field.bonus-quasar-active .helios-quasar-disk{animation:heliosQuasarSpin ${PRIMARY_SPIN_MS}ms linear infinite}
+      .orbit-field.bonus-quasar-active .helios-quasar-disk-secondary{animation:heliosQuasarCounterSpin ${SECONDARY_SPIN_MS}ms linear infinite}
+      .orbit-field.bonus-quasar-active .helios-quasar-core{opacity:1;animation:heliosQuasarCore ${CORE_PULSE_MS}ms ease-in-out infinite}
       .orbit-field.bonus-quasar-active .helios-quasar-jets{opacity:.56;transform:translate(-50%,-50%) rotate(72deg) scaleY(1);animation:heliosQuasarJets 2.5s ease-in-out infinite}
       @keyframes heliosQuasarSpin{from{transform:translate(-50%,-50%) rotate(0deg) skewX(-11deg)}to{transform:translate(-50%,-50%) rotate(360deg) skewX(-11deg)}}
       @keyframes heliosQuasarCounterSpin{from{transform:translate(-50%,-50%) rotate(360deg) skewX(15deg)}to{transform:translate(-50%,-50%) rotate(0deg) skewX(15deg)}}
@@ -63,6 +68,32 @@
     return true;
   }
 
+  function stateDetail(){
+    return {
+      version:VERSION,
+      active:state.active,
+      source:state.source,
+      reduced_motion:state.reducedMotion,
+      primary_spin_ms:PRIMARY_SPIN_MS,
+      secondary_spin_ms:SECONDARY_SPIN_MS,
+      precess_ms:PRECESS_MS,
+      core_pulse_ms:CORE_PULSE_MS,
+      presentation_only:true,
+      audio_clock_only:true,
+      rng_effect:'NONE',
+      rtp_effect:'NONE',
+      payout_effect:'NONE',
+      compute_routing_effect:'NONE'
+    };
+  }
+
+  function emitState(force=false){
+    const key=`${state.active?'1':'0'}:${state.source}:${state.reducedMotion?'1':'0'}`;
+    if(!force&&key===state.lastEmittedKey) return;
+    state.lastEmittedKey=key;
+    dispatchEvent(new CustomEvent('helios:bonus-quasar-state',{detail:stateDetail()}));
+  }
+
   function syncActive(source=state.source){
     const active=Boolean(state.sessionActive||state.transientActive);
     state.active=active;
@@ -72,6 +103,7 @@
       state.orbit.dataset.bonusQuasar=active?'1':'0';
       state.orbit.dataset.bonusQuasarSource=state.source;
     }
+    emitState();
   }
 
   function startSession(){
@@ -103,7 +135,7 @@
   }
 
   function bindMotionPreference(){
-    motionQuery?.addEventListener?.('change',e=>{state.reducedMotion=Boolean(e.matches);});
+    motionQuery?.addEventListener?.('change',e=>{state.reducedMotion=Boolean(e.matches);emitState(true);});
   }
 
   function attach(){
@@ -116,12 +148,8 @@
     window.HELIOS_BONUS_QUASAR=Object.freeze({
       version:VERSION,
       getState:()=>({
-        version:VERSION,
+        ...stateDetail(),
         attached:state.attached,
-        active:state.active,
-        source:state.source,
-        reduced_motion:state.reducedMotion,
-        presentation_only:true,
         reads_bonus:true,
         reads_mode:false,
         reads_spin:false,
@@ -129,14 +157,11 @@
         reads_win:false,
         reads_bet:false,
         reads_balance:false,
-        reads_compute:false,
-        rng_effect:'NONE',
-        rtp_effect:'NONE',
-        payout_effect:'NONE',
-        compute_routing_effect:'NONE'
+        reads_compute:false
       })
     });
-    dispatchEvent(new CustomEvent('helios:bonus-quasar-ready',{detail:{version:VERSION,presentation_only:true,bonus_only:true,orbit_field_quasar:true,rng_effect:'NONE',rtp_effect:'NONE',compute_routing_effect:'NONE'}}));
+    dispatchEvent(new CustomEvent('helios:bonus-quasar-ready',{detail:{...stateDetail(),bonus_only:true,orbit_field_quasar:true}}));
+    emitState(true);
     return true;
   }
 
