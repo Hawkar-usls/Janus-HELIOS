@@ -1,0 +1,38 @@
+{
+  "schema": "janus.helios.resource_sonification.v1",
+  "module": "helios-resource-sonification.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_RESOURCE_POLICY_AUDIO",
+  "purpose": "Sonify explicit CPU/GPU policy composition while compute is active and Cosmic Audio is enabled.",
+  "mapping": {
+    "cpu": "LOW_PULSE_RATE_AND_DEPTH",
+    "gpu": "SPECTRAL_AIR_PITCH_FILTER_AND_STEREO_MOTION",
+    "max_policy": "RESTRAINED_DETERMINISTIC_ELECTRICAL_PING"
+  },
+  "activation": {
+    "requires_cosmic_audio": true,
+    "requires_compute_active": true,
+    "requires_explicit_resource_policy": true
+  },
+  "truth_boundary": {
+    "audio_is_throughput_claim": false,
+    "audio_is_earnings_claim": false,
+    "cpu_gpu_weights_are_performance_benchmark": false
+  },
+  "forbidden_inputs": [
+    "BET_SIZE",
+    "BALANCE",
+    "PAID_WIN",
+    "LOSS_STREAK",
+    "NEAR_MISS",
+    "WAGER_HISTORY",
+    "RNG_INTERNAL_STATE"
+  ],
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
