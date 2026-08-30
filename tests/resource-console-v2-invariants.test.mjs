@@ -7,7 +7,8 @@ const [source,config,contract] = await Promise.all([
   readFile(new URL('../.janus/HELIOS_RESOURCE_CONSOLE_V2.json', import.meta.url),'utf8').then(JSON.parse)
 ]);
 
-assert.match(source,/VERSION='2\.0\.0'/);
+assert.match(source,/VERSION='2\.1\.0'/);
+assert.match(source,/ROUTER_VERSION='2\.0\.0'/);
 assert.match(source,/HELIOS ROUTER v2/);
 assert.match(source,/id="gpu"/);
 assert.match(source,/CPU/);
@@ -23,6 +24,26 @@ assert.match(source,/DESKTOP_AGENT_OR_APPROVED_GPU_ADAPTER/);
 assert.match(source,/const next=JSON\.stringify\(obj,null,2\)/);
 assert.match(source,/if\(next===text\) return/);
 assert.match(source,/try\{state\.receipt\.textContent=next;\}finally\{state\.patchGuard=false;\}/);
+
+// Resource UI must follow the already-generated mode × route × seed spectrum rather than inventing its own route colour.
+assert.match(source,/helios:reel-forge-profile/);
+assert.match(source,/HELIOS_REEL_FORGE/);
+assert.match(source,/paletteFromForge/);
+assert.match(source,/--resource-primary/);
+assert.match(source,/--resource-secondary/);
+assert.match(source,/--resource-tertiary/);
+assert.match(source,/--resource-fill/);
+assert.match(source,/::-webkit-slider-runnable-track/);
+assert.match(source,/::-moz-range-track/);
+assert.match(source,/heliosResourceStarDrift/);
+assert.match(source,/heliosResourceSheen/);
+assert.match(source,/resource-strength|resource_strength|resourceStrength|resource-strength-glow|resource_strength_glow/i);
+assert.match(source,/soft_cosmic_resource_ui:true/);
+assert.match(source,/reel_forge_palette_following:true/);
+assert.match(source,/visual_palette/);
+assert.match(source,/palette_source/);
+assert.match(source,/prefers-reduced-motion:reduce/);
+
 assert.doesNotMatch(source,/getElementById\(['"]bet['"]\)/);
 assert.doesNotMatch(source,/getElementById\(['"]balance['"]\)/);
 assert.doesNotMatch(source,/loss_streak|near_miss|wager_history|inferred_vulnerability/i);
@@ -40,13 +61,22 @@ assert.equal(config.game_effect,'NONE');
 assert.equal(config.rng_effect,'NONE');
 assert.equal(config.rtp_effect,'NONE');
 
+assert.equal(contract.version,'2.1.0');
+assert.equal(contract.router_version,'2.0.0');
 assert.equal(contract.classification,'EXPLICIT_USER_RESOURCE_POLICY_CONTROL');
 assert.deepEqual(contract.resource_classes,['CPU','GPU','HYBRID','IDLE']);
 assert.equal(contract.gpu_public_execution,'SIMULATED_POLICY_ONLY');
 assert.equal(contract.visual_envelope.throughput_claim,'NONE_PRESENTATION_MAPPING_ONLY');
+assert.equal(contract.procedural_visual_identity.classification,'PRESENTATION_ONLY_SOFT_COSMIC_RESOURCE_UI');
+assert.equal(contract.procedural_visual_identity.palette_source_primary,'HELIOS_REEL_FORGE_PROFILE');
+assert.equal(contract.procedural_visual_identity.cpu_stream,'PRIMARY_TO_TERTIARY');
+assert.equal(contract.procedural_visual_identity.gpu_stream,'SECONDARY_TO_TERTIARY');
+assert.equal(contract.procedural_visual_identity.panel_glow_strength_source,'VISUAL_RESOURCE_ENVELOPE');
+assert.equal(contract.procedural_visual_identity.native_white_range_tracks_replaced,true);
+assert.equal(contract.procedural_visual_identity.throughput_claim,'NONE');
 assert.equal(contract.reads_game_math,false);
 assert.equal(contract.authority.rng_effect,'NONE');
 assert.equal(contract.authority.rtp_effect,'NONE');
 assert.equal(contract.authority.payout_effect,'NONE');
 
-console.log('HELIOS Router v2 CPU/GPU resource console invariants: PASS');
+console.log('HELIOS Router v2.1 procedural cosmic CPU/GPU resource console invariants: PASS');
