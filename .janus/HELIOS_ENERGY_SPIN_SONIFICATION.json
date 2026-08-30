@@ -1,0 +1,28 @@
+{
+  "schema": "janus.helios.energy_spin_sonification.v1",
+  "module": "helios-energy-spin-sonification.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_PROCEDURAL_ENERGY_SPIN_AUDIO",
+  "purpose": "Add a procedural Cosmic Music-following ignition and completion sound to Energy Spin without affecting gameplay math or compute routing.",
+  "activation": {
+    "requires_cosmic_music_on": true,
+    "start_signal": "ENABLED_ENERGY_SPIN_BUTTON_GESTURE",
+    "completion_signal": "helios:spin-complete source=energy"
+  },
+  "procedural_inputs": ["COSMIC_MUSIC_SESSION_SEED", "GAME_MODE", "SELECTED_ROUTE", "ENERGY_SPIN_GESTURE_INDEX"],
+  "forbidden_inputs": ["BET_SIZE", "BALANCE", "LOSS_STREAK", "NEAR_MISS", "WAGERING_HISTORY", "PLAYER_VULNERABILITY", "RNG_INTERNAL_STATE"],
+  "audio_policy": {
+    "external_audio_assets_required": false,
+    "web_audio_generated": true,
+    "session_seed_follow": true,
+    "start_gesture": "RISING_ENERGY_IGNITION",
+    "completion_gesture": "SOFT_ORBITAL_RESOLVE"
+  },
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bet_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
