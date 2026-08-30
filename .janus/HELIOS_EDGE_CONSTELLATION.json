@@ -1,0 +1,96 @@
+{
+  "schema": "janus.helios.edge-constellation.contract.v1",
+  "version": "1.0.0",
+  "classification": "HETEROGENEOUS_EDGE_REPLICATION_AND_EVIDENCE_PLANE",
+  "purpose": "Extend HELIOS Edge Hash Lab from one compatible edge node into a heterogeneous replication plane where every device must first run its own balanced JANUS I0 versus randomized-mirror comparison and cross-node evidence is synthesized without raw hashrate weighting.",
+  "core_law": "NODE_POWER_NOT_EQUAL_EVIDENCE_WEIGHT",
+  "node_classes": {
+    "NERDMINER_ESP32": {
+      "compute_family": "MICROCONTROLLER",
+      "execution_plane": "EXTERNAL_EDGE_BRIDGE",
+      "default_transport": "STRATUM_V1",
+      "reference_target": "BitMaker-hub/NerdMiner_v2"
+    },
+    "DESKTOP_CPU": {
+      "compute_family": "DESKTOP_CPU",
+      "execution_plane": "HELIOS_DESKTOP_FABRIC",
+      "default_transport": "HELIOS_DESKTOP_FABRIC"
+    },
+    "DESKTOP_GPU": {
+      "compute_family": "DESKTOP_GPU",
+      "execution_plane": "HELIOS_DESKTOP_FABRIC",
+      "default_transport": "HELIOS_DESKTOP_FABRIC"
+    },
+    "ASIC_GATEWAY": {
+      "compute_family": "ASIC",
+      "execution_plane": "APPROVED_EXTERNAL_GATEWAY",
+      "default_transport": "STRATUM_V1_GATEWAY"
+    }
+  },
+  "local_experiment_law": {
+    "pairing": "WITHIN_NODE_STRICT_50_50",
+    "arms": ["JANUS_I0", "RANDOMIZED_MIRROR"],
+    "equal_checked_work_required": true,
+    "same_device_required": true,
+    "same_pool_required": true,
+    "same_job_stream_required": true,
+    "same_wire_required": true,
+    "same_guardian_policy_required": true,
+    "raw_counts_alone_are_sufficient": false
+  },
+  "cross_node_replication_law": {
+    "replication_unit": "NODE_LOCAL_EFFECT_VECTOR",
+    "one_node_one_replication_unit": true,
+    "node_power_not_evidence_weight": true,
+    "raw_hashrate_cross_node_weighting": false,
+    "raw_checked_work_cross_node_weighting": false,
+    "minimum_independent_complete_nodes": 2,
+    "aggregation": "MEDIAN_NODE_LOCAL_DELTA_PLUS_DIRECTIONAL_CONSISTENCY",
+    "high_throughput_hardware_gets_more_votes": false,
+    "directional_consistency_is_causal_proof": false,
+    "isolated_rare_tail_is_proof": false,
+    "profit_inference_allowed": false
+  },
+  "reasoning": {
+    "problem": "A heterogeneous fleet can create misleading aggregate results if high-throughput hardware dominates the evidence merely because it checks more work.",
+    "solution": "Normalize I0 versus randomized control inside each node first, then treat each complete node-local comparison as one replication unit for cross-node synthesis.",
+    "consequence": "Hardware speed changes time-to-exposure but does not automatically change cross-node evidentiary weight."
+  },
+  "admission": {
+    "node_identity_required": true,
+    "bridge_or_executor_identity_required": true,
+    "conformance_gate_required": true,
+    "provider_or_pool_authority_required_for_real_execution": true,
+    "guardian_policy_required": true,
+    "firmware_or_executor_digest_required_for_authoritative_evidence": true,
+    "production_gate_default": "DENY"
+  },
+  "public_demo": {
+    "connected_devices": 0,
+    "connects_to_nodes": false,
+    "connects_to_pool": false,
+    "requests_serial_device": false,
+    "collects_wallet_address": false,
+    "collects_wifi_credentials": false,
+    "fake_hashrate": false,
+    "fake_temperature": false,
+    "fake_watts": false,
+    "campaign_builder": "PRESENTATION_ONLY"
+  },
+  "commercial_boundary": {
+    "janus_i0_full_scheduler_embedded": false,
+    "janus_i0_background_ip_status": "SEPARATELY_SCOPED",
+    "nerdminer_v2_status": "EXTERNAL_MIT_COMPATIBILITY_TARGET",
+    "asic_or_pool_partnership_implied": false,
+    "future_hardware_adapter_assignment_implied": false
+  },
+  "authority": {
+    "game_effect": "NONE",
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "game_math_authority": "NONE",
+    "public_compute_execution_authority": "NONE",
+    "settlement_authority": "NONE"
+  }
+}
