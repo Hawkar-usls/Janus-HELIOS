@@ -1,25 +1,9 @@
 {
   "schema": "janus.helios.topa-spider-audit.v1",
-  "artifact_id": "HELIOS-TOPA-SPIDER-AUDIT-2026-08-30-v1.0",
+  "artifact_id": "HELIOS-TOPA-SPIDER-AUDIT-2026-08-30-v1.1",
   "project": "Hawkar-usls/Janus-HELIOS",
   "audit_date": "2026-08-30",
-  "posture": "WHOLE_PROJECT_ARCHITECTURE_GAP_AND_INNOVATION_SWEEP",
-  "scope": [
-    "PUBLIC_SLOT_AND_ROUTER_SURFACE",
-    "GAME_AND_BONUS_CORE",
-    "PROCEDURAL_AUDIO_AND_PRESENTATION",
-    "REEL_FORGE_AND_ROUTE_AURA",
-    "PROFILE_AND_OFFER_BOARD",
-    "CANONICAL_ROUTER_CORE",
-    "DESKTOP_FABRIC",
-    "DESKTOP_AGENT",
-    "ADAPTIVE_POLICY_PLANE",
-    "DUAL_STREAM_SAFETY_GUARD",
-    "MOBILE_AND_ACCESSIBILITY",
-    "CONFIG_AND_JANUS_CONTRACTS",
-    "TESTS_CI_DUE_DILIGENCE_AND_PRODUCTION_GATES"
-  ],
-  "method": "Repository-wide structure and canonical-contract inspection plus cross-layer capability-gap comparison. Existing internal capabilities were compared against the public control surface so hidden-but-implemented primitives are distinguished from speculative new features.",
+  "posture": "WHOLE_PROJECT_ARCHITECTURE_GAP_AND_INNOVATION_SWEEP_WITH_IMPLEMENTATION_STATUS",
   "confirmed_architectural_strengths": [
     "GAME_RNG_IS_SEPARATE_FROM_COMPUTE_ROUTING",
     "EXPLICIT_REVOCABLE_COMPUTE_CONSENT",
@@ -33,126 +17,36 @@
     "STRICT_DUE_DILIGENCE_AND_REGRESSION_SUITE"
   ],
   "high_value_findings": [
-    {
-      "id": "TOPA-H01",
-      "priority": "P0_FIXED_THIS_PASS",
-      "finding": "PUBLIC_ROUTER_LAGGED_EXISTING_GPU_ARCHITECTURE",
-      "evidence": "Desktop Fabric and Desktop Agent already support CPU/GPU/HYBRID, GPU inventory, VRAM, gpu_limit_percent and GPU telemetry while the public Router exposed only one CPU slider and receipts marked gpu:false.",
-      "action": "Expose explicit CPU/GPU/HYBRID/MAX user-cap profiles and GPU percent on the public evaluation surface without claiming browser GPU execution.",
-      "status": "IMPLEMENTED_ROUTER_V2"
-    },
-    {
-      "id": "TOPA-H02",
-      "priority": "P0_FIXED_THIS_PASS",
-      "finding": "COMPUTE_VISUAL_FEEDBACK_DID_NOT_EXPRESS_RESOURCE_COMMITMENT",
-      "action": "Drive local Reel Route Aura strength from the explicit CPU/GPU resource envelope and emit deterministic local sparks only when both configured caps are at maximum and compute is ACTIVE.",
-      "guardrail": "PRESENTATION_MAPPING_ONLY_NO_THROUGHPUT_OR_GAME_VALUE_CLAIM",
-      "status": "IMPLEMENTED_ROUTE_AURA_V1_2"
-    },
-    {
-      "id": "TOPA-H03",
-      "priority": "P1",
-      "finding": "CANONICAL_ROUTER_SUPPORTS_WEIGHTED_MULTI_PROVIDER_ALLOCATIONS_BUT_PUBLIC_UI_IS_SINGLE_ROUTE",
-      "existing_primitive": "createRoutingPlan allocations[] with positive weights summing to one",
-      "proposal": "ALLOCATION_MIXER: explicit split such as SCIENCE 60% + MARKET 40%, with a single consent envelope, provider-capacity admission and visible audited sink split.",
-      "guardrails": ["NO_GAME_EVENT_WEIGHTING", "USER_EXPLICITLY_CONFIRMS_SPLIT", "FAIL_CLOSED_IF_ANY_REQUIRED_PROVIDER_OR_VERIFIER_IS_UNAVAILABLE"]
-    },
-    {
-      "id": "TOPA-H04",
-      "priority": "P1",
-      "finding": "DEEP_RESOURCE_GUARDS_EXIST_BUT_ARE_NOT_USER_CONTROLLABLE_ON_PUBLIC_ROUTER",
-      "existing_primitive": ["max_temp_c", "max_watts", "battery_allowed", "max_concurrent", "AC_POWER_TELEMETRY"],
-      "proposal": "RESOURCE_GOVERNOR: optional Advanced panel for temperature ceiling, watt cap, battery/AC-only operation and concurrency.",
-      "benefit": "Turns consent from a simple percentage into a real device-safety contract."
-    },
-    {
-      "id": "TOPA-H05",
-      "priority": "P1",
-      "finding": "ROUTES_DO_NOT_EXPLAIN_HARDWARE_FIT",
-      "existing_primitive": ["RESOURCE_CLASSES", "GPU_INVENTORY", "MIN_VRAM", "CAPABILITY_TAGS", "AGENT_SCORING"],
-      "proposal": "CAPABILITY_AWARE_ROUTE_CARDS: show CPU/GPU/HYBRID preference, VRAM class and required capability tags before consent. Never hide or auto-enable hardware access.",
-      "guardrail": "RECOMMENDATION_ONLY_USER_RETAINS_ROUTE_AND_RESOURCE_AUTHORITY"
-    },
-    {
-      "id": "TOPA-H06",
-      "priority": "P1",
-      "finding": "NO_USER_TIME_OR_IDLE_POLICY_DESPITE_LOCAL_RESOURCE_GUARDS",
-      "proposal": "QUIET_COMPUTE_SCHEDULER: explicit idle-only, AC-only, quiet-hours and optional pause-on-interaction policies enforced locally by the desktop agent.",
-      "benefit": "Makes real opt-in compute substantially more practical on personal machines.",
-      "guardrail": "LOCAL_AGENT_POLICY_IS_AUTHORITATIVE_AND_CONTROLLER_CANNOT_WIDEN_IT"
-    },
-    {
-      "id": "TOPA-H07",
-      "priority": "P1_PRESENTATION",
-      "finding": "GENERATIVE_MUSIC_REACTS_TO COMPUTE_ACTIVE BUT NOT CPU_GPU_COMPOSITION",
-      "proposal": "RESOURCE_SONIFICATION: use the same helios:resource-policy envelope as a presentation-only orchestration input; CPU may bias pulse/rhythm, GPU may bias spectral/air layers, MAX may add a restrained electrical texture.",
-      "guardrail": "NO_BET_LOSS_NEAR_MISS_OR_GAME_OUTCOME_INPUTS"
-    },
-    {
-      "id": "TOPA-H08",
-      "priority": "P0_EXTERNAL_VALIDATION",
-      "finding": "REAL_PROVIDER_AND_REAL_UNIT_ECONOMICS_REMAIN_THE_MAIN_PRODUCT_TRUTH_GATE",
-      "proposal": "NON_MONEY_GPU_FIRST_PILOT: connect one approved GPU-friendly workload and measure verified throughput, watt-hours, thermals, reject/retry rate, verifier failures and value per verified unit.",
-      "status": "OPEN_EXTERNAL_GATE"
-    },
-    {
-      "id": "TOPA-H09",
-      "priority": "P1_PRODUCTION",
-      "finding": "ARTIFACT_HASH_AND_VERIFICATION_EXIST_BUT_HARDWARE_OR_EXECUTION_ATTESTATION_IS_NOT A FIRST_CLASS LAYER",
-      "proposal": "OPTIONAL_ATTESTED_EXECUTION_CHAIN: signed provider manifest + exact artifact digest + agent identity + verifier proof + optional platform/TEE/TPM attestation where available.",
-      "guardrail": "OPTIONAL_CAPABILITY_NOT_A_FALSE_SECURITY_CERTIFICATION"
-    },
-    {
-      "id": "TOPA-H10",
-      "priority": "P2",
-      "finding": "FABRIC_IS_MULTI_AGENT_BUT_PUBLIC_PRESENTATION_IS_SINGLE_DEVICE",
-      "proposal": "COMPUTE_CONSTELLATION: represent explicitly authorized agents as a cosmic constellation with resource class, health, current route and verified work; aggregate by default to minimize device fingerprint leakage.",
-      "benefit": "Makes the distributed HELIOS identity visible and understandable."
-    },
-    {
-      "id": "TOPA-H11",
-      "priority": "P2",
-      "finding": "POWER_TELEMETRY_EXISTS_BUT ENERGY_OR_CARBON_AWARE_ADMISSION_DOES_NOT",
-      "proposal": "ENERGY_AWARE_SCHEDULING: optional electricity-price/carbon-intensity signal plus local watt budget to delay non-urgent work when energy conditions are poor.",
-      "guardrail": "EXTERNAL_SIGNAL_MUST_BE DISCLOSED, FALLIBLE AND NEVER A GAME_INPUT"
-    },
-    {
-      "id": "TOPA-H12",
-      "priority": "P2_PUBLIC_DEMO",
-      "finding": "PUBLIC_PAGE_CANNOT SHOW WHETHER A REAL GPU PATH IS AVAILABLE",
-      "proposal": "PRIVACY_MINIMIZED_CAPABILITY_PROBE: explicit opt-in WebGPU/native-agent availability check reporting only coarse capability classes needed for admission, not a detailed device fingerprint.",
-      "guardrail": "NO_AUTOMATIC_HARDWARE_FINGERPRINT_COLLECTION"
-    },
-    {
-      "id": "TOPA-H13",
-      "priority": "P2",
-      "finding": "PROFILE_STORES ROUTE HISTORY BUT DOES NOT TURN VERIFIED COMPUTE INTO A COHERENT NON_WAGERING_IDENTITY",
-      "proposal": "COMPUTE_PASSPORT: visual receipt/provenance history showing which scientific, render, market or public-good tasks the device helped complete; session/reel palette may decorate it but cannot change value or admission.",
-      "guardrail": "NO_WAGERING_VALUE_NO_PERSONAL_JACKPOT_WEIGHT"
-    },
-    {
-      "id": "TOPA-H14",
-      "priority": "P2",
-      "finding": "RESOURCE_POLICY_AND_ROUTE_AURA_NOW_SHARE VISUAL STATE BUT SESSION_IDENTITY IS NOT EXPOSED AS A SINGLE COHERENT MANIFEST",
-      "proposal": "SESSION_IDENTITY_MANIFEST: one presentation-only object joining mode, route, session seed, Reel Forge palette, music profile and resource aura style for reproducible diagnostics and visual debugging.",
-      "benefit": "Makes the procedural system inspectable rather than magical black-box state."
-    }
+    {"id":"TOPA-H01","finding":"PUBLIC_ROUTER_LAGGED_EXISTING_GPU_ARCHITECTURE","status":"IMPLEMENTED_ROUTER_V2_CPU_GPU_HYBRID_MAX"},
+    {"id":"TOPA-H02","finding":"COMPUTE_VISUAL_FEEDBACK_DID_NOT_EXPRESS_RESOURCE_COMMITMENT","status":"IMPLEMENTED_ROUTE_AURA_RESOURCE_ENVELOPE_AND_MAX_SPARKS"},
+    {"id":"TOPA-H03","finding":"CANONICAL_ROUTER_SUPPORTS_WEIGHTED_MULTI_PROVIDER_ALLOCATIONS_BUT_PUBLIC_UI_IS_SINGLE_ROUTE","status":"IMPLEMENTED_BUYER_LAB_ALLOCATION_MIXER_PREVIEW","truth_boundary":"Preview does not alter the single active public demo Route; production uses canonical Router allocations with provider admission."},
+    {"id":"TOPA-H04","finding":"DEEP_RESOURCE_GUARDS_EXIST_BUT_ARE_NOT_USER_CONTROLLABLE_ON_PUBLIC_ROUTER","status":"IMPLEMENTED_ADVANCED_GOVERNOR_POLICY_PREVIEW","truth_boundary":"Static page previews temperature, watts, AC-only and concurrency policy; Desktop Agent/Fabric enforces in production."},
+    {"id":"TOPA-H05","finding":"ROUTES_DO_NOT_EXPLAIN_HARDWARE_FIT","status":"IMPLEMENTED_COARSE_ROUTE_CAPABILITY_HINTS","truth_boundary":"No fake provider availability or detailed device fingerprint is shown."},
+    {"id":"TOPA-H06","finding":"NO_USER_TIME_OR_IDLE_POLICY_DESPITE_LOCAL_RESOURCE_GUARDS","status":"IMPLEMENTED_QUIET_IDLE_AC_PAUSE_POLICY_PREVIEW","truth_boundary":"Local Agent remains authoritative in production."},
+    {"id":"TOPA-H07","finding":"GENERATIVE_MUSIC_REACTS_TO_COMPUTE_ACTIVE_BUT_NOT_CPU_GPU_COMPOSITION","status":"IMPLEMENTED_RESOURCE_SONIFICATION_V1","implementation":"CPU biases low pulse; GPU biases spectral/air/stereo layer; MAX adds restrained deterministic ping. Presentation only."},
+    {"id":"TOPA-H08","finding":"REAL_PROVIDER_AND_REAL_UNIT_ECONOMICS_REMAIN_THE_MAIN_PRODUCT_TRUTH_GATE","status":"OPEN_EXTERNAL_GATE","required":"Connect one approved non-money GPU-friendly workload and measure verified throughput, watt-hours, thermals, retries, verifier failures and verified unit economics."},
+    {"id":"TOPA-H09","finding":"ARTIFACT_HASH_AND_VERIFICATION_EXIST_BUT_HARDWARE_OR_EXECUTION_ATTESTATION_IS_NOT_A_FIRST_CLASS_LAYER","status":"IMPLEMENTED_BUYER_ATTESTATION_CHAIN_HOOK","truth_boundary":"Manifest/artifact/agent/verifier/sign-attest positions are visible but no fake signature, TEE or TPM certification is claimed."},
+    {"id":"TOPA-H10","finding":"FABRIC_IS_MULTI_AGENT_BUT_PUBLIC_PRESENTATION_IS_SINGLE_DEVICE","status":"IMPLEMENTED_COMPUTE_CONSTELLATION_DEMO_VIEW","truth_boundary":"Browser demo is real UI state; Desktop Agent, GPU Adapter and Verifier nodes are visibly marked HOOK."},
+    {"id":"TOPA-H11","finding":"POWER_TELEMETRY_EXISTS_BUT_ENERGY_OR_CARBON_AWARE_ADMISSION_DOES_NOT","status":"IMPLEMENTED_EXTERNAL_ENERGY_SIGNAL_HOOK_ONLY","truth_boundary":"No external electricity-price/carbon feed is connected or invented in the static demo."},
+    {"id":"TOPA-H12","finding":"PUBLIC_PAGE_CANNOT_SHOW_WHETHER_A_REAL_GPU_PATH_IS_AVAILABLE","status":"IMPLEMENTED_OPT_IN_PRIVACY_MINIMIZED_SELF_TEST","implementation":"Local coarse CPU thread class and WebGPU API visibility only; no vendor/model/exact adapter fingerprint and no network transmission."},
+    {"id":"TOPA-H13","finding":"PROFILE_STORES_ROUTE_HISTORY_BUT_DOES_NOT_TURN_VERIFIED_COMPUTE_INTO_A_COHERENT_NON_WAGERING_IDENTITY","status":"IMPLEMENTED_DEMO_COMPUTE_PASSPORT","truth_boundary":"Session-only demo receipts, exportable JSON, non-authoritative and no wagering value."},
+    {"id":"TOPA-H14","finding":"RESOURCE_POLICY_AND_ROUTE_AURA_SHARE_VISUAL_STATE_BUT_SESSION_IDENTITY_IS_NOT_EXPOSED_AS_ONE_MANIFEST","status":"IMPLEMENTED_SESSION_IDENTITY_MANIFEST","implementation":"Buyer Cockpit exposes mode, route, resource policy, procedural presentation states, governor preview, allocation preview and receipt-view state for diagnostics."}
   ],
-  "recommended_sequence": [
-    "R2A_ROUTER_V2_CPU_GPU_HYBRID_AND_RESOURCE_AURA",
-    "R2B_ADVANCED_RESOURCE_GOVERNOR_TEMP_WATTS_BATTERY_CONCURRENCY",
-    "R2C_CAPABILITY_AWARE_ROUTE_CARDS_AND_GPU_VRAM_FIT",
-    "R2D_WEIGHTED_MULTI_ROUTE_ALLOCATION_MIXER",
-    "R2E_RESOURCE_SONIFICATION_AND_COMPUTE_CONSTELLATION",
-    "R3_NON_MONEY_REAL_PROVIDER_GPU_PILOT_AND_MEASURED_UNIT_ECONOMICS"
+  "remaining_external_truth_gates": [
+    "NON_MONEY_REAL_GPU_PROVIDER_PILOT",
+    "MEASURED_UNIT_ECONOMICS",
+    "AUTHORITATIVE_PROVIDER_REPUTATION_AND_AVAILABILITY",
+    "REAL_SIGNED_OR_ATTESTED_EXECUTION_EVIDENCE_WHERE_SUPPORTED",
+    "REAL_EXTERNAL_ENERGY_OR_CARBON_SIGNAL"
   ],
   "anti_patterns": [
     "DO_NOT_MAP_MORE_COMPUTE_TO_BETTER_ODDS_RTP_BONUS_OR_PERSONAL_JACKPOT_CHANCE",
-    "DO_NOT_TREAT_PERCENT_CAPS_AS LINEAR_FLOPS_OR_THROUGHPUT CLAIMS",
-    "DO_NOT_ENABLE_GPU_OR OTHER HARDWARE WITHOUT EXPLICIT USER POLICY",
-    "DO_NOT_ALLOW CENTRAL CONTROLLER TO WIDEN LOCAL RESOURCE CAPS",
-    "DO_NOT_USE DETAILED HARDWARE FINGERPRINTING MERELY FOR DECORATION",
-    "DO_NOT_TURN COMPUTE PASSPORT OR IMPACT INTO WAGERING VALUE"
+    "DO_NOT_TREAT_PERCENT_CAPS_AS_LINEAR_FLOPS_OR_THROUGHPUT_CLAIMS",
+    "DO_NOT_ENABLE_GPU_OR_OTHER_HARDWARE_WITHOUT_EXPLICIT_USER_POLICY",
+    "DO_NOT_ALLOW_CENTRAL_CONTROLLER_TO_WIDEN_LOCAL_RESOURCE_CAPS",
+    "DO_NOT_USE_DETAILED_HARDWARE_FINGERPRINTING_FOR_DECORATION",
+    "DO_NOT_TURN_COMPUTE_PASSPORT_OR_IMPACT_INTO_WAGERING_VALUE",
+    "DO_NOT_PRESENT_BUYER_HOOKS_AS_CONNECTED_PRODUCTION_SERVICES"
   ],
-  "conclusion": "The largest near-term HELIOS opportunity is not another isolated feature. It is convergence: expose the already-implemented compute capabilities through one explicit resource contract, then let routing, verified receipts and presentation share that contract while game mathematics remains isolated. GPU support, weighted route allocation, resource safety limits and multi-agent fabric are already present deeply enough that the public Router can evolve into a genuine compute cockpit rather than a single CPU slider."
+  "conclusion": "Every TOPA finding that can be added honestly to a sellable static demo is now represented in the public HELIOS experience or Buyer Lab. The only remaining items are genuine external truth gates that require a real provider, verifier, agent enforcement or external signal and therefore must not be simulated as production fact."
 }
