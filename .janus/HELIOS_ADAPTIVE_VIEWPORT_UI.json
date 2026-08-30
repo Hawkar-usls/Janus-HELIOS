@@ -1,0 +1,67 @@
+{
+  "schema": "janus.helios.adaptive-viewport-ui.v1",
+  "module": "helios-mobile.js",
+  "version": "1.2.0",
+  "classification": "PRESENTATION_ONLY_ADAPTIVE_VIEWPORT_SYSTEM",
+  "purpose": "Keep the HELIOS selling demo intentionally composed across ultrawide monitors, desktop and compact laptop windows, tablets, portrait phones and landscape phones without changing game or compute authority.",
+  "viewport_classes": [
+    "ULTRAWIDE",
+    "DESKTOP",
+    "COMPACT_DESKTOP",
+    "TABLET",
+    "PHONE",
+    "SMALL_PHONE",
+    "LANDSCAPE_PHONE"
+  ],
+  "breakpoints": {
+    "ultrawide_min_width_px": 1600,
+    "desktop_min_width_px": 1200,
+    "compact_desktop_min_width_px": 981,
+    "tablet_min_width_px": 641,
+    "phone_min_width_px": 391,
+    "small_phone_max_width_px": 390,
+    "landscape_phone_min_width_px": 700,
+    "landscape_phone_max_width_px": 980,
+    "landscape_phone_max_height_px": 560
+  },
+  "layout_rules": {
+    "ultrawide_uses_expanded_canvas": true,
+    "compact_desktop_remains_two_column": true,
+    "tablet_uses_stacked_cockpit": true,
+    "phone_uses_thumb_first_controls": true,
+    "landscape_phone_restores_two_column_cockpit": true,
+    "tiny_phone_route_grid_can_collapse_to_one_column": true,
+    "horizontal_page_overflow_forbidden": true
+  },
+  "responsive_surfaces": [
+    "GAME_PANEL",
+    "REELS",
+    "MODE_CONTROLS",
+    "ROUTER",
+    "RESOURCE_CONSOLE",
+    "RECEIPT_VIEWER",
+    "TRUST_LIFECYCLE",
+    "BUYER_LAB",
+    "PROFILE_DRAWER",
+    "BONUS_OVERLAYS",
+    "ECOSYSTEM_NAV"
+  ],
+  "accessibility": {
+    "safe_area_aware": true,
+    "dynamic_viewport_units": true,
+    "coarse_pointer_min_target_px": 44,
+    "focus_visible_ring": true,
+    "reduced_motion_respected": true
+  },
+  "exposure_lock_preserved": true,
+  "reads_game_math": false,
+  "reads_bet": false,
+  "reads_balance": false,
+  "authority": {
+    "game_effect": "NONE",
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
