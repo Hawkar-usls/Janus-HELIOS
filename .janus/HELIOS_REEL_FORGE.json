@@ -1,0 +1,22 @@
+{
+  "schema": "janus.helios.reel_forge.v1",
+  "module": "helios-reel-forge.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_MODE_ROUTE_SESSION_REEL_FORGE",
+  "purpose": "Generate a bounded, session-stable visual identity for the reels from game mode, selected route and procedural session seed without changing symbol text or game math.",
+  "inputs": ["GAME_MODE_PRESENTATION_STATE", "ACTIVE_ROUTE", "MUSIC_SESSION_SEED"],
+  "generated_features": ["CELL_SURFACE", "FRAME_RADIUS", "LATTICE_PATTERN", "GLOW_MIX", "TEXTURE_GAP", "PATTERN_ANGLE", "DEPTH"],
+  "symbol_text_preserved": true,
+  "session_stable": true,
+  "reads_game_math": false,
+  "reads_visible_symbol": false,
+  "reads_bet": false,
+  "reads_balance": false,
+  "reads_compute": false,
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
