@@ -21,7 +21,7 @@
   function textHash(text){let h=2166136261>>>0;for(const ch of String(text)){h^=ch.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
   function unit(salt=0){return hash32((state.sessionSeed^textHash(state.mode)^textHash(state.route)^salt)>>>0)/0xffffffff;}
   function hexRgb(hex){const raw=String(hex).replace('#','');const n=parseInt(raw.length===3?raw.split('').map(x=>x+x).join(''):raw,16);return {r:(n>>16)&255,g:(n>>8)&255,b:n&255};}
-  function blend(a,b,t){const A=hexRgb(a),B=hexRgb(b),k=clamp(t,0,1);const c=x=>Math.round(x);return `rgb(${c(A.r+(B.r-A.r)*k)} ${c(A.g+(B.g-A.g)*k)} ${c(A.b+(B.b-A.b)*k)})`;}
+  function blendHex(a,b,t){const A=hexRgb(a),B=hexRgb(b),k=clamp(t,0,1),h=n=>Math.round(n).toString(16).padStart(2,'0');return `#${h(A.r+(B.r-A.r)*k)}${h(A.g+(B.g-A.g)*k)}${h(A.b+(B.b-A.b)*k)}`;}
   function rgba(hex,a){const c=hexRgb(hex);return `rgba(${c.r},${c.g},${c.b},${clamp(a,0,1).toFixed(3)})`;}
 
   function activeRouteShort(){
@@ -67,7 +67,7 @@
     const route=ROUTES[state.route]||ROUTES.MARKET;
     const modeColor=MODES[state.mode]||MODES.helios;
     const routePrimary=route.primary;
-    const mixed=blend(routePrimary,modeColor,.16+unit(11)*.10);
+    const mixed=blendHex(routePrimary,modeColor,.16+unit(11)*.10);
     const lowAlpha=(state.streaming?.20:.12)+unit(21)*.055;
     const highAlpha=(state.streaming?.38:.24)+unit(31)*.075;
     const borderAlpha=(state.streaming?.54:.34)+unit(41)*.08;
@@ -78,7 +78,7 @@
     state.reels.dataset.routeAuraMode=state.mode;
     state.reels.style.setProperty('--route-aura-low',rgba(routePrimary,lowAlpha));
     state.reels.style.setProperty('--route-aura-high',rgba(route.secondary,highAlpha));
-    state.reels.style.setProperty('--route-aura-border',mixed.replace('rgb(','rgba(').replace(')',`,${clamp(borderAlpha,0,1).toFixed(3)})`));
+    state.reels.style.setProperty('--route-aura-border',rgba(mixed,borderAlpha));
     state.reels.style.setProperty('--route-aura-breath',breath);
   }
 
