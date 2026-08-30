@@ -171,7 +171,10 @@
         public_gpu_execution:p.public_page_gpu_execution,
         production_gpu_gate:p.production_gpu_gate
       };
-      state.patchGuard=true; state.receipt.textContent=JSON.stringify(obj,null,2); state.patchGuard=false;
+      const next=JSON.stringify(obj,null,2);
+      if(next===text) return;
+      state.patchGuard=true;
+      try{state.receipt.textContent=next;}finally{state.patchGuard=false;}
     }catch(_){state.patchGuard=false;}
   }
 
