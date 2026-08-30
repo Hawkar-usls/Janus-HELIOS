@@ -242,7 +242,7 @@
     if(document.getElementById('helios-reel-forge-script')) return;
     const script=document.createElement('script');
     script.id='helios-reel-forge-script';
-    script.src='./helios-reel-forge.js?v=1.0.0';
+    script.src='./helios-reel-forge.js?v=1.1.0';
     script.async=false;
     document.head.appendChild(script);
   }
@@ -251,7 +251,7 @@
     if(document.getElementById('helios-route-aura-script')) return;
     const script=document.createElement('script');
     script.id='helios-route-aura-script';
-    script.src='./helios-route-aura.js?v=1.0.0';
+    script.src='./helios-route-aura.js?v=1.1.0';
     script.async=false;
     document.head.appendChild(script);
   }
