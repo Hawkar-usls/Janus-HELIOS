@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [source,contract] = await Promise.all([
+const [source,contract,indexHtml] = await Promise.all([
   readFile(new URL('../helios-receipt-viewer.js', import.meta.url),'utf8'),
-  readFile(new URL('../.janus/HELIOS_RECEIPT_VIEWER.json', import.meta.url),'utf8').then(JSON.parse)
+  readFile(new URL('../.janus/HELIOS_RECEIPT_VIEWER.json', import.meta.url),'utf8').then(JSON.parse),
+  readFile(new URL('../index.html', import.meta.url),'utf8')
 ]);
 
 assert.match(source,/VERSION='1\.0\.0'/);
@@ -27,6 +28,8 @@ assert.match(source,/VERIFIED/);
 assert.match(source,/textContent/);
 assert.match(source,/raw_json_preserved:true/);
 assert.match(source,/receipt_authority:'NONE'/);
+assert.match(indexHtml,/id="helios-receipt-viewer-script"[^>]+helios-receipt-viewer\.js\?v=1\.0\.0/);
+assert.match(indexHtml,/HELIOS ROUTER v2/);
 assert.doesNotMatch(source,/getElementById\(['"]bet['"]\)/);
 assert.doesNotMatch(source,/getElementById\(['"]balance['"]\)/);
 assert.doesNotMatch(source,/loss_streak|near_miss|wager_history|inferred_vulnerability/i);
