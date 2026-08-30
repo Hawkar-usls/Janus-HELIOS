@@ -1,0 +1,57 @@
+{
+  "schema": "janus.helios.receipt_viewer.v1",
+  "module": "helios-receipt-viewer.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_HUMAN_MACHINE_RECEIPT_VIEWER",
+  "purpose": "Present the latest compute receipt as a human-readable operational summary while preserving the canonical raw JSON for machine inspection, copy, future provider verification and audit tooling.",
+  "human_surface": {
+    "default_view": "SUMMARY",
+    "fields": [
+      "RECEIPT_OR_PREVIEW_STATE",
+      "PROVIDER_ROUTE",
+      "TASK_TYPE",
+      "CPU_GPU_RESOURCE_POLICY",
+      "COMPUTE_UNITS_AND_ASSET",
+      "PROOF_CLASS",
+      "AUDITED_SINK",
+      "RECEIPT_ID",
+      "TIMESTAMP"
+    ],
+    "proof_labels": ["ROUTE_PREVIEW", "DEMO_PROOF", "VERIFIED", "UNVERIFIED"],
+    "raw_json_default": "COLLAPSED",
+    "copy_raw_json": true
+  },
+  "machine_surface": {
+    "canonical_element_id": "receipt",
+    "raw_json_preserved": true,
+    "viewer_mutates_receipt_payload": false,
+    "future_provider_fields_may_extend_payload": true
+  },
+  "trust_boundary": {
+    "mock_or_simulation_is_never_labeled_verified": true,
+    "verified_label_requires_explicit_verified_state": true,
+    "dynamic_receipt_values_render_with_textContent": true,
+    "receipt_authority": "NONE",
+    "provider_verification_authority": "NONE",
+    "settlement_authority": "NONE"
+  },
+  "reads": ["LATEST_RECEIPT_TEXT", "RECEIPT_STATUS_TEXT"],
+  "forbidden_inputs": [
+    "BET_SIZE",
+    "BALANCE",
+    "LOSS_STREAK",
+    "NEAR_MISS",
+    "WAGER_HISTORY",
+    "INFERRED_VULNERABILITY",
+    "RNG_INTERNAL_STATE"
+  ],
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE",
+    "receipt_mutation_effect": "NONE"
+  },
+  "design_principle": "HUMAN_SUMMARY_FIRST_RAW_MACHINE_RECEIPT_ONE_DISCLOSURE_LEVEL_DEEP"
+}
