@@ -1,0 +1,33 @@
+{
+  "schema": "janus.helios.resource-console.v2",
+  "module": "helios-resource-console.js",
+  "version": "2.0.0",
+  "classification": "EXPLICIT_USER_RESOURCE_POLICY_CONTROL",
+  "purpose": "Expose the existing HELIOS CPU/GPU/HYBRID resource capabilities on the public evaluation surface while preserving immediate revoke and the game/compute boundary.",
+  "resource_classes": ["CPU", "GPU", "HYBRID", "IDLE"],
+  "public_controls": ["CPU_PERCENT", "GPU_PERCENT", "CPU_PROFILE", "GPU_PROFILE", "HYBRID_PROFILE", "MAX_PROFILE"],
+  "gpu_public_execution": "SIMULATED_POLICY_ONLY",
+  "gpu_production_gate": "DESKTOP_AGENT_OR_APPROVED_GPU_ADAPTER",
+  "visual_envelope": {
+    "cpu_weight": 0.35,
+    "gpu_weight": 0.65,
+    "throughput_claim": "NONE_PRESENTATION_MAPPING_ONLY",
+    "max_policy_requires_both_channels_at_configured_max": true
+  },
+  "receipt_patch": {
+    "router_version": "2.0.0",
+    "records_cpu_percent": true,
+    "records_gpu_percent": true,
+    "records_resource_class": true,
+    "throughput_scaling": "NOT_MODELED"
+  },
+  "reads_game_math": false,
+  "reads_bet": false,
+  "reads_balance": false,
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "game_effect": "NONE"
+  }
+}
