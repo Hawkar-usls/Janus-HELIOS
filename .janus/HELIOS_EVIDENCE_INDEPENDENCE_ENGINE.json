@@ -1,0 +1,91 @@
+{
+  "schema": "janus.helios.evidence-independence.contract.v1",
+  "version": "1.0.0",
+  "classification": "CROSS_NODE_REPLICATION_INDEPENDENCE_GATE",
+  "core_law": "REPLICATION_COUNT_NOT_EQUAL_INDEPENDENT_ROOT_COUNT",
+  "purpose": "Prevent correlated nodes, shared infrastructure or duplicated execution lineages from masquerading as independent replications in HELIOS Edge Constellation evidence.",
+  "required_roots": [
+    "physical_device_root",
+    "execution_lineage_root",
+    "authority_root",
+    "site_network_root",
+    "observation_epoch_root",
+    "job_stream_root"
+  ],
+  "root_semantics": {
+    "physical_device_root": "Pseudonymous physical device identity or independently attested hardware root. Same root can never count as two independent replications.",
+    "execution_lineage_root": "Firmware or executor implementation lineage/digest family used to perform the work.",
+    "authority_root": "Provider, pool, gateway or settlement authority lineage that issued or accepted the work.",
+    "site_network_root": "Deployment/site plus network-egress lineage sufficient to detect same-rack/same-egress correlation without observing human activity.",
+    "observation_epoch_root": "Sealed time/calibration epoch for the observation window.",
+    "job_stream_root": "Independent cross-node job-stream or experiment-seed lineage. Within each node the I0 and random arms still share the same local job stream."
+  },
+  "strong_independence": {
+    "pair_rule": "ALL_REQUIRED_ROOTS_KNOWN_AND_DISTINCT",
+    "unknown_counts_as_independent": false,
+    "same_hardware_class_is_dependency": false,
+    "different_hardware_class_is_proof_of_independence": false,
+    "same_physical_root": "HARD_DEPENDENCY",
+    "partial_independence": "RECORDED_BUT_NOT_COUNTED_AS_STRONG_INDEPENDENCE",
+    "probability_interpretation": "FORBIDDEN"
+  },
+  "graph_model": {
+    "vertex": "COMPLETE_NODE_LOCAL_I0_VS_RANDOM_EFFECT_VECTOR",
+    "edge": "PAIRWISE_STRONGLY_INDEPENDENT",
+    "selected_replication_set": "MAXIMUM_CLIQUE_OF_STRONG_INDEPENDENCE_GRAPH",
+    "exact_search_limit_nodes": 24,
+    "fallback_over_limit": "DETERMINISTIC_GREEDY_PAIRWISE_INDEPENDENT_SET_WITH_EXACT_FALSE",
+    "raw_hashrate_weight": false,
+    "raw_checked_work_weight": false
+  },
+  "reporting": {
+    "raw_replication_count": true,
+    "known_physical_root_count": true,
+    "strong_independent_replication_count": true,
+    "correlated_or_nonselected_nodes": true,
+    "axis_diversity": true,
+    "dependency_clusters": true,
+    "confidence_probability": false,
+    "causal_proof": false
+  },
+  "constellation_gate": {
+    "minimum_complete_nodes": 2,
+    "minimum_strongly_independent_complete_nodes": 2,
+    "aggregation_uses_only_selected_strong_independence_set": true,
+    "unknown_lineage_blocks_independent_replication_claim": true,
+    "directional_consistency_is_causal_proof": false
+  },
+  "privacy": {
+    "human_blind": true,
+    "forbidden_inputs": [
+      "screen",
+      "keyboard",
+      "mouse",
+      "microphone",
+      "camera",
+      "clipboard",
+      "browser_history",
+      "process_name",
+      "game_name",
+      "window_title"
+    ],
+    "site_network_root_must_not_require_human_observation": true
+  },
+  "public_demo": {
+    "presentation_only": true,
+    "connected_nodes": 0,
+    "fake_lineage_roots": false,
+    "fake_independence_score": false,
+    "fake_confidence_probability": false,
+    "device_access": false,
+    "pool_access": false
+  },
+  "authority": {
+    "game_effect": "NONE",
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "settlement_authority": "NONE",
+    "public_compute_execution_authority": "NONE"
+  }
+}
