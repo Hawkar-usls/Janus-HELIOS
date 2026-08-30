@@ -8,8 +8,13 @@ import {
   FABRIC_ASSIGNMENT_SCHEMA,
   RESOURCE_CLASSES
 } from './helios-desktop-fabric.js';
+import {
+  HeliosHardwareGuardian,
+  assertHardwareOnlyTelemetry,
+  tightenExecutionBudgetForGuardian
+} from './helios-hardware-guardian.js';
 
-export const HELIOS_DESKTOP_AGENT_VERSION = '1.1.0';
+export const HELIOS_DESKTOP_AGENT_VERSION = '1.2.0';
 export const DESKTOP_AGENT_RESULT_SCHEMA = 'janus.helios.desktop-agent.result.v1';
 
 const FORBIDDEN_KEYS = new Set([
@@ -54,6 +59,12 @@ function normalizeExecutionBudget(input) {
     max_watts: boundedNumber(input.max_watts ?? 0, 'MAX_WATTS', { min: 0, max: 100_000 }),
     max_concurrent: boundedNumber(input.max_concurrent, 'MAX_CONCURRENT', { min: 1, max: 64 })
   };
+}
+
+function optionalMetric(value) {
+  if (value == null || value === '') return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
 }
 
 export class DesktopExecutorRegistry {
@@ -108,6 +119,9 @@ export class HeliosDesktopAgentRuntime {
       max_temp_c: Math.max(45, Math.min(95, Number(resource_policy.max_temp_c || 80))),
       max_watts: Math.max(0, Number(resource_policy.max_watts || 0)),
       battery_allowed: resource_policy.battery_allowed === true,
+      min_battery_percent: Math.max(5, Math.min(100, Number(resource_policy.min_battery_percent ?? 40))),
+      hardware_guardian_enabled: resource_policy.hardware_guardian_enabled !== false,
+      missing_thermal_sensor_action: String(resource_policy.missing_thermal_sensor_action || 'LIMIT').toUpperCase(),
       immediate_revoke: resource_policy.immediate_revoke !== false
     };
     this.gpuInventory = clone(Array.isArray(gpu_inventory) ? gpu_inventory : []);
@@ -116,6 +130,23 @@ export class HeliosDesktopAgentRuntime {
     this.resultSink = result_sink;
     this.revoked = false;
     this.inflight = 0;
+    this.guardian = new HeliosHardwareGuardian({
+      enabled: this.policy.hardware_guardian_enabled,
+      max_temp_c: this.policy.max_temp_c,
+      max_watts: this.policy.max_watts,
+      battery_allowed: this.policy.battery_allowed,
+      min_battery_percent: this.policy.min_battery_percent,
+      missing_thermal_sensor_action: this.policy.missing_thermal_sensor_action,
+      thermal_margin_c: resource_policy.thermal_margin_c,
+      thermal_recovery_margin_c: resource_policy.thermal_recovery_margin_c,
+      vendor_safety_margin_c: resource_policy.vendor_safety_margin_c,
+      max_temp_rise_c_per_min: resource_policy.max_temp_rise_c_per_min,
+      min_available_memory_mb: resource_policy.min_available_memory_mb,
+      min_available_vram_mb: resource_policy.min_available_vram_mb,
+      max_host_cpu_load_percent: resource_policy.max_host_cpu_load_percent,
+      max_host_gpu_load_percent: resource_policy.max_host_gpu_load_percent,
+      cooldown_hold_ms: resource_policy.cooldown_hold_ms
+    });
   }
 
   registerExecutor(spec) { return this.registry.register(spec); }
@@ -132,17 +163,28 @@ export class HeliosDesktopAgentRuntime {
 
   async telemetry() {
     const external = typeof this.telemetryProvider === 'function' ? await this.telemetryProvider() : {};
+    assertHardwareOnlyTelemetry(external || {});
     return {
       cpu_load: Number(external?.cpu_load ?? 0),
       gpu_load: Number(external?.gpu_load ?? 0),
-      temperature_c: external?.temperature_c == null ? null : Number(external.temperature_c),
-      battery_percent: external?.battery_percent == null ? null : Number(external.battery_percent),
+      temperature_c: optionalMetric(external?.temperature_c),
+      cpu_temperature_c: optionalMetric(external?.cpu_temperature_c),
+      gpu_temperature_c: optionalMetric(external?.gpu_temperature_c),
+      gpu_hotspot_temperature_c: optionalMetric(external?.gpu_hotspot_temperature_c),
+      vram_temperature_c: optionalMetric(external?.vram_temperature_c),
+      vendor_slowdown_temp_c: optionalMetric(external?.vendor_slowdown_temp_c),
+      vendor_shutdown_temp_c: optionalMetric(external?.vendor_shutdown_temp_c),
+      battery_percent: optionalMetric(external?.battery_percent),
       on_ac_power: external?.on_ac_power !== false,
       available_memory_mb: Math.round(os.freemem() / 1024 / 1024),
       available_vram_mb: Math.max(0, Number(external?.available_vram_mb || 0)),
-      estimated_watts: Math.max(0, Number(external?.estimated_watts || 0)),
+      estimated_watts: Math.max(0, Number(external?.estimated_watts || external?.power_w || 0)),
+      power_limit_w: optionalMetric(external?.power_limit_w),
+      fan_percent: optionalMetric(external?.fan_percent),
       latency_ms: Math.max(0, Number(external?.latency_ms || 0)),
-      reliability: Math.max(0, Math.min(1, Number(external?.reliability ?? 0.5)))
+      reliability: Math.max(0, Math.min(1, Number(external?.reliability ?? 0.5))),
+      telemetry_scope: 'HARDWARE_ONLY',
+      human_observation: 'FORBIDDEN'
     };
   }
 
@@ -151,9 +193,12 @@ export class HeliosDesktopAgentRuntime {
     const capabilities = [...new Set([
       'GENERAL_CPU',
       ...(this.gpuInventory.length ? ['GENERAL_GPU'] : []),
+      'HARDWARE_GUARDIAN',
       ...this.extraCapabilities,
       ...this.registry.capabilities()
     ])].sort();
+    const resourceClass = this.policy.allow_gpu && this.gpuInventory.length ? (this.policy.allow_cpu ? 'HYBRID' : 'GPU') : 'CPU';
+    const guardian = this.guardian.evaluate(telemetry, { resource_class: resourceClass });
     return {
       agent_id: this.agentId,
       session_id: String(session_id),
@@ -165,6 +210,7 @@ export class HeliosDesktopAgentRuntime {
       gpus: clone(this.gpuInventory),
       resource_policy: clone(this.policy),
       telemetry,
+      hardware_guardian: clone(guardian),
       revoked: this.revoked
     };
   }
@@ -206,30 +252,36 @@ export class HeliosDesktopAgentRuntime {
     if (effectiveWatts > 0 && telemetry.estimated_watts > effectiveWatts) throw new Error('POWER_BUDGET_BLOCK');
     if (telemetry.battery_percent != null && telemetry.on_ac_power === false && !this.policy.battery_allowed) throw new Error('BATTERY_POLICY_BLOCK');
 
+    const guardian = this.guardian.evaluate(telemetry, { resource_class: resourceClass, now_ms: at });
+    if (!guardian.allow_execution) throw new Error(`HARDWARE_GUARDIAN_BLOCK:${guardian.state}:${guardian.reasons[0] || 'UNSPECIFIED'}`);
+    const guardedBudget = tightenExecutionBudgetForGuardian(budget, guardian);
+
     const executor = this.registry.resolve(assignment);
     if (!executor) throw new Error('APPROVED_EXECUTOR_NOT_FOUND_FOR_EXACT_ARTIFACT');
     const advertised = new Set([
       'GENERAL_CPU',
       ...(this.gpuInventory.length ? ['GENERAL_GPU'] : []),
+      'HARDWARE_GUARDIAN',
       ...this.extraCapabilities,
       ...this.registry.capabilities()
     ]);
     for (const capability of assignment.requirements?.required_capabilities || []) {
       if (!advertised.has(capability)) throw new Error(`CAPABILITY_NOT_AVAILABLE:${capability}`);
     }
-    return { executor, budget };
+    return { executor, budget: guardedBudget, guardian };
   }
 
   async executeAssignment(assignment) {
     const telemetry = await this.telemetry();
-    const { executor, budget } = this.assertAssignmentAllowed(assignment, telemetry);
+    const { executor, budget, guardian } = this.assertAssignmentAllowed(assignment, telemetry);
     this.inflight += 1;
     const startedAt = Date.now();
     try {
       const output = await executor.handler({
         payload: clone(assignment.payload),
         assignment: clone(assignment),
-        resource_budget: clone(budget)
+        resource_budget: clone(budget),
+        hardware_guardian: clone(guardian)
       });
       assertNoGameCoupling(output || {}, 'executor_output');
       assertNoClientSecrets(output || {}, 'executor_output');
@@ -246,6 +298,14 @@ export class HeliosDesktopAgentRuntime {
         artifact_digest: normalizeDigest(assignment.artifact_digest),
         ok: true,
         output: clone(output),
+        hardware_guardian: {
+          state: guardian.state,
+          allowed_load_scale: guardian.allowed_load_scale,
+          health_score: guardian.health_score,
+          reasons: [...guardian.reasons],
+          sensor_scope: guardian.sensor_scope,
+          human_observation: guardian.human_observation
+        },
         started_at_ms: startedAt,
         completed_at_ms: Date.now(),
         game_event_weighting: 'FORBIDDEN',
