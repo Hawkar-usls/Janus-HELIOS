@@ -19,6 +19,9 @@
     computeObserver:null,
     anchorRaf:0,
     cpuPercent:0,
+    gpuPercent:0,
+    resourcePolicyIntensity:0,
+    resourceClass:'CPU',
     computeActive:false
   };
 
@@ -33,6 +36,7 @@
        * Optional mode camera/tint presentation is owned by helios-mode-flight.js.
        * Optional bonus-only orbit presentation is owned by helios-bonus-quasar.js.
        * Optional quasar sonification follows that presentation through helios-quasar-sonification.js.
+       * Optional Router v2 CPU/GPU policy controls are owned by helios-resource-console.js.
        * Optional mode-native reel presentation is owned by helios-reel-identity.js.
        * Optional procedural mode×route×seed reel surfaces are owned by helios-reel-forge.js.
        * Optional active-route reel glow is owned by helios-route-aura.js.
@@ -76,7 +80,7 @@
       @keyframes heliosSoftWinPop{0%{transform:scale(.995)}45%{transform:scale(1.012)}100%{transform:none}}
       .last-win-card.win{animation:heliosSoftWinPop .82s cubic-bezier(.22,.61,.36,1)!important}
 
-      /* Dyson follows layout and CPU policy only. No game-event transform pulses. */
+      /* Dyson follows layout and explicit CPU/GPU policy only. No game-event transform pulses. */
       .cosmos>.helios-dyson-sphere{
         transition:left .72s cubic-bezier(.2,.76,.22,1),top .72s cubic-bezier(.2,.76,.22,1),width 1.05s cubic-bezier(.2,.76,.22,1),height 1.05s cubic-bezier(.2,.76,.22,1),opacity 1.15s ease!important;
         transform:translate(-50%,-50%) rotate(-7deg) scale(1)!important;
@@ -117,23 +121,42 @@
     return state.cpuPercent;
   }
 
+  function readResourcePolicy(){
+    readCpuPercent();
+    const p=window.HELIOS_RESOURCE_POLICY?.getState?.();
+    if(p){
+      state.cpuPercent=clamp(p.cpu_percent,0,100);
+      state.gpuPercent=clamp(p.gpu_percent,0,100);
+      state.resourcePolicyIntensity=clamp(p.visual_envelope_ratio,0,1);
+      state.resourceClass=String(p.resource_class||'IDLE');
+      return state.resourcePolicyIntensity;
+    }
+    const gpu=document.getElementById('gpu');
+    state.gpuPercent=clamp(Number(gpu?.value||0),0,100);
+    const cpuMin=Number(state.cpuInput?.min||0),cpuMax=Math.max(cpuMin+1,Number(state.cpuInput?.max||30));
+    const gpuMax=Math.max(1,Number(gpu?.max||80));
+    const cpuRatio=clamp((state.cpuPercent-cpuMin)/(cpuMax-cpuMin),0,1),gpuRatio=clamp(state.gpuPercent/gpuMax,0,1);
+    state.resourcePolicyIntensity=clamp(cpuRatio*.35+gpuRatio*.65,0,1);
+    state.resourceClass=state.cpuPercent>0&&state.gpuPercent>0?'HYBRID':state.gpuPercent>0?'GPU':state.cpuPercent>0?'CPU':'IDLE';
+    return state.resourcePolicyIntensity;
+  }
+
   function dysonPolicyScale(){
-    if(!state.cpuInput) return 1;
-    const min=Number(state.cpuInput.min||0);
-    const max=Math.max(min+1,Number(state.cpuInput.max||30));
-    const t=clamp((readCpuPercent()-min)/(max-min),0,1);
+    const t=readResourcePolicy();
     return .82+t*.42;
   }
 
   function syncDysonActivity(){
     if(!state.dyson||!state.computeState) return;
-    readCpuPercent();
-    const active=state.cpuPercent>0&&state.computeState.textContent.includes('ACTIVE');
+    readResourcePolicy();
+    const active=state.resourcePolicyIntensity>0&&state.computeState.textContent.includes('ACTIVE');
     state.computeActive=active;
     state.dyson.classList.toggle('dyson-active',active);
     state.dyson.classList.toggle('dyson-dormant',!active);
     state.dyson.dataset.computeActive=active?'1':'0';
     state.dyson.dataset.cpuPolicyPercent=String(Math.round(state.cpuPercent));
+    state.dyson.dataset.gpuPolicyPercent=String(Math.round(state.gpuPercent));
+    state.dyson.dataset.resourceClass=state.resourceClass;
     scheduleAnchor();
   }
 
@@ -175,9 +198,11 @@
 
   function bindComputePolicy(){
     if(!state.cpuInput||!state.computeState) return;
-    const onPolicy=()=>{readCpuPercent();scheduleAnchor();syncDysonActivity();};
+    const onPolicy=()=>{readResourcePolicy();scheduleAnchor();syncDysonActivity();};
     state.cpuInput.addEventListener('input',onPolicy,{passive:true});
     state.cpuInput.addEventListener('change',onPolicy,{passive:true});
+    window.addEventListener('helios:resource-policy',onPolicy);
+    window.addEventListener('helios:resource-console-ready',onPolicy);
     state.computeObserver=new MutationObserver(syncDysonActivity);
     state.computeObserver.observe(state.computeState,{childList:true,characterData:true,subtree:true});
     syncDysonActivity();
@@ -229,6 +254,15 @@
     document.head.appendChild(script);
   }
 
+  function loadResourceConsole(){
+    if(document.getElementById('helios-resource-console-script')) return;
+    const script=document.createElement('script');
+    script.id='helios-resource-console-script';
+    script.src='./helios-resource-console.js?v=2.0.0';
+    script.async=false;
+    document.head.appendChild(script);
+  }
+
   function loadReelIdentity(){
     if(document.getElementById('helios-reel-identity-script')) return;
     const script=document.createElement('script');
@@ -251,7 +285,7 @@
     if(document.getElementById('helios-route-aura-script')) return;
     const script=document.createElement('script');
     script.id='helios-route-aura-script';
-    script.src='./helios-route-aura.js?v=1.1.0';
+    script.src='./helios-route-aura.js?v=1.2.0';
     script.async=false;
     document.head.appendChild(script);
   }
@@ -277,6 +311,7 @@
     loadModeFlight();
     loadBonusQuasar();
     loadQuasarSonification();
+    loadResourceConsole();
     loadReelIdentity();
     loadReelForge();
     loadRouteAura();
@@ -289,6 +324,9 @@
         ui_anchor:state.dyson?.dataset.uiAnchor||'UNRESOLVED',
         reduced_motion:state.reducedMotion,
         cpu_policy_percent:state.cpuPercent,
+        gpu_policy_percent:state.gpuPercent,
+        resource_policy_intensity:state.resourcePolicyIntensity,
+        resource_class:state.resourceClass,
         dyson_compute_active:state.computeActive,
         ui_palette_transition:'NONE_STATIC_ROOT_THEME',
         camera_mode_flyby:false,
@@ -316,6 +354,7 @@
       presentation_only:true,
       ui_bound_dyson:true,
       cpu_policy_scaled_dyson:true,
+      gpu_policy_scaled_dyson:true,
       compute_gated_dyson_ambient:true,
       mode_camera_flyby:false,
       mode_palette_interpolation:false,
