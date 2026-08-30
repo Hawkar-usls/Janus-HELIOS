@@ -139,6 +139,15 @@
     }
   }
 
+  function loadBuyerEnhancements(){
+    if(!document.getElementById('helios-buyer-cockpit-script')){
+      const script=document.createElement('script');script.id='helios-buyer-cockpit-script';script.src='./helios-buyer-cockpit.js?v=1.0.0';script.async=false;document.head.appendChild(script);
+    }
+    if(!document.getElementById('helios-resource-sonification-script')){
+      const script=document.createElement('script');script.id='helios-resource-sonification-script';script.src='./helios-resource-sonification.js?v=1.0.0';script.async=false;document.head.appendChild(script);
+    }
+  }
+
   function attach(){
     if(state.attached) return true;
     state.raw=document.getElementById('receipt');
@@ -158,6 +167,7 @@
     state.attached=true; render();
     window.HELIOS_RECEIPT_VIEWER=Object.freeze({version:VERSION,getState:()=>({version:VERSION,attached:state.attached,view:state.host?.dataset.receiptView||'UNKNOWN',raw_open:Boolean(state.details?.open),presentation_only:true,raw_json_preserved:true,receipt_authority:'NONE'})});
     window.dispatchEvent(new CustomEvent('helios:receipt-viewer-ready',{detail:{version:VERSION,human_summary:true,raw_json_collapsible:true,copy_json:true,presentation_only:true,raw_json_preserved:true,receipt_authority:'NONE'}}));
+    loadBuyerEnhancements();
     return true;
   }
 
