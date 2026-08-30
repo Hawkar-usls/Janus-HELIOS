@@ -1,0 +1,29 @@
+{
+  "schema": "janus.helios.bonus_quasar.v1",
+  "module": "helios-bonus-quasar.js",
+  "version": "1.0.0",
+  "classification": "PRESENTATION_ONLY_BONUS_ORBIT_QUASAR",
+  "purpose": "Transform the existing right-side orbit bubble into a local rotating quasar only during bonus presentation states, without changing game math, payout, RNG, or compute routing.",
+  "activation": {
+    "free_spins_session": "helios:bonus-session-start + solar-free-spins-active lifecycle",
+    "natural_solar_corona": "helios:solar-corona transient",
+    "transient_corona_ms": 3400
+  },
+  "visual_policy": {
+    "fullscreen_overlay": false,
+    "strobe": false,
+    "local_orbit_field_only": true,
+    "continuous_spin_during_bonus": true,
+    "reduced_motion_supported": true
+  },
+  "reads": ["BONUS_PRESENTATION_SIGNAL"],
+  "forbidden_inputs": ["GAME_MODE","SPIN_STATE","CASCADE_EVENT","SETTLED_WIN_STATE","BET_SIZE","BALANCE","COMPUTE_ROUTE","RNG_INTERNAL_STATE"],
+  "authority": {
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "bet_effect": "NONE",
+    "bonus_probability_effect": "NONE",
+    "compute_routing_effect": "NONE"
+  }
+}
