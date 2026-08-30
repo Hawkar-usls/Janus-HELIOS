@@ -1,6 +1,6 @@
 {
   "schema": "janus.helios.reference-routes.v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "routes": [
     {
       "provider_id": "science-requestor",
@@ -18,6 +18,22 @@
       "task_types": ["POW_SHARE", "ECONOMIC_COMPUTE_JOB"],
       "receipt_kinds": ["POOL_SHARE_ACCEPTANCE", "ECONOMIC_UPSTREAM_RECEIPT"],
       "sink": "COMPUTE_TREASURY",
+      "enabled_in_demo": true
+    },
+    {
+      "provider_id": "nerdminer-v2-edge",
+      "display_name": "NerdMinerV2-compatible ESP32 Edge Node",
+      "route_class": "TREASURY",
+      "task_types": ["POW_SHARE"],
+      "receipt_kinds": ["POOL_SHARE_ACCEPTANCE", "EDGE_HASH_EVIDENCE"],
+      "sink": "COMPUTE_TREASURY_OR_CONTRACT_DEFINED_SINK",
+      "compatibility_only": true,
+      "upstream_repository": "BitMaker-hub/NerdMiner_v2",
+      "upstream_license": "MIT",
+      "stock_firmware_external": true,
+      "stock_firmware_i0_scheduler": false,
+      "janus_i0_bridge_required_for_structured_traversal": true,
+      "live_pool_connected_in_public_demo": false,
       "enabled_in_demo": true
     },
     {
@@ -58,5 +74,5 @@
     }
   ],
   "browser_secret_policy": "FORBIDDEN",
-  "production_note": "Demo catalog only. Real provider admission requires signed manifests, identity, security/privacy review, workload validation and authoritative receipt verification."
+  "production_note": "Demo catalog only. Real provider admission requires signed manifests, identity, security/privacy review, workload validation and authoritative receipt verification. NerdMinerV2 is an external MIT compatibility target; JANUS I0 structured traversal requires a separate compatible bridge/firmware and controlled evidence gate."
 }

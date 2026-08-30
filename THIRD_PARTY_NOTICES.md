@@ -49,6 +49,28 @@ The independently written `helios-stellar-nav.js` uses general astronomical/rend
 
 This notice does **not** claim that broad concepts such as sky projection, magnitude-based brightness or camera easing are proprietary to either project.
 
+### NerdMinerV2 external compatibility target
+
+Repository reviewed: `BitMaker-hub/NerdMiner_v2`.
+
+License: MIT.
+
+Copyright notice: `Copyright (c) 2023 Bitmaker`.
+
+Relationship: external compatibility target for the optional HELIOS Edge Hash Lab. NerdMinerV2 implements ESP32 Stratum mining and remains third-party software under its own licence. HELIOS currently does **not** vendor, copy, fork, or silently modify NerdMinerV2 source code or firmware. The public HELIOS layer contains an independently written compatibility/bridge contract and presentation surface only.
+
+The active boundary is:
+
+- stock NerdMinerV2 remains an external device/firmware target;
+- HELIOS does not claim ownership of NerdMinerV2, its firmware, name, or upstream project;
+- the public HELIOS page does not connect to a mining pool through NerdMinerV2 and does not collect its Wi-Fi credentials, pool password, wallet private material or seed data;
+- optional JANUS I0 structured-traversal scheduling is not represented as a stock NerdMinerV2 capability and requires a separately reviewed compatible bridge or firmware path;
+- no sponsorship, endorsement, partnership, commercial relationship or pool relationship with Bitmaker/NerdMinerV2 is implied.
+
+If a future HELIOS revision copies, modifies, distributes, embeds or ships a substantial portion of NerdMinerV2 source or firmware, the applicable MIT copyright notice and permission notice must be preserved with that material and the exact closing SBOM/provenance package must be updated.
+
+The separate first-party repository `Hawkar-usls/janus-io` / `JANUS I0` is not third-party material. It is separately scoped Background IP and is addressed in the HELIOS transaction schedules rather than being silently bundled with this compatibility target.
+
 ## Package dependencies
 
 At the current repository snapshot, `package.json` contains no declared npm dependencies.

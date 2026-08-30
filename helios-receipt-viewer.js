@@ -146,6 +146,9 @@
     if(!document.getElementById('helios-trust-fabric-ui-script')){
       const script=document.createElement('script');script.id='helios-trust-fabric-ui-script';script.src='./helios-trust-fabric-ui.js?v=1.0.0';script.async=false;document.head.appendChild(script);
     }
+    if(!document.getElementById('helios-edge-hash-lab-ui-script')){
+      const script=document.createElement('script');script.id='helios-edge-hash-lab-ui-script';script.src='./helios-edge-hash-lab-ui.js?v=1.0.0';script.async=false;document.head.appendChild(script);
+    }
     if(!document.getElementById('helios-resource-sonification-script')){
       const script=document.createElement('script');script.id='helios-resource-sonification-script';script.src='./helios-resource-sonification.js?v=1.0.0';script.async=false;document.head.appendChild(script);
     }

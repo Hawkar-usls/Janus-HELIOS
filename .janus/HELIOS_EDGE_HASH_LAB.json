@@ -1,0 +1,127 @@
+{
+  "schema": "janus.helios.edge-hash-lab.contract.v1",
+  "version": "1.0.0",
+  "classification": "OPTIONAL_EDGE_HASH_COMPATIBILITY_AND_RESEARCH_BRIDGE",
+  "purpose": "Expose a low-power ESP32 Stratum edge-node compatibility path and a separately licensed JANUS I0 traversal-research bridge without changing game mathematics or pretending the public page performs live mining.",
+  "nerdminer_v2": {
+    "upstream_repository": "BitMaker-hub/NerdMiner_v2",
+    "upstream_url": "https://github.com/BitMaker-hub/NerdMiner_v2",
+    "license": "MIT",
+    "copyright": "Copyright (c) 2023 Bitmaker",
+    "relationship": "EXTERNAL_COMPATIBILITY_TARGET",
+    "source_code_vendored_into_helios": false,
+    "stock_firmware_modified_by_helios": false,
+    "device_family": "ESP32",
+    "protocol_family": "STRATUM_V1"
+  },
+  "janus_i0": {
+    "source_repository": "Hawkar-usls/janus-io",
+    "relationship": "FIRST_PARTY_SEPARATELY_SCOPED_BACKGROUND_IP",
+    "full_scheduler_source_embedded_in_helios": false,
+    "helios_receives": [
+      "BRIDGE_CONTRACT",
+      "STRICT_50_50_RANDOMIZED_MIRROR_PLAN",
+      "FROZEN_WIRE_DISCIPLINE",
+      "EXPOSURE_NORMALIZED_EVIDENCE_MODEL"
+    ],
+    "core_thesis": "STRUCTURED_TRAVERSAL_IS_TESTED_AGAINST_RANDOM_BASELINE_PER_CHECKED_WORK",
+    "forbidden_claims": [
+      "SHA256_BREAK",
+      "NONCE_PREDICTION",
+      "GUARANTEED_BLOCK_ADVANTAGE",
+      "GUARANTEED_MINING_PROFIT",
+      "ISOLATED_RARE_TAIL_AS_PROOF"
+    ]
+  },
+  "modes": {
+    "STOCK_EXTERNAL": {
+      "nerdminer_role": "EXTERNAL_EDGE_NODE",
+      "stratum_behavior": "UPSTREAM_UNCHANGED",
+      "janus_i0_scheduler": "UNAVAILABLE",
+      "execution_gate": "LOCAL_NODE_OR_APPROVED_BRIDGE"
+    },
+    "JANUS_I0_BRIDGE": {
+      "nerdminer_role": "COMPATIBLE_EDGE_EXECUTOR",
+      "janus_i0_scheduler": "SEPARATE_BACKGROUND_IP_BRIDGE",
+      "required_control": "STRICT_50_50_RANDOMIZED_MIRROR",
+      "required_normalization": "PER_CHECKED_MH",
+      "wire_policy": "FROZEN_AND_CONFORMANCE_TESTED",
+      "execution_gate": "EXPLICIT_FIRMWARE_OR_BRIDGE_COMPATIBILITY_TEST"
+    }
+  },
+  "evidence": {
+    "minimum_metrics": [
+      "checked_MH",
+      "accepted",
+      "z28_per_MH",
+      "z30_per_MH",
+      "z32_per_MH",
+      "z33_per_MH",
+      "z34_per_MH",
+      "max_z",
+      "reject_rate",
+      "stale_drops",
+      "reconnect_count",
+      "cooldown",
+      "desktop_load_state"
+    ],
+    "raw_counts_alone_are_sufficient": false,
+    "same_device_required": true,
+    "same_pool_required": true,
+    "same_job_stream_required": true,
+    "same_wire_required": true,
+    "same_guardian_policy_required": true,
+    "isolated_rare_tail_is_proof": false
+  },
+  "trust_fabric_binding": {
+    "provider_admission": "DEFAULT_DENY",
+    "authority_epoch_required_for_production": true,
+    "lease_required_for_production": true,
+    "guardian_budget_can_only_tighten": true,
+    "receipt_provenance_required_for_authoritative_claim": true,
+    "device_health_passport_link_supported": true,
+    "settlement_authority": "EXTERNAL_POOL_OR_PROVIDER_ONLY"
+  },
+  "privacy": {
+    "public_page_collects_wifi_credentials": false,
+    "public_page_collects_pool_passwords": false,
+    "public_page_collects_wallet_address": false,
+    "private_keys_or_seed_material": "FORBIDDEN",
+    "human_observation": "FORBIDDEN",
+    "local_configuration_authority": "DEVICE_OR_APPROVED_BRIDGE"
+  },
+  "public_demo": {
+    "live_pool_connection": false,
+    "live_mining": false,
+    "fake_hashrate": false,
+    "fake_temperature": false,
+    "fake_watts": false,
+    "plan_builder": "PRESENTATION_ONLY",
+    "web_serial_probe": "API_VISIBILITY_ONLY_NO_DEVICE_ACCESS"
+  },
+  "production_gates": [
+    "NERDMINER_OR_COMPATIBLE_DEVICE_IDENTIFIED",
+    "SELECTED_POOL_STRATUM_CONFORMANCE_REPLAY",
+    "JANUS_I0_BRIDGE_OR_COMPATIBLE_FIRMWARE_IF_I0_ENABLED",
+    "EQUAL_EXPOSURE_RANDOMIZED_MIRROR",
+    "MEASURED_CHECKED_WORK_ACCOUNTING",
+    "AUTHORITATIVE_POOL_ACCEPTANCE_EVIDENCE",
+    "HARDWARE_GUARDIAN_OR_DEVICE_SPECIFIC_SAFETY_POLICY",
+    "EXACT_THIRD_PARTY_LICENSE_AND_NOTICE_REVIEW",
+    "CRYPTOCURRENCY_AND_GAMING_REGULATORY_REVIEW_IF_VALUE_IS_ROUTED_TO_USERS"
+  ],
+  "commercial_boundary": {
+    "janus_i0_not_automatically_assigned_with_helios": true,
+    "janus_i0_requires_separate_written_license_or_assignment_for_full_scheduler_use": true,
+    "nerdminer_v2_remains_third_party_mit_software": true,
+    "provider_or_pool_relationship_implied": false
+  },
+  "authority": {
+    "game_effect": "NONE",
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "game_math_authority": "NONE",
+    "public_compute_execution_authority": "NONE"
+  }
+}
