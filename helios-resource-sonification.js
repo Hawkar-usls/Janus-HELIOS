@@ -47,11 +47,11 @@
   function sync(){
     const ctx=context();if(!ctx)return;
     const active=state.musicEnabled&&state.computeActive&&(state.cpuRatio>0||state.gpuRatio>0);const now=ctx.currentTime;
-    state.bus.gain.cancelScheduledValues(now);state.bus.gain.setTargetAtTime(active?.011:.0001,now,active?.18:.12);
-    state.cpuGain.gain.cancelScheduledValues(now);state.cpuGain.gain.setTargetAtTime(active?.0018+state.cpuRatio*.0042:.0001,now,.18);
+    state.bus.gain.cancelScheduledValues(now);state.bus.gain.setTargetAtTime(active ? .011 : .0001,now,active ? .18 : .12);
+    state.cpuGain.gain.cancelScheduledValues(now);state.cpuGain.gain.setTargetAtTime(active ? (.0018+state.cpuRatio*.0042) : .0001,now,.18);
     state.cpuLfo.frequency.setTargetAtTime(.34+state.cpuRatio*.72,now,.25);state.cpuLfoGain.gain.setTargetAtTime(.0008+state.cpuRatio*.0038,now,.25);
     state.cpuOsc.frequency.setTargetAtTime(48+state.cpuRatio*18,now,.35);
-    state.gpuGain.gain.cancelScheduledValues(now);state.gpuGain.gain.setTargetAtTime(active?.0012+state.gpuRatio*.0038:.0001,now,.2);
+    state.gpuGain.gain.cancelScheduledValues(now);state.gpuGain.gain.setTargetAtTime(active ? (.0012+state.gpuRatio*.0038) : .0001,now,.2);
     state.gpuOsc.frequency.setTargetAtTime(176+state.gpuRatio*154,now,.45);state.filter.frequency.setTargetAtTime(900+state.gpuRatio*1800,now,.45);state.gpuLfo.frequency.setTargetAtTime(.11+state.gpuRatio*.22,now,.35);state.gpuLfoGain.gain.setTargetAtTime(.22+state.gpuRatio*.5,now,.3);
     scheduleSpark();
   }
