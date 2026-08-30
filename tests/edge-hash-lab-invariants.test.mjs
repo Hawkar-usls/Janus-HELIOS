@@ -13,8 +13,7 @@ import {
   HELIOS_EDGE_CONSTELLATION_VERSION,
   EDGE_NODE_CLASSES,
   normalizeConstellationNode,
-  createEdgeConstellationPlan,
-  compareEdgeConstellationEvidence
+  createEdgeConstellationPlan
 } from '../src/helios-edge-constellation.js';
 
 const [ui, constellationUi, contract, constellationContract, notices, excluded, receiptViewer, providers, constellationDoc] = await Promise.all([
@@ -142,17 +141,20 @@ assert.match(notices, /Copyright \(c\) 2023 Bitmaker/);
 assert.match(excluded, /Hawkar-usls\/janus-io/);
 assert.match(excluded, /JANUS I0/i);
 
-// Edge Constellation: heterogeneous hardware may differ in speed, never in vote count.
-assert.equal(HELIOS_EDGE_CONSTELLATION_VERSION, '1.0.0');
+// Superseding Edge Constellation compatibility boundary.
+// Detailed v1.1 independence behavior lives in edge-constellation-invariants.test.mjs
+// and evidence-independence-invariants.test.mjs; this parent test only protects the bridge.
+assert.equal(HELIOS_EDGE_CONSTELLATION_VERSION, '1.1.0');
 assert.ok(EDGE_NODE_CLASSES.NERDMINER_ESP32);
 assert.ok(EDGE_NODE_CLASSES.DESKTOP_CPU);
 assert.ok(EDGE_NODE_CLASSES.DESKTOP_GPU);
 assert.ok(EDGE_NODE_CLASSES.ASIC_GATEWAY);
 
 const esp32Passport = normalizeConstellationNode({ node_id: 'esp32-1', node_class: 'NERDMINER_ESP32' });
-assert.equal(esp32Passport.evidence_weight, 'ONE_NODE_ONE_REPLICATION_UNIT');
+assert.equal(esp32Passport.evidence_weight, 'ONE_NODE_ONE_REPLICATION_UNIT_BEFORE_INDEPENDENCE_GATE');
 assert.equal(esp32Passport.advertised_performance_used_as_evidence_weight, false);
 assert.equal(esp32Passport.raw_hashrate_used_as_cross_node_weight, false);
+assert.equal(esp32Passport.independent_evidence_requires_lineage_roots, true);
 assert.equal(esp32Passport.public_demo_connected, false);
 assert.equal(esp32Passport.public_demo_executes_hashing, false);
 assert.throws(() => normalizeConstellationNode({ node_class: 'NERDMINER_ESP32' }), /NODE_ID_REQUIRED/);
@@ -170,20 +172,14 @@ const constellationPlan = createEdgeConstellationPlan({
 assert.equal(constellationPlan.mode, 'PRESENTATION_PLAN_ONLY');
 assert.equal(constellationPlan.execution_ready, false);
 assert.equal(constellationPlan.nodes.length, 3);
-for (const node of constellationPlan.nodes) {
-  assert.equal(node.local_experiment.pairing, 'WITHIN_NODE_STRICT_50_50');
-  assert.equal(node.local_experiment.arms[0].weight, 0.5);
-  assert.equal(node.local_experiment.arms[1].weight, 0.5);
-  assert.equal(node.local_experiment.equal_exposure_required, true);
-  assert.equal(node.local_experiment.same_device_required, true);
-  assert.equal(node.local_experiment.same_wire_required, true);
-}
 assert.equal(constellationPlan.replication_law.node_power_not_evidence_weight, true);
-assert.equal(constellationPlan.replication_law.one_node_one_replication_unit, true);
+assert.equal(constellationPlan.replication_law.replication_count_not_equal_independent_root_count, true);
+assert.equal(constellationPlan.replication_law.unknown_lineage_not_independent, true);
+assert.equal(constellationPlan.replication_law.minimum_strongly_independent_complete_nodes, 2);
 assert.equal(constellationPlan.replication_law.raw_hashrate_cross_node_weighting, false);
 assert.equal(constellationPlan.replication_law.raw_checked_work_cross_node_weighting, false);
-assert.equal(constellationPlan.replication_law.minimum_independent_complete_nodes, 2);
 assert.equal(constellationPlan.claims.stronger_hardware_equals_stronger_evidence, false);
+assert.equal(constellationPlan.claims.raw_replication_count_equals_independent_replications, false);
 assert.equal(constellationPlan.public_demo.requests_serial_device, false);
 assert.equal(constellationPlan.public_demo.fake_hashrate, false);
 assert.throws(() => createEdgeConstellationPlan({ nodes: [
@@ -191,75 +187,32 @@ assert.throws(() => createEdgeConstellationPlan({ nodes: [
   { node_id: 'dup', node_class: 'DESKTOP_CPU' }
 ] }), /DUPLICATE_EDGE_CONSTELLATION_NODE_ID/);
 
-const constellationEvidence = compareEdgeConstellationEvidence([
-  {
-    node_id: 'esp32-1', node_class: 'NERDMINER_ESP32',
-    samples: [
-      { group: 'JANUS_I0', checked_mh: 50, accepted: 5, z32: 1 },
-      { group: 'RANDOMIZED_MIRROR', checked_mh: 50, accepted: 4, z32: 0 }
-    ]
-  },
-  {
-    node_id: 'asic-1', node_class: 'ASIC_GATEWAY',
-    samples: [
-      { group: 'JANUS_I0', checked_mh: 5000, accepted: 500, z32: 100 },
-      { group: 'RANDOMIZED_MIRROR', checked_mh: 5000, accepted: 400, z32: 80 }
-    ]
-  },
-  {
-    node_id: 'cpu-1', node_class: 'DESKTOP_CPU',
-    samples: [
-      { group: 'JANUS_I0', checked_mh: 5, accepted: 0, z32: 0 },
-      { group: 'RANDOMIZED_MIRROR', checked_mh: 5, accepted: 1, z32: 0 }
-    ]
-  }
-]);
-assert.equal(constellationEvidence.complete_node_count, 3);
-assert.equal(constellationEvidence.aggregation.one_node_one_replication_unit, true);
-assert.equal(constellationEvidence.aggregation.node_power_not_evidence_weight, true);
-assert.equal(constellationEvidence.aggregation.raw_hashrate_weighting_used, false);
-assert.equal(constellationEvidence.aggregation.raw_checked_mh_weighting_used, false);
-assert.equal(constellationEvidence.aggregation.direction_counts.POSITIVE, 2);
-assert.equal(constellationEvidence.aggregation.direction_counts.NEGATIVE, 1);
-assert.equal(constellationEvidence.aggregation.median_accepted_per_mh_delta, 0.02);
-assert.equal(constellationEvidence.verdict, 'DIRECTIONALLY_CONSISTENT_REPLICATION_SIGNAL_NOT_CAUSAL_PROOF');
-assert.equal(constellationEvidence.causal_proof, false);
-assert.equal(constellationEvidence.profit_inference_allowed, false);
-
-const insufficientReplication = compareEdgeConstellationEvidence([
-  {
-    node_id: 'only-1', node_class: 'NERDMINER_ESP32',
-    samples: [
-      { group: 'JANUS_I0', checked_mh: 10, accepted: 1 },
-      { group: 'RANDOMIZED_MIRROR', checked_mh: 10, accepted: 1 }
-    ]
-  }
-]);
-assert.equal(insufficientReplication.verdict, 'INSUFFICIENT_INDEPENDENT_NODE_REPLICATION');
-
 assert.match(constellationUi, /EDGE CONSTELLATION · I0 REPLICATION PLANE/);
 assert.match(constellationUi, /NODE POWER ≠ EVIDENCE WEIGHT/);
-assert.match(constellationUi, /MEDIAN DELTA \+ DIRECTIONAL CONSISTENCY/);
+assert.match(constellationUi, /INDEPENDENCE GATE/);
 assert.match(constellationUi, /PLANNED · NOT CONNECTED/);
 assert.doesNotMatch(constellationUi, /requestPort\s*\(/);
 assert.doesNotMatch(constellationUi, /Math\.random\s*\(/);
 assert.doesNotMatch(constellationUi, /wallet_address\s*[:=]/i);
 assert.match(receiptViewer, /helios-edge-constellation-ui-script/);
-assert.match(receiptViewer, /helios-edge-constellation-ui\.js\?v=1\.0\.0/);
+assert.match(receiptViewer, /helios-edge-constellation-ui\.js\?v=1\.1\.0/);
+assert.match(receiptViewer, /helios-evidence-independence-ui-script/);
 
-assert.equal(constellationContract.version, '1.0.0');
-assert.equal(constellationContract.core_law, 'NODE_POWER_NOT_EQUAL_EVIDENCE_WEIGHT');
-assert.equal(constellationContract.cross_node_replication_law.one_node_one_replication_unit, true);
+assert.equal(constellationContract.version, '1.1.0');
+assert.ok(constellationContract.core_laws.includes('NODE_POWER_NOT_EQUAL_EVIDENCE_WEIGHT'));
+assert.ok(constellationContract.core_laws.includes('REPLICATION_COUNT_NOT_EQUAL_INDEPENDENT_ROOT_COUNT'));
+assert.equal(constellationContract.evidence_independence_gate.required, true);
+assert.equal(constellationContract.evidence_independence_gate.unknown_counts_as_independent, false);
+assert.equal(constellationContract.evidence_independence_gate.minimum_strongly_independent_complete_nodes, 2);
 assert.equal(constellationContract.cross_node_replication_law.node_power_not_evidence_weight, true);
 assert.equal(constellationContract.cross_node_replication_law.raw_hashrate_cross_node_weighting, false);
 assert.equal(constellationContract.cross_node_replication_law.raw_checked_work_cross_node_weighting, false);
-assert.equal(constellationContract.cross_node_replication_law.minimum_independent_complete_nodes, 2);
 assert.equal(constellationContract.cross_node_replication_law.directional_consistency_is_causal_proof, false);
 assert.equal(constellationContract.public_demo.connected_devices, 0);
 assert.equal(constellationContract.public_demo.requests_serial_device, false);
+assert.equal(constellationContract.public_demo.fake_independence_score, false);
 assert.equal(constellationContract.authority.game_math_authority, 'NONE');
 assert.equal(constellationContract.authority.public_compute_execution_authority, 'NONE');
 assert.match(constellationDoc, /NODE POWER ≠ EVIDENCE WEIGHT/);
-assert.match(constellationDoc, /one replication unit/i);
 
-console.log('HELIOS Edge Hash Lab / NerdMinerV2 × JANUS I0 + Edge Constellation invariants: PASS');
+console.log('HELIOS Edge Hash Lab / NerdMinerV2 × JANUS I0 + superseding Edge Constellation bridge invariants: PASS');
