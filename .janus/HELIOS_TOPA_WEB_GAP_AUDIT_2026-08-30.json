@@ -1,41 +1,17 @@
 {
   "schema": "janus.helios.topa-web-gap-audit.v1",
-  "artifact_id": "HELIOS-TOPA-WEB-GAP-AUDIT-2026-08-30-v1.0",
+  "artifact_id": "HELIOS-TOPA-WEB-GAP-AUDIT-2026-08-30-v1.1",
   "project": "Hawkar-usls/Janus-HELIOS",
   "audit_date": "2026-08-30",
-  "posture": "EXTERNAL_PATTERN_AND_WEAKNESS_SWEEP",
+  "posture": "EXTERNAL_PATTERN_AND_WEAKNESS_SWEEP_WITH_IMPLEMENTATION_STATUS",
   "method": "Compare HELIOS public UX and internal architecture against current distributed-compute marketplaces, volunteer-compute controls, workload observability patterns, receipt/provenance practices and current UK remote-game transparency standards. External systems are references for missing capabilities, not source-code or asset donors.",
   "reference_classes": [
-    {
-      "class": "GPU_MARKETPLACE",
-      "examples": ["Vast.ai"],
-      "observed_patterns": ["VERIFICATION_STATE", "RELIABILITY", "GPU_CPU_RAM_STORAGE_NETWORK_FIT", "INSTANCE_LIFECYCLE", "HARDWARE_DETAILS"]
-    },
-    {
-      "class": "DISTRIBUTED_GPU_CLOUD",
-      "examples": ["SaladCloud"],
-      "observed_patterns": ["ALLOCATED_RESOURCE_SUMMARY", "READY_STARTED_HEALTH", "REPLICA_STATUS", "GPU_CLASS", "IMAGE_DIGEST", "INTERRUPTIBLE_NODE_REALITY"]
-    },
-    {
-      "class": "DECENTRALIZED_COMPUTE",
-      "examples": ["Golem Network"],
-      "observed_patterns": ["PROVIDER_REPUTATION", "TASK_SUCCESS_RATE", "UPTIME", "CPU_MEMORY_DISK_NETWORK_BENCHMARKS", "AGREEMENT_AND_ACTIVITY_LIFECYCLE"]
-    },
-    {
-      "class": "VOLUNTEER_COMPUTE",
-      "examples": ["BOINC"],
-      "observed_patterns": ["IDLE_ONLY_POLICY", "SEPARATE_GPU_WHILE_IN_USE_POLICY", "BATTERY_SUSPEND", "NON_WORKLOAD_CPU_THRESHOLD", "CPU_TIME_LIMIT", "MEMORY_AND_DISK_LIMITS"]
-    },
-    {
-      "class": "REMOTE_GAME_TRANSPARENCY",
-      "examples": ["UK_GAMBLING_COMMISSION_RTS"],
-      "observed_patterns": ["CLEAR_TRANSACTION_CONTENT", "CURRENT_STATE_DISCLOSURE", "EASILY_AVAILABLE_RULES_AND_LIKELIHOOD_INFORMATION", "RESPONSIBLE_PRODUCT_DESIGN"]
-    },
-    {
-      "class": "MACHINE_RECEIPT_AND_PROVENANCE",
-      "examples": ["human viewer plus canonical machine receipt patterns"],
-      "observed_patterns": ["HUMAN_SUMMARY_PLUS_RAW_JSON", "RECEIPT_ID", "PROOF_STATUS", "HASH_OR_SIGNATURE", "VERIFICATION_PATH", "PORTABLE_EVIDENCE"]
-    }
+    {"class":"GPU_MARKETPLACE","examples":["Vast.ai"],"observed_patterns":["VERIFICATION_STATE","RELIABILITY","GPU_CPU_RAM_STORAGE_NETWORK_FIT","INSTANCE_LIFECYCLE","HARDWARE_DETAILS"]},
+    {"class":"DISTRIBUTED_GPU_CLOUD","examples":["SaladCloud"],"observed_patterns":["ALLOCATED_RESOURCE_SUMMARY","READY_STARTED_HEALTH","REPLICA_STATUS","GPU_CLASS","IMAGE_DIGEST","INTERRUPTIBLE_NODE_REALITY"]},
+    {"class":"DECENTRALIZED_COMPUTE","examples":["Golem Network"],"observed_patterns":["PROVIDER_REPUTATION","TASK_SUCCESS_RATE","UPTIME","CPU_MEMORY_DISK_NETWORK_BENCHMARKS","AGREEMENT_AND_ACTIVITY_LIFECYCLE"]},
+    {"class":"VOLUNTEER_COMPUTE","examples":["BOINC"],"observed_patterns":["IDLE_ONLY_POLICY","SEPARATE_GPU_WHILE_IN_USE_POLICY","BATTERY_SUSPEND","NON_WORKLOAD_CPU_THRESHOLD","CPU_TIME_LIMIT","MEMORY_AND_DISK_LIMITS"]},
+    {"class":"REMOTE_GAME_TRANSPARENCY","examples":["UK_GAMBLING_COMMISSION_RTS"],"observed_patterns":["CLEAR_TRANSACTION_CONTENT","CURRENT_STATE_DISCLOSURE","EASILY_AVAILABLE_RULES_AND_LIKELIHOOD_INFORMATION","RESPONSIBLE_PRODUCT_DESIGN"]},
+    {"class":"MACHINE_RECEIPT_AND_PROVENANCE","examples":["human viewer plus canonical machine receipt patterns"],"observed_patterns":["HUMAN_SUMMARY_PLUS_RAW_JSON","RECEIPT_ID","PROOF_STATUS","HASH_OR_SIGNATURE","VERIFICATION_PATH","PORTABLE_EVIDENCE"]}
   ],
   "sources": [
     "https://docs.vast.ai/guides/instances/manage-instances",
@@ -52,91 +28,31 @@
     "https://www.gamblingcommission.gov.uk/standards/remote-gambling-and-software-technical-standards/rts-14-responsible-product-design"
   ],
   "findings": [
-    {
-      "id": "WEB-H01",
-      "priority": "P0_FIXED_THIS_PASS",
-      "finding": "LATEST_RECEIPT_WAS_MACHINE_FIRST_DEBUG_UI",
-      "problem": "The public receipt was a fixed-height raw JSON viewport. It was technically transparent but visually read as a developer console and hid the important route/resource/proof story inside syntax noise.",
-      "action": "Add a HELIOS-owned human-first receipt viewer with route, task, CPU/GPU policy, work unit, proof class, sink, receipt ID and timestamp; preserve canonical JSON one disclosure level deeper with COPY JSON.",
-      "status": "IMPLEMENTED_HELIOS_RECEIPT_VIEWER_V1"
-    },
-    {
-      "id": "WEB-H02",
-      "priority": "P1",
-      "finding": "PUBLIC_COCKPIT_DOES_NOT_SHOW_PROVIDER_OR_AGENT_TRUST_STATE",
-      "evidence_pattern": "Vast and Golem expose verification/reliability/performance state as first-class selection context.",
-      "proposal": "TRUST_STRIP: provider verification state, verifier status, agent readiness, success/reject counts and coarse reliability. Production values must come from authoritative provider/fabric evidence, never browser invention."
-    },
-    {
-      "id": "WEB-H03",
-      "priority": "P1",
-      "finding": "RESOURCE_POLICY_IS_CAP_BASED_BUT_NOT_DEVICE_COMFORT_AWARE",
-      "evidence_pattern": "BOINC-class systems separate idle/in-use GPU behavior, battery policy, CPU-time and memory/disk constraints.",
-      "proposal": "ADVANCED_RESOURCE_GOVERNOR: idle-only, AC-only, GPU-while-idle, pause-on-interaction, thermal ceiling, watt ceiling, RAM/VRAM and concurrency caps enforced locally by Desktop Agent."
-    },
-    {
-      "id": "WEB-H04",
-      "priority": "P1",
-      "finding": "ROUTE_SELECTION_LACKS_HARDWARE_FIT_AND_CURRENT_AVAILABILITY_CONTEXT",
-      "evidence_pattern": "Vast/Salad expose GPU class, RAM/VRAM, resource allocation and availability/ready state before or during workload placement.",
-      "proposal": "CAPABILITY_AWARE_ROUTE_CARDS: coarse CPU/GPU/HYBRID preference, minimum VRAM/capability requirements, provider availability and readiness without detailed fingerprinting."
-    },
-    {
-      "id": "WEB-H05",
-      "priority": "P1",
-      "finding": "PUBLIC_RECEIPT_HAS_PROOF_KIND_BUT_NO_FIRST_CLASS_VERIFICATION_CHAIN",
-      "proposal": "VERIFICATION RIBBON: explicit DEMO / UNVERIFIED / VERIFIED / REJECTED states. Production receipt should be able to bind provider_receipt_id, workload/artifact digest, verified_agent_id, verifier identity, timestamp and optional signature/attestation. Raw machine receipt remains canonical."
-    },
-    {
-      "id": "WEB-H06",
-      "priority": "P1",
-      "finding": "COMPUTE_LIFECYCLE_IS TOO BINARY",
-      "evidence_pattern": "Modern compute systems distinguish preparing, scheduling, loading, running, degraded, failed, stopped/offline and readiness states.",
-      "proposal": "COMPUTE_STATE_MACHINE_UI: ARMED -> ADMITTING -> SCHEDULING -> RUNNING -> VERIFYING -> RECEIPT or DEGRADED/REJECTED/STOPPED, mapped only from authoritative runtime states."
-    },
-    {
-      "id": "WEB-H07",
-      "priority": "P1",
-      "finding": "NO USER_VISIBLE_INTERRUPTIBILITY_OR_FAILURE_SEMANTICS",
-      "evidence_pattern": "Residential/distributed GPU systems explicitly account for node interruption, reallocation and health variability.",
-      "proposal": "RESILIENCE VIEW: show retry/reassignment/verifier-reject state and explain that a failed node is not automatically a failed verified work unit."
-    },
-    {
-      "id": "WEB-H08",
-      "priority": "P1",
-      "finding": "RULES_AND_COMPUTE_EXPLANATIONS_ARE PRESENT BUT FRAGMENTED",
-      "evidence_pattern": "Current remote-game transparency standards emphasize clear transaction content, current state and easily accessible rules/likelihood information.",
-      "proposal": "ONE EXPLAIN PANEL: game math/RTP demo disclosure, compute independence, selected route meaning, resource cap meaning, proof meaning and revoke behavior in one accessible surface."
-    },
-    {
-      "id": "WEB-H09",
-      "priority": "P2",
-      "finding": "NO PORTABLE USER_FACING_COMPUTE_PROVENANCE HISTORY",
-      "proposal": "COMPUTE PASSPORT: human-readable history with exportable canonical receipts; production can add portable signed evidence while keeping demo receipts clearly non-authoritative."
-    },
-    {
-      "id": "WEB-H10",
-      "priority": "P2",
-      "finding": "NO COARSE CAPABILITY SELF_TEST_BEFORE ROUTING",
-      "proposal": "PRIVACY_MINIMIZED SELF TEST: optional CPU/GPU/VRAM/thermal/network readiness classes and approved-executor compatibility. Report only admission-relevant coarse classes unless the user explicitly opens diagnostics."
-    }
+    {"id":"WEB-H01","priority":"P0_FIXED","finding":"LATEST_RECEIPT_WAS_MACHINE_FIRST_DEBUG_UI","status":"IMPLEMENTED_HELIOS_RECEIPT_VIEWER_V1","implementation":"Human summary first; canonical JSON preserved one disclosure level deeper with COPY JSON."},
+    {"id":"WEB-H02","priority":"P1_FIXED_DEMO","finding":"PUBLIC_COCKPIT_DOES_NOT_SHOW_PROVIDER_OR_AGENT_TRUST_STATE","status":"IMPLEMENTED_DEMO_TRUST_STRIP","implementation":"Buyer cockpit exposes AGENT / PROVIDER / VERIFIER / PROOF state without inventing production reliability or availability."},
+    {"id":"WEB-H03","priority":"P1_FIXED_DEMO","finding":"RESOURCE_POLICY_IS_CAP_BASED_BUT_NOT_DEVICE_COMFORT_AWARE","status":"IMPLEMENTED_BUYER_GOVERNOR_POLICY_PREVIEW","implementation":"Buyer Lab exposes idle-only, AC-only, GPU-while-idle, pause-on-interaction, thermal, watt, concurrency and quiet-hours policy. Static page does not claim enforcement; Desktop Agent/Fabric remains authoritative."},
+    {"id":"WEB-H04","priority":"P1_FIXED_DEMO","finding":"ROUTE_SELECTION_LACKS_HARDWARE_FIT_AND_CURRENT_AVAILABILITY_CONTEXT","status":"IMPLEMENTED_CAPABILITY_HINTS_NO_FAKE_AVAILABILITY","implementation":"Route cards expose coarse CPU/GPU/HYBRID or manifest preference and workload-fit hints. Real availability remains a buyer/provider hook."},
+    {"id":"WEB-H05","priority":"P1_FIXED_DEMO","finding":"PUBLIC_RECEIPT_HAS_PROOF_KIND_BUT_NO_FIRST_CLASS_VERIFICATION_CHAIN","status":"IMPLEMENTED_DEMO_VERIFICATION_CHAIN_AND_RECEIPT_PROOF_LABELS","implementation":"DEMO / UNVERIFIED / VERIFIED semantics are explicit; Buyer Lab shows manifest, artifact digest, agent, verifier and optional sign/attest hook positions."},
+    {"id":"WEB-H06","priority":"P1_FIXED_DEMO","finding":"COMPUTE_LIFECYCLE_IS_TOO_BINARY","status":"IMPLEMENTED_SIMULATED_LIFECYCLE_PREVIEW","implementation":"Compact ARMED -> ADMITTING -> SCHEDULING -> RUNNING -> VERIFYING -> RECEIPT strip demonstrates buyer-facing lifecycle without claiming authoritative provider runtime."},
+    {"id":"WEB-H07","priority":"P1_FIXED_DEMO","finding":"NO_USER_VISIBLE_INTERRUPTIBILITY_OR_FAILURE_SEMANTICS","status":"IMPLEMENTED_RESILIENCE_HOOK_VIEW","implementation":"Buyer Lab exposes lease-fencing/stale-result core primitive and retry/reassignment integration hook without fabricating failure telemetry."},
+    {"id":"WEB-H08","priority":"P1_FIXED","finding":"RULES_AND_COMPUTE_EXPLANATIONS_ARE_PRESENT_BUT_FRAGMENTED","status":"IMPLEMENTED_ONE_EXPLAIN_PANEL","implementation":"Buyer Lab consolidates RNG-compute separation, consent/revoke, demo proof semantics, replaceable backend and buyer handoff boundaries."},
+    {"id":"WEB-H09","priority":"P2_FIXED_DEMO","finding":"NO_PORTABLE_USER_FACING_COMPUTE_PROVENANCE_HISTORY","status":"IMPLEMENTED_DEMO_COMPUTE_PASSPORT","implementation":"Session-only passport collects up to 24 demo compute receipts and exports non-authoritative JSON with no wagering value."},
+    {"id":"WEB-H10","priority":"P2_FIXED_DEMO","finding":"NO_COARSE_CAPABILITY_SELF_TEST_BEFORE_ROUTING","status":"IMPLEMENTED_OPT_IN_COARSE_LOCAL_SELF_TEST","implementation":"User-triggered local-only CPU thread-class bucket and WebGPU API visibility check; no GPU vendor/model/exact adapter limits and no network transmission."}
   ],
-  "recommended_sequence": [
-    "W1_HUMAN_FIRST_RECEIPT_VIEWER",
-    "W2_TRUST_AND_VERIFICATION_STRIP",
-    "W3_COMPUTE_LIFECYCLE_STATE_MACHINE",
-    "W4_ADVANCED_LOCAL_RESOURCE_GOVERNOR",
-    "W5_CAPABILITY_AND_AVAILABILITY_AWARE_ROUTE_CARDS",
-    "W6_RESILIENCE_AND_RETRY_VIEW",
-    "W7_COMPUTE_PASSPORT_AND_PORTABLE_VERIFIED_RECEIPTS"
+  "remaining_external_truth_gates": [
+    "REAL_PROVIDER_RELIABILITY_AND_AVAILABILITY",
+    "REAL_PROVIDER_RECEIPT_AND_VERIFIER_CHAIN",
+    "REAL_DESKTOP_AGENT_RESOURCE_ENFORCEMENT",
+    "REAL_GPU_WORKLOAD_EXECUTION",
+    "REAL_EXTERNAL_ENERGY_OR_CARBON_SIGNAL"
   ],
   "anti_patterns": [
     "DO_NOT_HIDE_RAW_MACHINE_RECEIPTS",
     "DO_NOT_LABEL_SIMULATED_OR_MOCK_PROOF_AS VERIFIED",
-    "DO_NOT_INVENT_PROVIDER_RELIABILITY_OR AVAILABILITY",
-    "DO_NOT_COLLECT_DETAILED_HARDWARE_FINGERPRINTS_FOR DECORATION",
-    "DO_NOT_ALLOW_COMPUTE_STATE_TO ALTER RNG_RTP_ODDS_BONUS_OR PERSONAL_JACKPOT_WEIGHT",
-    "DO_NOT_USE_VISUAL_INTENSITY_OR SPARKS AS A FALSE THROUGHPUT_OR EARNINGS CLAIM"
+    "DO_NOT_INVENT_PROVIDER_RELIABILITY_OR_AVAILABILITY",
+    "DO_NOT_COLLECT_DETAILED_HARDWARE_FINGERPRINTS_FOR_DECORATION",
+    "DO_NOT_ALLOW_COMPUTE_STATE_TO_ALTER_RNG_RTP_ODDS_BONUS_OR_PERSONAL_JACKPOT_WEIGHT",
+    "DO_NOT_USE_VISUAL_OR_AUDIO_INTENSITY_AS_A_FALSE_THROUGHPUT_OR_EARNINGS_CLAIM"
   ],
-  "conclusion": "HELIOS already has unusually strong internal separation and compute-plane primitives. Its largest public weakness is now legibility: trust, lifecycle, hardware fit, proof and user comfort policies exist weakly or only internally. The next product phase should make those truths visible without turning the game surface into a datacenter dashboard or allowing external providers to fragment the HELIOS visual contract."
+  "conclusion": "All web-audit gaps that can be represented honestly in a sellable static demo are now surfaced through HELIOS Receipt Viewer and Buyer Cockpit. Production-only truth remains explicitly external rather than simulated as fact."
 }
