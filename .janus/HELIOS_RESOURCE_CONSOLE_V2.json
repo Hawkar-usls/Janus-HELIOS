@@ -1,9 +1,10 @@
 {
   "schema": "janus.helios.resource-console.v2",
   "module": "helios-resource-console.js",
-  "version": "2.0.0",
+  "version": "2.1.0",
+  "router_version": "2.0.0",
   "classification": "EXPLICIT_USER_RESOURCE_POLICY_CONTROL",
-  "purpose": "Expose the existing HELIOS CPU/GPU/HYBRID resource capabilities on the public evaluation surface while preserving immediate revoke and the game/compute boundary.",
+  "purpose": "Expose the existing HELIOS CPU/GPU/HYBRID resource capabilities on the public evaluation surface while preserving immediate revoke and the game/compute boundary, with a presentation layer synchronized to the procedural Reel Forge palette.",
   "resource_classes": ["CPU", "GPU", "HYBRID", "IDLE"],
   "public_controls": ["CPU_PERCENT", "GPU_PERCENT", "CPU_PROFILE", "GPU_PROFILE", "HYBRID_PROFILE", "MAX_PROFILE"],
   "gpu_public_execution": "SIMULATED_POLICY_ONLY",
@@ -13,6 +14,20 @@
     "gpu_weight": 0.65,
     "throughput_claim": "NONE_PRESENTATION_MAPPING_ONLY",
     "max_policy_requires_both_channels_at_configured_max": true
+  },
+  "procedural_visual_identity": {
+    "classification": "PRESENTATION_ONLY_SOFT_COSMIC_RESOURCE_UI",
+    "palette_source_primary": "HELIOS_REEL_FORGE_PROFILE",
+    "palette_channels": ["PRIMARY", "SECONDARY", "TERTIARY"],
+    "cpu_stream": "PRIMARY_TO_TERTIARY",
+    "gpu_stream": "SECONDARY_TO_TERTIARY",
+    "panel_glow_strength_source": "VISUAL_RESOURCE_ENVELOPE",
+    "compute_active_adds_glow": true,
+    "max_active_adds_restrained_reactor_shimmer": true,
+    "native_white_range_tracks_replaced": true,
+    "prefers_reduced_motion_respected": true,
+    "fallback_palette_only_when_forge_unavailable": true,
+    "throughput_claim": "NONE"
   },
   "receipt_patch": {
     "router_version": "2.0.0",
