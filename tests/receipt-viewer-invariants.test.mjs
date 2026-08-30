@@ -28,6 +28,8 @@ assert.match(source,/VERIFIED/);
 assert.match(source,/textContent/);
 assert.match(source,/raw_json_preserved:true/);
 assert.match(source,/receipt_authority:'NONE'/);
+assert.match(source,/const preserveRawOpen=Boolean\(state\.details\?\.open\)/);
+assert.match(source,/state\.details\.open=preserveRawOpen/);
 assert.match(indexHtml,/id="helios-receipt-viewer-script"[^>]+helios-receipt-viewer\.js\?v=1\.0\.0/);
 assert.match(indexHtml,/HELIOS ROUTER v2/);
 assert.doesNotMatch(source,/getElementById\(['"]bet['"]\)/);
