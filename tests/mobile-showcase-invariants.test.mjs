@@ -8,8 +8,9 @@ const [html, mobile, bonus, contract] = await Promise.all([
   readFile(new URL('../.janus/HELIOS_ADAPTIVE_VIEWPORT_UI.json', import.meta.url), 'utf8').then(JSON.parse)
 ]);
 
-assert.match(html, /width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover/);
-assert.match(html, /helios-mobile\.js\?v=1\.1\.2/);
+assert.match(html, /width=device-width,initial-scale=1,viewport-fit=cover/);
+assert.doesNotMatch(html, /maximum-scale=1/);
+assert.match(html, /helios-mobile\.js\?v=1\.2\.0/);
 assert.match(html, /grid-template-columns:minmax\(0,1\.07fr\) minmax\(0,\.93fr\)/);
 assert.match(html, /@media\(max-width:980px\)/);
 assert.match(html, /overflow-x:hidden/);
