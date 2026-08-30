@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION='1.0.0';
+  const VERSION='1.1.0';
   const MODE_BASE=Object.freeze({
     helios:Object.freeze({accent:'#ffc24b',secondary:'#ff8d2a',patterns:['sunburst','rings','alloy']}),
     divine:Object.freeze({accent:'#d7a7ff',secondary:'#80d7ff',patterns:['prism','lattice','rings']}),
@@ -9,12 +9,12 @@
     custom:Object.freeze({accent:'#80d7ff',secondary:'#a78bfa',patterns:['blueprint','rings','grid']})
   });
   const ROUTES=Object.freeze({
-    MARKET:Object.freeze({mix:'#ffc857',bias:0,gap:[9,14]}),
-    SCIENCE:Object.freeze({mix:'#72e7ff',bias:1,gap:[12,18]}),
-    TREASURY:Object.freeze({mix:'#ffad42',bias:2,gap:[7,12]}),
-    DC:Object.freeze({mix:'#6faeff',bias:1,gap:[8,13]}),
-    OPERATOR:Object.freeze({mix:'#ffb45f',bias:2,gap:[10,16]}),
-    CUSTOM:Object.freeze({mix:'#a78bfa',bias:0,gap:[11,19]})
+    MARKET:Object.freeze({primary:'#ffc857',secondary:'#ff7048',bias:0,gap:[9,14]}),
+    SCIENCE:Object.freeze({primary:'#62e9ff',secondary:'#7f96ff',bias:1,gap:[12,18]}),
+    TREASURY:Object.freeze({primary:'#ffad42',secondary:'#cf6828',bias:2,gap:[7,12]}),
+    DC:Object.freeze({primary:'#5ea8ff',secondary:'#6d62ff',bias:1,gap:[8,13]}),
+    OPERATOR:Object.freeze({primary:'#ffab57',secondary:'#ffd36c',bias:2,gap:[10,16]}),
+    CUSTOM:Object.freeze({primary:'#a66cff',secondary:'#50dcff',bias:0,gap:[11,19]})
   });
   const ROUTE_KEY_TO_SHORT=Object.freeze({market:'MARKET',science:'SCIENCE',jackpot:'TREASURY',datacenter:'DC',operator:'OPERATOR',custom:'CUSTOM'});
 
@@ -41,7 +41,7 @@
     const style=document.createElement('style');
     style.id='helios-reel-forge-styles';
     style.textContent=`
-      .reels.reel-forge-v1{--forge-gap:12px;--forge-angle:42deg;--forge-cell-radius:8px;--forge-reel-radius:9px;--forge-border:rgba(255,255,255,.11);--forge-surface-a:#111922;--forge-surface-b:#070c11;--forge-accent-soft:rgba(255,194,75,.08);--forge-secondary-soft:rgba(128,215,255,.045);--forge-line:rgba(255,255,255,.035);--forge-depth:16px}
+      .reels.reel-forge-v1{--forge-gap:12px;--forge-angle:42deg;--forge-cell-radius:8px;--forge-reel-radius:9px;--forge-border:rgba(255,255,255,.11);--forge-surface-a:#111922;--forge-surface-b:#070c11;--forge-accent-solid:#ffc24b;--forge-secondary-solid:#ff8d2a;--forge-tertiary-solid:#f2a13a;--forge-accent-soft:rgba(255,194,75,.08);--forge-secondary-soft:rgba(128,215,255,.045);--forge-line:rgba(255,255,255,.035);--forge-depth:16px}
       .reels.reel-forge-v1 .reel[data-reel-index]{border-radius:var(--forge-reel-radius)!important;background:linear-gradient(var(--forge-angle),var(--forge-accent-soft),transparent 28% 72%,var(--forge-secondary-soft)),linear-gradient(90deg,#ffffff04,transparent 24% 76%,#ffffff03)!important;transition:background .9s ease,border-radius .9s ease}
       .reels.reel-forge-v1 .reel[data-reel-index] .cell:not(.hit){border-radius:var(--forge-cell-radius)!important;border-color:var(--forge-border)!important;background:linear-gradient(180deg,var(--forge-surface-a),var(--forge-surface-b))!important;box-shadow:inset 0 0 var(--forge-depth) #0006,inset 0 1px #ffffff07;transition:border-color .65s ease,background .9s ease,border-radius .9s ease,box-shadow .65s ease,color .55s ease,transform .18s ease}
       .reels.reel-forge-v1 .reel[data-reel-index] .cell:before{opacity:.68!important;background-size:auto!important;background-position:center!important;transition:background .9s ease,opacity .55s ease,transform .55s ease,box-shadow .55s ease}
@@ -70,11 +70,18 @@
     const cellRadius=(6+unit(43)*5).toFixed(1)+'px';
     const reelRadius=(7+unit(47)*5).toFixed(1)+'px';
     const depth=(12+unit(53)*12).toFixed(1)+'px';
-    const mix=blendHex(mode.accent,route.mix,.26+unit(61)*.18);
-    const secondary=blendHex(mode.secondary,route.mix,.18+unit(67)*.17);
+    const routeWeight=.50+unit(61)*.24;
+    const secondaryWeight=.46+unit(67)*.24;
+    const mix=blendHex(mode.accent,route.primary,routeWeight);
+    const secondary=blendHex(mode.secondary,route.secondary,secondaryWeight);
+    const tertiary=blendHex(mix,secondary,.42+unit(69)*.20);
     const surfaceA=blendHex('#10171f',mix,.055+unit(71)*.045);
     const surfaceB=blendHex('#070c11',secondary,.035+unit(73)*.035);
-    return {pattern,gap,angle,cellRadius,reelRadius,depth,mix,secondary,surfaceA,surfaceB,lineAlpha:.028+unit(79)*.034,accentAlpha:.055+unit(83)*.055,secondaryAlpha:.030+unit(89)*.045,borderAlpha:.09+unit(97)*.07};
+    return {pattern,gap,angle,cellRadius,reelRadius,depth,mix,secondary,tertiary,surfaceA,surfaceB,routeWeight,secondaryWeight,lineAlpha:.028+unit(79)*.034,accentAlpha:.055+unit(83)*.055,secondaryAlpha:.030+unit(89)*.045,borderAlpha:.09+unit(97)*.07};
+  }
+
+  function emitProfile(p){
+    dispatchEvent(new CustomEvent('helios:reel-forge-profile',{detail:{version:VERSION,mode:state.mode,route:state.route,session_seed:state.sessionSeed,pattern:p.pattern,palette:{primary:p.mix,secondary:p.secondary,tertiary:p.tertiary},presentation_only:true,rng_effect:'NONE',rtp_effect:'NONE',compute_routing_effect:'NONE'}}));
   }
 
   function applyProfile(){
@@ -93,9 +100,13 @@
     state.reels.style.setProperty('--forge-border',rgba(p.mix,p.borderAlpha));
     state.reels.style.setProperty('--forge-surface-a',p.surfaceA);
     state.reels.style.setProperty('--forge-surface-b',p.surfaceB);
+    state.reels.style.setProperty('--forge-accent-solid',p.mix);
+    state.reels.style.setProperty('--forge-secondary-solid',p.secondary);
+    state.reels.style.setProperty('--forge-tertiary-solid',p.tertiary);
     state.reels.style.setProperty('--forge-accent-soft',rgba(p.mix,p.accentAlpha));
     state.reels.style.setProperty('--forge-secondary-soft',rgba(p.secondary,p.secondaryAlpha));
-    state.reels.style.setProperty('--forge-line',rgba(p.mix,p.lineAlpha));
+    state.reels.style.setProperty('--forge-line',rgba(p.tertiary,p.lineAlpha));
+    emitProfile(p);
   }
 
   function bind(){
@@ -122,7 +133,7 @@
       version:VERSION,
       getState:()=>({version:VERSION,attached:state.attached,mode:state.mode,route:state.route,session_seed:state.sessionSeed,profile:state.profile?{...state.profile}:null,presentation_only:true,reads_mode:true,reads_route:true,reads_music_session_seed:true,reads_visible_symbol:false,reads_spin_math:false,reads_bet:false,reads_balance:false,reads_compute:false,rng_effect:'NONE',rtp_effect:'NONE',payout_effect:'NONE',compute_routing_effect:'NONE'})
     });
-    dispatchEvent(new CustomEvent('helios:reel-forge-ready',{detail:{version:VERSION,presentation_only:true,mode_route_seed_forge:true,symbol_text_preserved:true,session_stable:true,rng_effect:'NONE',rtp_effect:'NONE',compute_routing_effect:'NONE'}}));
+    dispatchEvent(new CustomEvent('helios:reel-forge-ready',{detail:{version:VERSION,presentation_only:true,mode_route_seed_forge:true,palette_export:true,symbol_text_preserved:true,session_stable:true,rng_effect:'NONE',rtp_effect:'NONE',compute_routing_effect:'NONE'}}));
     return true;
   }
 
