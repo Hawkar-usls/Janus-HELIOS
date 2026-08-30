@@ -1,0 +1,43 @@
+{
+  "schema": "janus.helios.public-resource-policy.v2",
+  "router_version": "2.0.0",
+  "compute_off_by_default": true,
+  "immediate_revoke": true,
+  "cpu": {
+    "min_percent": 0,
+    "default_percent": 15,
+    "max_percent": 30,
+    "step_percent": 5
+  },
+  "gpu": {
+    "min_percent": 0,
+    "default_percent": 0,
+    "max_percent": 80,
+    "step_percent": 10,
+    "public_page_execution": "SIMULATED_POLICY_ONLY",
+    "production_gate": "DESKTOP_AGENT_OR_APPROVED_GPU_ADAPTER"
+  },
+  "visual_envelope_weights": {
+    "cpu": 0.35,
+    "gpu": 0.65,
+    "throughput_claim": "NONE_PRESENTATION_MAPPING_ONLY"
+  },
+  "profiles": [
+    {"id": "cpu", "label": "CPU", "cpu_percent": 15, "gpu_percent": 0, "resource_class": "CPU"},
+    {"id": "gpu", "label": "GPU", "cpu_percent": 0, "gpu_percent": 50, "resource_class": "GPU"},
+    {"id": "hybrid", "label": "HYBRID", "cpu_percent": 15, "gpu_percent": 40, "resource_class": "HYBRID"},
+    {"id": "max", "label": "MAX", "cpu_percent": 30, "gpu_percent": 80, "resource_class": "HYBRID"}
+  ],
+  "max_policy_sparks": {
+    "enabled": true,
+    "requires_compute_active": true,
+    "requires_cpu_at_max": true,
+    "requires_gpu_at_max": true,
+    "presentation_only": true
+  },
+  "game_effect": "NONE",
+  "rng_effect": "NONE",
+  "rtp_effect": "NONE",
+  "payout_effect": "NONE",
+  "note": "Public controls model explicit user resource caps. GPU execution is not performed by this static page. Production GPU work requires the existing HELIOS desktop-agent/fabric path or another independently approved adapter and verifier."
+}
