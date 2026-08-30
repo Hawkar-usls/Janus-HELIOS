@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION='1.0.1';
+  const VERSION='1.0.0';
   const state={attached:false,host:null,raw:null,status:null,summary:null,details:null,observer:null,statusObserver:null,lastFingerprint:''};
 
   const text=(tag,value,className='')=>{
