@@ -1,4 +1,4 @@
-export const HELIOS_ROUTER_VERSION = '1.0.0';
+export const HELIOS_ROUTER_VERSION = '2.0.0';
 
 export const ROUTE_CLASSES = Object.freeze([
   'SCIENCE',
@@ -16,6 +16,8 @@ export const TASK_TYPES = Object.freeze([
   'ECONOMIC_COMPUTE_JOB',
   'POW_SHARE'
 ]);
+
+export const ROUTER_RESOURCE_CLASSES = Object.freeze(['CPU','GPU','HYBRID']);
 
 const FORBIDDEN_GAME_KEYS = new Set([
   'spin_id', 'wager_id', 'bet', 'rtp', 'odds', 'win_probability',
@@ -51,6 +53,33 @@ export function assertNoGameCoupling(value, path = 'root') {
 export function assertNoClientSecrets(value, path = 'root') {
   walk(value, path, SECRET_KEYS, 'CLIENT_SECRET_FORBIDDEN');
   return true;
+}
+
+function boundedPercent(value, label) {
+  const n = Number(value ?? 0);
+  if (!Number.isFinite(n) || n < 0 || n > 100) throw new Error(`${label}_OUT_OF_RANGE`);
+  return n;
+}
+
+export function normalizeResourceEnvelope(input = {}) {
+  assertObject(input, 'RESOURCE_ENVELOPE');
+  assertNoGameCoupling(input, 'resource_envelope');
+  assertNoClientSecrets(input, 'resource_envelope');
+  const cpu = boundedPercent(input.cpu_percent ?? input.cpu_limit_percent ?? 0, 'CPU_PERCENT');
+  const gpu = boundedPercent(input.gpu_percent ?? input.gpu_limit_percent ?? 0, 'GPU_PERCENT');
+  if (cpu === 0 && gpu === 0) throw new Error('RESOURCE_ENVELOPE_REQUIRES_CPU_OR_GPU');
+  const resourceClass = cpu > 0 && gpu > 0 ? 'HYBRID' : gpu > 0 ? 'GPU' : 'CPU';
+  return Object.freeze({
+    cpu_percent: cpu,
+    gpu_percent: gpu,
+    allow_cpu: cpu > 0,
+    allow_gpu: gpu > 0,
+    resource_class: resourceClass,
+    user_cap_only: true,
+    throughput_scaling: 'NOT_DERIVED_FROM_PERCENTAGES',
+    game_event_weighting: 'FORBIDDEN',
+    game_effect: 'NONE'
+  });
 }
 
 export function validateProviderManifest(input) {
@@ -126,6 +155,7 @@ export function createRoutingPlan({ plan_id = 'default', allocations, policy = {
   const safePolicy = structuredClone(policy);
   delete safePolicy.game_event_weighting;
   delete safePolicy.scheduling_basis;
+  if (safePolicy.resource_policy) safePolicy.resource_policy = normalizeResourceEnvelope(safePolicy.resource_policy);
 
   return Object.freeze({
     router_version: HELIOS_ROUTER_VERSION,
@@ -175,6 +205,7 @@ export function createRouteDecision({ consentAllowed, task, plan, registry, sche
     route_class: provider.route_class,
     gateway_alias: provider.gateway_alias,
     expected_receipt_kinds: provider.receipt_kinds,
+    resource_policy: plan.policy?.resource_policy || null,
     scheduling_basis: 'CONSENT_DEVICE_POLICY_PROVIDER_CAPACITY_AND_WORKLOAD_ADMISSION',
     game_event_weighting: 'FORBIDDEN',
     game_effect: 'NONE'
