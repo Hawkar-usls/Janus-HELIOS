@@ -16,7 +16,7 @@ assert.match(source,/HYBRID/);
 assert.match(source,/MAX/);
 assert.match(source,/visual_envelope_ratio/);
 assert.match(source,/helios:resource-policy/);
-assert.match(source,/router_version:p\.router_version/);
+assert.match(source,/obj\.router_version=p\.router_version/);
 assert.match(source,/throughput_scaling:'NOT_MODELED'/);
 assert.match(source,/public_gpu_execution/);
 assert.match(source,/DESKTOP_AGENT_OR_APPROVED_GPU_ADAPTER/);
