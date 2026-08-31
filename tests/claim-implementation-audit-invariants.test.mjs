@@ -21,7 +21,6 @@ assert.doesNotMatch(html, />87%<|87% STABLE/i);
 assert.match(html, /id="health-value">DEMO/);
 assert.match(html, /NO LIVE SENSORS/);
 assert.match(html, /no production provider or live device-health sensor is connected/i);
-
 for (const [id, file] of [
   ['helios-reel-identity-script', 'helios-reel-identity.js'], ['helios-reel-forge-script', 'helios-reel-forge.js'], ['helios-resource-console-script', 'helios-resource-console.js'],
   ['helios-route-aura-script', 'helios-route-aura.js'], ['helios-receipt-viewer-script', 'helios-receipt-viewer.js'], ['helios-buyer-cockpit-script', 'helios-buyer-cockpit.js'],
@@ -49,8 +48,9 @@ assert.ok(status.smart_compute_node.generic_work_kinds.includes('AI_INFERENCE'))
 assert.ok(status.smart_compute_node.generic_work_kinds.includes('RENDER'));
 assert.equal(status.evidence_independence.maturity, 'IMPLEMENTED_CORE_REAL_ATTESTED_ROOTS_PENDING');
 assert.equal(status.pilot_authority.version, '1.2.0');
-assert.equal(status.pilot_authority.payment_policy_version, '1.2.1');
-assert.equal(status.pilot_authority.maturity, 'IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION');
+assert.equal(status.pilot_authority.contract_version, '1.3.0');
+assert.equal(status.pilot_authority.payment_policy_version, '1.3.0');
+assert.equal(status.pilot_authority.maturity, 'IMPLEMENTED_CORE_ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT');
 assert.equal(status.pilot_authority.core_law, 'PAYMENT_IS_EVIDENCE_NOT_AUTHORITY');
 assert.equal(status.pilot_authority.primary_payment, 'USDT_ON_ETHEREUM_MAINNET_ERC20');
 assert.equal(status.pilot_authority.chain_id, 1);
@@ -62,8 +62,10 @@ assert.equal(status.pilot_authority.grant_confirmations_required, 64);
 assert.equal(status.pilot_authority.rpc_quorum_required, true);
 assert.equal(status.pilot_authority.rpc_quorum_min_sources, 2);
 assert.equal(status.pilot_authority.single_rpc_may_auto_grant, false);
-assert.equal(status.pilot_authority.rpc_quorum_pre_activation_smoke_result, 'PASS_ON_FDDE711F');
-assert.equal(status.pilot_authority.payment_policy_enabled, false);
+assert.equal(status.pilot_authority.payment_policy_enabled, true);
+assert.equal(status.pilot_authority.issuer_main_only, true);
+assert.equal(status.pilot_authority.critical_runtime_preflight, true);
+assert.equal(status.pilot_authority.first_real_grant_observed, false);
 assert.equal(status.pilot_authority.wallet_private_key_required, false);
 assert.equal(status.pilot_authority.real_money_rights, false);
 assert.equal(status.receipt_viewer.loads_other_feature_scripts, false);
@@ -79,9 +81,9 @@ assert.equal(architecture.trust_fabric.provider_authority_epoch, 'IMPLEMENTED_CO
 assert.equal(architecture.smart_compute_node.version, '1.1.0');
 assert.ok(architecture.smart_compute_node.generic_work_evidence.includes('SCIENCE'));
 assert.equal(architecture.pilot_authority.version, '1.2.0');
-assert.equal(architecture.pilot_authority.contract_version, '1.2.1');
-assert.equal(architecture.pilot_authority.payment_policy_version, '1.2.1');
-assert.equal(architecture.pilot_authority.maturity, 'IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_FINAL_ACTIVATION');
+assert.equal(architecture.pilot_authority.contract_version, '1.3.0');
+assert.equal(architecture.pilot_authority.payment_policy_version, '1.3.0');
+assert.equal(architecture.pilot_authority.maturity, 'IMPLEMENTED_CORE_ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT');
 assert.equal(architecture.pilot_authority.primary_payment.chain_id, 1);
 assert.equal(architecture.pilot_authority.primary_payment.asset, 'USDT');
 assert.equal(architecture.pilot_authority.primary_payment.token_contract.toLowerCase(), ETH_USDT);
@@ -92,11 +94,14 @@ assert.equal(architecture.pilot_authority.primary_payment.helios_grant_confirmat
 assert.equal(architecture.pilot_authority.rpc_quorum.required, true);
 assert.equal(architecture.pilot_authority.rpc_quorum.minimum_sources, 2);
 assert.equal(architecture.pilot_authority.rpc_quorum.pre_activation_smoke_result, 'PASS');
+assert.equal(architecture.pilot_authority.runtime_preflight.issuer_main_only, true);
 assert.equal(architecture.pilot_authority.security.watcher_can_move_funds, false);
 assert.equal(architecture.pilot_authority.security.watcher_can_broadcast_transactions, false);
-assert.equal(architecture.pilot_authority.payment_policy_enabled, false);
+assert.equal(architecture.pilot_authority.payment_policy_enabled, true);
+assert.equal(architecture.pilot_authority.first_real_grant_observed, false);
 assert.equal(architecture.public_truth_boundary.invented_health_score, false);
-assert.equal(architecture.public_truth_boundary.pilot_payment_authority_active, false);
+assert.equal(architecture.public_truth_boundary.pilot_payment_authority_active, true);
+assert.equal(architecture.public_truth_boundary.pilot_payment_authority_is_production_compute_authority, false);
 assert.equal(architecture.public_loader.authoritative_loader, 'index.html');
 assert.equal(architecture.public_loader.receipt_viewer_may_load_features, false);
 assert.equal(architecture.production_gate.status, 'NOT_ESTABLISHED');
@@ -110,17 +115,18 @@ assert.equal(byClaim.get('RECEIPT_PROVENANCE_ENVELOPE').status, 'IMPLEMENTED_COR
 assert.equal(byClaim.get('DEVICE_HEALTH_PASSPORT').status, 'IMPLEMENTED_CORE');
 assert.equal(byClaim.get('EVIDENCE_INDEPENDENCE_ENGINE').status, 'IMPLEMENTED_CORE');
 assert.equal(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').status, 'IMPLEMENTED_CORE');
-assert.equal(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').claim_value, 'ARMED_DISABLED_PENDING_FINAL_ACTIVATION');
+assert.equal(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').claim_value, 'ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT');
 assert.match(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').verified_route, /USDT_ETHEREUM_ERC20/);
 assert.match(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').verified_rpc_quorum, /PUBLICNODE_PLUS_DRPC/);
-assert.match(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').external_gate, /final activating commit/i);
+assert.match(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').runtime_boundary, /ISSUER_MAIN_ONLY/);
+assert.match(byClaim.get('AUTOMATED_STANDARD_PILOT_AUTHORITY').external_gate, /No real paid grant has yet been observed/i);
 assert.equal(byClaim.get('PUBLIC_BUYER_LAB_SHOWS_TRUST_AND_POLICY_SURFACES').status, 'DEMO_PREVIEW');
 assert.equal(byClaim.get('PRODUCTION_COMPUTE_SETTLEMENT_NETWORK').status, 'EXTERNAL_GATE');
 assert.equal(byClaim.get('PUBLIC_PAGE_HAS_LIVE_DEVICE_HEALTH_OR_MINING').claim_value, false);
 assert.match(audit.final_rule, /NO_BUYER_FACING_CLAIM/);
 
-assert.equal(pilotContract.version, '1.2.1');
-assert.equal(pilotContract.status, 'ARMED_DISABLED_PENDING_FINAL_ACTIVATION');
+assert.equal(pilotContract.version, '1.3.0');
+assert.equal(pilotContract.status, 'ACTIVE_STANDARD_PILOT_AUTHORITY_MAIN_ONLY_AWAITING_FIRST_PAID_GRANT');
 assert.equal(pilotContract.core_law, 'PAYMENT_IS_EVIDENCE_NOT_AUTHORITY');
 assert.equal(pilotContract.payment.primary, 'USDT_ON_ETHEREUM_MAINNET_ERC20');
 assert.equal(pilotContract.payment.chain_id, 1);
@@ -132,17 +138,24 @@ assert.equal(pilotContract.payment.helios_grant_confirmations, 64);
 assert.equal(pilotContract.rpc_quorum.required, true);
 assert.equal(pilotContract.rpc_quorum.minimum_sources, 2);
 assert.equal(pilotContract.rpc_quorum.pre_activation_smoke_result, 'PASS');
+assert.equal(pilotContract.runtime_preflight.issuer_main_only, true);
+assert.equal(pilotContract.runtime_preflight.any_failure_blocks_invoice_and_grant, true);
 assert.equal(pilotContract.security.wallet_private_key_required, false);
 assert.equal(pilotContract.security.verifier_can_move_funds, false);
 assert.equal(pilotContract.security.verifier_can_broadcast_transactions, false);
-assert.equal(pilotPolicy.version, '1.2.1');
-assert.equal(pilotPolicy.enabled, false);
+assert.equal(pilotContract.activation_gate.policy_enabled, true);
+assert.equal(pilotContract.first_real_grant_status, 'NOT_YET_OBSERVED');
+
+assert.equal(pilotPolicy.version, '1.3.0');
+assert.equal(pilotPolicy.enabled, true);
 assert.equal(pilotPolicy.payment.receiving_address.toLowerCase(), RECEIVER);
 assert.equal(pilotPolicy.payment.asset, 'USDT');
 assert.equal(pilotPolicy.payment.chain_id, 1);
 assert.equal(pilotPolicy.chain_observation.rpc_quorum, 2);
 assert.deepEqual(pilotPolicy.chain_observation.rpc_urls, ['https://ethereum-rpc.publicnode.com', 'https://eth.drpc.org/']);
 assert.equal(pilotPolicy.grant_gate.payment_alone_is_authority, false);
+assert.equal(pilotPolicy.runtime_guard.issuer_workflow_must_run_on_main, true);
+assert.equal(pilotPolicy.runtime_guard.fail_closed_on_any_preflight_failure, true);
 
 assert.equal(fabricContract.desktop_agent.runtime_version, '1.3.0');
 assert.equal(fabricContract.desktop_agent.hardware_guardian_enforced_before_executor, true);
