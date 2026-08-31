@@ -1,8 +1,8 @@
 {
   "schema": "janus.helios.pilot-authority.contract.v1",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "classification": "AUTOMATED_STANDARD_PILOT_LICENSE_GATE",
-  "status": "ARMED_DISABLED_PENDING_FINAL_ACTIVATION",
+  "status": "ACTIVE_STANDARD_PILOT_AUTHORITY_MAIN_ONLY_AWAITING_FIRST_PAID_GRANT",
   "purpose": "Issue a narrowly scoped HELIOS standard pilot grant only after a named grantee accepts frozen pilot terms and an exact on-chain payment is verified by an independent Ethereum RPC quorum.",
   "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
   "implementation": "src/helios-pilot-authority.js",
@@ -54,6 +54,15 @@
     "fund_movement_authority": false,
     "transaction_broadcast_authority": false
   },
+  "runtime_preflight": {
+    "issuer_main_only": true,
+    "syntax_and_pilot_invariants_before_issue_cycle": true,
+    "claim_audit_invariants_before_issue_cycle": true,
+    "secret_scan_before_issue_cycle": true,
+    "strict_due_diligence_preflight_before_issue_cycle": true,
+    "live_rpc_quorum_smoke_before_issue_cycle": true,
+    "any_failure_blocks_invoice_and_grant": true
+  },
   "pilot_scope": {
     "term_days": 90, "non_exclusive": true, "non_transferable": true, "non_sublicensable": true,
     "internal_evaluation": true, "internal_integration": true, "controlled_non_money_pilot": true, "pilot_only_source_modification": true,
@@ -72,10 +81,14 @@
     "mandatory_applicable_law_controls": true, "commercial_production_requires_separate_written_agreement": true
   },
   "activation_gate": {
-    "owner_receiving_address_required": true, "owner_receiving_address_satisfied": true,
-    "current_binance_usdt_ethereum_erc20_support_rechecked": true, "memo_required_must_be_false": true, "memo_gate_satisfied": true,
-    "rpc_quorum_smoke_required": true, "rpc_quorum_pre_activation_smoke_satisfied": true,
-    "policy_enabled_must_be_true": true, "policy_enabled": false,
-    "exact_head_integrity_success_required": true, "exact_head_rpc_quorum_success_required": true
-  }
+    "owner_receiving_address_satisfied": true,
+    "current_binance_usdt_ethereum_erc20_support_rechecked": true,
+    "memo_gate_satisfied": true,
+    "rpc_quorum_pre_activation_smoke_satisfied": true,
+    "policy_enabled": true,
+    "issuer_main_only": true,
+    "activation_commit_must_be_certified_before_main_promotion": true,
+    "required_activation_checks": ["HELIOS Integrity", "HELIOS Pilot RPC Quorum"]
+  },
+  "first_real_grant_status": "NOT_YET_OBSERVED"
 }
