@@ -12,22 +12,26 @@ import {
 } from '../src/helios-pilot-authority.js';
 import { parsePilotIssueRequest } from '../tools/pilot-payment-watch.mjs';
 
-const [policy, contract, terms, template, workflow, watcher, pkg] = await Promise.all([
+const [policy, contract, routeEvidence, terms, template, workflow, smokeWorkflow, watcher, smoke, pkg] = await Promise.all([
   readFile(new URL('../commerce/HELIOS_PILOT_PAYMENT_POLICY.json', import.meta.url), 'utf8').then(JSON.parse),
   readFile(new URL('../.janus/HELIOS_PILOT_AUTHORITY.json', import.meta.url), 'utf8').then(JSON.parse),
+  readFile(new URL('../commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json', import.meta.url), 'utf8').then(JSON.parse),
   readFile(new URL('../legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md', import.meta.url), 'utf8'),
   readFile(new URL('../.github/ISSUE_TEMPLATE/helios-pilot-license.yml', import.meta.url), 'utf8'),
   readFile(new URL('../.github/workflows/helios-pilot-authority.yml', import.meta.url), 'utf8'),
+  readFile(new URL('../.github/workflows/helios-pilot-rpc-smoke.yml', import.meta.url), 'utf8'),
   readFile(new URL('../tools/pilot-payment-watch.mjs', import.meta.url), 'utf8'),
+  readFile(new URL('../tools/pilot-rpc-smoke.mjs', import.meta.url), 'utf8'),
   readFile(new URL('../package.json', import.meta.url), 'utf8').then(JSON.parse)
 ]);
 
 const ETH_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+const RECEIVER = '0x7149081aea54fbef57effeb52a5a966b81cc03a0';
 
-assert.equal(HELIOS_PILOT_AUTHORITY_VERSION, '1.1.0');
-assert.equal(policy.version, '1.1.0');
+assert.equal(HELIOS_PILOT_AUTHORITY_VERSION, '1.2.0');
+assert.equal(policy.version, '1.2.0');
 assert.equal(policy.enabled, false);
-assert.equal(policy.disabled_reason, 'RECEIVING_ADDRESS_AND_DEDICATED_RPC_NOT_CONFIGURED_BY_OWNER');
+assert.equal(policy.disabled_reason, 'RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION_COMMIT_PENDING');
 assert.equal(policy.payment.network, 'ETHEREUM_MAINNET');
 assert.equal(policy.payment.network_display, 'Ethereum Mainnet (ERC20)');
 assert.equal(policy.payment.chain_id, 1);
@@ -35,24 +39,50 @@ assert.equal(policy.payment.asset, 'USDT');
 assert.equal(policy.payment.token_contract.toLowerCase(), ETH_USDT);
 assert.equal(policy.payment.decimals, 6);
 assert.equal(policy.payment.standard_fee_asset, '10000.000000');
-assert.equal(policy.payment.receiving_address, null);
+assert.equal(policy.payment.receiving_address.toLowerCase(), RECEIVER);
+assert.equal(policy.payment.memo_required, false);
 assert.equal(policy.payment.private_key_present, false);
 assert.equal(policy.payment.seed_phrase_present, false);
-assert.equal(policy.chain_observation.rpc_url, null);
+assert.deepEqual(policy.chain_observation.rpc_urls, [
+  'https://ethereum-rpc.publicnode.com',
+  'https://public.1rpc.io/eth'
+]);
+assert.equal(policy.chain_observation.rpc_quorum, 2);
+assert.equal(policy.chain_observation.single_rpc_may_auto_grant, false);
 assert.equal(policy.chain_observation.expected_chain_id_hex, '0x1');
-assert.equal(policy.chain_observation.rpc_classification, 'DEDICATED_ETHEREUM_RPC_REQUIRED_BEFORE_ENABLE');
+assert.equal(policy.chain_observation.min_confirmations, 64);
+assert.equal(policy.chain_observation.binance_credit_confirmations_observed, 6);
+assert.equal(policy.chain_observation.binance_withdrawal_unlock_confirmations_observed, 64);
 assert.equal(policy.grant_gate.payment_alone_is_authority, false);
+assert.equal(policy.grant_gate.rpc_quorum_required, true);
+assert.equal(policy.grant_gate.rpc_quorum_min_sources, 2);
 assert.equal(policy.grant_gate.real_money_gambling_rights, false);
 assert.equal(policy.grant_gate.public_production_rights, false);
 assert.equal(policy.privacy_and_security.payment_verifier_can_move_funds, false);
+assert.equal(policy.privacy_and_security.payment_verifier_can_broadcast_transactions, false);
+
+assert.equal(routeEvidence.version, '1.1.0');
+assert.equal(routeEvidence.route.receiving_address.toLowerCase(), RECEIVER);
+assert.equal(routeEvidence.route.asset, 'USDT');
+assert.equal(routeEvidence.route.network_displayed, 'Ethereum (ERC20)');
+assert.equal(routeEvidence.memo_tag_evidence.memo_gate_status, 'CLOSED_BY_EXPANDED_BINANCE_DEPOSIT_SCREEN_EVIDENCE');
+assert.equal(routeEvidence.memo_tag_evidence.memo_required_for_helios_policy, false);
+assert.equal(routeEvidence.confirmation_evidence.binance_trading_credit_confirmations_displayed, 6);
+assert.equal(routeEvidence.confirmation_evidence.binance_withdrawal_unlock_confirmations_displayed, 64);
+assert.equal(routeEvidence.confirmation_evidence.helios_automatic_grant_confirmations, 64);
+assert.equal(routeEvidence.source.screenshots[1].sha256, 'abe83eca120a7182e4d7d84c316b55c4edfe72ed3ebfbf2ccb34a81df1f42c64');
 
 assert.throws(() => validatePilotPaymentPolicy(policy), /PILOT_AUTHORITY_DISABLED/);
 
 const enabledPolicy = structuredClone(policy);
 enabledPolicy.enabled = true;
 enabledPolicy.disabled_reason = null;
-enabledPolicy.payment.receiving_address = '0x1111111111111111111111111111111111111111';
 assert.equal(validatePilotPaymentPolicy(enabledPolicy), true);
+
+const singleRpc = structuredClone(enabledPolicy);
+singleRpc.chain_observation.rpc_urls = ['https://ethereum-rpc.publicnode.com'];
+singleRpc.chain_observation.rpc_quorum = 1;
+assert.throws(() => validatePilotPaymentPolicy(singleRpc), /PILOT_RPC_REQUIRES_AT_LEAST_TWO_SOURCES|PILOT_RPC_QUORUM_INVALID/);
 
 const wrongNetwork = structuredClone(enabledPolicy);
 wrongNetwork.payment.network = 'BASE_MAINNET';
@@ -62,6 +92,10 @@ assert.throws(() => validatePilotPaymentPolicy(wrongNetwork), /PILOT_PRIMARY_NET
 const wrongToken = structuredClone(enabledPolicy);
 wrongToken.payment.token_contract = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
 assert.throws(() => validatePilotPaymentPolicy(wrongToken), /PILOT_USDT_CONTRACT_MUST_BE_TETHER_ETHEREUM_USDT/);
+
+const weakConfirmations = structuredClone(enabledPolicy);
+weakConfirmations.chain_observation.min_confirmations = 6;
+assert.throws(() => validatePilotPaymentPolicy(weakConfirmations), /PILOT_CONFIRMATION_THRESHOLD_BELOW_FROZEN_BINANCE_UNLOCK_EVIDENCE/);
 
 const request = normalizePilotRequest({
   legal_entity_name: 'Example Compute Inc.',
@@ -98,11 +132,13 @@ const invoice = createPilotInvoice({
   issued_at_ms: issuedAt
 });
 assert.equal(invoice.invoice_id, 'HELIOS-PILOT-42');
-assert.equal(invoice.authority_version, '1.1.0');
+assert.equal(invoice.authority_version, '1.2.0');
 assert.equal(invoice.payment.network, 'ETHEREUM_MAINNET');
 assert.equal(invoice.payment.chain_id, 1);
 assert.equal(invoice.payment.asset, 'USDT');
 assert.equal(invoice.payment.token_contract, ETH_USDT);
+assert.equal(invoice.payment.receiving_address, RECEIVER);
+assert.equal(invoice.payment.rpc_quorum_required, 2);
 assert.equal(invoice.payment.standard_fee_raw, '10000000000');
 assert.equal(invoice.payment.invoice_fingerprint_discount_raw, '43');
 assert.equal(invoice.payment.exact_amount_raw, '9999999957');
@@ -120,8 +156,28 @@ const goodObservation = {
   block_number: 1000,
   removed: false,
   receipt_status: true,
-  observed_at: '2026-08-31T00:02:00Z'
+  observed_at: '2026-08-31T00:02:00Z',
+  rpc_quorum_verified: true,
+  rpc_source_count: 2
 };
+
+const noQuorum = verifyPilotPaymentEvidence({
+  invoice,
+  observation: { ...goodObservation, rpc_quorum_verified: false },
+  latest_block_number: 1100,
+  min_confirmations: 64
+});
+assert.equal(noQuorum.verified, false);
+assert.equal(noQuorum.reason, 'RPC_QUORUM_NOT_VERIFIED');
+
+const oneSource = verifyPilotPaymentEvidence({
+  invoice,
+  observation: { ...goodObservation, rpc_source_count: 1 },
+  latest_block_number: 1100,
+  min_confirmations: 64
+});
+assert.equal(oneSource.verified, false);
+assert.equal(oneSource.reason, 'RPC_SOURCE_COUNT_INSUFFICIENT');
 
 const insufficient = verifyPilotPaymentEvidence({
   invoice,
@@ -157,7 +213,10 @@ const verified = verifyPilotPaymentEvidence({
   min_confirmations: 64
 });
 assert.equal(verified.verified, true);
+assert.equal(verified.reason, 'EXACT_ONCHAIN_PAYMENT_CONFIRMED_BY_RPC_QUORUM');
 assert.equal(verified.payment_is_authority, false);
+assert.equal(verified.rpc_quorum_verified, true);
+assert.equal(verified.rpc_source_count, 2);
 assert.equal(verified.confirmations, 101);
 assert.equal(verified.amount_asset, '9999.999957');
 assert.equal(verified.asset, 'USDT');
@@ -184,22 +243,29 @@ assert.equal(grant.payment.network, 'ETHEREUM_MAINNET');
 assert.equal(grant.payment.chain_id, 1);
 assert.equal(grant.payment.asset, 'USDT');
 assert.equal(grant.payment.amount_asset, '9999.999957');
+assert.equal(grant.payment.rpc_quorum_verified, true);
+assert.equal(grant.payment.rpc_source_count, 2);
 assert.equal(grant.payment.payment_is_authority, false);
 assert.equal(isPilotGrantActive(grant, grantTime + 1000), true);
 assert.equal(isPilotGrantActive(grant, Date.parse(grant.expires_at)), false);
 
-assert.equal(contract.version, '1.1.0');
-assert.equal(contract.status, 'ARMED_DISABLED_PENDING_RECEIVING_ADDRESS_AND_RPC');
+assert.equal(contract.version, '1.2.0');
+assert.equal(contract.status, 'ARMED_DISABLED_PENDING_RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION');
 assert.equal(contract.core_law, 'PAYMENT_IS_EVIDENCE_NOT_AUTHORITY');
 assert.equal(contract.payment.primary, 'USDT_ON_ETHEREUM_MAINNET_ERC20');
 assert.equal(contract.payment.chain_id, 1);
 assert.equal(contract.payment.erc20_contract.toLowerCase(), ETH_USDT);
-assert.equal(contract.payment.bitcoin_primary, false);
-assert.equal(contract.payment.dedicated_rpc_required_before_enable, true);
+assert.equal(contract.payment.receiving_address.toLowerCase(), RECEIVER);
+assert.equal(contract.payment.receiving_address_configured, true);
+assert.equal(contract.payment.helios_grant_confirmations, 64);
+assert.equal(contract.rpc_quorum.required, true);
+assert.equal(contract.rpc_quorum.minimum_sources, 2);
+assert.equal(contract.rpc_quorum.single_rpc_may_auto_grant, false);
 assert.equal(contract.pilot_scope.term_days, 90);
 assert.equal(contract.pilot_scope.real_money_gambling, false);
 assert.equal(contract.security.wallet_private_key_required, false);
 assert.equal(contract.security.verifier_can_move_funds, false);
+assert.equal(contract.security.verifier_can_broadcast_transactions, false);
 assert.equal(contract.legal_boundary.production_authorization, 'NONE');
 
 assert.match(terms, /PAYMENT IS EVIDENCE, NOT AUTHORITY/);
@@ -223,24 +289,33 @@ assert.match(workflow, /name: HELIOS Pilot Authority/);
 assert.match(workflow, /cron: '\*\/10 \* \* \* \*'/);
 assert.match(workflow, /contents: read/);
 assert.match(workflow, /issues: write/);
-assert.match(workflow, /actions\/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09/);
-assert.match(workflow, /actions\/setup-node@a0853c24544627f65ddf259abe73b1d18a591444/);
 assert.match(workflow, /persist-credentials: false/);
-assert.match(workflow, /HELIOS_PILOT_RPC_URL: \$\{\{ secrets\.HELIOS_PILOT_RPC_URL \}\}/);
 assert.doesNotMatch(workflow, /contents: write/);
+
+assert.match(smokeWorkflow, /name: HELIOS Pilot RPC Quorum/);
+assert.match(smokeWorkflow, /permissions:\s*\n\s*contents: read/);
+assert.match(smokeWorkflow, /node tools\/pilot-rpc-smoke\.mjs/);
 
 assert.match(watcher, /eth_getLogs/);
 assert.match(watcher, /eth_getTransactionReceipt/);
-assert.match(watcher, /RPC_CHAIN_ID_MISMATCH/);
+assert.match(watcher, /RPC_CHAIN_ID_QUORUM_MISMATCH/);
+assert.match(watcher, /RPC_RECEIPT_QUORUM_DISAGREEMENT/);
+assert.match(watcher, /RPC_BLOCK_QUORUM_DISAGREEMENT/);
 assert.match(watcher, /txAlreadyGrantedElsewhere/);
 assert.match(watcher, /PILOT_ACTIVE/);
 assert.match(watcher, /policy\.enabled !== true/);
-assert.match(watcher, /policy\.payment\.asset/);
+assert.match(watcher, /rpc_quorum_verified/);
 assert.doesNotMatch(watcher, /Base Mainnet · chain 8453|native USDC|inbound USDC/i);
 assert.doesNotMatch(watcher, /seed phrase\s*=|private key\s*=/i);
+
+assert.match(smoke, /eth_chainId/);
+assert.match(smoke, /eth_blockNumber/);
+assert.match(smoke, /eth_getCode/);
+assert.match(smoke, /eth_getLogs/);
+assert.match(smoke, /fund_movement_authority: false/);
 
 assert.match(pkg.scripts.test, /pilot-authority-invariants\.test\.mjs/);
 assert.match(pkg.scripts['check:public'], /src\/helios-pilot-authority\.js/);
 assert.match(pkg.scripts['check:public'], /tools\/pilot-payment-watch\.mjs/);
 
-console.log('HELIOS Pilot Authority USDT/Ethereum standard-license + exact-payment invariants: PASS');
+console.log('HELIOS Pilot Authority v1.2 RPC-quorum + Binance-route invariants: PASS');
