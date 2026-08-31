@@ -1,0 +1,79 @@
+{
+  "schema": "janus.helios.smart-compute-node.contract.v1",
+  "version": "1.0.0",
+  "classification": "UNIFIED_WORK_AND_DEVICE_SELF_MONITORING_NODE",
+  "purpose": "Fuse HELIOS work/hash evidence, Hardware Guardian decisions, host-first execution budgets, Device Health Passport records, provenance and replication lineage into one machine-readable compute-node object.",
+  "core_laws": [
+    "WORK_MONITORING_AND_DEVICE_MONITORING_ARE_ONE_NODE_RECORD",
+    "DEVICE_SAFETY_PRECEDES_EXTERNAL_THROUGHPUT",
+    "UNKNOWN_SENSOR_DATA_REMAINS_UNKNOWN",
+    "HASH_OR_WORK_EVIDENCE_IS_NORMALIZED_BY_CHECKED_WORK",
+    "WORK_RESULT_EXISTS_NE_AUTHORITY_PROVEN",
+    "REPLICATION_COUNT_NE_INDEPENDENT_ROOT_COUNT",
+    "HARDWARE_AWARE_HUMAN_BLIND",
+    "GAME_RNG_PERP_COMPUTE"
+  ],
+  "node_record": {
+    "required_identity": "PSEUDONYMOUS_NODE_ID",
+    "work_evidence": "EDGE_HASH_OR_COMPATIBLE_VERIFIED_WORK_EVIDENCE",
+    "device_state": "HARDWARE_GUARDIAN_DECISION",
+    "execution_budget": "HOST_FIRST_QUIET_CANARY_BUDGET",
+    "device_history": "DEVICE_HEALTH_PASSPORT",
+    "provenance": "WORK_PROVENANCE_ENVELOPE",
+    "replication_lineage": "EVIDENCE_INDEPENDENCE_ROOTS"
+  },
+  "safety": {
+    "provider_can_override_guardian": false,
+    "external_throughput_has_priority_over_host": false,
+    "missing_thermal_sensor_means_green": false,
+    "unknown_sensor_data_is_zero": false,
+    "human_activity_observation_required": false,
+    "human_activity_observation_allowed": false
+  },
+  "work_evidence": {
+    "raw_hashrate_is_proof": false,
+    "raw_counts_alone_are_sufficient": false,
+    "normalization": "PER_CHECKED_WORK",
+    "i0_vs_random_mirror_supported": true,
+    "sha256_break_claim": false,
+    "guaranteed_mining_advantage_claim": false
+  },
+  "device_health": {
+    "hardware_aware": true,
+    "human_blind": true,
+    "guardian_states": ["GREEN", "WATCH", "THROTTLE", "COOLDOWN", "BLOCK", "UNKNOWN"],
+    "passport_integrity_proves_sensor_truth": false,
+    "unknown_remains_unknown": true
+  },
+  "evidence_independence": {
+    "required_for_cross_node_replication_claim": true,
+    "same_hardware_class_is_dependency": false,
+    "different_hardware_class_is_proof_of_independence": false,
+    "unknown_lineage_counts_as_independent": false
+  },
+  "public_demo": {
+    "presentation_only": true,
+    "live_mining": false,
+    "connected_devices": 0,
+    "device_access": false,
+    "pool_access": false,
+    "fake_hashrate": false,
+    "fake_temperature": false,
+    "fake_watts": false,
+    "fake_health_score": false,
+    "desktop_agent_required_for_live_hardware_telemetry": true
+  },
+  "commercial_boundary": {
+    "nerdminer_v2": "EXTERNAL_MIT_COMPATIBILITY_TARGET",
+    "janus_i0": "SEPARATELY_SCOPED_BACKGROUND_IP",
+    "smart_node_contract": "HELIOS_FIRST_PARTY_INTEGRATION_LAYER"
+  },
+  "authority": {
+    "game_effect": "NONE",
+    "rng_effect": "NONE",
+    "rtp_effect": "NONE",
+    "payout_effect": "NONE",
+    "public_compute_execution_authority": "NONE",
+    "settlement_authority": "NONE"
+  }
+}
