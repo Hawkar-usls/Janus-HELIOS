@@ -17,8 +17,9 @@ concurrency:
 
 jobs:
   pilot-authority:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - name: Checkout exact repository snapshot
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -31,8 +32,18 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Critical licensing syntax and invariant preflight
+        run: |
+          npm run check:public
+          node tests/pilot-authority-invariants.test.mjs
+          node tests/claim-implementation-audit-invariants.test.mjs
+          npm run audit:secrets
+          npm run audit:preflight:strict
+
+      - name: Live read-only Ethereum RPC quorum preflight
+        run: node tools/pilot-rpc-smoke.mjs
+
       - name: Verify or issue standard pilot grants
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          HELIOS_PILOT_RPC_URL: ${{ secrets.HELIOS_PILOT_RPC_URL }}
         run: node tools/pilot-payment-watch.mjs
