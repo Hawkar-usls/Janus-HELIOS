@@ -38,6 +38,8 @@ The standard automated pilot term is **90 days** from the grant's effective time
 
 ## 3. Rights not granted
 
+This Standard Pilot License does **not** authorize real-money gambling or wagering, public production deployment, sublicensing, source resale or transfer of HELIOS Core ownership.
+
 The Standard Pilot License does **not** grant any right to:
 
 - operate real-money gambling or wagering using HELIOS;
