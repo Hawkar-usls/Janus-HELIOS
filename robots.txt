@@ -8,3 +8,4 @@ Sitemap: https://hawkar-usls.github.io/Janus-HELIOS/sitemap.xml
 # https://hawkar-usls.github.io/Janus-HELIOS/agents.txt
 # https://hawkar-usls.github.io/Janus-HELIOS/llms.txt
 # https://hawkar-usls.github.io/Janus-HELIOS/opportunity.json
+# https://hawkar-usls.github.io/Janus-HELIOS/codemeta.json
