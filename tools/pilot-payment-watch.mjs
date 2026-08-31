@@ -16,7 +16,6 @@ const termsSha256 = createHash('sha256').update(termsText).digest('hex');
 const API = process.env.GITHUB_API_URL || 'https://api.github.com';
 const REPOSITORY = process.env.GITHUB_REPOSITORY || '';
 const TOKEN = process.env.GITHUB_TOKEN || '';
-const RPC_URL = process.env.HELIOS_PILOT_RPC_URL || policy.chain_observation?.rpc_url || '';
 const TITLE_PREFIX = policy.request_gate?.title_prefix || '[HELIOS PILOT]';
 const INVOICE_JSON_OPEN = '<!-- HELIOS_PILOT_INVOICE_JSON';
 const INVOICE_JSON_CLOSE = 'HELIOS_PILOT_INVOICE_JSON -->';
@@ -78,17 +77,40 @@ async function github(path, { method = 'GET', body } = {}) {
   return response.json();
 }
 
-async function rpc(method, params = []) {
-  if (!RPC_URL) throw new Error('PILOT_RPC_URL_REQUIRED');
-  const response = await fetch(RPC_URL, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
-  });
-  if (!response.ok) throw new Error(`PILOT_RPC_HTTP_${response.status}`);
-  const payload = await response.json();
-  if (payload.error) throw new Error(`PILOT_RPC_ERROR:${payload.error.code}:${payload.error.message}`);
-  return payload.result;
+function configuredRpcUrls() {
+  const policyUrls = policy.chain_observation?.rpc_urls || [];
+  const envMany = String(process.env.HELIOS_PILOT_RPC_URLS || '').split(',').map(x => x.trim()).filter(Boolean);
+  const envOne = String(process.env.HELIOS_PILOT_RPC_URL || '').trim();
+  return [...new Set([...(envOne ? [envOne] : []), ...envMany, ...policyUrls])];
+}
+
+const RPC_URLS = configuredRpcUrls();
+const RPC_QUORUM = Number(policy.chain_observation?.rpc_quorum || 0);
+
+async function rpcAt(url, method, params = []) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15_000);
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+      signal: controller.signal
+    });
+    if (!response.ok) throw new Error(`PILOT_RPC_HTTP_${response.status}`);
+    const payload = await response.json();
+    if (payload.error) throw new Error(`PILOT_RPC_ERROR:${payload.error.code}:${payload.error.message}`);
+    return payload.result;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function rpcSettled(method, params = [], urls = RPC_URLS) {
+  const settled = await Promise.allSettled(urls.map(async url => ({ url, result: await rpcAt(url, method, params) })));
+  const ok = settled.filter(x => x.status === 'fulfilled').map(x => x.value);
+  if (ok.length < RPC_QUORUM) throw new Error(`RPC_QUORUM_UNAVAILABLE:${method}:${ok.length}/${RPC_QUORUM}`);
+  return ok;
 }
 
 function toHex(value) {
@@ -113,6 +135,34 @@ function parseInvoiceFromComment(body) {
   try { return JSON.parse(jsonText); } catch { return null; }
 }
 
+function canonicalLog(log) {
+  return JSON.stringify({
+    address: String(log?.address || '').toLowerCase(),
+    blockHash: String(log?.blockHash || '').toLowerCase(),
+    blockNumber: String(log?.blockNumber || '').toLowerCase(),
+    transactionHash: String(log?.transactionHash || '').toLowerCase(),
+    transactionIndex: String(log?.transactionIndex || '').toLowerCase(),
+    logIndex: String(log?.logIndex || '').toLowerCase(),
+    data: String(log?.data || '').toLowerCase(),
+    topics: (log?.topics || []).map(x => String(x).toLowerCase()),
+    removed: log?.removed === true
+  });
+}
+
+function quorumRepresentative(records, canonicalize, errorCode) {
+  const buckets = new Map();
+  for (const record of records) {
+    const key = canonicalize(record.result);
+    const bucket = buckets.get(key) || { count: 0, result: record.result, urls: [] };
+    bucket.count += 1;
+    bucket.urls.push(record.url);
+    buckets.set(key, bucket);
+  }
+  const winner = [...buckets.values()].sort((a, b) => b.count - a.count)[0];
+  if (!winner || winner.count < RPC_QUORUM) throw new Error(`${errorCode}:${winner?.count || 0}/${RPC_QUORUM}`);
+  return winner;
+}
+
 async function listPilotIssues() {
   const issues = await github(`/repos/${REPOSITORY}/issues?state=open&per_page=100&sort=created&direction=asc`);
   return issues.filter(issue => !issue.pull_request && String(issue.title || '').startsWith(TITLE_PREFIX));
@@ -134,7 +184,7 @@ async function closeIssue(issueNumber, stateReason = 'completed') {
 }
 
 function invoiceComment(invoice) {
-  return `<!-- HELIOS_PILOT_INVOICE:${invoice.invoice_id} -->\n## HELIOS Pilot Authority · invoice issued\n\nThe standard pilot request passed the request/acceptance gate. **Do not change network or asset.**\n\n- Invoice: \`${invoice.invoice_id}\`\n- Network: **${invoice.payment.network_display} · chain ${invoice.payment.chain_id}**\n- Asset: **${invoice.payment.asset}**\n- Token contract: \`${invoice.payment.token_contract}\`\n- Receiving address: \`${invoice.payment.receiving_address}\`\n- Exact amount: **${invoice.payment.exact_amount_asset} ${invoice.payment.asset}**\n- Expires: **${invoice.expires_at}**\n- Terms: \`${invoice.terms_file}\`\n- Terms SHA-256: \`${invoice.terms_sha256}\`\n\nThe tiny sub-unit difference from the standard fee is a deterministic **discount** used only as an on-chain invoice fingerprint. It is not a surcharge.\n\n**Wrong network, wrong token, wrong amount, late payment or a random transfer without this invoice does not automatically grant rights.**\n\n${INVOICE_JSON_OPEN}\n${JSON.stringify(invoice)}\n${INVOICE_JSON_CLOSE}`;
+  return `<!-- HELIOS_PILOT_INVOICE:${invoice.invoice_id} -->\n## HELIOS Pilot Authority · invoice issued\n\nThe standard pilot request passed the request/acceptance gate. **Do not change network or asset.**\n\n- Invoice: \`${invoice.invoice_id}\`\n- Network: **${invoice.payment.network_display} · chain ${invoice.payment.chain_id}**\n- Asset: **${invoice.payment.asset}**\n- Token contract: \`${invoice.payment.token_contract}\`\n- Receiving address: \`${invoice.payment.receiving_address}\`\n- Exact amount: **${invoice.payment.exact_amount_asset} ${invoice.payment.asset}**\n- RPC quorum required for grant: **${invoice.payment.rpc_quorum_required} independent sources**\n- Expires: **${invoice.expires_at}**\n- Terms: \`${invoice.terms_file}\`\n- Terms SHA-256: \`${invoice.terms_sha256}\`\n\nThe tiny sub-unit difference from the standard fee is a deterministic **discount** used only as an on-chain invoice fingerprint. It is not a surcharge.\n\n**Wrong network, wrong token, wrong amount, late payment or a random transfer without this invoice does not automatically grant rights.**\n\n${INVOICE_JSON_OPEN}\n${JSON.stringify(invoice)}\n${INVOICE_JSON_CLOSE}`;
 }
 
 function invalidComment(message) {
@@ -146,18 +196,26 @@ function expiredComment(invoice) {
 }
 
 function grantComment(grant, grantDigest) {
-  return `${GRANT_MARKER}${grant.grant_id} -->\n## HELIOS Pilot Authority · PILOT_ACTIVE\n\nThe request, frozen terms and exact on-chain payment have satisfied the Standard Pilot License grant conditions.\n\n- Grant: \`${grant.grant_id}\`\n- Grantee: **${grant.grantee.legal_entity_name}**\n- GitHub grantee: \`${grant.grantee.github_grantee}\`\n- Effective: **${grant.effective_at}**\n- Expires: **${grant.expires_at}**\n- Payment: **${grant.payment.amount_asset} ${grant.payment.asset}** on **${grant.payment.network}**\n- Payment tx: \`${grant.payment.tx_hash}\`\n- Grant-record SHA-256: \`${grantDigest}\`\n\nThis is a **90-day standard controlled non-money pilot grant**. It is non-exclusive, non-transferable and non-sublicensable. It does not transfer HELIOS Core, authorize real-money gambling or create public-production/commercial rights.\n\nA successful pilot requires a separate written agreement for production/commercial use.\n\n\`PAYMENT IS EVIDENCE, NOT AUTHORITY\`\n\n<!-- HELIOS_PILOT_GRANT_JSON\n${JSON.stringify({ ...grant, grant_record_sha256: grantDigest })}\nHELIOS_PILOT_GRANT_JSON -->`;
+  return `${GRANT_MARKER}${grant.grant_id} -->\n## HELIOS Pilot Authority · PILOT_ACTIVE\n\nThe request, frozen terms and exact on-chain payment have satisfied the Standard Pilot License grant conditions.\n\n- Grant: \`${grant.grant_id}\`\n- Grantee: **${grant.grantee.legal_entity_name}**\n- GitHub grantee: \`${grant.grantee.github_grantee}\`\n- Effective: **${grant.effective_at}**\n- Expires: **${grant.expires_at}**\n- Payment: **${grant.payment.amount_asset} ${grant.payment.asset}** on **${grant.payment.network}**\n- Payment tx: \`${grant.payment.tx_hash}\`\n- Confirmations at grant: **${grant.payment.confirmations_at_grant}**\n- RPC quorum: **${grant.payment.rpc_source_count} sources**\n- Grant-record SHA-256: \`${grantDigest}\`\n\nThis is a **90-day standard controlled non-money pilot grant**. It is non-exclusive, non-transferable and non-sublicensable. It does not transfer HELIOS Core, authorize real-money gambling or create public-production/commercial rights.\n\nA successful pilot requires a separate written agreement for production/commercial use.\n\n\`PAYMENT IS EVIDENCE, NOT AUTHORITY\`\n\n<!-- HELIOS_PILOT_GRANT_JSON\n${JSON.stringify({ ...grant, grant_record_sha256: grantDigest })}\nHELIOS_PILOT_GRANT_JSON -->`;
 }
 
-async function getLatestBlockNumber() {
-  const chainId = await rpc('eth_chainId');
-  if (String(chainId).toLowerCase() !== String(policy.chain_observation.expected_chain_id_hex).toLowerCase()) {
-    throw new Error(`RPC_CHAIN_ID_MISMATCH:${chainId}`);
-  }
-  return Number(BigInt(await rpc('eth_blockNumber')));
+async function getRpcQuorumHead() {
+  if (RPC_URLS.length < 2 || RPC_QUORUM < 2 || RPC_QUORUM > RPC_URLS.length) throw new Error('RPC_QUORUM_CONFIGURATION_INVALID');
+  const chainRecords = await rpcSettled('eth_chainId');
+  const expected = String(policy.chain_observation.expected_chain_id_hex).toLowerCase();
+  const validChainUrls = chainRecords.filter(x => String(x.result).toLowerCase() === expected).map(x => x.url);
+  if (validChainUrls.length < RPC_QUORUM) throw new Error(`RPC_CHAIN_ID_QUORUM_MISMATCH:${validChainUrls.length}/${RPC_QUORUM}`);
+
+  const headRecords = await rpcSettled('eth_blockNumber', [], validChainUrls);
+  const heads = headRecords.map(x => ({ url: x.url, blockNumber: Number(BigInt(x.result)) }));
+  const safeHead = Math.min(...heads.map(x => x.blockNumber));
+  const spread = Math.max(...heads.map(x => x.blockNumber)) - safeHead;
+  const maxSpread = Number(policy.chain_observation.max_head_spread_blocks ?? 8);
+  if (spread > maxSpread) throw new Error(`RPC_HEAD_SPREAD_TOO_LARGE:${spread}`);
+  return { safeHead, urls: heads.map(x => x.url), sourceCount: heads.length, spread };
 }
 
-async function getRecentPaymentLogs(latestBlock) {
+async function getRecentPaymentLogs(latestBlock, urls) {
   const lookback = Number(policy.chain_observation.lookback_blocks);
   const chunk = Number(policy.chain_observation.log_chunk_blocks);
   const fromBlock = Math.max(0, latestBlock - lookback + 1);
@@ -168,22 +226,55 @@ async function getRecentPaymentLogs(latestBlock) {
 
   for (let start = fromBlock; start <= latestBlock; start += chunk) {
     const end = Math.min(latestBlock, start + chunk - 1);
-    const page = await rpc('eth_getLogs', [{
+    const records = await rpcSettled('eth_getLogs', [{
       fromBlock: toHex(start),
       toBlock: toHex(end),
       address: token,
       topics: [topic0, null, topic2]
-    }]);
-    logs.push(...page);
+    }], urls);
+
+    const buckets = new Map();
+    for (const record of records) {
+      if (!Array.isArray(record.result)) throw new Error(`RPC_GET_LOGS_NOT_ARRAY:${record.url}`);
+      for (const log of record.result) {
+        const key = canonicalLog(log);
+        const bucket = buckets.get(key) || { log, urls: new Set() };
+        bucket.urls.add(record.url);
+        buckets.set(key, bucket);
+      }
+    }
+    for (const bucket of buckets.values()) {
+      if (bucket.urls.size >= RPC_QUORUM) logs.push({ ...bucket.log, _rpc_source_count: bucket.urls.size });
+    }
   }
   return logs;
 }
 
-async function observationForLog(log, latestBlock) {
-  const receipt = await rpc('eth_getTransactionReceipt', [log.transactionHash]);
-  const block = await rpc('eth_getBlockByNumber', [log.blockNumber, false]);
+async function observationForLog(log, latestBlock, urls) {
+  const receiptRecords = await rpcSettled('eth_getTransactionReceipt', [log.transactionHash], urls);
+  const receiptWinner = quorumRepresentative(receiptRecords, receipt => JSON.stringify({
+    transactionHash: String(receipt?.transactionHash || '').toLowerCase(),
+    blockHash: String(receipt?.blockHash || '').toLowerCase(),
+    blockNumber: String(receipt?.blockNumber || '').toLowerCase(),
+    status: String(receipt?.status || '').toLowerCase()
+  }), 'RPC_RECEIPT_QUORUM_DISAGREEMENT');
+  const receipt = receiptWinner.result;
+  if (String(receipt?.transactionHash || '').toLowerCase() !== String(log.transactionHash).toLowerCase()) throw new Error('RPC_RECEIPT_TX_HASH_MISMATCH');
+  if (String(receipt?.blockHash || '').toLowerCase() !== String(log.blockHash).toLowerCase()) throw new Error('RPC_RECEIPT_BLOCK_HASH_MISMATCH');
+  if (String(receipt?.blockNumber || '').toLowerCase() !== String(log.blockNumber).toLowerCase()) throw new Error('RPC_RECEIPT_BLOCK_NUMBER_MISMATCH');
+
+  const blockRecords = await rpcSettled('eth_getBlockByNumber', [log.blockNumber, false], urls);
+  const blockWinner = quorumRepresentative(blockRecords, block => JSON.stringify({
+    hash: String(block?.hash || '').toLowerCase(),
+    number: String(block?.number || '').toLowerCase(),
+    timestamp: String(block?.timestamp || '').toLowerCase()
+  }), 'RPC_BLOCK_QUORUM_DISAGREEMENT');
+  const block = blockWinner.result;
+  if (String(block?.hash || '').toLowerCase() !== String(log.blockHash).toLowerCase()) throw new Error('RPC_BLOCK_HASH_MISMATCH');
+
   const fromTopic = String(log.topics?.[1] || '');
   const from = /^0x[a-fA-F0-9]{64}$/.test(fromTopic) ? `0x${fromTopic.slice(-40)}` : null;
+  const sourceCount = Math.min(Number(log._rpc_source_count || 0), receiptWinner.count, blockWinner.count);
   return {
     chain_id: Number(policy.payment.chain_id),
     token_contract: policy.payment.token_contract,
@@ -195,7 +286,9 @@ async function observationForLog(log, latestBlock) {
     latest_block_number: latestBlock,
     removed: log.removed === true,
     receipt_status: String(receipt?.status).toLowerCase() === '0x1',
-    observed_at: new Date(Number(BigInt(block.timestamp)) * 1000).toISOString()
+    observed_at: new Date(Number(BigInt(block.timestamp)) * 1000).toISOString(),
+    rpc_quorum_verified: sourceCount >= RPC_QUORUM,
+    rpc_source_count: sourceCount
   };
 }
 
@@ -208,13 +301,15 @@ async function txAlreadyGrantedElsewhere(txHash, currentIssueNumber) {
 async function run() {
   if (policy.enabled !== true) {
     console.log(`HELIOS Pilot Authority: ARMED BUT DISABLED · ${policy.disabled_reason || 'UNSPECIFIED'}`);
-    console.log('No invoice or grant can be issued until the owner configures and rechecks the receiving address/network and required RPC.');
+    console.log('No invoice or grant can be issued until all activation gates and exact-head checks pass.');
     return;
   }
 
   validatePilotPaymentPolicy(policy);
   if (!TOKEN || !REPOSITORY) throw new Error('GITHUB_AUTOMATION_CONTEXT_REQUIRED');
-  if (!RPC_URL) throw new Error('PILOT_RPC_URL_REQUIRED');
+
+  const head = await getRpcQuorumHead();
+  console.log(`HELIOS Pilot Authority RPC quorum: ${head.sourceCount} source(s), safe head ${head.safeHead}, spread ${head.spread}.`);
 
   const issues = await listPilotIssues();
   if (!issues.length) {
@@ -222,9 +317,8 @@ async function run() {
     return;
   }
 
-  const latestBlock = await getLatestBlockNumber();
-  const logs = await getRecentPaymentLogs(latestBlock);
-  console.log(`HELIOS Pilot Authority: ${issues.length} request(s), ${logs.length} recent inbound ${policy.payment.asset} transfer log(s).`);
+  const logs = await getRecentPaymentLogs(head.safeHead, head.urls);
+  console.log(`HELIOS Pilot Authority: ${issues.length} request(s), ${logs.length} quorum-confirmed recent inbound ${policy.payment.asset} transfer log(s).`);
 
   for (const issue of issues) {
     const comments = await listComments(issue.number);
@@ -275,11 +369,11 @@ async function run() {
 
     let granted = false;
     for (const log of matchingLogs) {
-      const observation = await observationForLog(log, latestBlock);
+      const observation = await observationForLog(log, head.safeHead, head.urls);
       const evidence = verifyPilotPaymentEvidence({
         invoice,
         observation,
-        latest_block_number: latestBlock,
+        latest_block_number: head.safeHead,
         min_confirmations: policy.chain_observation.min_confirmations
       });
       if (!evidence.verified) continue;
@@ -311,9 +405,13 @@ async function run() {
         await postComment(issue.number, expiredComment(invoice));
       }
       await closeIssue(issue.number, 'not_planned');
-      console.log(`Expired ${invoice.invoice_id} without an eligible payment.`);
     }
   }
 }
 
-await run();
+if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+  run().catch(error => {
+    console.error(`HELIOS Pilot Authority failed closed: ${error.stack || error.message}`);
+    process.exitCode = 1;
+  });
+}
