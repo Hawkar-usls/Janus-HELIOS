@@ -1,9 +1,10 @@
 {
   "schema": "janus.helios.pilot-payment-policy.v1",
-  "version": "1.2.1",
-  "enabled": false,
-  "disabled_reason": "RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION_COMMIT_PENDING",
+  "version": "1.3.0",
+  "enabled": true,
+  "disabled_reason": null,
   "authority_mode": "STANDARD_PILOT_ONLY",
+  "activation_mode": "MAIN_ONLY_ISSUER_WITH_CRITICAL_PREFLIGHT_AND_RPC_QUORUM",
   "terms_file": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
   "invoice_ttl_hours": 24,
   "pilot_term_days": 90,
@@ -89,6 +90,14 @@
     "sublicensing": false,
     "source_resale": false
   },
+  "runtime_guard": {
+    "issuer_workflow_must_run_on_main": true,
+    "critical_syntax_and_invariants_before_every_issue_cycle": true,
+    "secret_scan_before_every_issue_cycle": true,
+    "strict_due_diligence_preflight_before_every_issue_cycle": true,
+    "live_rpc_quorum_smoke_before_every_issue_cycle": true,
+    "fail_closed_on_any_preflight_failure": true
+  },
   "privacy_and_security": {
     "wallet_private_key_required": false,
     "wallet_seed_phrase_required": false,
@@ -109,14 +118,6 @@
     "mandatory_applicable_law_overrides_automation": true,
     "production_requires_separate_written_agreement": true
   },
-  "activation_requirements": [
-    "BINANCE_USDT_ETHEREUM_ERC20_ROUTE_EVIDENCE_FROZEN",
-    "NO_MEMO_TAG_PAYMENT_ID_FIELD_OBSERVED_ON_EXPANDED_DEPOSIT_SCREEN",
-    "TWO_SOURCE_ETHEREUM_RPC_QUORUM_CONFIGURED",
-    "RPC_QUORUM_SMOKE_PASSES_ON_EXACT_PRE_ACTIVATION_HEAD",
-    "POLICY_ENABLED_SWITCHED_TO_TRUE",
-    "FINAL_EXACT_HEAD_INTEGRITY_RUN_PASSES",
-    "FINAL_EXACT_HEAD_RPC_QUORUM_SMOKE_PASSES"
-  ],
+  "activation_evidence_rule": "THIS_EXACT_ENABLED_COMMIT_MUST_PASS_HELIOS_INTEGRITY_AND_HELIOS_PILOT_RPC_QUORUM_BEFORE_MAIN_PROMOTION",
   "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY"
 }
