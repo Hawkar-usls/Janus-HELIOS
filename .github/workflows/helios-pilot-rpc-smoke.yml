@@ -5,6 +5,13 @@ on:
     paths:
       - 'commerce/HELIOS_PILOT_PAYMENT_POLICY.json'
       - 'commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json'
+      - 'commerce/HELIOS_PILOT_RPC_QUORUM_POLICY.md'
+      - '.janus/HELIOS_PILOT_AUTHORITY.json'
+      - '.janus/HELIOS_ARCHITECTURE.json'
+      - '.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json'
+      - 'PROJECT_STATUS.json'
+      - 'tests/pilot-authority-invariants.test.mjs'
+      - 'tests/claim-implementation-audit-invariants.test.mjs'
       - 'tools/pilot-rpc-smoke.mjs'
       - 'tools/pilot-payment-watch.mjs'
       - 'src/helios-pilot-authority.js'
