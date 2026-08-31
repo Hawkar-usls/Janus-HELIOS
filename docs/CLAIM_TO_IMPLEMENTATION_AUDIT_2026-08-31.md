@@ -19,9 +19,7 @@ Machine-readable record: [`.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.j
 
 ## Executive result
 
-The audit removed implementation/doc drift, tightened active execution paths and kept external claims behind explicit gates. The Standard Pilot Authority is likewise not promoted merely because payment code exists: its route, RPC evidence and exact activating commit are separately gated.
-
-Important corrections include removal of the decorative `87% STABLE` hardware score, explicit feature loading, hardware-pressure rather than human-interaction observation, Host-first QoS in the Desktop Agent, generic Smart Compute Node evidence, and a fail-closed automated standard-pilot licensing path.
+The audit removed implementation/doc drift, tightened active execution paths and kept external claims behind explicit gates. The Standard Pilot Authority is deliberately classified **IMPLEMENTED_CORE**, even when enabled, because activation of a licensing gate is not evidence of a real paid grant, a production compute network or regulatory readiness.
 
 ## Core claim matrix
 
@@ -79,9 +77,9 @@ One record combines work evidence, device state, Guardian decision, Host-first b
 
 Research/compatibility logic exists with strict boundaries. Real firmware/bridges, heterogeneous fleet and attested lineage roots remain external gates.
 
-### Standard Pilot Authority — **IMPLEMENTED_CORE / ARMED-DISABLED PENDING FINAL ACTIVATION**
+### Standard Pilot Authority — **IMPLEMENTED_CORE / ACTIVE CANDIDATE**
 
-The standard licensing path is:
+The narrow standard licensing path is:
 
 ```text
 NAMED REQUEST
@@ -101,7 +99,7 @@ Core law:
 PAYMENT IS EVIDENCE ≠ PAYMENT IS AUTHORITY
 ```
 
-The frozen route is now established from current owner-supplied Binance UI evidence:
+Frozen route:
 
 ```text
 network    Ethereum Mainnet (ERC20)
@@ -115,15 +113,15 @@ anchor     10,000.000000 USDT
 
 The expanded Binance screen showed trading credit after `6` confirmations and withdrawal unlock after `64`; HELIOS chooses `64` as the automatic-grant threshold.
 
-A single RPC cannot grant a license. The current low-volume observation quorum is PublicNode + dRPC. A 1RPC candidate was explicitly rejected after live GitHub Actions showed that the required `eth_getLogs` method was unavailable. PublicNode + dRPC then passed the live pre-activation smoke on commit `fdde711f5b2831a533629528ac81821dafebd61c`, run `33358927756`.
+A single RPC cannot grant a license. PublicNode + dRPC form the current low-volume quorum. A 1RPC candidate was rejected after a live smoke showed required `eth_getLogs` support was unavailable. The replacement pair passed live pre-activation smoke.
+
+The activation mechanism closes an additional race condition: the enabled candidate is prepared on a branch where the issuer cannot run, because the issuer is hard-restricted to `main`. The exact enabled SHA must pass both HELIOS Integrity and HELIOS Pilot RPC Quorum before the same SHA is fast-forwarded to `main`. On `main`, every issue cycle reruns critical local checks and a live RPC quorum before processing requests.
 
 The watcher has no wallet private key, seed, Binance password, withdrawal key, signing authority or transaction-broadcast authority.
 
 The standard grant remains a 90-day controlled **non-money** pilot: non-exclusive, non-transferable, non-sublicensable, no source resale, no HELIOS Core transfer, no real-money gambling, no public production and no automatic commercial rights.
 
-Current policy remains deliberately `enabled: false` until the **final activating commit itself** passes both HELIOS Integrity and HELIOS Pilot RPC Quorum. This prevents a previously green commit from certifying a later activation change.
-
-The automation is not a KYC/sanctions-screening/tax/gambling-regulatory engine and applicable law overrides it.
+Even after activation the claim remains `IMPLEMENTED_CORE`, not `ENFORCED`, until real paid-grant and field evidence justify any stronger statement.
 
 ### Public Buyer Lab — **DEMO_PREVIEW**
 
@@ -139,7 +137,7 @@ HELIOS remains a reference/evaluation prototype. Production compute truth still 
 
 ## Commercial consequence
 
-HELIOS now distinguishes:
+HELIOS distinguishes:
 
 ```text
 WHAT IS ENFORCED NOW
@@ -157,4 +155,4 @@ A standard paid pilot is deliberately **not** equivalent to a production/commerc
 
 For automated licensing:
 
-> **No prior successful payment/RPC test certifies a later activating commit. The exact commit that enables Pilot Authority must itself pass HELIOS Integrity and HELIOS Pilot RPC Quorum.**
+> **The exact enabled commit must pass both HELIOS Integrity and HELIOS Pilot RPC Quorum before promotion to the issuing `main` branch; every issuer cycle then fails closed behind critical local preflight and a fresh RPC quorum.**
