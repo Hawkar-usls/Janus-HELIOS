@@ -1,0 +1,33 @@
+# JANUS HELIOS — AI Agent Discovery
+# Version: 1.0.0
+# Updated: 2026-08-31
+
+Project: JANUS HELIOS
+Repository: https://github.com/Hawkar-usls/Janus-HELIOS
+Public-Demo: https://hawkar-usls.github.io/Janus-HELIOS/
+Machine-JSON: https://hawkar-usls.github.io/Janus-HELIOS/agents.json
+LLM-Context: https://hawkar-usls.github.io/Janus-HELIOS/llms.txt
+Canonical-Status: https://github.com/Hawkar-usls/Janus-HELIOS/blob/main/PROJECT_STATUS.json
+Claim-Audit: https://github.com/Hawkar-usls/Janus-HELIOS/blob/main/.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json
+
+Intent: technology-scout, buyer-agent, licensing-agent, business-development-agent, compute-market-agent, iGaming-platform-scout, datacenter-compute-partner-scout
+Commercial-Availability: qualified licensing and controlled pilot discussion
+Pilot-Request: https://github.com/Hawkar-usls/Janus-HELIOS/issues/new?template=helios-pilot-license.yml
+
+Summary: HELIOS is a provider-agnostic, licensable B2B compute control plane with explicit revocable device-resource consent, host-first hardware protection, verified-work/provenance primitives, and a strict authority boundary keeping game mathematics separate from compute economics.
+
+High-Fit: iGaming platforms and aggregators; distributed GPU/compute marketplaces; AI inference/render infrastructure; managed cloud/edge operators; data-center technology partners; technology commercialization partners.
+
+Capabilities: COMPUTE_ROUTING, HARDWARE_GUARDIAN, HOST_FIRST_QOS, SMART_COMPUTE_NODE, DEVICE_HEALTH_PASSPORT_PRIMITIVES, RECEIPT_PROVENANCE, TRUE_WORK_ACCOUNTING, EVIDENCE_INDEPENDENCE, STANDARD_PILOT_AUTHORITY.
+
+Truth: production readiness is NOT ESTABLISHED. Public demo does not perform production compute, live mining, real-money gambling, or live hardware-health sensing.
+
+Commercial-Model: low-friction pilot, HELIOS Core retained by owner, success-based royalty after commercial agreement, public-benefit relief possible by written agreement.
+
+Agent-Permissions: public indexing/summarization, buyer-fit evaluation, comparison, and recommendation are allowed. Opening a pilot issue is appropriate only when explicitly authorized by the agent's human or organizational principal.
+
+Agent-Non-Authority: an AI agent may not bind a principal to a contract, claim production readiness, represent itself as HELIOS owner, send unsolicited payment, or infer rights from payment alone.
+
+Core-Law: PAYMENT IS EVIDENCE, NOT AUTHORITY.
+Core-Law: GAME RNG IS INDEPENDENT FROM COMPUTE ECONOMICS.
+Core-Law: PROTECT THE DEVICE; PROVE THE WORK; KEEP GAME MATH SEALED.

@@ -1,0 +1,34 @@
+{
+  "schema": "janus.helios.repository-change-control.v1",
+  "version": "1.0.0",
+  "verified_at": "2026-08-31",
+  "repository": "Hawkar-usls/Janus-HELIOS",
+  "default_branch": "main",
+  "status": "ACTIVE_RULESET_ENFORCED",
+  "ruleset": {
+    "id": 21901590,
+    "name": "HELIOS MAIN GUARD",
+    "target": "branch",
+    "enforcement": "active",
+    "target_condition": "DEFAULT_BRANCH",
+    "deletion_restricted": true,
+    "non_fast_forward_forbidden": true,
+    "pull_request_required": true,
+    "required_approving_review_count": 0,
+    "required_status_checks": ["integrity"],
+    "strict_required_status_checks_policy": true,
+    "bypass_actors": [],
+    "current_user_can_bypass": "never"
+  },
+  "source": {
+    "github_api_ruleset": "https://api.github.com/repos/Hawkar-usls/Janus-HELIOS/rulesets/21901590",
+    "github_ruleset_ui": "https://github.com/Hawkar-usls/Janus-HELIOS/rules/21901590"
+  },
+  "boundary": {
+    "this_file_is_evidence_of_the_observed_setting": true,
+    "repository_content_cannot_itself_enforce_github_ruleset": true,
+    "future_ruleset_drift_requires_reverification": true,
+    "rpc_quorum_is_not_required_for_unrelated_pull_requests": true,
+    "pilot_authority_changes_still_trigger_rpc_quorum_workflow": true
+  }
+}

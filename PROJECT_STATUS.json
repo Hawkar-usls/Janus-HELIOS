@@ -3,7 +3,7 @@
   "project": "JANUS HELIOS",
   "project_version": "1.16.0",
   "last_reviewed": "2026-08-31",
-  "status_basis": "CLAIM_TO_IMPLEMENTATION_AUDIT_PLUS_ACTIVE_PILOT_AUTHORITY_RPC_QUORUM_GATE",
+  "status_basis": "CLAIM_TO_IMPLEMENTATION_AUDIT_PLUS_ACTIVE_PILOT_AUTHORITY_RPC_QUORUM_GATE_PLUS_ACTIVE_REPOSITORY_RULESET_PLUS_AGENT_DISCOVERY_BEACON",
   "production_readiness": "NOT_ESTABLISHED",
   "public_surface": {
     "url": "https://hawkar-usls.github.io/Janus-HELIOS/",
@@ -192,6 +192,18 @@
     "janus_i0_included_by_default": false,
     "commercial_model": "LOW_FRICTION_PILOT_PLUS_SUCCESS_BASED_ROYALTY_WITH_STRONG_CORE_PROTECTION"
   },
+  "agent_discovery": {
+    "status": "ACTIVE_PUBLIC_MACHINE_READABLE_BEACON",
+    "contract": ".janus/HELIOS_AGENT_DISCOVERY.json",
+    "entrypoints": ["agents.json", "agents.txt", "llms.txt", "AGENTS.md"],
+    "documentation": "docs/AI_AGENT_DISCOVERY.md",
+    "target_agents": ["TECHNOLOGY_SCOUT", "BUYER_AGENT", "LICENSING_AGENT", "BUSINESS_DEVELOPMENT_AGENT", "COMPUTE_MARKET_AGENT", "AI_INFRASTRUCTURE_SCOUT"],
+    "pilot_issue_requires_explicit_principal_authorization": true,
+    "autonomous_contract_authority": false,
+    "unsolicited_payment_authority": false,
+    "wallet_address_exposed_in_discovery_surface": false,
+    "production_readiness_claim_allowed": false
+  },
   "claim_audit": {
     "human_readable": "docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md",
     "machine_readable": ".janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json",
@@ -211,14 +223,24 @@
     "scope_rule": "A_GREEN_COMMIT_DOES_NOT_CERTIFY_A_LATER_COMMIT; ACTIVATION_BRANCH_EXACT_SHA_MUST_PASS_BOTH_GATES_BEFORE_MAIN_PROMOTION"
   },
   "test_suites_present": [
-    "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "REEL_IDENTITY", "REEL_FORGE", "RESOURCE_CONSOLE", "ROUTE_AURA", "RECEIPT_VIEWER", "BUYER_COCKPIT", "RESOURCE_SONIFICATION", "HARDWARE_GUARDIAN_UI", "STELLAR_NAVIGATOR", "STELLAR_BRIDGE", "MODE_FLIGHT", "BONUS_QUASAR", "QUASAR_SONIFICATION", "ENERGY_SPIN_SONIFICATION", "DESKTOP_FABRIC", "HARDWARE_GUARDIAN", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "TRUST_FABRIC", "EDGE_HASH_LAB", "EDGE_CONSTELLATION", "EVIDENCE_INDEPENDENCE", "SMART_COMPUTE_NODE", "CLAIM_IMPLEMENTATION_AUDIT", "PILOT_AUTHORITY", "PILOT_RPC_QUORUM", "DUE_DILIGENCE"
+    "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "REEL_IDENTITY", "REEL_FORGE", "RESOURCE_CONSOLE", "ROUTE_AURA", "RECEIPT_VIEWER", "BUYER_COCKPIT", "RESOURCE_SONIFICATION", "HARDWARE_GUARDIAN_UI", "STELLAR_NAVIGATOR", "STELLAR_BRIDGE", "MODE_FLIGHT", "BONUS_QUASAR", "QUASAR_SONIFICATION", "ENERGY_SPIN_SONIFICATION", "DESKTOP_FABRIC", "HARDWARE_GUARDIAN", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "TRUST_FABRIC", "EDGE_HASH_LAB", "EDGE_CONSTELLATION", "EVIDENCE_INDEPENDENCE", "SMART_COMPUTE_NODE", "CLAIM_IMPLEMENTATION_AUDIT", "PILOT_AUTHORITY", "PILOT_RPC_QUORUM", "AGENT_DISCOVERY", "DUE_DILIGENCE"
   ],
   "repository_change_control": {
-    "main_branch_protected_at_last_audit": false,
-    "repository_rulesets_present_at_last_audit": false,
-    "required_status_checks_enforced_at_github_setting_level": false,
-    "target": "ENABLE_BRANCH_PROTECTION_OR_RULESET_REQUIRING_HELIOS_INTEGRITY_BEFORE_CLOSING",
-    "cannot_be_fixed_by_repository_content_alone": true
+    "main_branch_protected_at_last_audit": true,
+    "repository_rulesets_present_at_last_audit": true,
+    "required_status_checks_enforced_at_github_setting_level": true,
+    "ruleset_id": 21901590,
+    "ruleset_name": "HELIOS MAIN GUARD",
+    "ruleset_enforcement": "active",
+    "target": "DEFAULT_BRANCH",
+    "pull_request_required": true,
+    "required_status_checks": ["integrity"],
+    "strict_required_status_checks_policy": true,
+    "force_push_blocked": true,
+    "branch_deletion_blocked": true,
+    "bypass_actors": [],
+    "machine_evidence": ".janus/HELIOS_REPOSITORY_CHANGE_CONTROL.json",
+    "future_ruleset_drift_requires_reverification": true
   },
   "open_gates": [
     "FIRST_REAL_PAID_STANDARD_PILOT_GRANT_AND_FIELD_VALIDATION",
@@ -233,7 +255,6 @@
     "REAL_MULTI_HOST_DURABLE_COORDINATOR",
     "WORKLOAD_SANDBOX_AND_EGRESS_POLICY",
     "INDEPENDENT_SECURITY_PRIVACY_LEGAL_GAME_MATH_REVIEW",
-    "BRANCH_PROTECTION_OR_EQUIVALENT_CHANGE_CONTROL_FOR_CLOSING",
     "SIGNED_CLOSING_RELEASE_OR_EQUIVALENT_ATTESTATION",
     "PARTNER_OPERATED_NON_MONEY_PILOT_WITH_DEVICE_HOURS_WATT_HOURS_FAILURE_THROTTLE_AND_UNIT_ECONOMICS"
   ],

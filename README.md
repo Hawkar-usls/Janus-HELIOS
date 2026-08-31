@@ -4,10 +4,11 @@
 ### One Core. Any Destination.
 
 ![Status](https://img.shields.io/badge/status-active%20public%20prototype-2ea043)
-![Class](https://img.shields.io/badge/class-licensable%20game%20%2B%20compute%20control%20plane-8250df)
+![Class](https://img.shields.io/badge/class-licensable%20B2B%20compute%20control%20plane-8250df)
 ![Version](https://img.shields.io/badge/version-1.16.0-d29922)
 ![Real Money](https://img.shields.io/badge/real--money-disabled-b62324)
 ![Production](https://img.shields.io/badge/production-not%20established-b62324)
+![Pilot](https://img.shields.io/badge/standard%20pilot-authority%20active-2ea043)
 
 </div>
 
@@ -45,6 +46,31 @@ The public page performs no real-money gambling, no production provider work, no
 
 ---
 
+## AI agent discovery
+
+HELIOS intentionally exposes a machine-readable discovery surface for AI technology scouts, buyer agents, licensing agents, business-development agents and compute-market infrastructure scouts.
+
+Root entrypoints:
+
+- [`agents.json`](agents.json) — rich machine-readable buyer-fit / licensing / authority metadata;
+- [`agents.txt`](agents.txt) — compact agent discovery entrypoint;
+- [`llms.txt`](llms.txt) — concise LLM-oriented project context;
+- [`AGENTS.md`](AGENTS.md) — operating instructions for buyer/scout agents and code-changing agents;
+- [`.janus/HELIOS_AGENT_DISCOVERY.json`](.janus/HELIOS_AGENT_DISCOVERY.json) — canonical first-party discovery contract;
+- [`docs/AI_AGENT_DISCOVERY.md`](docs/AI_AGENT_DISCOVERY.md) — rationale and discovery vocabulary.
+
+The discovery layer is intentionally useful to agents searching GitHub for licensable AI infrastructure, distributed compute, GPU orchestration, data-center offload, AI inference/render routing, iGaming B2B technology and related commercialization opportunities.
+
+It does **not** create autonomous contracting authority. An AI agent may index, evaluate, compare and recommend HELIOS to its principal. It may open the pilot issue only when explicitly authorized by that principal. It may not bind the principal, send unsolicited payment, represent itself as HELIOS owner or infer rights from payment alone.
+
+```text
+PAYMENT IS EVIDENCE ≠ PAYMENT IS AUTHORITY
+```
+
+The public discovery files deliberately do not expose the receiving wallet address.
+
+---
+
 ## Claim → implementation truth
 
 HELIOS uses four maturity classes:
@@ -64,16 +90,17 @@ HELIOS uses four maturity classes:
 | NerdMinerV2 × JANUS I0 bridge | **IMPLEMENTED CORE**, physical bridge/firmware gate pending |
 | Edge Constellation | **IMPLEMENTED CORE**, real fleet pending |
 | Evidence Independence Engine | **IMPLEMENTED CORE**, real attested lineage roots pending |
-| Standard Pilot Authority | **IMPLEMENTED CORE / ARMED-DISABLED**, receiving address + dedicated Ethereum RPC pending |
+| Standard Pilot Authority | **IMPLEMENTED CORE / ACTIVE**, awaiting first real paid grant |
+| AI agent discovery beacon | **ACTIVE PUBLIC DISCOVERY SURFACE** |
 | Buyer Lab / policy surfaces | **DEMO PREVIEW** |
 | production settlement network | **EXTERNAL GATE / NOT ESTABLISHED** |
 
-Canonical audit:
+Canonical truth:
 
-- [`docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md`](docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md)
-- [`.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json`](.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json)
 - [`PROJECT_STATUS.json`](PROJECT_STATUS.json)
 - [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json)
+- [`.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json`](.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json)
+- [`docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md`](docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md)
 
 A file existing in the repository is **not** treated as proof of end-to-end enforcement.
 
@@ -93,13 +120,13 @@ browser → provider private secret FORBIDDEN
 unverified receipt → authoritative value FORBIDDEN
 ```
 
-Compute may be reduced or stopped to protect the participating device. Hardware pressure must never change the gambling/game outcome channel.
+Compute may be reduced or stopped to protect the participating device. Hardware pressure must never change the game outcome channel.
 
 ---
 
 ## Device sovereignty
 
-### Hardware Guardian v1.0
+### Hardware Guardian
 
 [`src/helios-hardware-guardian.js`](src/helios-hardware-guardian.js) evaluates hardware-only telemetry and produces:
 
@@ -107,25 +134,9 @@ Compute may be reduced or stopped to protect the participating device. Hardware 
 GREEN / WATCH / THROTTLE / COOLDOWN / BLOCK / UNKNOWN
 ```
 
-It can only preserve, tighten or block a compute budget.
+It can only preserve, tighten or block a compute budget. Missing sensor evidence remains `UNKNOWN`; it is not converted into a fake green score.
 
-Accepted evidence includes appropriate temperature, power, utilization, memory/VRAM, AC/battery and vendor-limit data where available.
-
-Human-content observation is forbidden:
-
-```text
-SCREEN          NO
-KEYBOARD        NO
-MOUSE           NO
-MICROPHONE      NO
-CAMERA          NO
-CLIPBOARD       NO
-BROWSER HISTORY NO
-PROCESS/GAME NAME NO
-ACTIVE WINDOW   NO
-```
-
-Missing sensor evidence remains `UNKNOWN`; it is not converted into a fake green score.
+Human-content observation is forbidden for hardware policy: no screen, keyboard, mouse, microphone, camera, clipboard, browser history, process/game name or active-window telemetry.
 
 ### Host-first QoS
 
@@ -143,11 +154,11 @@ HOST-FIRST QoS
 FINAL EXECUTION BUDGET
 ```
 
-Under high local CPU/GPU/memory pressure, external work yields first. The decision uses hardware/resource pressure, not observation of what the human is doing.
+External work yields first under local hardware/resource pressure.
 
 ---
 
-## Smart Compute Node v1.1
+## Smart Compute Node
 
 [`src/helios-smart-compute-node.js`](src/helios-smart-compute-node.js) fuses work evidence and device state into one node record:
 
@@ -160,63 +171,34 @@ WORK EVIDENCE
 + REPLICATION LINEAGE
 ```
 
-Generic work evidence supports general compute, AI inference, rendering, science, transcoding, storage/network work, operator batch work and custom workloads. Generic workloads use workload-appropriate units and keep assigned/completed/verified work distinct. Edge Hash / JANUS I0 retains checked-work normalization.
+Supported generic work families include `GENERAL_COMPUTE`, `AI_INFERENCE`, `RENDER`, `SCIENCE`, `TRANSCODE`, `STORAGE_NETWORK`, `OPERATOR_BATCH` and `CUSTOM`.
 
-A real provider/verifier is still required before any workload-specific result becomes authoritative.
-
----
-
-## Trust Fabric v1.0
-
-[`src/helios-trust-fabric.js`](src/helios-trust-fabric.js) implements first-party trust primitives including Provider registration ≠ admission, Authority Epochs and scoped non-transferable provider leases, Host-first QoS, Receipt Provenance Envelope, True Work Accounting, Device Health Passport, Verifier Assurance Monotonicity, shadow accelerator qualification and compute lineage.
-
-Provider Authority Epoch remains **IMPLEMENTED CORE**, not end-to-end production enforcement, until every production Router/Fabric dispatch requires it.
+A real provider/verifier is still required before workload-specific results become authoritative.
 
 ---
 
-## Desktop compute plane
+## Trust / execution plane
 
-### Desktop Fabric v2.1
+[`src/helios-trust-fabric.js`](src/helios-trust-fabric.js) contains first-party primitives including provider Authority Epochs, Host-first QoS, Receipt Provenance Envelope, True Work Accounting, Device Health Passport, verifier-assurance monotonicity, shadow accelerator qualification and compute lineage.
 
-[`src/helios-desktop-fabric.js`](src/helios-desktop-fabric.js) includes CPU/GPU/HYBRID placement, resource admission, bounded queue/backpressure, priority aging, concurrency limits, provider circuit breaker, bounded retries, fenced leases, stale-result rejection and provider verification.
+[`src/helios-desktop-fabric.js`](src/helios-desktop-fabric.js) implements CPU/GPU/HYBRID placement, bounded queue/backpressure, priority aging, provider circuit breaker, fenced leases, bounded retries, stale-result rejection and provider verification.
 
-### Desktop Agent v1.3
+[`src/helios-desktop-agent.js`](src/helios-desktop-agent.js) is not a generic remote shell. Executors are bound by exact `provider_id + task_type + artifact SHA-256` and rechecked against local policy before effect.
 
-[`src/helios-desktop-agent.js`](src/helios-desktop-agent.js) is deliberately not a generic remote shell. Executors are pre-registered by exact:
+---
+
+## Edge Hash Lab / Constellation / Evidence Independence
+
+HELIOS treats BitMaker-hub/NerdMiner_v2 as an external MIT compatibility target. NerdMiner source is not silently vendored or rebranded. JANUS I0 remains separately scoped Background IP.
 
 ```text
-provider_id + task_type + artifact SHA-256
-```
-
-The local runtime rechecks consent, revoke state, lease expiry, CPU/RAM/VRAM capacity, thermal/power/battery policy, Hardware Guardian, Host-first QoS, capabilities and exact executor identity before effect.
-
----
-
-## Edge Hash Lab — NerdMinerV2 × JANUS I0
-
-HELIOS treats **BitMaker-hub/NerdMiner_v2** as an external MIT compatibility target. NerdMiner source is not silently vendored or rebranded as HELIOS code. JANUS I0 remains separately scoped Background IP.
-
-```text
-JANUS I0 50%  ↔  RANDOMIZED MIRROR 50%
-SAME/FROZEN WIRE CONDITIONS
+JANUS I0 50% ↔ RANDOMIZED MIRROR 50%
 EQUAL CHECKED-WORK EXPOSURE
 PER-CHECKED-MH EVIDENCE
 RAW HASHRATE ≠ PROOF
 ```
 
-Stock NerdMiner firmware does not automatically become I0-capable. Physical I0 execution requires a compatible bridge/firmware and conformance gate.
-
----
-
-## Edge Constellation + Evidence Independence
-
-HELIOS supports the research architecture:
-
-```text
-ESP32 → CPU → GPU → ASIC → HETEROGENEOUS FLEET
-```
-
-while keeping:
+Evidence Independence keeps:
 
 ```text
 NODE POWER ≠ EVIDENCE WEIGHT
@@ -224,15 +206,7 @@ REPLICATION COUNT ≠ INDEPENDENT ROOT COUNT
 UNKNOWN LINEAGE ≠ INDEPENDENCE
 ```
 
-The Evidence Independence Engine evaluates physical-device, execution-lineage, authority, site/network, observation-epoch and job-stream roots. Real independence claims still require real attested roots.
-
----
-
-## Public demo surface
-
-The public site is a presentation/reference surface and includes the responsive cosmic slot, HELIOS/DIVINE/GRIDJACK/CUSTOM profiles, cascades, Solar Corona/free-spin demo, explicit compute consent/revoke, CPU/GPU policy console, route presentation, receipt viewer, Buyer Lab, Guardian/Trust/Edge/Smart Node previews, procedural audio, Stellar Navigator and mobile presentation.
-
-`index.html` is the explicit authoritative feature loader. The system-status card intentionally says **`DEMO / NO LIVE SENSORS`**. No static percentage is presented as device health.
+Real independence claims still require real attested roots.
 
 ---
 
@@ -269,7 +243,7 @@ See [`PARTNERSHIP_BRIEF.md`](PARTNERSHIP_BRIEF.md), [`docs/MARKET_AND_LICENSE_PO
 
 ## HELIOS Standard Pilot Authority
 
-HELIOS contains a fail-closed standard-pilot licensing path:
+The Standard Pilot Authority is **ACTIVE** and awaiting its first real paid grant.
 
 ```text
 NAMED PILOT REQUEST
@@ -278,35 +252,36 @@ FROZEN TERMS ACCEPTED
         ↓
 EXACT INVOICE
         ↓
-ON-CHAIN PAYMENT VERIFIED
+USDT / ETHEREUM ERC20 PAYMENT VERIFIED
+        ↓
+64-CONFIRMATION + 2-RPC QUORUM GATE
         ↓
 PILOT_ACTIVE · 90 DAYS
 ```
 
-Core law:
+The standard grant is non-exclusive, non-transferable and non-sublicensable. It permits internal evaluation/integration and one controlled non-money pilot. It does **not** transfer HELIOS Core, authorize real-money gambling, authorize public production or automatically create commercial rights.
 
-```text
-PAYMENT IS EVIDENCE ≠ PAYMENT IS AUTHORITY
-```
+The watcher is read-only and cannot move funds or broadcast transactions. No wallet private key, seed phrase, Binance password, 2FA code or withdrawal credential belongs in HELIOS.
 
-The automated standard grant is non-exclusive, non-transferable and non-sublicensable. It permits internal evaluation/integration and one controlled non-money pilot, but does **not** transfer HELIOS Core, authorize real-money gambling, authorize public production or automatically create commercial rights.
+Authorized request entrypoint:
 
-After a current Binance network recheck showed that Base was not available for the intended deposit path, the frozen standard route was moved to **USDT on Ethereum Mainnet (ERC20)**:
+**https://github.com/Hawkar-usls/Janus-HELIOS/issues/new?template=helios-pilot-license.yml**
 
-```text
-Chain ID: 1
-Asset: USDT / USD₮
-Contract: 0xdAC17F958D2ee523a2206206994597C13D831ec7
-Standard anchor: 10,000 USDT
-```
-
-Each invoice receives a deterministic sub-dollar **discount** to create a unique on-chain payment fingerprint without charging a surcharge.
-
-The subsystem is currently **ARMED BUT DISABLED**. The receiving address is still unset and a dedicated Ethereum RPC must be configured through `HELIOS_PILOT_RPC_URL` before activation. No invoice or grant can issue while either gate is missing.
-
-No wallet private key, seed phrase, Binance password, 2FA code or withdrawal API key belongs in HELIOS. The watcher is read-only and cannot move funds.
+Do not send unsolicited payment. A named request and frozen terms must exist first.
 
 See [`docs/PILOT_AUTHORITY.md`](docs/PILOT_AUTHORITY.md), [`legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md`](legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md), [`commerce/HELIOS_PILOT_PAYMENT_POLICY.json`](commerce/HELIOS_PILOT_PAYMENT_POLICY.json) and [`.janus/HELIOS_PILOT_AUTHORITY.json`](.janus/HELIOS_PILOT_AUTHORITY.json).
+
+---
+
+## Repository change control
+
+The default branch is protected by the active **`HELIOS MAIN GUARD`** repository ruleset.
+
+The observed ruleset requires a pull request, blocks branch deletion and non-fast-forward/force-push updates, has no bypass actors, and requires the strict up-to-date `integrity` status check before merge.
+
+Machine-readable evidence: [`.janus/HELIOS_REPOSITORY_CHANGE_CONTROL.json`](.janus/HELIOS_REPOSITORY_CHANGE_CONTROL.json).
+
+Pilot Authority changes additionally trigger `HELIOS Pilot RPC Quorum`; that path-specific network check is intentionally not required for unrelated PRs.
 
 ---
 
@@ -324,26 +299,12 @@ That is a product-positioning statement, not a patentability or freedom-to-opera
 
 `HELIOS Integrity` runs syntax/public checks, the invariant suite, secret scan, declared SBOM generation, strict buyer due-diligence preflight and closing-manifest candidate generation. A green run applies **only to the exact tested commit**.
 
-Start with [`docs/DATA_ROOM_INDEX.md`](docs/DATA_ROOM_INDEX.md), [`docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md`](docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md), [`PROJECT_STATUS.json`](PROJECT_STATUS.json) and [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json).
+Start with [`docs/DATA_ROOM_INDEX.md`](docs/DATA_ROOM_INDEX.md), [`PROJECT_STATUS.json`](PROJECT_STATUS.json), [`.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json`](.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json) and [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json).
 
 ---
 
 ## Production gates
 
-Production is **NOT ESTABLISHED**. Major remaining gates include:
-
-1. real provider adapter + signed manifest;
-2. end-to-end Provider Authority Epoch enforcement in Router/Fabric;
-3. authenticated production Desktop Agent transport;
-4. real vendor thermal/power/energy telemetry with sensor provenance;
-5. signed provider receipts + anti-replay + authoritative settlement;
-6. persistent Device Health Passport windows;
-7. workload sandbox / egress policy;
-8. real attested Evidence Independence roots;
-9. real heterogeneous fleet validation;
-10. independent security/privacy/legal/game-math review;
-11. partner-operated non-money pilot with device-hours, Wh, failures, throttles and measured unit economics;
-12. branch protection/ruleset and signed closing snapshot or equivalent change control;
-13. Pilot Authority USDT/Ethereum receiving-address activation plus dedicated Ethereum RPC and exact-head Integrity success.
+Production is **NOT ESTABLISHED**. Major remaining gates include real provider adapters and signed manifests; end-to-end Authority Epoch enforcement; authenticated production Desktop Agent transport; vendor sensor provenance; signed provider receipts and anti-replay; persistent Device Health Passport windows; workload sandbox/egress policy; real attested Evidence Independence roots; real heterogeneous fleet validation; independent security/privacy/legal/game-math review; a signed closing snapshot or equivalent attestation; and a partner-operated non-money pilot with measured device-hours, Wh, failures, throttles and unit economics.
 
 > **ONE CORE. ANY DESTINATION. PROTECT THE DEVICE. PROVE THE WORK. KEEP GAME MATH SEALED.**
