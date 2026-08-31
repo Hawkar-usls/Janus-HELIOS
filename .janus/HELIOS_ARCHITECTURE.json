@@ -11,18 +11,12 @@
     "compute": "CONSENT_RESOURCE_POLICY_ROUTING_EXECUTION_VERIFICATION_AND_SETTLEMENT_DOMAIN",
     "licensing": "REQUEST_TERMS_PAYMENT_AND_LIMITED_PILOT_GRANT_DOMAIN",
     "relationship": "STRICTLY_SEPARATED",
-    "compute_to_rng": "FORBIDDEN",
-    "compute_to_rtp": "FORBIDDEN",
-    "compute_to_bonus_probability": "FORBIDDEN",
-    "compute_to_personal_jackpot_weight": "FORBIDDEN",
-    "hardware_pressure_to_game_outcome": "FORBIDDEN",
-    "payment_to_core_ownership": "FORBIDDEN"
+    "compute_to_rng": "FORBIDDEN", "compute_to_rtp": "FORBIDDEN", "compute_to_bonus_probability": "FORBIDDEN",
+    "compute_to_personal_jackpot_weight": "FORBIDDEN", "hardware_pressure_to_game_outcome": "FORBIDDEN", "payment_to_core_ownership": "FORBIDDEN"
   },
   "compute_plane": {
     "flow": ["EXPLICIT_RESOURCE_CONSENT", "USER_CPU_GPU_ENVELOPE", "HELIOS_ROUTER", "PROVIDER_MANIFEST_ADAPTER_VERIFIER", "DESKTOP_FABRIC", "DESKTOP_AGENT", "HARDWARE_GUARDIAN", "HOST_FIRST_QOS", "SMART_COMPUTE_NODE_RECORD", "VERIFIED_RESULT", "RECEIPT_PROVENANCE", "AUTHORITATIVE_PROVIDER_SETTLEMENT_GATE"],
-    "routes": ["MARKET", "SCIENCE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"],
-    "provider_neutral": true,
-    "browser_provider_secrets": "FORBIDDEN"
+    "routes": ["MARKET", "SCIENCE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"], "provider_neutral": true, "browser_provider_secrets": "FORBIDDEN"
   },
   "desktop_fabric": {
     "module": "src/helios-desktop-fabric.js", "version": "2.1.0", "agent_module": "src/helios-desktop-agent.js", "agent_version": "1.3.0",
@@ -61,26 +55,32 @@
   },
   "pilot_authority": {
     "module": "src/helios-pilot-authority.js",
-    "version": "1.1.0",
+    "version": "1.2.0",
+    "contract_version": "1.2.1",
+    "payment_policy_version": "1.2.1",
     "classification": "AUTOMATED_STANDARD_PILOT_LICENSE_GATE",
-    "maturity": "IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_RECEIVING_ADDRESS_AND_RPC",
+    "maturity": "IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_FINAL_ACTIVATION",
     "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
     "request_channel": "GITHUB_ISSUE_FORM",
     "watcher": "tools/pilot-payment-watch.mjs",
+    "rpc_smoke": "tools/pilot-rpc-smoke.mjs",
     "workflow": ".github/workflows/helios-pilot-authority.yml",
+    "rpc_workflow": ".github/workflows/helios-pilot-rpc-smoke.yml",
     "terms": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
     "payment_policy": "commerce/HELIOS_PILOT_PAYMENT_POLICY.json",
+    "route_evidence": "commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json",
     "primary_payment": {
-      "network": "ETHEREUM_MAINNET",
-      "network_display": "Ethereum Mainnet (ERC20)",
-      "chain_id": 1,
-      "asset": "USDT",
-      "token_contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-      "standard_fee_usdt": "10000.000000",
+      "network": "ETHEREUM_MAINNET", "network_display": "Ethereum Mainnet (ERC20)", "chain_id": 1, "asset": "USDT",
+      "token_contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7", "standard_fee_usdt": "10000.000000",
       "unique_invoice_fingerprint_is_sub_dollar_discount": true,
-      "receiving_address_configured": false,
-      "dedicated_rpc_required_before_enable": true,
-      "dedicated_rpc_configured": false
+      "receiving_address_configured": true, "receiving_address": "0x7149081aea54fbef57effeb52a5a966b81cc03a0",
+      "memo_required": false, "binance_credit_confirmations_observed": 6, "binance_unlock_confirmations_observed": 64, "helios_grant_confirmations": 64
+    },
+    "rpc_quorum": {
+      "required": true, "minimum_sources": 2, "single_rpc_may_auto_grant": false,
+      "sources": ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org/"],
+      "pre_activation_smoke_commit": "fdde711f5b2831a533629528ac81821dafebd61c", "pre_activation_smoke_run_id": 33358927756, "pre_activation_smoke_result": "PASS",
+      "read_only": true, "fund_movement_authority": false, "transaction_broadcast_authority": false
     },
     "standard_grant": {
       "term_days": 90, "non_exclusive": true, "non_transferable": true, "non_sublicensable": true, "controlled_non_money_pilot": true,
@@ -88,8 +88,9 @@
     },
     "security": {
       "wallet_private_key_required": false, "seed_phrase_required": false, "exchange_password_required": false, "withdrawal_api_key_required": false,
-      "watcher_can_move_funds": false, "public_chain_observation_only": true
-    }
+      "watcher_can_move_funds": false, "watcher_can_broadcast_transactions": false, "public_chain_observation_only": true
+    },
+    "payment_policy_enabled": false
   },
   "solar_feature_family": {
     "natural_corona": {"trigger": "3_OR_MORE_SUNS_ON_SETTLED_NORMAL_GRID", "compute_effect": "NONE", "game_math_source": "GAME_CORE"},
@@ -114,14 +115,14 @@
   "commercial_position": {
     "owner_role": "IP_OWNER_AND_LICENSOR", "preferred_licensee_role": "BUILD_INTEGRATE_OPERATE_SELL_SUPPORT", "core_remains_background_ip": true, "janus_i0_separately_scoped": true,
     "low_friction_pilot": true, "success_based_royalty": true, "science_public_benefit_relief_possible": true,
-    "standard_pilot_automation": "IMPLEMENTED_BUT_FAIL_CLOSED_DISABLED_UNTIL_RECEIVING_ADDRESS_AND_DEDICATED_RPC_RECHECK",
+    "standard_pilot_automation": "IMPLEMENTED_WITH_VERIFIED_ROUTE_AND_RPC_QUORUM_BUT_FAIL_CLOSED_DISABLED_UNTIL_FINAL_ACTIVATION",
     "market_uniqueness_claim": "MARKET_REVIEWED_COMBINATION_CLAIM_NOT_PATENT_OR_FTO_OPINION"
   },
   "claim_audit": {"human_readable": "docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md", "machine_readable": ".janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json"},
   "production_gate": {
     "status": "NOT_ESTABLISHED",
     "requires": [
-      "PILOT_AUTHORITY_USDT_ETHEREUM_RECEIVING_ADDRESS_AND_DEDICATED_RPC_BEFORE_PAYMENT_AUTOMATION",
+      "PILOT_AUTHORITY_FINAL_POLICY_ENABLE_AND_EXACT_HEAD_DUAL_GREEN_GATES",
       "REAL_PROVIDER_ADAPTER_AND_SIGNED_MANIFEST", "END_TO_END_PROVIDER_AUTHORITY_EPOCH_ENFORCEMENT", "REAL_VENDOR_SENSOR_AND_ENERGY_TELEMETRY",
       "AUTHORITATIVE_SIGNED_RECEIPTS_AND_ANTI_REPLAY", "AUTHENTICATED_AGENT_TRANSPORT", "WORKLOAD_SANDBOX_AND_EGRESS_POLICY", "REAL_ATTESTED_INDEPENDENCE_ROOTS",
       "INDEPENDENT_SECURITY_PRIVACY_LEGAL_GAME_MATH_REVIEW", "PARTNER_OPERATED_NON_MONEY_PILOT"
