@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Public discovery entrypoints are intentionally indexable.
+# They do not grant contract authority or expose wallet credentials.
+Sitemap: https://hawkar-usls.github.io/Janus-HELIOS/sitemap.xml
