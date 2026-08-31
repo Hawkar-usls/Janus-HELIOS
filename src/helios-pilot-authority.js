@@ -1,4 +1,4 @@
-export const HELIOS_PILOT_AUTHORITY_VERSION = '1.1.0';
+export const HELIOS_PILOT_AUTHORITY_VERSION = '1.2.0';
 export const HELIOS_PILOT_GRANT_SCHEMA = 'janus.helios.pilot-grant.v1';
 export const HELIOS_PILOT_INVOICE_SCHEMA = 'janus.helios.pilot-invoice.v1';
 
@@ -43,6 +43,20 @@ function rawToDisplay(raw, decimals = 6) {
   return `${whole}.${fraction}`;
 }
 
+function validateRpcPolicy(chainObservation = {}) {
+  const urls = [...new Set((chainObservation.rpc_urls || []).map(x => stable(x)).filter(Boolean))];
+  const quorum = Number(chainObservation.rpc_quorum);
+  if (urls.length < 2) throw new Error('PILOT_RPC_REQUIRES_AT_LEAST_TWO_SOURCES');
+  if (!Number.isSafeInteger(quorum) || quorum < 2 || quorum > urls.length) throw new Error('PILOT_RPC_QUORUM_INVALID');
+  for (const url of urls) {
+    let parsed;
+    try { parsed = new URL(url); } catch { throw new Error('PILOT_RPC_URL_INVALID'); }
+    if (parsed.protocol !== 'https:') throw new Error('PILOT_RPC_URL_MUST_BE_HTTPS');
+  }
+  if (chainObservation.single_rpc_may_auto_grant !== false) throw new Error('PILOT_SINGLE_RPC_AUTO_GRANT_MUST_BE_FALSE');
+  return { urls, quorum };
+}
+
 export function normalizePilotRequest(input = {}) {
   const accepted = input.acceptance && typeof input.acceptance === 'object' ? input.acceptance : {};
   if (accepted.standard_pilot_license_v1 !== true) throw new Error('PILOT_TERMS_NOT_ACCEPTED');
@@ -83,10 +97,12 @@ export function validatePilotPaymentPolicy(policy = {}) {
   if (String(policy.chain_observation?.expected_chain_id_hex || '').toLowerCase() !== '0x1') {
     throw new Error('PILOT_RPC_EXPECTED_CHAIN_ID_MUST_BE_ETHEREUM_MAINNET');
   }
+  validateRpcPolicy(policy.chain_observation);
   normalizeEvmAddress(payment.receiving_address, 'PILOT_RECEIVING_ADDRESS_NOT_CONFIGURED');
   if (payment.memo_required === true) throw new Error('PILOT_AUTOMATION_DOES_NOT_SUPPORT_MEMO_REQUIRED_DEPOSIT');
   if (payment.private_key_present === true || payment.seed_phrase_present === true) throw new Error('PAYMENT_PRIVATE_MATERIAL_FORBIDDEN');
   if (BigInt(payment.standard_fee_raw) <= 1_000_000n) throw new Error('PILOT_STANDARD_FEE_INVALID');
+  if (Number(policy.chain_observation?.min_confirmations) < 64) throw new Error('PILOT_CONFIRMATION_THRESHOLD_BELOW_FROZEN_BINANCE_UNLOCK_EVIDENCE');
 
   return true;
 }
@@ -141,6 +157,7 @@ export function createPilotInvoice({
       exact_amount_raw: amountRaw.toString(),
       exact_amount_asset: rawToDisplay(amountRaw, decimals),
       memo_required: false,
+      rpc_quorum_required: Number(policy.chain_observation.rpc_quorum),
       wrong_network_grants_rights: false,
       overpayment_or_underpayment_auto_grants_rights: false
     }),
@@ -153,6 +170,10 @@ export function createPilotInvoice({
 export function verifyPilotPaymentEvidence({ invoice, observation, latest_block_number, min_confirmations } = {}) {
   if (!invoice || invoice.schema !== HELIOS_PILOT_INVOICE_SCHEMA) throw new Error('PILOT_INVOICE_REQUIRED');
   if (!observation || typeof observation !== 'object') return Object.freeze({ verified: false, reason: 'PAYMENT_OBSERVATION_MISSING' });
+  if (observation.rpc_quorum_verified !== true) return Object.freeze({ verified: false, reason: 'RPC_QUORUM_NOT_VERIFIED' });
+  if (!Number.isSafeInteger(Number(observation.rpc_source_count)) || Number(observation.rpc_source_count) < 2) {
+    return Object.freeze({ verified: false, reason: 'RPC_SOURCE_COUNT_INSUFFICIENT' });
+  }
 
   let txHash;
   let to;
@@ -191,7 +212,7 @@ export function verifyPilotPaymentEvidence({ invoice, observation, latest_block_
 
   return Object.freeze({
     verified: true,
-    reason: 'EXACT_ONCHAIN_PAYMENT_CONFIRMED',
+    reason: 'EXACT_ONCHAIN_PAYMENT_CONFIRMED_BY_RPC_QUORUM',
     tx_hash: txHash,
     from: EVM_ADDRESS_RE.test(stable(observation.from)) ? normalizeEvmAddress(observation.from) : null,
     to,
@@ -202,6 +223,8 @@ export function verifyPilotPaymentEvidence({ invoice, observation, latest_block_
     block_number: blockNumber,
     confirmations,
     observed_at: new Date(observedAtMs).toISOString(),
+    rpc_quorum_verified: true,
+    rpc_source_count: Number(observation.rpc_source_count),
     payment_is_authority: false
   });
 }
@@ -210,6 +233,9 @@ export function issuePilotGrant({ invoice, request, payment_evidence, granted_at
   const normalizedRequest = normalizePilotRequest(request);
   if (!invoice || invoice.schema !== HELIOS_PILOT_INVOICE_SCHEMA) throw new Error('PILOT_INVOICE_REQUIRED');
   if (!payment_evidence?.verified) throw new Error('VERIFIED_PILOT_PAYMENT_REQUIRED');
+  if (payment_evidence.rpc_quorum_verified !== true || Number(payment_evidence.rpc_source_count) < 2) {
+    throw new Error('VERIFIED_RPC_QUORUM_PAYMENT_REQUIRED');
+  }
   const days = toPositiveInteger(term_days, 'PILOT_TERM_DAYS_REQUIRED');
   const grantedAt = Number(granted_at_ms);
   if (!Number.isFinite(grantedAt) || grantedAt <= 0) throw new Error('INVALID_PILOT_GRANT_TIME');
@@ -267,6 +293,8 @@ export function issuePilotGrant({ invoice, request, payment_evidence, granted_at
       amount_asset: invoice.payment.exact_amount_asset,
       tx_hash: payment_evidence.tx_hash,
       confirmations_at_grant: payment_evidence.confirmations,
+      rpc_quorum_verified: true,
+      rpc_source_count: payment_evidence.rpc_source_count,
       payment_is_authority: false
     }),
     effective_at: new Date(grantedAt).toISOString(),
