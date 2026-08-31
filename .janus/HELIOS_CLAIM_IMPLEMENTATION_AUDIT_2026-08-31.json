@@ -30,9 +30,11 @@
     {
       "claim": "AUTOMATED_STANDARD_PILOT_AUTHORITY",
       "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-pilot-authority.js", "tools/pilot-payment-watch.mjs", ".janus/HELIOS_PILOT_AUTHORITY.json", "commerce/HELIOS_PILOT_PAYMENT_POLICY.json", "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md", "tests/pilot-authority-invariants.test.mjs"],
-      "claim_value": "ARMED_DISABLED_PENDING_RECEIVING_ADDRESS_AND_RPC",
-      "external_gate": "Owner must recheck current Binance USDT/Ethereum ERC20 deposit support, configure the exact public receiving address, confirm no memo/tag is required, configure a dedicated Ethereum RPC as HELIOS_PILOT_RPC_URL, enable the policy and obtain a green exact-commit HELIOS Integrity run before invoices or grants may issue."
+      "evidence": ["src/helios-pilot-authority.js", "tools/pilot-payment-watch.mjs", "tools/pilot-rpc-smoke.mjs", ".janus/HELIOS_PILOT_AUTHORITY.json", "commerce/HELIOS_PILOT_PAYMENT_POLICY.json", "commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json", "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md", "tests/pilot-authority-invariants.test.mjs"],
+      "claim_value": "ARMED_DISABLED_PENDING_FINAL_ACTIVATION",
+      "verified_route": "USDT_ETHEREUM_ERC20_BINANCE_ADDRESS_AND_MEMO_GATE_CLOSED",
+      "verified_rpc_quorum": "PUBLICNODE_PLUS_DRPC_PRE_ACTIVATION_SMOKE_PASS_ON_FDDE711F",
+      "external_gate": "The current Binance USDT/Ethereum ERC20 receiving route, no-memo evidence, 64-confirmation threshold and two-source Ethereum RPC quorum have been established. Automatic invoicing/grant remains deliberately disabled until the final activating commit itself passes HELIOS Integrity and HELIOS Pilot RPC Quorum."
     },
     {"claim":"PUBLIC_BUYER_LAB_SHOWS_TRUST_AND_POLICY_SURFACES","status":"DEMO_PREVIEW","evidence":["index.html","helios-buyer-cockpit.js","helios-trust-fabric-ui.js","helios-smart-compute-node-ui.js","helios-evidence-independence-ui.js"],"external_gate":"Public page intentionally has no production authority."},
     {"claim":"PUBLIC_PAGE_HAS_LIVE_DEVICE_HEALTH_OR_MINING","status":"EXTERNAL_GATE","evidence":["index.html",".janus/HELIOS_SMART_COMPUTE_NODE.json"],"claim_value":false,"external_gate":"Desktop Agent or approved edge bridge required. No fake temperature, watts, hashrate or health percentage is permitted."},
@@ -50,11 +52,15 @@
     "SMART_COMPUTE_NODE_GENERALIZED_BEYOND_EDGE_HASH_TO_WORKLOAD_APPROPRIATE_EVIDENCE",
     "PROJECT_STATUS_REFRESHED_TO_2026_08_31",
     "CANONICAL_ARCHITECTURE_REFRESHED_TO_CURRENT_STACK",
-    "STANDARD_PILOT_AUTHORITY_ADDED_FAIL_CLOSED_DISABLED_UNTIL_OWNER_RECEIVING_ADDRESS_IS_VERIFIED",
     "BASE_ROUTE_REJECTED_AFTER_CURRENT_BINANCE_NETWORK_RECHECK",
     "STANDARD_PILOT_PAYMENT_PRIMARY_FROZEN_TO_TETHER_USDT_ETHEREUM_ERC20_WITH_EXACT_INVOICE_FINGERPRINT",
-    "DEDICATED_ETHEREUM_RPC_REQUIRED_BEFORE_PILOT_AUTHORITY_ENABLE",
-    "PILOT_PAYMENT_VERIFIER_HAS_NO_FUND_MOVEMENT_AUTHORITY"
+    "BINANCE_RECEIVING_ADDRESS_FROZEN_WITH_SCREENSHOT_DIGEST_EVIDENCE",
+    "MEMO_TAG_GATE_CLOSED_FROM_EXPANDED_BINANCE_DEPOSIT_SCREEN",
+    "HELIOS_GRANT_THRESHOLD_SET_TO_64_CONFIRMATIONS",
+    "SINGLE_RPC_AUTO_GRANT_FORBIDDEN",
+    "INCOMPATIBLE_1RPC_SOURCE_REJECTED_AFTER_LIVE_ETH_GETLOGS_FAILURE",
+    "PUBLICNODE_PLUS_DRPC_TWO_SOURCE_RPC_SMOKE_PASSED",
+    "PILOT_PAYMENT_VERIFIER_HAS_NO_FUND_MOVEMENT_OR_TRANSACTION_BROADCAST_AUTHORITY"
   ],
   "final_rule": "NO_BUYER_FACING_CLAIM_MAY_BE_PROMOTED_FROM_IMPLEMENTED_CORE_OR_EXTERNAL_GATE_TO_ENFORCED_WITHOUT_EXECUTION_PATH_EVIDENCE_AND_A_TESTED_EXACT_COMMIT."
 }
