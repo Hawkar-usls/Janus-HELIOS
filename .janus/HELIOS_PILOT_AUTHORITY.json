@@ -1,14 +1,17 @@
 {
   "schema": "janus.helios.pilot-authority.contract.v1",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "classification": "AUTOMATED_STANDARD_PILOT_LICENSE_GATE",
-  "status": "ARMED_DISABLED_PENDING_RECEIVING_ADDRESS_AND_RPC",
-  "purpose": "Issue a narrowly scoped HELIOS standard pilot grant only after a named grantee accepts frozen pilot terms and an exact on-chain payment is verified.",
+  "status": "ARMED_DISABLED_PENDING_RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION",
+  "purpose": "Issue a narrowly scoped HELIOS standard pilot grant only after a named grantee accepts frozen pilot terms and an exact on-chain payment is verified by an independent Ethereum RPC quorum.",
   "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
   "implementation": "src/helios-pilot-authority.js",
   "watcher": "tools/pilot-payment-watch.mjs",
+  "rpc_smoke": "tools/pilot-rpc-smoke.mjs",
   "workflow": ".github/workflows/helios-pilot-authority.yml",
+  "rpc_workflow": ".github/workflows/helios-pilot-rpc-smoke.yml",
   "payment_policy": "commerce/HELIOS_PILOT_PAYMENT_POLICY.json",
+  "route_evidence": "commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json",
   "terms": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
   "request_template": ".github/ISSUE_TEMPLATE/helios-pilot-license.yml",
   "grant_conditions": [
@@ -20,7 +23,8 @@
     "LEGAL_COMPLIANCE_SELF_CERTIFICATION",
     "EXACT_NETWORK_ASSET_ACKNOWLEDGEMENT",
     "EXACT_INVOICE_PAYMENT",
-    "MINIMUM_CONFIRMATIONS",
+    "TWO_SOURCE_RPC_QUORUM",
+    "MINIMUM_64_CONFIRMATIONS",
     "NON_REUSED_TRANSACTION",
     "PILOT_ACTIVE_GRANT_RECORD"
   ],
@@ -35,9 +39,28 @@
     "fiat_usd_onchain_address": false,
     "wrong_network_auto_grant": false,
     "wrong_amount_auto_grant": false,
-    "receiving_address_configured": false,
-    "dedicated_rpc_required_before_enable": true,
-    "dedicated_rpc_configured_in_repository": false
+    "receiving_address_configured": true,
+    "receiving_address": "0x7149081aea54fbef57effeb52a5a966b81cc03a0",
+    "memo_required": false,
+    "binance_credit_confirmations_observed": 6,
+    "binance_withdrawal_unlock_confirmations_observed": 64,
+    "helios_grant_confirmations": 64
+  },
+  "rpc_quorum": {
+    "required": true,
+    "minimum_sources": 2,
+    "single_rpc_may_auto_grant": false,
+    "sources": [
+      "https://ethereum-rpc.publicnode.com",
+      "https://public.1rpc.io/eth"
+    ],
+    "read_only": true,
+    "max_head_spread_blocks": 8,
+    "payment_log_must_match_quorum": true,
+    "receipt_must_match_quorum": true,
+    "block_timestamp_and_hash_must_match_quorum": true,
+    "fund_movement_authority": false,
+    "transaction_broadcast_authority": false
   },
   "pilot_scope": {
     "term_days": 90,
@@ -63,10 +86,10 @@
     "exchange_password_required": false,
     "withdrawal_api_key_required": false,
     "verifier_can_move_funds": false,
+    "verifier_can_broadcast_transactions": false,
     "public_chain_observation_only": true,
     "transaction_reuse_forbidden": true,
-    "grant_digest_is_signature": false,
-    "rpc_secret_is_wallet_secret": false
+    "grant_digest_is_signature": false
   },
   "privacy": {
     "passport_required": false,
@@ -86,10 +109,13 @@
   },
   "activation_gate": {
     "owner_receiving_address_required": true,
+    "owner_receiving_address_satisfied": true,
     "current_binance_usdt_ethereum_erc20_support_rechecked": true,
     "memo_required_must_be_false": true,
-    "dedicated_ethereum_rpc_required": true,
+    "memo_gate_satisfied": true,
+    "rpc_quorum_smoke_required": true,
     "policy_enabled_must_be_true": true,
-    "exact_head_integrity_success_required": true
+    "exact_head_integrity_success_required": true,
+    "exact_head_rpc_quorum_success_required": true
   }
 }
