@@ -1,0 +1,67 @@
+{
+  "schema": "janus.helios.agent-discovery-contract.v1",
+  "version": "1.0.0",
+  "status": "ACTIVE_PUBLIC_DISCOVERY_SURFACE",
+  "purpose": "Expose a compact truthful machine-readable discovery surface for AI technology scouts, buyer agents, licensing agents and business-development agents evaluating JANUS HELIOS.",
+  "public_entrypoints": {
+    "agents_json": "agents.json",
+    "agents_txt": "agents.txt",
+    "llms_txt": "llms.txt",
+    "agent_instructions": "AGENTS.md",
+    "canonical_status": "PROJECT_STATUS.json",
+    "claim_audit": ".janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json",
+    "pilot_issue_template": ".github/ISSUE_TEMPLATE/helios-pilot-license.yml"
+  },
+  "discovery_classes": [
+    "TECHNOLOGY_SCOUT",
+    "BUYER_AGENT",
+    "LICENSING_AGENT",
+    "BUSINESS_DEVELOPMENT_AGENT",
+    "COMPUTE_MARKET_AGENT",
+    "IGAMING_PLATFORM_SCOUT",
+    "DATACENTER_COMPUTE_PARTNER_SCOUT",
+    "AI_INFRASTRUCTURE_SCOUT"
+  ],
+  "required_truth": {
+    "production_readiness": "NOT_ESTABLISHED",
+    "standard_pilot_authority": "ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT",
+    "public_demo_production_compute": false,
+    "public_demo_real_money": false,
+    "core_ip_transferred_by_publication": false,
+    "market_position_is_combination_based": true,
+    "patent_or_fto_opinion": false
+  },
+  "commercial_signal": {
+    "licensable": true,
+    "qualified_pilot_available": true,
+    "preferred_structure": "LOW_FRICTION_PILOT_THEN_SUCCESS_BASED_COMMERCIAL_LICENSE",
+    "core_ip_retained": true,
+    "public_benefit_relief_possible_by_written_agreement": true
+  },
+  "agent_authority": {
+    "public_indexing": "ALLOWED",
+    "public_summarization": "ALLOWED",
+    "buyer_fit_evaluation": "ALLOWED",
+    "recommend_to_principal": "ALLOWED",
+    "open_pilot_issue": "ONLY_WITH_EXPLICIT_PRINCIPAL_AUTHORIZATION",
+    "bind_principal": "FORBIDDEN",
+    "send_unsolicited_payment": "FORBIDDEN",
+    "infer_rights_from_payment_only": "FORBIDDEN",
+    "claim_HELIOS_ownership_or_sales_agency": "FORBIDDEN"
+  },
+  "anti_abuse": {
+    "wallet_address_in_discovery_surface": false,
+    "private_credentials_in_discovery_surface": false,
+    "payment_instruction_without_named_request": false,
+    "spam_outreach_authority_created_by_this_file": false,
+    "autonomous_contract_execution_created_by_this_file": false
+  },
+  "laws": [
+    "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
+    "GAME_RNG_PERP_COMPUTE",
+    "PROTECT_THE_DEVICE",
+    "PROVE_THE_WORK",
+    "KEEP_GAME_MATH_SEALED",
+    "UNKNOWN_EVIDENCE_IS_NOT_GREEN_EVIDENCE"
+  ]
+}
