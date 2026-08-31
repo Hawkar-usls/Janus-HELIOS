@@ -26,15 +26,20 @@ Core law:
 
 A random payment to the receiving address grants nothing. The complete request + frozen terms + exact invoice + quorum-verified payment + grant record is required.
 
-## Current state
+## Active-candidate state
 
-The Binance-side route is now established, but automatic licensing remains deliberately disabled until the final activating commit itself passes both HELIOS Integrity and the HELIOS Pilot RPC Quorum workflow.
+The standard payment policy is enabled in the activation candidate, but the issuer workflow is hard-restricted to `refs/heads/main`. Therefore this branch cannot issue an invoice or a grant while it is being certified.
 
-Current pre-activation state:
+The exact enabled candidate must pass both:
 
-`ARMED_DISABLED_PENDING_FINAL_ACTIVATION`
+```text
+HELIOS Integrity
+HELIOS Pilot RPC Quorum
+```
 
-No invoice or grant is issued while `commerce/HELIOS_PILOT_PAYMENT_POLICY.json` has `enabled: false`.
+Only that already-certified SHA may be fast-forwarded to `main`. Once on `main`, every issuer cycle still reruns critical syntax/invariants, secret scan, strict due-diligence preflight and a live two-source RPC smoke before it can process requests.
+
+This removes the race where `enabled:true` could otherwise become effective before its own exact commit is checked.
 
 ## Frozen standard payment route
 
@@ -49,18 +54,16 @@ Memo / Tag / Payment ID: not required by the frozen Binance route
 Standard anchor: 10,000.000000 USDT
 ```
 
-The route was selected after the current Binance deposit UI was checked and Base was not available for the intended route. HELIOS therefore switched policy rather than pretending the earlier USDC/Base path remained usable.
+The route was selected after the current Binance deposit UI was checked and Base was not available. Two owner-supplied Binance screens are frozen by SHA-256 in `commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json`.
 
-The owner supplied two current Binance deposit screenshots. The evidence record freezes their SHA-256 digests, the displayed USDT/ETH route, the receiving address, the absence of a Memo/Tag/Payment-ID field on the expanded screen, and Binance's displayed confirmation thresholds.
-
-Token symbol alone is **not authority**. The automatic gate requires:
+Token symbol alone is not authority. The automatic gate requires:
 
 ```text
 CHAIN ID = 1
 + OFFICIAL TETHER USDT CONTRACT
 + FROZEN RECEIVING ADDRESS
 + EXACT RAW INVOICE AMOUNT
-+ RPC QUORUM
++ TWO-SOURCE RPC QUORUM
 + SUCCESSFUL RECEIPT
 + 64 CONFIRMATIONS
 + NON-REUSED TRANSACTION
@@ -70,20 +73,15 @@ Only the public receiving address is stored. HELIOS never requires a seed phrase
 
 ## Confirmation policy
 
-The expanded Binance screen showed:
+The expanded Binance screen showed trading credit after `6` confirmations and withdrawal unlock after `64`. HELIOS uses the more conservative `64` confirmations for automatic pilot grants.
 
-- trading credit after `6` confirmations;
-- withdrawal unlock after `64` confirmations.
-
-HELIOS uses the more conservative `64` confirmations for automatic grant issuance. This is an operational safety threshold, not a claim that Binance defines Ethereum protocol finality for HELIOS.
+This is an operational safety threshold, not a claim that Binance defines Ethereum protocol finality.
 
 ## Standard pilot fee and invoice fingerprint
 
-The standard policy anchor is:
+The standard policy anchor is `10,000.000000 USDT`.
 
-`10,000.000000 USDT`
-
-Each Pilot Request gets a deterministic discount between `0.000001` and `0.999999` USDT so the expected on-chain amount is unique without a memo field.
+Each qualifying GitHub Pilot Request receives a deterministic discount between `0.000001` and `0.999999` USDT, making the expected raw ERC-20 transfer amount unique without requiring a memo field.
 
 Example:
 
@@ -93,21 +91,13 @@ invoice fingerprint           0.000043 USDT discount
 exact invoice               9999.999957 USDT
 ```
 
-The fingerprint is a **discount**, never a surcharge.
+The fingerprint is a discount, never a surcharge.
 
 ## Request identity and privacy
 
-The request collects the minimum contract identity needed by the standard automated path:
+The request collects only the minimum contract identity needed by this standard flow: legal entity, authorized representative, GitHub grantee, pilot description/scope and explicit acceptance/compliance certifications.
 
-- legal entity name;
-- authorized representative;
-- GitHub grantee identity;
-- pilot description/scope;
-- explicit acceptance and compliance certifications.
-
-It does not request passports, home address, phone, wallet private material, Binance credentials or 2FA.
-
-A partner requiring private procurement/KYC handling should use a separately negotiated enterprise process rather than publish sensitive material in a GitHub issue.
+It does not request passports, home address, phone, wallet private material, Binance credentials or 2FA. A partner needing private procurement/KYC should use a separately negotiated enterprise process.
 
 ## Two-source Ethereum observation
 
@@ -116,17 +106,15 @@ The low-volume bootstrap quorum currently uses:
 - `https://ethereum-rpc.publicnode.com`
 - `https://eth.drpc.org/`
 
-A previous candidate (`https://public.1rpc.io/eth`) was rejected after a live GitHub Actions smoke showed that the required `eth_getLogs` method was unavailable. HELIOS failed closed rather than falling back to one source.
+A previous candidate, `https://public.1rpc.io/eth`, was rejected after live GitHub Actions showed `eth_getLogs` was unavailable. HELIOS failed closed rather than falling back to one source.
 
-PublicNode + dRPC later passed the live pre-activation smoke on commit `fdde711f5b2831a533629528ac81821dafebd61c`, workflow run `33358927756`.
+PublicNode + dRPC passed live pre-activation smoke on commit `fdde711f5b2831a533629528ac81821dafebd61c`, workflow run `33358927756`.
 
 The watcher cross-checks chain identity, head position, inbound USDT logs, transaction receipt and block identity/time. A single RPC cannot automatically grant a license.
 
-For high-volume commercial use, these public endpoints should be replaced or augmented with contracted/self-hosted multi-source infrastructure while preserving quorum logic.
+For high-volume commercial use, public endpoints should be replaced or augmented with contracted/self-hosted multi-source infrastructure while preserving quorum logic.
 
 ## What the watcher cannot do
-
-The watcher is read-only. It cannot:
 
 ```text
 WITHDRAW FUNDS        NO
@@ -137,7 +125,7 @@ RETURN FUNDS          NO
 ACCESS BINANCE        NO
 ```
 
-It only observes public Ethereum evidence and uses the repository's GitHub permission to post an invoice/grant record to the qualifying Pilot Request.
+It observes public Ethereum data only. GitHub authority is limited to the issue workflow required to publish the invoice/grant evidence.
 
 ## What `PILOT_ACTIVE` means
 
@@ -160,39 +148,31 @@ JANUS I0 INCLUDED            NO
 
 Production/commercial use requires a separate written agreement.
 
-## Legal / regulatory boundary
+## Current truth boundary
 
-The automation is not legal advice and is not itself a KYC/AML, sanctions-screening, tax, gambling-regulatory, money-transmitter, export-control or production-security engine. The request includes compliance self-certifications, and applicable law overrides automation.
+`Pilot Authority active` means the narrow standard licensing gate can operate on a certified `main` commit. It does **not** mean:
 
-Most importantly, the standard automated grant never authorizes real-money gambling.
+- a real paid pilot has already occurred;
+- HELIOS production compute is validated;
+- a casino or compute provider is connected;
+- real-money gambling is authorized;
+- regulatory/KYC/AML/tax review is complete; or
+- HELIOS Core ownership has been transferred.
 
-## Evidence files
-
-```text
-legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md
-commerce/HELIOS_PILOT_PAYMENT_POLICY.json
-commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json
-commerce/HELIOS_PILOT_RPC_QUORUM_POLICY.md
-.janus/HELIOS_PILOT_AUTHORITY.json
-src/helios-pilot-authority.js
-tools/pilot-payment-watch.mjs
-tools/pilot-rpc-smoke.mjs
-.github/ISSUE_TEMPLATE/helios-pilot-license.yml
-.github/workflows/helios-pilot-authority.yml
-.github/workflows/helios-pilot-rpc-smoke.yml
-tests/pilot-authority-invariants.test.mjs
-```
+The first real paid grant and partner-operated field pilot remain evidence gates.
 
 ## Activation law
 
 ```text
-VERIFIED BINANCE ROUTE           PASS
-NO MEMO/TAG GATE                 PASS
-64-CONFIRMATION POLICY           PASS
-TWO-SOURCE RPC SMOKE             PASS
-PAYMENT POLICY ENABLED           PENDING
-EXACT ACTIVATING HEAD INTEGRITY  PENDING
-EXACT ACTIVATING HEAD RPC QUORUM PENDING
+VERIFIED BINANCE ROUTE                PASS
+NO MEMO/TAG GATE                      PASS
+64-CONFIRMATION POLICY                PASS
+TWO-SOURCE RPC                        PASS
+MAIN-ONLY ISSUER                      PASS
+RUNTIME CRITICAL PREFLIGHT            PASS
+PAYMENT POLICY IN CANDIDATE           ENABLED
+EXACT ENABLED SHA INTEGRITY            REQUIRED BEFORE MAIN
+EXACT ENABLED SHA RPC QUORUM           REQUIRED BEFORE MAIN
 ```
 
-Only after the pending gates are green may automatic standard-pilot invoicing/grant issuance become active.
+Only the exact dual-green enabled SHA may be promoted to `main`.
