@@ -1,8 +1,8 @@
 {
   "schema": "janus.helios.pilot-authority.contract.v1",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "classification": "AUTOMATED_STANDARD_PILOT_LICENSE_GATE",
-  "status": "ARMED_DISABLED_PENDING_RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION",
+  "status": "ARMED_DISABLED_PENDING_FINAL_ACTIVATION",
   "purpose": "Issue a narrowly scoped HELIOS standard pilot grant only after a named grantee accepts frozen pilot terms and an exact on-chain payment is verified by an independent Ethereum RPC quorum.",
   "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
   "implementation": "src/helios-pilot-authority.js",
@@ -15,18 +15,9 @@
   "terms": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
   "request_template": ".github/ISSUE_TEMPLATE/helios-pilot-license.yml",
   "grant_conditions": [
-    "NAMED_LEGAL_ENTITY",
-    "AUTHORIZED_REPRESENTATIVE_CERTIFICATION",
-    "GITHUB_GRANTEE_BINDING",
-    "FROZEN_TERMS_ACCEPTANCE",
-    "NON_MONEY_SCOPE_ACCEPTANCE",
-    "LEGAL_COMPLIANCE_SELF_CERTIFICATION",
-    "EXACT_NETWORK_ASSET_ACKNOWLEDGEMENT",
-    "EXACT_INVOICE_PAYMENT",
-    "TWO_SOURCE_RPC_QUORUM",
-    "MINIMUM_64_CONFIRMATIONS",
-    "NON_REUSED_TRANSACTION",
-    "PILOT_ACTIVE_GRANT_RECORD"
+    "NAMED_LEGAL_ENTITY", "AUTHORIZED_REPRESENTATIVE_CERTIFICATION", "GITHUB_GRANTEE_BINDING", "FROZEN_TERMS_ACCEPTANCE",
+    "NON_MONEY_SCOPE_ACCEPTANCE", "LEGAL_COMPLIANCE_SELF_CERTIFICATION", "EXACT_NETWORK_ASSET_ACKNOWLEDGEMENT", "EXACT_INVOICE_PAYMENT",
+    "TWO_SOURCE_RPC_QUORUM", "MINIMUM_64_CONFIRMATIONS", "NON_REUSED_TRANSACTION", "PILOT_ACTIVE_GRANT_RECORD"
   ],
   "payment": {
     "primary": "USDT_ON_ETHEREUM_MAINNET_ERC20",
@@ -50,10 +41,11 @@
     "required": true,
     "minimum_sources": 2,
     "single_rpc_may_auto_grant": false,
-    "sources": [
-      "https://ethereum-rpc.publicnode.com",
-      "https://public.1rpc.io/eth"
-    ],
+    "sources": ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org/"],
+    "rejected_source": {"url":"https://public.1rpc.io/eth","reason":"ETH_GETLOGS_METHOD_NOT_AVAILABLE_IN_LIVE_SMOKE"},
+    "pre_activation_smoke_commit": "fdde711f5b2831a533629528ac81821dafebd61c",
+    "pre_activation_smoke_run_id": 33358927756,
+    "pre_activation_smoke_result": "PASS",
     "read_only": true,
     "max_head_spread_blocks": 8,
     "payment_log_must_match_quorum": true,
@@ -63,59 +55,27 @@
     "transaction_broadcast_authority": false
   },
   "pilot_scope": {
-    "term_days": 90,
-    "non_exclusive": true,
-    "non_transferable": true,
-    "non_sublicensable": true,
-    "internal_evaluation": true,
-    "internal_integration": true,
-    "controlled_non_money_pilot": true,
-    "pilot_only_source_modification": true,
-    "real_money_gambling": false,
-    "public_production_service": false,
-    "source_resale": false,
-    "core_ip_transfer": false,
-    "automatic_commercial_license": false,
-    "automatic_exclusivity": false,
-    "automatic_renewal": false,
-    "janus_i0_included_by_default": false
+    "term_days": 90, "non_exclusive": true, "non_transferable": true, "non_sublicensable": true,
+    "internal_evaluation": true, "internal_integration": true, "controlled_non_money_pilot": true, "pilot_only_source_modification": true,
+    "real_money_gambling": false, "public_production_service": false, "source_resale": false, "core_ip_transfer": false,
+    "automatic_commercial_license": false, "automatic_exclusivity": false, "automatic_renewal": false, "janus_i0_included_by_default": false
   },
   "security": {
-    "wallet_private_key_required": false,
-    "wallet_seed_required": false,
-    "exchange_password_required": false,
-    "withdrawal_api_key_required": false,
-    "verifier_can_move_funds": false,
-    "verifier_can_broadcast_transactions": false,
-    "public_chain_observation_only": true,
-    "transaction_reuse_forbidden": true,
-    "grant_digest_is_signature": false
+    "wallet_private_key_required": false, "wallet_seed_required": false, "exchange_password_required": false, "withdrawal_api_key_required": false,
+    "verifier_can_move_funds": false, "verifier_can_broadcast_transactions": false, "public_chain_observation_only": true,
+    "transaction_reuse_forbidden": true, "grant_digest_is_signature": false
   },
-  "privacy": {
-    "passport_required": false,
-    "home_address_required": false,
-    "phone_required": false,
-    "public_request_collects_only_minimum_contract_identity": true
-  },
+  "privacy": {"passport_required": false, "home_address_required": false, "phone_required": false, "public_request_collects_only_minimum_contract_identity": true},
   "legal_boundary": {
-    "real_money_authorization": "NONE",
-    "production_authorization": "NONE",
-    "regulatory_certification": "NONE",
-    "sanctions_screening_service": "NOT_IMPLEMENTED",
-    "tax_engine": "NOT_IMPLEMENTED",
-    "legal_advice": "NONE",
-    "mandatory_applicable_law_controls": true,
-    "commercial_production_requires_separate_written_agreement": true
+    "real_money_authorization": "NONE", "production_authorization": "NONE", "regulatory_certification": "NONE",
+    "sanctions_screening_service": "NOT_IMPLEMENTED", "tax_engine": "NOT_IMPLEMENTED", "legal_advice": "NONE",
+    "mandatory_applicable_law_controls": true, "commercial_production_requires_separate_written_agreement": true
   },
   "activation_gate": {
-    "owner_receiving_address_required": true,
-    "owner_receiving_address_satisfied": true,
-    "current_binance_usdt_ethereum_erc20_support_rechecked": true,
-    "memo_required_must_be_false": true,
-    "memo_gate_satisfied": true,
-    "rpc_quorum_smoke_required": true,
-    "policy_enabled_must_be_true": true,
-    "exact_head_integrity_success_required": true,
-    "exact_head_rpc_quorum_success_required": true
+    "owner_receiving_address_required": true, "owner_receiving_address_satisfied": true,
+    "current_binance_usdt_ethereum_erc20_support_rechecked": true, "memo_required_must_be_false": true, "memo_gate_satisfied": true,
+    "rpc_quorum_smoke_required": true, "rpc_quorum_pre_activation_smoke_satisfied": true,
+    "policy_enabled_must_be_true": true, "policy_enabled": false,
+    "exact_head_integrity_success_required": true, "exact_head_rpc_quorum_success_required": true
   }
 }
