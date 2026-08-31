@@ -1,13 +1,17 @@
 {
   "schema": "janus.helios.agent-discovery-contract.v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "ACTIVE_PUBLIC_DISCOVERY_SURFACE",
-  "purpose": "Expose a compact truthful machine-readable discovery surface for AI technology scouts, buyer agents, licensing agents and business-development agents evaluating JANUS HELIOS.",
+  "purpose": "Expose a compact truthful machine-readable and web-crawlable discovery surface for AI technology scouts, buyer agents, licensing agents and business-development agents evaluating JANUS HELIOS.",
   "public_entrypoints": {
     "agents_json": "agents.json",
     "agents_txt": "agents.txt",
     "llms_txt": "llms.txt",
     "agent_instructions": "AGENTS.md",
+    "codemeta": "codemeta.json",
+    "discovery_page": "discovery.html",
+    "robots": "robots.txt",
+    "sitemap": "sitemap.xml",
     "canonical_status": "PROJECT_STATUS.json",
     "claim_audit": ".janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json",
     "pilot_issue_template": ".github/ISSUE_TEMPLATE/helios-pilot-license.yml"
@@ -22,6 +26,16 @@
     "DATACENTER_COMPUTE_PARTNER_SCOUT",
     "AI_INFRASTRUCTURE_SCOUT"
   ],
+  "web_discovery_policy": {
+    "crawler_indexing": "ALLOWED",
+    "schema_org_json_ld": true,
+    "codemeta": true,
+    "sitemap": true,
+    "robots_allow_public_surface": true,
+    "keyword_stuffing": "FORBIDDEN",
+    "truth_boundary_omission": "FORBIDDEN",
+    "wallet_or_payment_target_promotion": "FORBIDDEN"
+  },
   "required_truth": {
     "production_readiness": "NOT_ESTABLISHED",
     "standard_pilot_authority": "ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT",
