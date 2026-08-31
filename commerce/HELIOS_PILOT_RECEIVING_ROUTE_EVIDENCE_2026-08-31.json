@@ -1,0 +1,54 @@
+{
+  "schema": "janus.helios.pilot-receiving-route-evidence.v1",
+  "version": "1.0.0",
+  "recorded_date": "2026-08-31",
+  "classification": "OWNER_SUPPLIED_CURRENT_BINANCE_DEPOSIT_UI_EVIDENCE",
+  "status": "ROUTE_EVIDENCE_FROZEN_NOT_YET_PROMOTED_TO_ACTIVE_PAYMENT_POLICY",
+  "source": {
+    "provider": "BINANCE",
+    "surface": "DEPOSIT_USDT_UI",
+    "evidence_type": "USER_SUPPLIED_SCREENSHOT",
+    "screenshot_sha256": "17f86f0690603bf25999aebe5cf40d7e4541bc95494ac98268c9bcddd3cc2dc9",
+    "screen_time_visible": "07:30",
+    "screen_date_not_visible": true
+  },
+  "route": {
+    "asset": "USDT",
+    "network_code_displayed": "ETH",
+    "network_displayed": "Ethereum (ERC20)",
+    "expected_chain_id": 1,
+    "receiving_address": "0x7149081aea54fbef57effeb52a5a966b81cc03a0",
+    "address_format": "EVM_20_BYTE_HEX",
+    "address_length_valid": true,
+    "contract_tail_displayed": "***31ec7",
+    "expected_official_usdt_contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "contract_tail_consistent_with_expected": true
+  },
+  "memo_tag_evidence": {
+    "memo_or_tag_field_visible_on_supplied_screen": false,
+    "absence_of_visible_field_proves_no_memo_requirement": false,
+    "must_be_rechecked_before_activation": true
+  },
+  "promotion_boundary": {
+    "payment_policy_receiving_address_updated": false,
+    "payment_policy_enabled": false,
+    "automatic_invoice_or_grant_authority": false,
+    "reason": "KEEP_LIVE_POLICY_FAIL_CLOSED_UNTIL_RPC_AND_FINAL_ACTIVATION_GATES_PASS"
+  },
+  "remaining_activation_gates": [
+    "CONFIRM_NO_MEMO_OR_TAG_REQUIRED_FOR_THIS_EXACT_BINANCE_USDT_ETH_ROUTE",
+    "CONFIGURE_RELIABLE_ETHEREUM_MAINNET_RPC_FOR_READ_ONLY_WATCHER",
+    "PROMOTE_FROZEN_RECEIVING_ADDRESS_INTO_PAYMENT_POLICY",
+    "ENABLE_PAYMENT_POLICY",
+    "RUN_EXACT_HEAD_HELIOS_INTEGRITY_AND_REQUIRE_SUCCESS"
+  ],
+  "security": {
+    "public_receiving_address_is_secret": false,
+    "private_key_present": false,
+    "seed_phrase_present": false,
+    "binance_password_present": false,
+    "withdrawal_api_key_present": false,
+    "watcher_fund_movement_authority": false
+  },
+  "law": "UI_EVIDENCE_MAY_FREEZE_A_ROUTE_BUT_DOES_NOT_ACTIVATE_PAYMENT_AUTHORITY"
+}
