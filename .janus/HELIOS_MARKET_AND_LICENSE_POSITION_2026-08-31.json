@@ -1,0 +1,148 @@
+{
+  "schema": "janus.helios.market-license-position.v1",
+  "version": "1.0.0",
+  "review_date": "2026-08-31",
+  "evidence_class": "PUBLIC_MARKET_REVIEW_NON_LEGAL_NON_FTO",
+  "safe_uniqueness_claim": "As of the 2026-08-31 market review, we found predecessors for individual components, but did not identify a public commercial product exposing the same complete maintained HELIOS architecture as one licensable B2B control plane.",
+  "prohibited_overclaim": "NOBODY_HAS_EVER_COMBINED_GAMES_AND_COMPUTE",
+  "prior_art_and_adjacent_markets": {
+    "game_plus_useful_compute": [
+      {
+        "name": "HEWMEN / BALANCED Media Technology",
+        "status": "CLOSE_PREDECESSOR",
+        "lesson": "GAME_PLUS_VOLUNTEER_COMPUTE_IS_PRIOR_ART",
+        "public_sources": [
+          "https://www.balancedmediatechnology.com/casestudies/",
+          "https://www.balancedmediatechnology.com/project/distributedcomputing/",
+          "https://patents.google.com/patent/US11327807B2/en",
+          "https://patents.google.com/patent/EP3622388B1/en"
+        ]
+      }
+    ],
+    "consumer_gpu_cloud": [
+      {
+        "name": "SaladCloud",
+        "lesson": "GAMER_GPU_SUPPLY_AND_DISTRIBUTED_GPU_PRICING_ALREADY_EXIST",
+        "public_sources": ["https://salad.com/pricing-copy", "https://salad.com/home-copy-2"]
+      },
+      {
+        "name": "Theta EdgeCloud",
+        "lesson": "DISTRIBUTED_GPU_AI_MARKET_ALREADY_EXISTS",
+        "public_sources": ["https://www.thetaedgecloud.com/"]
+      }
+    ],
+    "public_benefit_compute": [
+      {
+        "name": "Charity Engine",
+        "lesson": "COMMERCIAL_COMPUTE_CAN_COEXIST_WITH_SCIENCE_AND_CHARITY_BENEFIT",
+        "public_sources": ["https://www.charityengine.com/terms", "https://www.charityengine.com/volunteer"]
+      },
+      {
+        "name": "BOINC Central",
+        "lesson": "QUALIFIED_RESEARCH_CAN_RECEIVE_VOLUNTEER_COMPUTE_WITH_LOW_OR_ZERO_PLATFORM_COST",
+        "public_sources": ["https://boinc.berkeley.edu/central/", "https://boinc.berkeley.edu/central/about.php"]
+      }
+    ],
+    "igaming_commercialization": [
+      {
+        "name": "EveryMatrix",
+        "fit": "MASTER_LICENSEE_OR_DISTRIBUTION_CANDIDATE",
+        "public_sources": ["https://everymatrix.com/turnkey/", "https://everymatrix.com/news/introducing-a-new-era-with-casino-consolidation/"]
+      },
+      {
+        "name": "SOFTSWISS",
+        "fit": "MASTER_LICENSEE_OR_DISTRIBUTION_CANDIDATE",
+        "public_sources": ["https://www.softswiss.com/game-aggregator/", "https://www.softswiss.com/casino-platform/"]
+      },
+      {
+        "name": "Continent 8",
+        "fit": "IGAMING_INFRASTRUCTURE_AND_CLOUD_CANDIDATE",
+        "public_sources": ["https://www.continent8.com/solutions/manage/infrastructure-as-a-service-iaas/", "https://www.continent8.com/solutions/manage/public-cloud/"]
+      }
+    ]
+  },
+  "maintained_helios_combination": [
+    "GAME_SHAPED_WHITE_LABEL_ACQUISITION_SURFACE",
+    "EXPLICIT_REVOCABLE_RESOURCE_CONSENT",
+    "USER_DEFINED_CPU_GPU_ENVELOPE",
+    "PROVIDER_AGNOSTIC_MULTI_DESTINATION_ROUTING",
+    "PROVIDER_DEFAULT_DENY_AND_AUTHORITY_EPOCHS",
+    "HARDWARE_GUARDIAN",
+    "HOST_FIRST_QUIET_CANARY_QOS",
+    "HARDWARE_AWARE_HUMAN_BLIND_TELEMETRY",
+    "SMART_COMPUTE_NODE",
+    "DEVICE_HEALTH_PASSPORT",
+    "RECEIPT_PROVENANCE_AND_TRUE_WORK_ACCOUNTING",
+    "EDGE_HASH_LAB_AND_SEPARATELY_SCOPED_JANUS_I0_BRIDGE",
+    "HARDWARE_FAIR_EDGE_CONSTELLATION",
+    "EVIDENCE_INDEPENDENCE_ENGINE",
+    "STRICT_GAME_RNG_PERP_COMPUTE",
+    "LICENSABLE_B2B_CONTROL_PLANE_BOUNDARY"
+  ],
+  "commercial_role": {
+    "licensor": "IP_OWNER_ARCHITECTURE_HANDOVER_AND_AGREED_CONSULTATION",
+    "licensee": "FUND_BUILD_INTEGRATE_OPERATE_SELL_SUPPORT_AND_COMPLY",
+    "licensor_becomes_casino_operator": false,
+    "licensor_becomes_datacenter_operator": false,
+    "licensor_24x7_sre_required": false,
+    "master_licensee_preferred": true
+  },
+  "indicative_opening_framework": {
+    "binding_offer": false,
+    "valuation": false,
+    "market_quote": false,
+    "pilot_license_discussion_range_usd": {"min": 10000, "max": 25000},
+    "commercial_running_royalty_percent": {"min": 2, "max": 5},
+    "alternative": "NEGOTIATED_FIXED_AMOUNT_PER_VERIFIED_MONETIZED_DEVICE_HOUR",
+    "royalty_base": "CONTRACTUALLY_DEFINED_HELIOS_ATTRIBUTABLE_COMPUTE_REVENUE",
+    "exclude_unrelated_casino_ggr_by_default": true,
+    "exclude_unrelated_cloud_revenue_by_default": true,
+    "exclusivity_requires_performance": true,
+    "annual_minimum_only_when_meaningful_exclusivity_or_scope_JUSTIFIES_IT": true
+  },
+  "science_public_benefit_policy": {
+    "available": true,
+    "written_approval_required": true,
+    "helios_platform_royalty": "REDUCED_OR_ZERO_WHEN_APPROVED",
+    "qualifying_examples": [
+      "ACADEMIC_OR_NONPROFIT_SCIENCE",
+      "MEDICAL_OR_PUBLIC_HEALTH_RESEARCH",
+      "HUMANITARIAN_PUBLIC_INTEREST_COMPUTE",
+      "INDEPENDENTLY_REVIEWED_OPEN_SCIENCE"
+    ],
+    "does_not_waive_third_party_costs": true,
+    "excluded_by_default": [
+      "DISGUISED_COMMERCIAL_WORKLOAD",
+      "GAMBLING_ECONOMICS_MASQUERADING_AS_CHARITY",
+      "MINING_MERELY_LABELLED_PUBLIC_BENEFIT",
+      "WORKLOAD_WITHOUT_LEGITIMATE_OWNER_OR_VERIFIER"
+    ]
+  },
+  "ip_guardrails": {
+    "helios_core_remains_background_ip": true,
+    "full_buyout_default": false,
+    "source_resale": false,
+    "royalty_avoidance_by_superficial_clone": "CONTRACTUALLY_RESTRICT_WHERE_ENFORCEABLE",
+    "abstract_idea_monopoly_claimed": false,
+    "field_territory_term_sublicensing_explicit": true,
+    "no_shelving_exclusivity": true,
+    "core_improvements": "NEGOTIATED_LICENSE_BACK_OR_SHARED_USE",
+    "licensee_specific_adapters": "MAY_REMAIN_LICENSEE_PROPERTY",
+    "janus_i0": "SEPARATELY_SCOPED_BACKGROUND_IP_UNLESS_EXPRESSLY_LICENSED"
+  },
+  "truth_boundary": {
+    "production_profitability_proven": false,
+    "hardware_life_extension_proven": false,
+    "regulatory_approval_proven": false,
+    "patentability_conclusion": false,
+    "freedom_to_operate_conclusion": false,
+    "next_external_gate": "FUNDED_REAL_PROVIDER_PILOT_WITH_20_TO_100_PLUS_CONSENTING_DEVICES_AND_AUTHORITATIVE_RECEIPTS"
+  },
+  "human_docs": [
+    "docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md",
+    "legal/COMMERCIAL_LICENSE_PRINCIPLES.md",
+    "docs/COMMERCIAL_THESIS.md",
+    "docs/COMPETITIVE_MOAT.md",
+    "PARTNERSHIP_BRIEF.md"
+  ]
+}

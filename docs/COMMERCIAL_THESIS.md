@@ -1,303 +1,256 @@
-# JANUS HELIOS — Commercial Thesis & Sponsor Validation Gate
+# JANUS HELIOS — Commercial Thesis & Licensing Strategy
 
 ## Executive proposition
 
-**JANUS HELIOS is not positioned as another slot theme.**
+**JANUS HELIOS is not positioned as another slot and the preferred business model does not require the HELIOS owner to become an operator.**
 
-It is a configurable B2B interaction layer in which a polished game surface can coexist with a separately controlled, explicit-opt-in compute layer. A consenting user may contribute a bounded amount of otherwise idle device capacity to an approved workload, while HELIOS keeps game mathematics and compute economics strictly separated.
+HELIOS is a licensable B2B control plane in which a game-shaped/white-label acquisition surface can coexist with a separately controlled, explicit-opt-in compute layer. A consenting user may contribute a bounded amount of device capacity to an approved workload while HELIOS protects the device, records work provenance and keeps game mathematics sealed from compute economics.
 
 ```text
-PLAYER
-  ├── GAMEPLAY → RNG / RTP / BONUS MATH
-  │                 ⟂
-  └── OPT-IN COMPUTE → APPROVED WORKLOAD → AUTHORITATIVE RECEIPT → EXTERNAL VALUE
+GAMEPLAY / PRESENTATION
+        │
+        │ strict constitutional separation
+        └──────────────X──────────────> COMPUTE MAY NOT ALTER RNG / RTP / ODDS
+
+EXPLICIT OPT-IN COMPUTE
+        ↓
+LOCAL RESOURCE POLICY
+        ↓
+HARDWARE GUARDIAN + HOST-FIRST QoS
+        ↓
+SMART COMPUTE NODE
+        ↓
+PROVIDER-AGNOSTIC ROUTER
+        ↓
+APPROVED WORKLOAD
+        ↓
+VERIFIED RESULT + PROVENANCE
+        ↓
+AUTHORITATIVE RECEIPT / SETTLEMENT
+        ↓
+MEASURABLE EXTERNAL VALUE / IMPACT
 ```
 
-The commercial thesis is therefore based on **two independent value loops**:
+## Preferred commercial role
+
+The intended relationship is:
+
+```text
+HAWKAR / HELIOS OWNER
+IP OWNER + LICENSOR
+        ↓
+QUALIFIED MASTER LICENSEE
+FUNDS + BUILDS + INTEGRATES + OPERATES + SELLS + SUPPORTS
+        ↓
+IGAMING OPERATORS / AGGREGATORS
+        ↕
+COMPUTE / DATACENTER / RESEARCH PARTNERS
+```
+
+A licensee should be capable of turning the reference architecture into production without requiring the licensor to operate a casino, procure GPU capacity, provide KYC/AML, run 24/7 infrastructure or become an end-user support desk.
+
+Reasonable architecture handover and an agreed integration-consultation scope can be licensed separately.
+
+## Two independent value loops
 
 ```text
 LOOP A — GAMEPLAY VALUE
 player activity → game/operator economics
 
 LOOP B — EXTERNAL COMPUTE VALUE
-idle resource → verified workload → measurable value / impact
+opted-in resource → approved work → verified result → authoritative receipt → external value / impact
 ```
 
-The second loop does not need to alter odds, RTP, stake, bonus probability or personal jackpot weighting to be useful.
-
----
-
-## What is innovative about HELIOS
-
-HELIOS does not claim to have invented idle-compute marketplaces, cloud rendering, scientific distributed computing, mining pools or tokenized compute networks. Those categories already exist.
-
-The product innovation is the **combination and presentation layer**:
-
-1. a universal game-facing entry point instead of a traditional miner/provider dashboard;
-2. explicit user consent and resource caps;
-3. replaceable destinations such as marketplace, science, treasury/pool, data center, operator-owned workloads and custom providers;
-4. provider-independent accounting through receipts and a user-facing work history;
-5. gameplay and compute kept as separate authority domains;
-6. a reusable white-label B2B surface rather than one fixed provider integration;
-7. reward/retention surfaces that can be funded by verified external work rather than only by operator marketing spend.
-
-Canonical product statement:
-
-> **One Core. Any Destination.**
->
-> A configurable gameplay layer can sit beside an opt-in resource-routing layer and turn verified external work into transparent user/operator value without allowing compute activity to change game odds.
-
----
-
-## Why the economics can be different from a conventional slot
-
-A conventional slot has one principal commercial engine: gameplay economics.
-
-HELIOS is designed to permit an additional, separately accounted source of value:
+Loop B is useful without modifying Loop A. In HELIOS:
 
 ```text
-CONVENTIONAL SLOT
-GAMEPLAY → OPERATOR ECONOMICS
-
-HELIOS
-GAMEPLAY → OPERATOR ECONOMICS
-     +
-OPT-IN COMPUTE → VERIFIED EXTERNAL VALUE
+compute -> RNG                     FORBIDDEN
+compute -> RTP                     FORBIDDEN
+compute -> personal win chance     FORBIDDEN
+compute -> bonus probability       FORBIDDEN
+compute -> personal jackpot weight FORBIDDEN
+hardware pressure -> game outcome  FORBIDDEN
 ```
 
-That external value can theoretically be divided among:
+## Current technical differentiators
 
-- the user supplying the resource;
-- the operator or platform;
-- a shared treasury/pool;
-- a scientific/public-good sink;
-- a buyer-owned workload that reduces outside cloud expenditure.
+HELIOS does not claim to have invented distributed computing, game-plus-compute, idle GPU markets, mining, hardware monitoring or public-benefit compute.
 
-This creates several possible B2B models:
+The current maintained stack combines:
 
-- white-label licensing;
-- integration/setup fees;
-- recurring platform fees;
-- a disclosed take-rate on verified compute value;
-- custom provider adapters;
-- operator-owned workload routing;
-- user incentive funding from external compute demand rather than only from operator acquisition/retention budgets.
+- game-shaped / white-label acquisition surface;
+- explicit revocable compute consent;
+- user-defined CPU/GPU resource envelope;
+- provider-agnostic routing across market/science/treasury/data-center/operator/custom destinations;
+- provider default-deny and authority epochs;
+- Hardware Guardian with local contract-only tightening;
+- host-first Quiet Canary QoS;
+- hardware-aware / human-blind telemetry;
+- Smart Compute Node combining work evidence and device state in one record;
+- Device Health Passport;
+- provider-independent receipt provenance and true-work accounting;
+- Edge Hash Lab with a separately scoped JANUS I0 bridge;
+- hardware-fair Edge Constellation;
+- Evidence Independence Engine distinguishing report count from independent-root count;
+- strict `GAME RNG ⟂ COMPUTE` separation.
 
----
+Safe market statement:
 
-## Illustrative unit economics
+> **As of the 2026-08-31 market review, we found predecessors for individual components, but did not identify a public commercial product exposing the same complete maintained HELIOS architecture as one licensable B2B control plane.**
 
-The figures below are **sensitivity examples only**. They are not revenue forecasts, guaranteed returns or provider quotes.
+This is not a patentability or freedom-to-operate conclusion. See `docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md`.
 
-Assume:
+## Indicative licensing framework
+
+The following is a **negotiable opening structure**, not a valuation, binding offer or guaranteed market price:
 
 ```text
-MAU                         = 100,000
-compute opt-in              = 10%
-contributing devices        = 10,000
-average active compute      = 1 device-hour/day
-month                       = 30 days
-realized external value     = $0.03/device-hour
+PILOT LICENSE / INTEGRATION RIGHT
+indicative discussion range: USD 10k–25k
+
+IF COMMERCIALIZED
+2%–5% of contractually defined HELIOS-attributable compute revenue
+
+OR
+an agreed fixed amount per verified / monetized device-hour
 ```
 
-Then:
+Why use this shape:
+
+- lowers the decision barrier for the first serious partner;
+- puts more compensation behind actual commercialization rather than speculation;
+- lets the licensee fund the production integration;
+- keeps HELIOS ownership with the licensor;
+- aligns both sides around verified external compute value.
+
+The exact royalty denominator must be defined in the signed agreement. It should not silently include unrelated casino GGR, wagering volume, sportsbook revenue, unrelated cloud revenue, taxes or pass-through infrastructure costs unless explicitly negotiated.
+
+Meaningful exclusivity should require milestones and/or a minimum annual floor. If the licensee shelves the technology or fails the agreed commercialization floor, exclusivity should normally lapse or become non-exclusive.
+
+## Science / Public Benefit Discount
+
+HELIOS should support a deliberate public-benefit lane:
 
 ```text
-10,000 devices
-× 1 h/day
-× 30 days
-= 300,000 device-hours/month
-
-300,000 h
-× $0.03/h
-= $9,000 gross verified external value/month
+QUALIFIED SCIENCE / PUBLIC BENEFIT WORKLOAD
+               ↓
+HELIOS PLATFORM ROYALTY
+        REDUCED OR ZERO
+       BY WRITTEN APPROVAL
 ```
 
-Example allocation:
+Potential qualifying workloads:
+
+- bona-fide academic/nonprofit scientific research;
+- medical or public-health research;
+- humanitarian/public-interest computation;
+- independently reviewed open-science workloads.
+
+This policy concerns the HELIOS licensor's own royalty only. It does not make electricity, cloud, provider, security, tax, settlement or regulatory costs disappear.
+
+Commercial workloads disguised as charity, gambling economics presented as public benefit, or mining merely relabelled as public benefit are excluded by default.
+
+The policy is not itself claimed as unique. Charity Engine and BOINC are important precedents showing that commercial/volunteer compute and public-good computation can coexist. HELIOS differentiates itself in the larger maintained control-plane composition.
+
+## IP boundary: low-friction access, strong core protection
+
+The desired principle is:
 
 ```text
-70% user side        = $6,300
-30% operator/platform = $2,700
+LOW BARRIER TO PILOT != LOW PROTECTION OF CORE IP
 ```
 
-The important commercial point is not the particular percentage split. The important point is that **verified external work creates a second value source that a conventional game does not have**.
+Subject to counsel and the signed agreement:
 
-A stronger deployment with higher opt-in, better-paying workloads or operator-owned avoided-cloud-cost workloads can produce materially different economics. A weaker workload mix can produce less. HELIOS should therefore calculate economics from real receipts, not from a fixed marketing promise.
+- HELIOS Core remains licensor Background IP;
+- the licensee may build real production integrations inside the licensed field;
+- the licensee may own buyer-specific proprietary adapters/backends where agreed;
+- HELIOS source may not be resold as a standalone competing product;
+- superficial renaming/reimplementation of protected licensed materials should not be usable merely to evade agreed royalties;
+- general/core improvements should have a negotiated license-back or shared-use mechanism;
+- field, territory, duration and sublicensing must be explicit;
+- JANUS I0 remains separately scoped Background IP unless expressly licensed;
+- exclusivity is earned through use, milestones and/or minimum consideration rather than granted for shelving.
 
----
+Copyright does not create a monopoly over abstract ideas, algorithms or business methods. Any anti-circumvention language must therefore be drafted carefully by qualified counsel.
 
-## Electricity-aware profitability gate
+See `legal/COMMERCIAL_LICENSE_PRINCIPLES.md`.
 
-A production HELIOS should evaluate whether an economic workload is worthwhile to the participating user.
+## Why a casino / aggregator licensee may care
 
-Conceptual rule:
+A casino technology group or aggregator can gain a new B2B interaction class without becoming a compute-network inventor:
 
 ```text
-USER NET VALUE
-=
-provider payment
-- electricity cost
-- platform/provider fees
-- configured safety margin
+OPERATOR AUDIENCE
+      ↓
+HELIOS CONSENT / DEVICE-SOVEREIGN CONTROL PLANE
+      ↓
+APPROVED SMART COMPUTE NODES
+      ↓
+COMPUTE / DATACENTER / RESEARCH PARTNER
+      ↓
+VERIFIED VALUE
 ```
 
-An economic route should only be presented as profitable when:
+The licensee can pair its existing distribution, compliance, account systems and operator relationships with an external compute partner. HELIOS supplies the user-facing resource contract, routing, device-care and evidence architecture.
+
+## Why a compute / infrastructure partner may care
+
+HELIOS does not need to compete with data centers. It can act as a new acquisition/control layer for suitable edge capacity and as a device-care boundary between workloads and participating hardware.
+
+The engineering goal is not “maximum raw throughput at any cost.” The direction is:
 
 ```text
-USER_NET_VALUE > 0
+MAXIMUM VERIFIED USEFUL WORK
+WITHIN USER + HARDWARE HEALTH BUDGETS
 ```
 
-For example, if a device adds 200 W of power draw and electricity costs $0.15/kWh:
+HELIOS does **not** yet claim proven hardware-life extension. Real vendor telemetry, fleet history and controlled measurements are required before such a claim.
+
+## Pilot validation gate
+
+The most valuable next milestone is not another visual feature. It is an independently operated production pilot:
 
 ```text
-0.2 kW × $0.15/kWh = $0.03 electricity cost per hour
-```
-
-With a 70% user allocation, gross external value would need to exceed approximately:
-
-```text
-$0.03 / 0.70 ≈ $0.043/h
-```
-
-before that illustrative user clears electricity cost.
-
-This is why production economics require real device telemetry, real provider pricing and authoritative receipts.
-
----
-
-## Sponsor / partner validation gate
-
-The public GitHub Pages build demonstrates the **interaction architecture**, not a proven production business.
-
-HELIOS cannot honestly validate its real commercial profitability without a sponsor, operator, compute provider, research partner or other production-capable counterparty willing to supply at least one real workload and settlement/receipt path.
-
-A credible pilot requires:
-
-```text
-REAL PROVIDER / SPONSOR
+QUALIFIED LICENSEE / SPONSOR
         ↓
-LIVE WORKLOAD
+REAL COMPUTE PARTNER + WORKLOAD
         ↓
 20–100+ CONSENTING TEST DEVICES
         ↓
-REAL DEVICE-HOURS + WATT-HOURS
+REAL GUARDIAN / SMART-NODE TELEMETRY
         ↓
-AUTHORITATIVE RECEIPTS
+AUTHORITATIVE WORK RECEIPTS
         ↓
-REAL VALUE / COST DATA
+DEVICE-HOURS + Wh + FAILURE / THROTTLE DATA
+        ↓
+USER OPT-IN / REVOKE / RETENTION DATA
         ↓
 MEASURED UNIT ECONOMICS
 ```
 
-Until that pilot exists, HELIOS should describe its economics as **illustrative, modelled and unvalidated in production**.
+Until then, HELIOS has a testable architecture and commercial thesis, not proven production profitability, regulatory approval or proven extension of hardware lifetime.
 
-The desired sponsor does not need to be a casino operator. It can be a compute marketplace, GPU/network provider, storage network, scientific project, data-center buyer or enterprise with a suitable batch workload.
+## Illustrative unit economics remain illustrative
 
----
-
-## Compute-funded engagement and reward layer
-
-HELIOS already demonstrates a non-cash reward primitive called **Spin Energy**.
-
-Current public-demo behavior:
+An earlier sensitivity model used:
 
 ```text
-eligible active demo compute
-        ↓
-30 seconds
-        ↓
-+1 DEMO ENERGY SPIN
-        ↓
-manual use only
-bank cap = 3
+100,000 MAU
+× 10% opt-in
+× 1 device-hour/day
+× 30 days
+× $0.03 realized external value/device-hour
+= $9,000 gross external value/month
 ```
 
-This demonstrates an important product idea: verified external work can fund **separate engagement/reward inventory** instead of all user incentives being paid directly from an operator marketing budget.
+This remains a modelling example only. Real economics must be derived from real workload prices, device mix, electricity, failure/retry rates, provider fees and authoritative receipts.
 
-A future operator could implement compliant, capped daily-style reward programs around the same accounting principle, provided they remain jurisdiction-appropriate and independently reviewed.
+## Canonical commercial documents
 
-Examples of safer reward surfaces include:
-
-- capped non-cash daily Spin Energy;
-- loyalty points separated from wagering balance;
-- compute credits;
-- cosmetic/profile progression;
-- marketplace fee rebates;
-- non-wagering digital rewards;
-- public-good contribution badges or impact credits.
-
-### Responsible-gaming boundary
-
-These mechanisms must **not** be designed to exploit people with gambling problems or other vulnerable users.
-
-Production rules should include:
-
-```text
-NO vulnerability targeting
-NO loss-streak targeting
-NO near-miss targeting
-NO compute → better RNG/RTP/bonus odds
-NO automatic compute-value → wager conversion
-NO forced autoplay
-NO guilt/charity pressure
-RESPONSIBLE-GAMING LIMITS REMAIN AUTHORITATIVE
-```
-
-HELIOS can increase product usefulness and retention through transparent earned value, but it should not optimize reward timing against inferred addiction or vulnerability.
-
----
-
-## Why this matters to a buyer
-
-A buyer does not have to purchase a single fixed slot.
-
-The stronger commercial interpretation is a **platform primitive**:
-
-```text
-HELIOS CORE
-    ↓
-WHITE-LABEL GAME SURFACE
-    +
-PROVIDER ROUTER
-    +
-RECEIPT / ACCOUNTING LAYER
-    +
-USER PROFILE / WORK HISTORY
-    +
-REWARD INVENTORY
-```
-
-Possible destinations can evolve without rebuilding the entire experience:
-
-```text
-compute marketplace
-scientific computing
-GPU rendering
-AI inference
-video transcoding
-storage/network work
-pool/treasury jobs
-operator-owned batch jobs
-custom approved workloads
-```
-
-That is the central commercial advantage of the architecture: **the interaction surface can remain stable while the destination and economic use of the resource changes.**
-
----
-
-## Current truth boundary
-
-The repository currently demonstrates the product logic and public capability surface.
-
-Real-world claims require:
-
-- a real provider adapter;
-- signed/authoritative provider receipts;
-- energy/thermal telemetry;
-- real workload and settlement data;
-- independent security/privacy/legal review;
-- a non-money pilot before any regulated production deployment.
-
-Therefore:
-
-> **HELIOS has a testable commercial thesis and working demo mechanics, but production profitability can only be established with a real sponsor/provider pilot.**
+- `PARTNERSHIP_BRIEF.md` — compact counterparty brief;
+- `docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md` — market/prior-art positioning;
+- `legal/COMMERCIAL_LICENSE_PRINCIPLES.md` — non-binding license principles;
+- `.janus/HELIOS_MARKET_AND_LICENSE_POSITION_2026-08-31.json` — machine-readable market/licensing checkpoint;
+- `docs/COMPETITIVE_MOAT.md` — maintained differentiation map;
+- `LICENSE.md` — current source-available evaluation terms.

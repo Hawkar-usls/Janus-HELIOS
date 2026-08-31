@@ -2,119 +2,123 @@
   "schema": "janus.helios.commercial-thesis.v1",
   "project": "JANUS HELIOS",
   "tagline": "ONE CORE. ANY DESTINATION.",
-  "positioning": "B2B_GAMEPLAY_PLUS_EXPLICIT_OPT_IN_RESOURCE_ROUTING_LAYER",
-  "core_thesis": "A polished game surface can coexist with a separately controlled compute layer that routes bounded consenting-device capacity into approved workloads and records authoritative external value without allowing compute activity to alter game odds.",
+  "positioning": "LICENSABLE_B2B_GAME_SHAPED_COMPUTE_CONTROL_PLANE",
+  "core_thesis": "A game-shaped or white-label acquisition surface can coexist with a separately controlled explicit-opt-in compute layer that protects participating hardware, routes bounded capacity to replaceable approved workloads, and records authoritative external value without allowing compute activity to alter game mathematics.",
+  "preferred_business_role": {
+    "licensor": "IP_OWNER",
+    "licensee": "FUND_BUILD_INTEGRATE_OPERATE_SELL_SUPPORT",
+    "master_licensee_preferred": true,
+    "licensor_operates_casino": false,
+    "licensor_operates_datacenter": false,
+    "licensor_24x7_support_default": false
+  },
   "value_loops": {
     "gameplay": "PLAYER_ACTIVITY_TO_GAME_OPERATOR_ECONOMICS",
-    "external_compute": "IDLE_RESOURCE_TO_VERIFIED_WORKLOAD_TO_AUTHORITATIVE_RECEIPT_TO_EXTERNAL_VALUE"
+    "external_compute": "OPTED_IN_RESOURCE_TO_APPROVED_WORK_TO_VERIFIED_RESULT_TO_AUTHORITATIVE_RECEIPT_TO_EXTERNAL_VALUE_OR_IMPACT"
   },
   "innovation_claim": {
+    "safe_market_statement": "As of the 2026-08-31 market review, we found predecessors for individual components, but did not identify a public commercial product exposing the same complete maintained HELIOS architecture as one licensable B2B control plane.",
     "does_not_claim_to_invent_idle_compute_marketplaces": true,
-    "does_not_claim_to_invent_slots": true,
-    "claimed_product_innovation": [
-      "GAME_SHAPED_CONSUMER_ENTRY_TO_OPT_IN_RESOURCE_SUPPLY",
-      "REPLACEABLE_MULTI_DESTINATION_PROVIDER_ROUTER",
-      "STRICT_GAME_COMPUTE_AUTHORITY_SEPARATION",
-      "USER_VISIBLE_RECEIPTS_WORK_HISTORY_AND_VALUE",
-      "WHITE_LABEL_REUSABLE_PARENT_SURFACE",
-      "COMPUTE_FUNDED_SEPARATE_REWARD_INVENTORY"
+    "does_not_claim_to_invent_game_plus_compute": true,
+    "does_not_claim_to_invent_hardware_monitoring": true,
+    "does_not_claim_to_invent_public_benefit_compute": true,
+    "patentability_conclusion": false,
+    "freedom_to_operate_conclusion": false,
+    "maintained_product_combination": [
+      "GAME_SHAPED_WHITE_LABEL_ENTRY",
+      "EXPLICIT_REVOCABLE_RESOURCE_CONSENT",
+      "USER_CPU_GPU_ENVELOPE",
+      "PROVIDER_AGNOSTIC_MULTI_DESTINATION_ROUTER",
+      "PROVIDER_DEFAULT_DENY_AND_AUTHORITY_EPOCHS",
+      "HARDWARE_GUARDIAN",
+      "HOST_FIRST_QUIET_CANARY_QOS",
+      "HARDWARE_AWARE_HUMAN_BLIND_TELEMETRY",
+      "SMART_COMPUTE_NODE",
+      "DEVICE_HEALTH_PASSPORT",
+      "RECEIPT_PROVENANCE_AND_TRUE_WORK_ACCOUNTING",
+      "EDGE_HASH_LAB_AND_OPTIONAL_JANUS_I0_BRIDGE",
+      "HARDWARE_FAIR_EDGE_CONSTELLATION",
+      "EVIDENCE_INDEPENDENCE_ENGINE",
+      "STRICT_GAME_RNG_PERP_COMPUTE",
+      "SOURCE_AVAILABLE_EVALUATION_WITH_SEPARATE_COMMERCIAL_LICENSE"
     ]
   },
-  "illustrative_unit_economics": {
-    "forecast": false,
-    "guaranteed_return": false,
-    "example": {
-      "monthly_active_users": 100000,
-      "compute_opt_in_ratio": 0.10,
-      "average_device_hours_per_day": 1,
-      "days_per_month": 30,
-      "illustrative_realized_external_value_usd_per_device_hour": 0.03,
-      "gross_external_value_usd_per_month": 9000,
-      "illustrative_user_ratio": 0.70,
-      "illustrative_operator_ratio": 0.30,
-      "illustrative_user_value_usd_per_month": 6300,
-      "illustrative_operator_value_usd_per_month": 2700
-    },
-    "interpretation": "A second verified external-value source may exist alongside gameplay economics. Real unit economics must be measured from live workload pricing, real devices, electricity, fees and authoritative receipts."
+  "indicative_license_framework": {
+    "binding_offer": false,
+    "valuation": false,
+    "pilot_discussion_range_usd": {"min": 10000, "max": 25000},
+    "running_royalty_percent_on_defined_helios_attributable_compute_revenue": {"min": 2, "max": 5},
+    "alternative": "FIXED_AMOUNT_PER_VERIFIED_MONETIZED_DEVICE_HOUR",
+    "unrelated_casino_ggr_in_royalty_base_by_default": false,
+    "unrelated_cloud_revenue_in_royalty_base_by_default": false,
+    "exclusivity_requires_milestones_or_minimum_consideration": true,
+    "no_shelving_principle": true
   },
-  "electricity_aware_gate": {
-    "formula": "USER_NET_VALUE = PROVIDER_PAYMENT - ELECTRICITY_COST - PLATFORM_PROVIDER_FEES - SAFETY_MARGIN",
-    "economic_route_rule": "PRESENT_AS_PROFITABLE_ONLY_IF_USER_NET_VALUE_GT_ZERO",
-    "requires_real_energy_telemetry": true
+  "science_public_benefit_discount": {
+    "enabled_as_policy_option": true,
+    "written_approval_required": true,
+    "helios_platform_royalty": "REDUCED_OR_ZERO_FOR_APPROVED_QUALIFIED_WORKLOAD",
+    "third_party_costs_waived": false,
+    "qualifying_examples": [
+      "ACADEMIC_NONPROFIT_SCIENCE",
+      "MEDICAL_PUBLIC_HEALTH_RESEARCH",
+      "HUMANITARIAN_PUBLIC_INTEREST_COMPUTE",
+      "INDEPENDENTLY_REVIEWED_OPEN_SCIENCE"
+    ]
+  },
+  "ip_boundary": {
+    "helios_core_remains_background_ip": true,
+    "full_buyout_default": false,
+    "licensee_can_build_real_integrations": true,
+    "standalone_source_resale": false,
+    "clone_for_royalty_avoidance": "RESTRICT_BY_SIGNED_AGREEMENT_WHERE_ENFORCEABLE",
+    "core_improvements": "NEGOTIATED_LICENSE_BACK_OR_SHARED_USE",
+    "licensee_specific_backends": "MAY_REMAIN_LICENSEE_PROPERTY",
+    "janus_i0": "SEPARATE_BACKGROUND_IP_UNLESS_EXPRESSLY_LICENSED"
+  },
+  "responsibility_boundary": {
+    "operator_license": "LICENSEE_OR_OPERATOR",
+    "production_compute_capacity": "LICENSEE_OR_COMPUTE_PARTNER",
+    "kyc_aml": "LICENSEE_OR_OPERATOR",
+    "end_user_support": "LICENSEE_OR_OPERATOR",
+    "production_sre": "LICENSEE_OR_INFRASTRUCTURE_PARTNER",
+    "regulatory_compliance": "DEPLOYING_PARTIES_WITH_COUNSEL",
+    "licensor_default_scope": "ARCHITECTURE_HANDOVER_AND_AGREED_INTEGRATION_CONSULTATION"
+  },
+  "electricity_and_device_care": {
+    "engineering_direction": "MAXIMUM_VERIFIED_USEFUL_WORK_WITHIN_USER_AND_HARDWARE_HEALTH_BUDGETS",
+    "proven_hardware_lifetime_extension": false,
+    "requires_real_vendor_telemetry_and_fleet_data": true
   },
   "sponsor_validation_gate": {
     "production_profitability_proven": false,
-    "reason": "PUBLIC_DEMO_HAS_NO_AUTHORITATIVE_LIVE_PROVIDER_WORKLOAD_SETTLEMENT_PATH",
-    "required_counterparty": "SPONSOR_OR_OPERATOR_OR_COMPUTE_PROVIDER_OR_RESEARCH_PARTNER_OR_ENTERPRISE_WORKLOAD_BUYER",
-    "pilot_sequence": [
-      "REAL_PROVIDER_OR_SPONSOR",
-      "LIVE_WORKLOAD",
-      "CONSENTING_TEST_DEVICES",
-      "REAL_DEVICE_HOURS",
-      "REAL_WATT_HOURS",
-      "AUTHORITATIVE_RECEIPTS",
-      "REAL_VALUE_AND_COST_DATA",
+    "required_sequence": [
+      "QUALIFIED_LICENSEE_OR_SPONSOR",
+      "REAL_COMPUTE_PARTNER_AND_WORKLOAD",
+      "20_TO_100_PLUS_CONSENTING_TEST_DEVICES",
+      "REAL_GUARDIAN_AND_SMART_NODE_TELEMETRY",
+      "AUTHORITATIVE_WORK_RECEIPTS",
+      "DEVICE_HOURS_AND_WATT_HOURS",
+      "FAILURE_RETRY_THROTTLE_AND_REVOKE_DATA",
+      "USER_OPT_IN_AND_RETENTION_DATA",
       "MEASURED_UNIT_ECONOMICS"
     ],
-    "minimum_claim_until_pilot": "TESTABLE_COMMERCIAL_THESIS_WITH_WORKING_DEMO_MECHANICS_NOT_YET_PRODUCTION_VALIDATED"
-  },
-  "compute_funded_engagement": {
-    "current_demo_primitive": "SPIN_ENERGY",
-    "current_rule": "30_SECONDS_ELIGIBLE_DEMO_COMPUTE_TO_ONE_CAPPED_NON_CASH_ENERGY_SPIN",
-    "bank_cap": 3,
-    "manual_use_only": true,
-    "automatic_wager_conversion": false,
-    "real_money_value": false,
-    "future_compliant_surfaces": [
-      "CAPPED_NON_CASH_DAILY_SPIN_ENERGY",
-      "LOYALTY_POINTS_SEPARATE_FROM_WAGERING_BALANCE",
-      "COMPUTE_CREDITS",
-      "COSMETIC_PROFILE_PROGRESSION",
-      "MARKETPLACE_FEE_REBATES",
-      "NON_WAGERING_DIGITAL_REWARDS",
-      "PUBLIC_GOOD_IMPACT_CREDITS"
-    ]
+    "minimum_claim_until_pilot": "TESTABLE_ARCHITECTURE_AND_COMMERCIAL_THESIS_NOT_PRODUCTION_VALIDATED"
   },
   "responsible_gaming_boundary": {
-    "target_problem_gamblers": false,
-    "target_inferred_vulnerability": false,
-    "loss_streak_targeting": false,
-    "near_miss_targeting": false,
     "compute_changes_rng": false,
     "compute_changes_rtp": false,
     "compute_changes_bonus_probability": false,
+    "compute_changes_personal_jackpot_weight": false,
     "automatic_compute_value_to_wager_conversion": false,
-    "forced_autoplay": false,
-    "responsible_gaming_limits_authoritative": true,
-    "principle": "ENGAGEMENT_MAY_BE_CREATED_BY_TRANSPARENT_EARNED_VALUE_BUT_REWARD_TIMING_MUST_NOT_BE_OPTIMIZED_AGAINST_INFERRED_ADDICTION_OR_VULNERABILITY"
+    "target_inferred_vulnerability": false,
+    "responsible_gaming_limits_authoritative": true
   },
-  "b2b_models": [
-    "WHITE_LABEL_LICENSE",
-    "INTEGRATION_SETUP_FEE",
-    "RECURRING_PLATFORM_FEE",
-    "DISCLOSED_TAKE_RATE_ON_VERIFIED_COMPUTE_VALUE",
-    "CUSTOM_PROVIDER_ADAPTERS",
-    "OPERATOR_OWNED_WORKLOAD_ROUTING",
-    "EXTERNAL_COMPUTE_FUNDED_USER_INCENTIVES"
-  ],
-  "candidate_workload_destinations": [
-    "COMPUTE_MARKETPLACE",
-    "SCIENTIFIC_COMPUTING",
-    "GPU_RENDERING",
-    "AI_INFERENCE",
-    "VIDEO_TRANSCODING",
-    "STORAGE_OR_NETWORK_WORK",
-    "POOL_OR_TREASURY_JOBS",
-    "OPERATOR_OWNED_BATCH_WORKLOADS",
-    "CUSTOM_APPROVED_WORKLOADS"
-  ],
-  "truth_boundary": {
-    "public_pages_is_concept_capability_demo": true,
-    "real_provider_adapter_required": true,
-    "authoritative_receipt_required": true,
-    "energy_thermal_telemetry_required": true,
-    "security_privacy_legal_review_required": true,
-    "non_money_pilot_required": true
-  },
-  "human_readable_doc": "docs/COMMERCIAL_THESIS.md"
+  "human_readable_docs": [
+    "docs/COMMERCIAL_THESIS.md",
+    "docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md",
+    "docs/COMPETITIVE_MOAT.md",
+    "legal/COMMERCIAL_LICENSE_PRINCIPLES.md",
+    "PARTNERSHIP_BRIEF.md"
+  ]
 }

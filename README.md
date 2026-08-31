@@ -4,9 +4,8 @@
 ### One Core. Any Destination.
 
 ![Status](https://img.shields.io/badge/status-active%20public%20prototype-2ea043)
-![Class](https://img.shields.io/badge/class-gameplay%20%2B%20compute%20routing-8250df)
+![Class](https://img.shields.io/badge/class-licensable%20game%20%2B%20compute%20control%20plane-8250df)
 ![Version](https://img.shields.io/badge/version-1.16.0-d29922)
-![Desktop Fabric](https://img.shields.io/badge/desktop%20fabric-2.1.0-1f8fbc)
 ![Real Money](https://img.shields.io/badge/real--money-disabled-b62324)
 
 </div>
@@ -15,485 +14,269 @@
 
 **JANUS HELIOS is not intended to be sold as another slot.**
 
-It is a web-first B2B capability prototype for a new interaction class: a game-shaped surface can coexist with a separately controlled, explicit-opt-in compute layer that routes available resources toward approved external workloads and records verified external value or impact.
+HELIOS is a source-available B2B reference architecture for a licensable interaction class: a game-shaped or white-label user surface can coexist with a separately controlled, explicit-opt-in compute layer that protects participating hardware, routes bounded device capacity toward approved external workloads, and records verified value/impact without allowing compute to alter game mathematics.
 
 ```text
-GAMEPLAY / PRESENTATION SURFACE
-      || strict authority boundary
-OPT-IN COMPUTE ROUTER
-      ↓
+GAMEPLAY / PRESENTATION
+        │
+        │ strict authority boundary
+        └──────────────X──────────────> compute cannot alter RNG / RTP / odds
+
+EXPLICIT OPT-IN COMPUTE
+        ↓
+USER CPU / GPU ENVELOPE
+        ↓
+HARDWARE GUARDIAN + HOST-FIRST QoS
+        ↓
+SMART COMPUTE NODE
+        ↓
+PROVIDER-AGNOSTIC ROUTER
+        ↓
 MARKET / SCIENCE / TREASURY / DATA CENTER / OPERATOR / CUSTOM
-      ↓
-HELIOS DESKTOP FABRIC / PROVIDER ADAPTER
-      ↓
-HELIOS DESKTOP AGENT(S)
-      ↓
-VERIFIED WORK RESULT
-      ↓
-AUTHORITATIVE PROVIDER RECEIPT / SETTLEMENT
-      ↓
-MEASURABLE EXTERNAL RESULT
+        ↓
+VERIFIED RESULT + PROVENANCE
+        ↓
+AUTHORITATIVE RECEIPT / SETTLEMENT
+        ↓
+MEASURABLE EXTERNAL VALUE / IMPACT
 ```
 
 Public demo: https://hawkar-usls.github.io/Janus-HELIOS/
 
-The public page is an evaluation demo. It does not perform real-money gambling, does not connect a production provider fleet and does not claim authoritative settlement.
+The public page is an evaluation/reference prototype. It does not perform real-money gambling, does not run a production provider fleet and does not claim authoritative live settlement.
 
-## What is actually new here
+## What is actually differentiated
 
-HELIOS does **not** claim to have invented slots, distributed computing, mining, idle-compute marketplaces, leases, queues, bandits or worker pools.
+HELIOS does **not** claim to have invented slots, distributed computing, game-plus-compute, mining, idle GPU markets, hardware monitoring, science volunteer computing, leases or worker pools.
 
-The product proposition is the maintained combination of:
+The maintained product proposition is the simultaneous composition of:
 
-- one reusable game-shaped interaction surface;
-- explicit, revocable compute consent;
-- replaceable multi-destination resource routing;
-- a desktop/workstation execution plane;
-- provider-independent workload/receipt history;
-- bounded local adaptive policy around an immutable execution truth core;
-- a safety guard that requires more verified safety reserve as optimization pressure increases;
-- a presentation-only divergence/resolution Director with no game-math authority;
-- an astronomy-inspired deterministic Stellar Navigator that turns the backdrop into a moving presentation space without acquiring RNG/compute authority;
+- game-shaped / white-label acquisition surface;
+- explicit revocable compute consent;
+- user-defined CPU/GPU resource limits;
+- replaceable multi-destination routing;
+- provider manifest / adapter / verifier abstraction;
+- provider default-deny + authority epochs;
+- Hardware Guardian;
+- host-first Quiet Canary resource shedding;
+- hardware-aware / human-blind telemetry;
+- Smart Compute Node combining work evidence and device state;
+- Device Health Passport;
+- provider-independent receipt provenance and true-work accounting;
+- Edge Hash Lab with a separately scoped JANUS I0 bridge;
+- hardware-fair Edge Constellation;
+- Evidence Independence Engine;
 - strict `GAME RNG ⟂ COMPUTE` separation;
-- buyer-configurable routing/presentation;
-- source-available evaluation with separately negotiated commercial rights.
+- buyer-configurable B2B/white-label surface;
+- source-available evaluation with separately negotiated production rights.
 
-The central multi-gateway architecture is maintained as HELIOS-native. Historical Buzz/ESP32 and Zim conceptual lineage is disclosed rather than hidden, but the active desktop fabric/agent and policy layers have no runtime dependency on the separate swarm repository.
+### Market-reviewed uniqueness boundary
 
-## Commercial thesis & sponsor validation
+As of the public market review dated **2026-08-31**, HELIOS found predecessors for individual ingredients — including HEWMEN, BOINC, Charity Engine, SaladCloud and Theta EdgeCloud — but did **not identify a public commercial product exposing the same complete maintained HELIOS architecture as one licensable B2B control plane**.
 
-HELIOS is designed around two independent value loops:
+That is deliberately narrower than saying “nobody has ever combined games and compute.”
+
+This repository does not claim that this review establishes patentability or freedom to operate.
+
+See [`docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md`](docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md) and [`docs/COMPETITIVE_MOAT.md`](docs/COMPETITIVE_MOAT.md).
+
+## Current core stack
+
+### Hardware Guardian
+
+`src/helios-hardware-guardian.js`
+
+Local hardware policy can tighten or stop compute based on thermal/power/battery/memory/VRAM/load evidence. It intentionally forbids screen, keyboard, mouse, microphone, camera, clipboard, browser-history and process-content observation.
 
 ```text
-LOOP A — GAMEPLAY VALUE
-player activity → game/operator economics
-
-LOOP B — EXTERNAL COMPUTE VALUE
-opted-in resource → approved workload → verified result → authoritative receipt → measurable value / impact
+HARDWARE-AWARE ∧ HUMAN-BLIND
 ```
 
-Compute is not allowed to change RNG, RTP, stake, bonus probability or personal jackpot weighting.
+### Trust Fabric
 
-Illustrative sensitivity example only — **not a forecast or guaranteed return**:
+`src/helios-trust-fabric.js`
+
+Maintains provider default-deny, authority epochs, fenced capability leases, Host-first QoS, receipt provenance, Device Health Passport, true-work accounting, verifier-assurance monotonicity and accelerator shadow qualification.
+
+### Smart Compute Node
+
+`src/helios-smart-compute-node.js`
+
+One node record joins:
 
 ```text
-100,000 MAU
-× 10% compute opt-in
-× 1 device-hour/day
-× 30 days
-× $0.03 realized external value/device-hour
-= $9,000 gross verified external value/month
+WORK / HASH EVIDENCE
++ DEVICE STATE
++ GUARDIAN DECISION
++ ACTUAL EXECUTION BUDGET
++ DEVICE HEALTH PASSPORT
++ PROVENANCE
++ REPLICATION LINEAGE
 ```
 
-An illustrative `70% user / 30% operator-platform` split would correspond to `$6,300 / $2,700`. Actual economics require real workload pricing, device mix, electricity, failures, fees and authoritative receipts.
-
-A credible validation pilot therefore requires:
+Core law:
 
 ```text
-REAL SPONSOR / PROVIDER
+WORK MONITORING + DEVICE MONITORING = ONE NODE RECORD
+```
+
+### Edge Hash Lab — NerdMinerV2 × JANUS I0 bridge
+
+`src/helios-edge-hash-lab.js`
+
+NerdMinerV2 remains an external MIT compatibility target; its source is not vendored. JANUS I0 remains separately scoped Background IP unless expressly licensed.
+
+The research contract compares structured I0 traversal to a randomized mirror under equal checked-work exposure and does not claim a SHA-256 shortcut or guaranteed mining advantage.
+
+### Edge Constellation
+
+`src/helios-edge-constellation.js`
+
+Heterogeneous ESP32/CPU/GPU/ASIC-class nodes can participate in controlled replication without raw hardware power automatically becoming evidence weight.
+
+```text
+NODE POWER != EVIDENCE WEIGHT
+```
+
+### Evidence Independence Engine
+
+`src/helios-evidence-independence.js`
+
+Cross-node evidence distinguishes report count from independent-root count using physical-device, execution-lineage, authority, site/network, observation-epoch and job-stream roots.
+
+```text
+REPLICATION COUNT != INDEPENDENT ROOT COUNT
+UNKNOWN != INDEPENDENT
+```
+
+## Commercial model — license the technology, do not require the owner to operate it
+
+Preferred role separation:
+
+```text
+HELIOS OWNER / LICENSOR
         ↓
-LIVE SUITABLE WORKLOAD
+QUALIFIED MASTER LICENSEE
+fund + build + integrate + operate + sell + support
         ↓
-CONSENTING TEST DEVICES
+operators / aggregators ↔ compute / datacenter / research partners
+```
+
+The HELIOS owner is not seeking to become the casino operator, compute provider, KYC/AML vendor, 24/7 SRE organization or end-user support desk.
+
+### Indicative opening framework
+
+The following figures are **negotiating anchors only — not a valuation, binding offer or market quote**:
+
+```text
+Pilot license / integration right:
+USD 10,000–25,000 indicative discussion range
+
+If commercially deployed:
+2%–5% of contractually defined HELIOS-attributable compute revenue
+
+Alternative:
+agreed amount per verified / monetized device-hour
+```
+
+Meaningful exclusivity should require commercialization milestones and/or minimum consideration rather than allowing the technology to be shelved.
+
+### Science / Public Benefit Discount
+
+Qualified academic/nonprofit science, medical/public-health, humanitarian/public-interest or independently reviewed open-science workloads may be considered for a **reduced or zero HELIOS platform royalty by written agreement**.
+
+This only concerns the HELIOS licensor's own royalty and does not waive third-party electricity, infrastructure, provider, security, tax or compliance costs.
+
+See:
+- [`PARTNERSHIP_BRIEF.md`](PARTNERSHIP_BRIEF.md)
+- [`docs/COMMERCIAL_THESIS.md`](docs/COMMERCIAL_THESIS.md)
+- [`legal/COMMERCIAL_LICENSE_PRINCIPLES.md`](legal/COMMERCIAL_LICENSE_PRINCIPLES.md)
+- [`docs/MASTER_LICENSEE_OUTREACH_TEMPLATE.md`](docs/MASTER_LICENSEE_OUTREACH_TEMPLATE.md)
+
+## IP boundary
+
+Low-friction pilot economics do not transfer HELIOS ownership.
+
+Current intended principles, subject to a signed definitive agreement and counsel:
+
+- HELIOS Core remains licensor Background IP;
+- commercial/production/OEM/white-label rights require a separate written agreement;
+- licensees can build real proprietary integrations inside the licensed field;
+- HELIOS source is not licensed for standalone resale by default;
+- general/core improvements should use an expressly negotiated shared-use or license-back boundary;
+- field, territory, duration, sublicensing and exclusivity are explicit;
+- JANUS I0 remains separately scoped unless expressly included;
+- abstract ideas, algorithms and business methods are not falsely claimed as monopolized merely by publication here.
+
+See [`LICENSE.md`](LICENSE.md), [`IP_NOTICE.md`](IP_NOTICE.md), [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and [`legal/BACKGROUND_IP_AND_PROVENANCE.md`](legal/BACKGROUND_IP_AND_PROVENANCE.md).
+
+## Game / compute constitutional boundary
+
+```text
+compute -> RNG / RTP / personal win odds       FORBIDDEN
+compute -> bet / personal jackpot weight       FORBIDDEN
+hardware pressure -> game outcome               FORBIDDEN
+controller -> wider local device limits         FORBIDDEN
+browser -> provider private secret              FORBIDDEN
+unverified result -> authoritative value        FORBIDDEN
+unknown sensor -> invented health claim         FORBIDDEN
+```
+
+The browser demo uses simulated credits/compute receipts. Production real-money deployment requires independent legal, regulatory, security, privacy, game-math and workload review.
+
+## Current public/game surface
+
+The public build includes the responsive cosmic 5×3 slot presentation, HELIOS/DIVINE/GRIDJACK/CUSTOM profiles, cascading multipliers, Solar Corona features, explicit purchased-bonus review/consent in demo mode, procedural WebAudio, Stellar Navigator, Resource Console, Buyer Cockpit, receipt viewer, Trust Fabric, Hardware Guardian preview, Edge Hash Lab, Edge Constellation, Evidence Independence and Smart Compute Node buyer-facing surfaces.
+
+These presentation layers do not acquire game-math or production-compute authority merely by being visible in the browser.
+
+## Production validation gate
+
+The most valuable next proof is external:
+
+```text
+QUALIFIED LICENSEE / FUNDED PILOT
         ↓
-DEVICE-HOURS + WATT-HOURS + FAILURE DATA
+REAL COMPUTE PARTNER + WORKLOAD
+        ↓
+20–100+ CONSENTING DEVICES
+        ↓
+REAL VENDOR TELEMETRY + SMART-NODE RECORDS
         ↓
 AUTHORITATIVE RECEIPTS
+        ↓
+DEVICE-HOURS + Wh + FAILURE / RETRY / THROTTLE / REVOKE DATA
+        ↓
+INDEPENDENCE ROOT ATTESTATIONS
+        ↓
+USER OPT-IN / RETENTION
         ↓
 MEASURED UNIT ECONOMICS
 ```
 
-Until then, economics are modelled/testable, not production-validated.
-
-See [`docs/COMMERCIAL_THESIS.md`](docs/COMMERCIAL_THESIS.md).
-
-## Current public demo surface
-
-HELIOS currently demonstrates:
-
-- responsive 5×3 cosmic slot surface;
-- `HELIOS / DIVINE / GRIDJACK / CUSTOM` profiles;
-- tumble cascades `x1 → x4 → x16 → x64`;
-- natural `SOLAR CORONA` wheel from 3+ suns;
-- tiered purchased `SOLAR FREE SPINS` demo sessions;
-- explicit per-purchase price review/consent and visual activation wheel;
-- first-class game-core `BONUS` spin source with bounded entitlement/capability and no per-spin stake charge;
-- GRIDJACK `DEMO SPIN ENERGY`;
-- mode + route + event + bonus-session generative WebAudio;
-- `HELIOS_DUAL_STREAM_DIRECTOR` presentation choreography;
-- `HELIOS_STELLAR_NAVIGATOR` moving astronomy-inspired backdrop with real-coordinate bright-star anchors plus a deterministic synthetic deep field;
-- six replaceable compute routes with explicit consent/revoke;
-- rare `LUCKY HASH / IMPACT HIT / GOLDEN TASK` demo recognition;
-- `MY HELIOS` local demo profile/history/simulated offer board;
-- iPhone/Android responsive presentation support.
-
-The repository additionally contains the HELIOS-native Desktop Fabric/Agent, Adaptive Policy Plane and Dual-Stream Safety Guard. The browser page is **not** represented as already operating a production distributed fleet.
-
-## Solar feature family
-
-### Natural Solar Corona
-
-```text
-3+ ☀ ON SETTLED NORMAL GRID
-          ↓
-SOLAR CORONA WHEEL
-          ↓
-x2 / x3 / x4 / x5 / x8 / x10 / x16 / x25
-          ↓
-SOLAR_BONUS_BANK
-```
-
-The natural Corona is independent from compute routing.
-
-### Purchased Solar Free Spins
-
-```text
-CHOOSE BONUS
-    ↓
-SELECT TIER
-    ↓
-REVIEW EXACT COST + RULES
-    ↓
-EXPLICIT PURCHASE CONSENT
-    ↓
-VISUAL CORONA ACTIVATION
-    ↓
-CORE RE-CALCULATES PRICE / VALIDATES
-    ↓
-AUTHORIZED FREE-SPINS SESSION
-```
-
-| Tier | Demo cost | Starting spins | 3+ ☀ retrigger | Max spins |
-|---|---:|---:|---:|---:|
-| Standard Corona | `50× BET` | 10 | +2 | 16 |
-| Radiant Corona | `100× BET` | 12 | +2 | 20 |
-| Solar Flare | `175× BET` | 15 | +3 | 24 |
-
-Higher tiers buy more disclosed spin/retrigger opportunity. They do not guarantee a win and do not change hidden symbol odds based on compute or player history.
-
-The visual activation wheel does **not** randomize the already selected tier award. The purchase flow is event-driven and has no synthetic re-click bridge.
-
-The current game core has three explicit spin sources:
-
-```text
-BALANCE
-ENERGY
-BONUS
-```
-
-Purchased free spins now execute through the first-class `BONUS` source. The core opens a bounded bonus capability, locks the session bet, charges no per-spin stake for authorized bonus spins, credits winnings itself, tracks remaining entitlement and rejects stale/invalid bonus capability tokens. The presentation layer owns consent, wheel/HUD and retrigger choreography; it no longer emulates free spins by refunding ordinary balance-source stakes.
-
-```text
-compute state / route / contribution → bonus RNG      NONE
-Lucky Contribution                  → bonus RNG      NONE
-real-money feature buy              → disabled
-forced win/scatter / near-miss      → disabled
-```
-
-## Cosmic procedural soundtrack v3.1
-
-`helios-music.js` generates music locally with WebAudio rather than playing a prerecorded song.
-
-```text
-GAME MODE + COMPUTE ROUTE + SESSION SEED
-+ SETTLED EVENTS + BONUS SESSION STATE
-                ↓
-16-STEP GENERATIVE TRANSPORT
-                ↓
-BASS + PULSE + ARP + PAD + STARFIELD + DRONE + FILLS
-```
-
-The soundtrack never reads bet size, loss streak, near-miss state, wagering history or inferred vulnerability, and has no authority over RNG, RTP, payout or compute routing.
-
-See [`docs/COSMIC_SYNTH_ENGINE.md`](docs/COSMIC_SYNTH_ENGINE.md).
-
-## Dual-Stream presentation Director v1.1
-
-`helios-dual-stream-director.js` maps the dual-stream pattern into a non-emotional artistic controller:
-
-```text
-C = DIVERGENCE
-L = RESOLUTION
-R = PRESENTATION REPETITION
-P = PRESENTATION STRESS
-
-L >= 1.20 × C
-```
-
-It consumes only read-only settled presentation events. Bet, balance pressure, loss streak, near miss, wager history, inferred vulnerability and problem-gambling labels are forbidden inputs.
-
-Version 1.1 owns only a dedicated `#helios-director-stage` wrapper transform. It does not override `.reel` or `.cell` game transforms. `index.html` is the only feature loader; `helios-mobile.js` does not dynamically load Director/bonus logic. Reduced-motion changes are respected even when toggled at runtime.
-
-See [`docs/DUAL_STREAM_DIRECTOR.md`](docs/DUAL_STREAM_DIRECTOR.md).
-
-## Stellar Navigator v1.0
-
-`helios-stellar-nav.js` replaces the old repeating CSS star tiles with a deterministic moving sky sphere.
-
-```text
-SPIN / CASCADE / BONUS / MODE / ROUTE
-                  ↓
-         STELLAR NAVIGATOR
-                  ↓
-       CAMERA IMPULSE / EASING
-                  ↓
-      MOVING STAR SPHERE / WARP
-```
-
-The public sky intentionally combines:
-
-- a small manually curated set of well-known bright-star anchors using rounded RA/Dec/magnitude facts;
-- a deterministic Fibonacci-sphere deep field that avoids tiled/clumped repetition.
-
-It is **astronomy-inspired, not a scientific planetarium**. It performs no network requests, imports no external star catalogue, supports `prefers-reduced-motion`, and cannot change RNG, RTP, payout, bet, bonus probability, compute route or provider selection.
-
-`wisnc/stellar-map` was inspected as a design reference only. No repository root licence was found during the 2026-08-27 review, so HELIOS imports none of its source code, generated catalogues, constellation/Messier data, screenshots or assets. That boundary is recorded in `THIRD_PARTY_NOTICES.md` and the provenance record.
-
-See [`docs/STELLAR_NAVIGATOR.md`](docs/STELLAR_NAVIGATOR.md).
-
-## Demo Spin Energy
-
-GRIDJACK can accumulate separate demo-only Spin Energy while configured demo compute is active with explicit consent:
-
-```text
-30 s eligible demo compute → +1 Energy Spin
-bank max 3
-```
-
-It has no cash value, automatic wagering conversion or bank autoplay. A production compute-to-real-money wagering/free-spin loop is disabled pending separate review.
-
-## MY HELIOS / Lucky Contribution
-
-`helios-profile.js` is a local demo profile/history/offer surface. Offers are simulated, not live provider prices.
-
-`helios-lucky.js` uses a demo-only rare event from simulated receipts. Production recognition must come from an authoritative significance rule/receipt and can never alter RNG, RTP, bonus probability, bet or personal jackpot weight.
-
-## Mobile showcase
-
-`helios-mobile.js` provides responsive CSS/touch/safe-area behavior only. It is **not a feature dependency loader** and has no game/compute authority. Dedicated real-device matrix validation remains an explicit gate.
-
-# HELIOS-native desktop compute plane
-
-## Compute architecture
-
-```text
-EXPLICIT CONSENT
-      ↓
-DEVICE RESOURCE POLICY
-      ↓
-HELIOS ROUTER
-      ↓
-ProviderManifest + Adapter
-      ↓
-HELIOS DESKTOP FABRIC 2.1
-      ↓
-CPU / GPU / HYBRID placement
-      ↓
-FENCED LEASE + EXECUTION BUDGET
-      ↓
-HELIOS DESKTOP AGENT 1.1
-      ↓
-EXACT provider + task + artifact SHA-256 executor
-      ↓
-Provider-specific verification
-      ↓
-Fabric receipt / authoritative provider settlement gate
-```
-
-- Router: [`src/helios-router.js`](src/helios-router.js)
-- Fabric: [`src/helios-desktop-fabric.js`](src/helios-desktop-fabric.js)
-- Agent: [`src/helios-desktop-agent.js`](src/helios-desktop-agent.js)
-- Contract: [`.janus/HELIOS_DESKTOP_FABRIC.json`](.janus/HELIOS_DESKTOP_FABRIC.json)
-- Architecture: [`docs/DESKTOP_FABRIC.md`](docs/DESKTOP_FABRIC.md)
-
-### Desktop Fabric 2.1
-
-The scheduler models desktop/workstation resources:
-
-- CPU/GPU/HYBRID classes;
-- core/RAM/VRAM admission;
-- capability matching;
-- thermal/battery/watt gates;
-- per-agent concurrency;
-- bounded queue/backpressure;
-- priority aging;
-- provider circuit breaker;
-- retries and fenced leases;
-- stale-result rejection;
-- per-slice verified-agent provenance;
-- provider result verification before fabric receipt;
-- no resource-class head-of-line blocking of runnable work.
-
-### Desktop Agent 1.1
-
-The local runtime is deliberately not a generic remote shell. Executors are preregistered by exact:
-
-```text
-provider_id + task_type + artifact SHA-256
-```
-
-The local machine independently rechecks consent/revoke, lease expiry, cores, RAM/VRAM, thermal state, power/battery policy, capabilities and exact executor identity. A coordinator may tighten but not widen the local user's resource policy.
-
-## Adaptive Policy Plane
-
-`src/helios-adaptive-policy.js` implements:
-
-```text
-IMMUTABLE EXECUTION TRUTH
-          +
-LEARNABLE BOUNDED POLICY AROUND IT
-```
-
-The plane includes:
-
-- `PRIMARY_MISSION + BOUNDED_SIDE_QUESTS`;
-- Quiet Canary pressure shedding;
-- self-tested acceleration before fast-path promotion;
-- bounded multiplicative-weights learning over predeclared safe arms;
-- throttled policy-memory persistence;
-- local autonomy with continuing decision reporting.
-
-It may tune only explicitly allowlisted policy variables. It may not change artifact identity, task type, verifier/signature truth, game math or local user safety limits.
-
-See [`docs/ADAPTIVE_POLICY_PLANE.md`](docs/ADAPTIVE_POLICY_PLANE.md) and [`.janus/HELIOS_ADAPTIVE_POLICY.json`](.janus/HELIOS_ADAPTIVE_POLICY.json).
-
-## Dual-Stream Safety Guard
-
-`src/helios-dual-stream-guard.js` maps the same mathematical dual-stream pattern into an engineering safety envelope:
-
-```text
-C = CHANGE / OPTIMIZATION PRESSURE
-L = VERIFIED SAFETY RESERVE
-
-SAFETY_RESERVE >= rho × CHANGE_PRESSURE
-```
-
-Safety reserve is a **bottleneck minimum** of critical headrooms/evidence rather than an average that can hide one dangerous dimension. Missing safety evidence is not fabricated; the guard limits or rejects change pressure.
-
-Player emotion, problem-gambling state, loss streak and near-miss history are forbidden policy inputs.
-
-See [`docs/DUAL_STREAM_SAFETY_GUARD.md`](docs/DUAL_STREAM_SAFETY_GUARD.md).
-
-## Historical Buzz / ESP32 boundary
-
-Earlier Git history contains a HELIOS dispatcher that documented Buzz/JANUS swarm lineage. That history is not hidden or rewritten.
-
-The active snapshot uses the HELIOS-native Desktop Fabric/Agent pair. These old paths remain absent and the DD preflight fails if they are silently reintroduced:
-
-```text
-src/helios-swarm-dispatcher.js
-.janus/HELIOS_SWARM_DISPATCHER.json
-docs/SWARM_DISPATCHER.md
-tests/swarm-dispatcher-invariants.test.mjs
-```
-
-Historical MIT rights in the separate `janus-distributed-ai-swarm` repository are not falsely claimed to disappear. Current HELIOS active execution code has no runtime dependency on that repository or Buzz ESP32 firmware.
-
-See [`legal/BACKGROUND_IP_AND_PROVENANCE.md`](legal/BACKGROUND_IP_AND_PROVENANCE.md).
-
-## Ecosystem / transaction boundary
-
-```text
-JANUS HELIOS
-   universal configurable parent
-          ├── DIVINE_REALM — fixed SCIENCE / PUBLIC-GOOD child
-          └── SSlot        — fixed TREASURY / SHARED POOL child
-```
-
-`DIVINE_REALM` and `SSlot` are excluded from a HELIOS-only transaction unless explicitly listed and priced. Unrelated JANUS repositories, future inventions, seller general know-how and personal accounts are also excluded by default.
-
-## Hard boundaries
-
-```text
-compute -> RNG / RTP / win/bonus odds       FORBIDDEN
-compute -> bet / personal jackpot weight    FORBIDDEN
-spin frequency -> compute rate               FORBIDDEN
-browser -> provider private secret           FORBIDDEN
-unverified receipt -> authoritative value    FORBIDDEN
-controller -> wider local PC limits          FORBIDDEN
-generic remote shell in agent                FORBIDDEN
-adaptive policy -> artifact/verifier truth   FORBIDDEN
-adaptive policy -> game math                  FORBIDDEN
-safety guard -> fabricated safety reserve    FORBIDDEN
-Director -> RNG / RTP / bet / bonus odds     NONE
-Director -> loss/vulnerability targeting     FORBIDDEN
-Director -> core reel/cell transform control FORBIDDEN
-Stellar Navigator -> RNG / RTP / payout      NONE
-Stellar Navigator -> compute/provider route  NONE
-Stellar Navigator -> bet/loss/vulnerability FORBIDDEN
-music -> RNG / RTP / payout                  NONE
-Lucky Contribution -> game odds              NONE
-forced win / forced scatter / near miss      NONE
-simulated offers -> real-price claim         FORBIDDEN
-```
-
-## Buyer due diligence / integrity
-
-Start with [`docs/DATA_ROOM_INDEX.md`](docs/DATA_ROOM_INDEX.md).
-
-`HELIOS Integrity` runs on every push/PR and currently performs:
-
-- syntax/public-surface checks;
-- configured invariant suite;
-- high-confidence secret scan;
-- declared dependency SBOM generation;
-- **strict** buyer due-diligence preflight;
-- strict clean-tree closing-manifest generation;
-- buyer-integrity artifact upload.
-
-A green run applies to the exact tested commit only. It is not a gambling certificate, penetration test, legal opinion, production-readiness certificate or profitability proof.
-
-Host-level change control remains separate: at the latest buyer-side audit, `main` was not protected and no repository ruleset enforced HELIOS Integrity. Branch protection/ruleset plus a signed release/tag or equivalent attestation remain closing gates.
-
-## Current implementation
-
-- [`index.html`](index.html) — explicit public feature loader / Pages surface;
-- [`helios.js`](helios.js) — demo game core/cascades/routing/Spin Energy/first-class bonus source;
-- [`helios-polish.js`](helios-polish.js) — presentation observer layer;
-- [`helios-bonus.js`](helios-bonus.js) — natural Corona + tiered purchased Solar Free Spins;
-- [`helios-bonus-confirm.js`](helios-bonus-confirm.js) — tier review/authorization/wheel presentation;
-- [`helios-slot-ux.js`](helios-slot-ux.js) — BET stepper, Game Guide, Win Focus;
-- [`helios-music.js`](helios-music.js) — procedural soundtrack v3.1;
-- [`helios-dual-stream-director.js`](helios-dual-stream-director.js) — presentation Director v1.1;
-- [`helios-stellar-nav.js`](helios-stellar-nav.js) — presentation-only Stellar Navigator v1.0;
-- [`helios-lucky.js`](helios-lucky.js) — demo rare contribution recognition;
-- [`helios-profile.js`](helios-profile.js) — local profile/simulated offers;
-- [`helios-mobile.js`](helios-mobile.js) — responsive presentation only;
-- [`src/helios-router.js`](src/helios-router.js) — route/workload authority boundary;
-- [`src/helios-desktop-fabric.js`](src/helios-desktop-fabric.js) — Desktop Fabric v2.1;
-- [`src/helios-desktop-agent.js`](src/helios-desktop-agent.js) — Desktop Agent v1.1;
-- [`src/helios-adaptive-policy.js`](src/helios-adaptive-policy.js) — bounded Adaptive Policy Plane;
-- [`src/helios-dual-stream-guard.js`](src/helios-dual-stream-guard.js) — optimization/safety guard;
-- [`config/helios.public.json`](config/helios.public.json) — public buyer-facing config;
-- [`.janus/HELIOS_ARCHITECTURE.json`](.janus/HELIOS_ARCHITECTURE.json) — canonical 1.16 architecture;
-- [`PROJECT_STATUS.json`](PROJECT_STATUS.json) — maturity/evidence/open gates.
+Until those gates are crossed, HELIOS is a testable reference architecture and commercial thesis — not proven profitability, regulatory approval or proven hardware-lifetime extension.
+
+## Integrity
+
+`HELIOS Integrity` runs configured syntax/public checks, invariant tests, secret scanning, declared-dependency SBOM generation, strict buyer due-diligence preflight and closing-manifest generation for each tested snapshot.
+
+A green CI run applies only to the exact tested commit. It is not a gambling certificate, security audit, legal opinion, profitability proof or production-readiness certificate.
+
+## Repository map
+
+- `src/helios-router.js` — provider/workload routing authority;
+- `src/helios-desktop-fabric.js` — desktop/workstation scheduling;
+- `src/helios-desktop-agent.js` — local execution gate;
+- `src/helios-hardware-guardian.js` — device-protection policy;
+- `src/helios-trust-fabric.js` — authority/provenance/passport/accounting;
+- `src/helios-smart-compute-node.js` — work + device fusion record;
+- `src/helios-edge-hash-lab.js` — NerdMiner/I0 compatibility/evidence contract;
+- `src/helios-edge-constellation.js` — heterogeneous replication plane;
+- `src/helios-evidence-independence.js` — independence-aware synthesis;
+- `.janus/` — machine-readable contracts/audit state;
+- `docs/` — architecture/commercial documentation;
+- `legal/` — diligence/licensing boundary documents.
 
 Project package version: **`1.16.0`**.
-
-## Production gates remain explicit
-
-HELIOS is not production-ready. Important gates include:
-
-- real provider adapter and signed provider manifest;
-- authenticated production Desktop Agent transport;
-- durable multi-host coordinator/replay state;
-- authoritative receipt verification/signatures/anti-replay;
-- real energy/thermal telemetry validation;
-- workload sandbox/egress policy;
-- live provider offer API;
-- external SBOM/licence scan on closing snapshot;
-- independent security/privacy/legal/game-math review;
-- non-money pilot with device-hours, watt-hours, failure/retry/verifier-reject rates and unit economics;
-- branch protection/ruleset or equivalent closing freeze;
-- signed closing snapshot/transaction documents.
-
-## Licensing
-
-This repository is source-available for evaluation. Production, commercial, OEM, white-label, hosted, casino/platform or other commercial use requires a separate written agreement.
-
-- [`LICENSE.md`](LICENSE.md)
-- [`IP_NOTICE.md`](IP_NOTICE.md)
-- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)
-- [`legal/BACKGROUND_IP_AND_PROVENANCE.md`](legal/BACKGROUND_IP_AND_PROVENANCE.md)
 
 > **ONE CORE. ANY DESTINATION.**

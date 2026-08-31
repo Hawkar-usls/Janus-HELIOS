@@ -1,69 +1,83 @@
 # JANUS HELIOS — Competitive Moat Map
 
-## Why this document exists
+## Market-reviewed position
 
-Prior art is not a defeat condition. It is a boundary map.
+Prior art is a boundary map, not a defeat condition.
 
-HELIOS should never claim novelty for a component that already existed. Instead it should identify the maintained combination that produces a materially different product and then make that combination increasingly difficult to reproduce.
+HELIOS should not claim novelty for components that existed before it. The defensible commercial position is the **maintained composition** and the way those components constrain one another.
 
-## What HELIOS does **not** claim to have invented
+Safe claim after the 2026-08-31 public market review:
 
-The following ideas predate HELIOS and are useful predecessors rather than novelty claims:
+> **We found predecessors for individual components, but did not identify a public commercial product exposing the same complete maintained HELIOS architecture as one licensable B2B control plane.**
+
+This is a product-positioning statement, not a patentability or freedom-to-operate opinion.
+
+## What HELIOS does not claim to have invented
 
 - volunteer/distributed computing;
-- combining games or gamification with useful external computation;
-- using idle gaming PCs or GPUs as compute supply;
-- mining pools and hashpower marketplaces;
-- paying users for contributed compute;
-- CPU/GPU resource limits and battery preferences;
-- GPU temperature, utilization and power monitoring;
+- games/gamification combined with external useful compute;
+- idle gamer/consumer GPU supply;
+- mining pools or hashpower markets;
+- payments/rewards for contributed compute;
+- science/public-benefit use of volunteer compute;
+- CPU/GPU/battery resource preferences;
+- temperature, power and utilization monitoring;
 - thermal throttling and power limits;
-- provider-side job verification;
-- configurable gaming content.
+- provider-side verification;
+- game aggregation or configurable gaming content.
 
-Trying to sell any one item above as “the invention” would make HELIOS weaker, not stronger.
+Relevant predecessors/adjacent markets include HEWMEN, BOINC, Charity Engine, SaladCloud, Theta EdgeCloud, NiceHash and existing iGaming aggregation/turnkey platforms.
 
-## The HELIOS combination
+See `docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md`.
 
-The current product thesis is the simultaneous composition of:
+## The implemented HELIOS moat stack
+
+This is no longer a roadmap list. The current repository already contains the following maintained layers:
 
 ```text
-POLISHED GAME-SHAPED ENTRY SURFACE
-          +
-EXPLICIT / REVOCABLE RESOURCE CONSENT
-          +
-USER-DEFINED CPU / GPU ENVELOPE
-          +
-PROVIDER-AGNOSTIC MULTI-DESTINATION ROUTER
-          +
-MANIFEST / ADAPTER / VERIFIER ABSTRACTION
-          +
-LOCAL DESKTOP FABRIC + EXACT EXECUTOR IDENTITY
-          +
+GAME-SHAPED / WHITE-LABEL ENTRY
+        ↓
+EXPLICIT REVOCABLE CONSENT
+        ↓
+USER CPU / GPU ENVELOPE
+        ↓
+PROVIDER-AGNOSTIC ROUTER
+        ↓
+PROVIDER DEFAULT-DENY + AUTHORITY EPOCH
+        ↓
 HARDWARE GUARDIAN
-          +
-HARDWARE-AWARE / HUMAN-BLIND TELEMETRY
-          +
-VERIFIED RECEIPT / SETTLEMENT BOUNDARY
-          +
-STRICT GAME RNG ⟂ COMPUTE
-          +
-WHITE-LABEL BUYER CONFIGURATION
+        ↓
+HOST-FIRST QUIET-CANARY QoS
+        ↓
+SMART COMPUTE NODE
+  ┌─────┴──────────────────────────────┐
+  │ work/hash evidence                │
+  │ hardware state                    │
+  │ execution budget                  │
+  │ provenance                        │
+  │ device-health passport            │
+  │ replication lineage               │
+  └────────────────────────────────────┘
+        ↓
+VERIFIED RECEIPT / TRUE WORK ACCOUNTING
+        ↓
+EDGE CONSTELLATION / INDEPENDENCE-AWARE EVIDENCE
+        ↓
+MEASURABLE EXTERNAL VALUE / IMPACT
+
+GAME RNG / RTP / PERSONAL ODDS  ⟂  ALL COMPUTE STATE
 ```
 
-The moat claim should therefore be phrased conservatively:
+The strongest differentiation is that HELIOS attempts to protect **four different principals at once**:
 
-> We have not identified an existing commercial product that exposes the same complete maintained architecture as one reusable B2B interaction layer.
+1. the user/device owner from uncontrolled resource use;
+2. the compute provider from unverifiable/misidentified execution;
+3. the operator/licensee from ambiguous accounting and provider lock-in;
+4. the game-math/regulatory domain from compute influence.
 
-This is deliberately different from claiming that no one has ever combined games and computation.
+## Moat axis 1 — Device sovereignty
 
-## Five axes to push toward the absolute
-
-### 1. Device sovereignty
-
-HELIOS should become the compute platform that treats the contributor's machine as a protected asset rather than anonymous disposable capacity.
-
-Target state:
+Implemented direction:
 
 ```text
 USER LIMIT
@@ -72,35 +86,35 @@ VENDOR / OS HARDWARE LIMITS
   ↓
 HARDWARE GUARDIAN
   ↓
+HOST-FIRST QoS
+  ↓
 LOCAL BUDGET CAN ONLY CONTRACT
   ↓
-DEVICE HEALTH RECEIPT
+SMART COMPUTE NODE
+  ↓
+DEVICE HEALTH PASSPORT
 ```
 
-Roadmap:
+The contributor device is treated as a protected asset rather than anonymous disposable capacity.
 
-- NVIDIA NVML adapter;
-- AMD SMI adapter;
-- CPU/platform temperature and power adapters;
-- AC/battery policy;
-- thermal trend + hysteresis;
-- measured watt-hours;
-- Device Health Passport;
-- optional per-device conservative profiles;
-- no automatic overclocking requirement.
+Still externally unproven:
+- production NVML/AMD SMI fleet adapters across diverse hardware;
+- measured lifetime/wear benefit;
+- large-sample failure-rate reduction.
 
-### 2. Human-blind privacy
+HELIOS must not claim proven life extension until those measurements exist.
 
-A resource router does not need to observe the human to protect the machine.
+## Moat axis 2 — Hardware-aware, human-blind privacy
 
-HELIOS should make this a hard differentiator:
+Allowed safety observations include hardware telemetry such as:
 
 ```text
 TEMPERATURE       YES
-POWER             YES
+POWER / ENERGY    YES
 UTILIZATION       YES
 RAM / VRAM        YES
 BATTERY / AC      YES
+SENSOR FRESHNESS  YES
 
 SCREEN            NO
 KEYBOARD          NO
@@ -112,57 +126,83 @@ BROWSER HISTORY   NO
 PROCESS CONTENT   NO
 ```
 
-Content-blind host-pressure protection is preferable to surveillance-based “are you gaming?” heuristics.
+The design goal is to know enough about the machine to protect it without needing to know what the human is doing.
 
-### 3. Provider neutrality
+## Moat axis 3 — Provider neutrality
 
-Most compute clients exist to feed one network.
-
-HELIOS should remain valuable even when every backend changes:
+Most compute clients exist to feed one network. HELIOS keeps the provider replaceable:
 
 ```text
-HELIOS USER SURFACE
+HELIOS CONTROL PLANE
        ↓
-STANDARD ROUTER CONTRACT
+MANIFEST / ADAPTER / VERIFIER
        ↓
-┌─────────┬─────────┬──────────┬────────────┬──────────┐
-MARKET    SCIENCE   TREASURY   DATA CENTER  OPERATOR  CUSTOM
-└─────────┴─────────┴──────────┴────────────┴──────────┘
+MARKET | SCIENCE | TREASURY | DATA CENTER | OPERATOR | CUSTOM
 ```
 
-The replaceable unit is the provider manifest / adapter / verifier rather than the user experience.
+Provider registration is not execution authority. Admission is default-deny and epoch-fenced.
 
-### 4. Truth-carrying compute
+This matters commercially because the licensee can replace demand-side compute partners without rebuilding the complete user interaction model.
 
-HELIOS should prefer proof over marketing claims.
+## Moat axis 4 — Truth-carrying compute
 
-Target chain:
+HELIOS distinguishes:
 
 ```text
-EXACT APPROVED ARTIFACT
-      ↓
-FENCED LEASE
-      ↓
-LOCAL GUARDIAN DECISION
-      ↓
-WORK RESULT
-      ↓
-PROVIDER VERIFICATION
-      ↓
-AUTHORITATIVE RECEIPT
-      ↓
-DEVICE HEALTH SUMMARY
-      ↓
-MEASURED VALUE / IMPACT
+ASSIGNED WORK       != EXECUTED WORK
+EXECUTED WORK       != VERIFIED WORK
+RESULT EXISTS       != AUTHORITY PROVEN
+RUNTIME             != MEASURED DEVICE TIME
+NOMINAL WATTS       != MEASURED Wh
+INTEGRITY            != SENSOR TRUTH
+UNKNOWN              != ZERO
 ```
 
-No verified receipt means no authoritative external-value claim.
+Receipt provenance, exact executor identity, verifier rules and Device Health Passport references make evidence lineage first-class.
 
-No live hardware sensor means no invented temperature or watt reading.
+## Moat axis 5 — Smart Compute Node fusion
 
-### 5. Game/compute constitutional separation
+The mining/I0 lineage became a general-purpose architecture:
 
-This should remain more than a disclaimer.
+> A node should report not only what work it performed, but also the state and locally enforced budget of the device while that work was performed.
+
+That fusion now applies beyond hashing to CPU, GPU, AI, rendering, scientific and data-center-adjacent workloads.
+
+The claim is architectural, not a claim that all workload types are already production-integrated.
+
+## Moat axis 6 — Hardware-fair replication
+
+Edge Constellation freezes the law:
+
+```text
+NODE POWER != EVIDENCE WEIGHT
+```
+
+A high-throughput ASIC or GPU does not receive more cross-node evidentiary votes merely because it checked more work. Each node first produces a normalized local comparison before cross-node synthesis.
+
+## Moat axis 7 — Evidence Independence Engine
+
+HELIOS further distinguishes:
+
+```text
+REPORT COUNT != INDEPENDENT ROOT COUNT
+```
+
+Independence lineage considers:
+- physical device root;
+- execution/firmware lineage;
+- authority/provider root;
+- site/network root;
+- observation epoch;
+- job-stream/experiment-seed lineage.
+
+Unknown lineage never becomes assumed independence. Correlated reports are retained but cannot masquerade as separate strong replications.
+
+This is an unusual bridge between distributed-compute engineering and evidence methodology.
+
+## Moat axis 8 — Game/compute constitutional separation
+
+This remains a hard boundary rather than marketing copy:
 
 ```text
 COMPUTE STATE ─X→ RNG
@@ -172,142 +212,80 @@ COMPUTE STATE ─X→ PERSONAL JACKPOT WEIGHT
 HARDWARE PRESSURE ─X→ GAME OUTCOME
 ```
 
-Hardware pressure may reduce or stop compute. It must never influence the gambling/game outcome channel.
+Hardware pressure may throttle or stop external compute. It cannot improve or worsen the player's game outcome.
 
 ## What to borrow from predecessors
 
-### HEWMEN / volunteer-computing games
-
-Borrow:
-
-- meaningful external missions;
-- clear explanation that play can coexist with useful work;
-- scientific/public-good destinations.
-
-Do not copy:
-
-- one fixed conception of the workload ecosystem.
-
-HELIOS direction:
-
-- one interface, many independently replaceable destinations.
+### HEWMEN
+Borrow meaningful external missions and the proof that entertainment and distributed work can coexist. Do not claim game-plus-compute as HELIOS novelty.
 
 ### BOINC
+Borrow participant sovereignty, conservative resource preferences and long-running scientific-compute discipline. HELIOS elevates this toward a local authority boundary that a controller cannot widen.
 
-Borrow:
+### Charity Engine
+Borrow the philosophy that commercial compute can coexist with public-benefit workloads. HELIOS adopts this commercially as an optional **Science / Public Benefit Discount** rather than claiming the concept as unique.
 
-- participant sovereignty;
-- local resource preferences;
-- battery-aware and resource-aware scheduling philosophy;
-- long-running-workload discipline.
-
-HELIOS direction:
-
-- elevate preferences into enforceable local authority that a controller cannot widen.
-
-### Salad / gamer compute networks
-
-Borrow:
-
-- proof that gaming hardware can form real distributed infrastructure;
-- explicit CPU/GPU selection;
-- workload compatibility/admission awareness;
-- real supply/demand economics.
-
-HELIOS direction:
-
-- remain network-neutral and make the same user surface capable of feeding multiple provider families.
+### SaladCloud / Theta EdgeCloud
+Borrow the market lesson that distributed GPU capacity has real buyers and explicit per-resource pricing. HELIOS remains provider-neutral rather than becoming another single compute network.
 
 ### NiceHash / mining tooling
-
-Borrow:
-
-- efficiency consciousness;
-- watts, temperature and stability as first-class variables;
-- clear user control over hardware profiles.
-
-Do not copy:
-
-- mining-specific optimization assumptions;
-- automatic overclocking as a requirement.
-
-HELIOS direction:
-
-- optimize for verified useful value per safe device cost, not maximum raw hash/throughput.
+Borrow efficiency awareness and the habit of treating watts, thermal state, stability and verified hash/work as first-class variables. HELIOS generalizes that discipline beyond mining.
 
 ### NVIDIA NVML / AMD SMI
+Borrow authoritative hardware telemetry primitives and vendor safety limits. HELIOS converts them into a provider-independent local safety contract.
 
-Borrow:
+### iGaming aggregators / turnkey platforms
+Borrow distribution and integration machinery, not game-math authority. HELIOS is designed so a qualified licensee can commercialize the technology without the HELIOS owner becoming an operator.
 
-- authoritative hardware telemetry primitives;
-- vendor thermal limits;
-- power and energy counters;
-- hotspot/VRAM/ECC/violation signals where available.
+## Commercial moat — license, do not casually transfer the core
 
-HELIOS direction:
-
-- transform low-level telemetry into a provider-independent local safety contract.
-
-## Next moat: Device Health Passport
-
-The Hardware Guardian answers:
-
-> Should this task run **now**, and at what locally safe scale?
-
-The next layer should answer:
-
-> How has HELIOS treated this device **over time**?
-
-Proposed privacy-preserving passport fields:
+The preferred commercial model is:
 
 ```text
-DEVICE-LOCAL PSEUDONYMOUS ID
-GUARDIAN VERSION
-COMPUTE HOURS
-VERIFIED TASK HOURS
-ENERGY / WATT-HOURS WHEN MEASURABLE
-MAX OBSERVED THERMAL PRESSURE BAND
-TIME IN GREEN / WATCH / THROTTLE / COOLDOWN
-NUMBER OF HARD BLOCKS
-NUMBER OF USER REVOKES
-FAILED / VERIFIED WORK COUNTS
-NO SCREEN / KEYBOARD / AUDIO / CONTENT HISTORY
+HELIOS OWNER / LICENSOR
+        ↓ field-limited license
+MASTER LICENSEE
+        ↓
+operators + compute/infrastructure partners
 ```
 
-This could become useful to:
+Low-friction pilot economics should not imply weak IP boundaries.
 
-- the device owner;
-- compute providers evaluating reliable contributors;
-- data-center or enterprise buyers evaluating fleet quality;
-- auditors checking consent and device-care policy;
-- HELIOS itself when choosing workloads without widening local limits.
+Core principles:
+- HELIOS Core stays Background IP unless expressly assigned;
+- source is not resold as a standalone product;
+- licensee can build real production adapters and proprietary integrations;
+- core/general improvements use a negotiated shared-use or license-back rule;
+- exclusivity requires performance and cannot be parked indefinitely;
+- JANUS I0 remains separately scoped unless expressly licensed.
 
-It must not become a surveillance fingerprint or a mechanism for changing game outcomes.
+See `legal/COMMERCIAL_LICENSE_PRINCIPLES.md`.
 
-## Commercial positioning after this pass
+## The real next moat: external truth
+
+The highest-value remaining work is now external validation, not another internal conceptual layer:
+
+```text
+1. QUALIFIED MASTER LICENSEE / FUNDED PILOT
+2. REAL COMPUTE PROVIDER + SUITABLE WORKLOAD
+3. REAL VENDOR TELEMETRY ADAPTERS
+4. 20–100+ CONSENTING TEST DEVICES
+5. AUTHORITATIVE WORK RECEIPTS
+6. DEVICE HEALTH PASSPORTS FROM REAL OBSERVATIONS
+7. MEASURED Wh / FAILURE / RETRY / THROTTLE / REVOKE DATA
+8. INDEPENDENCE ROOT ATTESTATIONS
+9. USER OPT-IN / RETENTION DATA
+10. MEASURED UNIT ECONOMICS
+```
+
+Crossing these gates would move HELIOS from an unusually integrated pre-production architecture toward externally validated infrastructure technology.
+
+## Current pitch
 
 Do not pitch:
 
-> “We invented a slot that mines/computes.”
+> “We invented a slot that mines.”
 
-Pitch:
+Do pitch:
 
-> “HELIOS is a reusable consumer control plane between entertainment audiences and multiple compute markets. It provides explicit consent, replaceable provider routing, verified receipts and a local hardware-sovereignty layer that can tighten or stop work without observing the human and without giving compute any authority over game mathematics.”
-
-That proposition can be evaluated separately by gaming distributors and compute/data-center networks.
-
-## Validation gates
-
-The highest-value remaining evidence is not another visual feature.
-
-```text
-1. REAL VENDOR TELEMETRY ADAPTERS
-2. REAL COMPUTE PROVIDER
-3. 20–100+ CONSENTING TEST DEVICES
-4. REAL WORK RECEIPTS
-5. DEVICE HEALTH PASSPORT
-6. MEASURED VALUE / WATT-HOUR / FAILURE / THROTTLE DATA
-7. USER OPT-IN AND RETENTION DATA
-```
-
-Crossing those gates changes HELIOS from an unusually complete pre-revenue architecture into an externally validated infrastructure product.
+> **“HELIOS is a licensable provider-agnostic control plane between entertainment audiences and multiple compute markets. It combines explicit consent, local hardware sovereignty, Smart Compute Nodes, verified receipts and independence-aware evidence while keeping compute economics constitutionally separate from game mathematics.”**
