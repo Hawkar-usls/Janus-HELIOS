@@ -1,9 +1,9 @@
 {
   "schema": "janus.helios.pilot-receiving-route-evidence.v1",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "recorded_date": "2026-08-31",
   "classification": "OWNER_SUPPLIED_CURRENT_BINANCE_DEPOSIT_UI_EVIDENCE",
-  "status": "BINANCE_ROUTE_CONFIRMED_READY_FOR_RPC_AND_FINAL_ACTIVATION_GATES",
+  "status": "BINANCE_ROUTE_PROMOTED_TO_ACTIVE_STANDARD_PILOT_POLICY_CANDIDATE",
   "source": {
     "provider": "BINANCE",
     "surface": "DEPOSIT_USDT_UI",
@@ -53,15 +53,16 @@
   },
   "promotion_boundary": {
     "payment_policy_receiving_address_updated": true,
-    "payment_policy_enabled": false,
-    "automatic_invoice_or_grant_authority": false,
-    "reason": "ROUTE_IS_FROZEN_BUT_RPC_QUORUM_SMOKE_AND_FINAL_EXACT_HEAD_ACTIVATION_MUST_PASS_FIRST"
+    "payment_policy_enabled": true,
+    "automatic_invoice_or_grant_authority": "ONLY_WHEN_THIS_CERTIFIED_CANDIDATE_SHA_IS_PROMOTED_TO_MAIN_AND_RUNTIME_PREFLIGHT_PASSES",
+    "route_evidence_alone_is_authority": false,
+    "reason": "THE_ROUTE_IS_EVIDENCE; MAIN_ONLY_ISSUER_PLUS_REQUEST_TERMS_EXACT_PAYMENT_RPC_QUORUM_AND_64_CONFIRMATIONS_CREATE_THE_STANDARD_PILOT_GRANT_GATE"
   },
-  "remaining_activation_gates": [
-    "RPC_QUORUM_SMOKE_PASSES_ON_EXACT_PRE_ACTIVATION_HEAD",
-    "ENABLE_PAYMENT_POLICY",
-    "RUN_EXACT_HEAD_HELIOS_INTEGRITY_AND_REQUIRE_SUCCESS",
-    "RUN_EXACT_HEAD_RPC_QUORUM_SMOKE_AND_REQUIRE_SUCCESS"
+  "remaining_evidence_gates": [
+    "EXACT_ENABLED_ACTIVATION_SHA_PASSES_HELIOS_INTEGRITY",
+    "EXACT_ENABLED_ACTIVATION_SHA_PASSES_HELIOS_PILOT_RPC_QUORUM",
+    "CERTIFIED_SHA_PROMOTED_TO_MAIN_WITHOUT_CONTENT_CHANGE",
+    "FIRST_REAL_PAID_STANDARD_PILOT_GRANT_AND_FIELD_VALIDATION"
   ],
   "security": {
     "public_receiving_address_is_secret": false,
@@ -72,5 +73,5 @@
     "watcher_fund_movement_authority": false,
     "watcher_transaction_broadcast_authority": false
   },
-  "law": "BINANCE_ROUTE_EVIDENCE_MAY_CLOSE_ADDRESS_MEMO_AND_CONFIRMATION_GATES_BUT_DOES_NOT_BY_ITSELF_ACTIVATE_PAYMENT_AUTHORITY"
+  "law": "ROUTE_EVIDENCE_SUPPORTS_THE_PAYMENT_GATE_BUT_NEVER_CREATES_LICENSE_AUTHORITY_BY_ITSELF"
 }
