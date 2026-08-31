@@ -1,16 +1,27 @@
 {
   "schema": "janus.helios.pilot-receiving-route-evidence.v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "recorded_date": "2026-08-31",
   "classification": "OWNER_SUPPLIED_CURRENT_BINANCE_DEPOSIT_UI_EVIDENCE",
-  "status": "ROUTE_EVIDENCE_FROZEN_NOT_YET_PROMOTED_TO_ACTIVE_PAYMENT_POLICY",
+  "status": "BINANCE_ROUTE_CONFIRMED_READY_FOR_RPC_AND_FINAL_ACTIVATION_GATES",
   "source": {
     "provider": "BINANCE",
     "surface": "DEPOSIT_USDT_UI",
-    "evidence_type": "USER_SUPPLIED_SCREENSHOT",
-    "screenshot_sha256": "17f86f0690603bf25999aebe5cf40d7e4541bc95494ac98268c9bcddd3cc2dc9",
-    "screen_time_visible": "07:30",
-    "screen_date_not_visible": true
+    "evidence_type": "USER_SUPPLIED_SCREENSHOTS",
+    "screenshots": [
+      {
+        "purpose": "ROUTE_AND_ADDRESS",
+        "sha256": "17f86f0690603bf25999aebe5cf40d7e4541bc95494ac98268c9bcddd3cc2dc9",
+        "screen_time_visible": "07:30"
+      },
+      {
+        "purpose": "EXPANDED_ROUTE_CONFIRMATION_AND_MEMO_GATE",
+        "sha256": "abe83eca120a7182e4d7d84c316b55c4edfe72ed3ebfbf2ccb34a81df1f42c64",
+        "screen_time_visible": "07:47"
+      }
+    ],
+    "screen_date_not_visible": true,
+    "conversation_received_date": "2026-08-31"
   },
   "route": {
     "asset": "USDT",
@@ -22,25 +33,35 @@
     "address_length_valid": true,
     "contract_tail_displayed": "***31ec7",
     "expected_official_usdt_contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-    "contract_tail_consistent_with_expected": true
+    "contract_tail_consistent_with_expected": true,
+    "deposit_destination_displayed": "SPOT_WALLET",
+    "minimum_deposit_displayed": ">0.001 USDT"
   },
   "memo_tag_evidence": {
-    "memo_or_tag_field_visible_on_supplied_screen": false,
-    "absence_of_visible_field_proves_no_memo_requirement": false,
-    "must_be_rechecked_before_activation": true
+    "expanded_deposit_details_screen_supplied": true,
+    "memo_or_tag_field_visible_on_expanded_screen": false,
+    "payment_id_field_visible_on_expanded_screen": false,
+    "selected_route_is_single_evm_address_route": true,
+    "memo_required_for_helios_policy": false,
+    "memo_gate_status": "CLOSED_BY_EXPANDED_BINANCE_DEPOSIT_SCREEN_EVIDENCE"
+  },
+  "confirmation_evidence": {
+    "binance_trading_credit_confirmations_displayed": 6,
+    "binance_withdrawal_unlock_confirmations_displayed": 64,
+    "helios_automatic_grant_confirmations": 64,
+    "policy": "USE_THE_MORE_CONSERVATIVE_DISPLAYED_UNLOCK_THRESHOLD"
   },
   "promotion_boundary": {
-    "payment_policy_receiving_address_updated": false,
+    "payment_policy_receiving_address_updated": true,
     "payment_policy_enabled": false,
     "automatic_invoice_or_grant_authority": false,
-    "reason": "KEEP_LIVE_POLICY_FAIL_CLOSED_UNTIL_RPC_AND_FINAL_ACTIVATION_GATES_PASS"
+    "reason": "ROUTE_IS_FROZEN_BUT_RPC_QUORUM_SMOKE_AND_FINAL_EXACT_HEAD_ACTIVATION_MUST_PASS_FIRST"
   },
   "remaining_activation_gates": [
-    "CONFIRM_NO_MEMO_OR_TAG_REQUIRED_FOR_THIS_EXACT_BINANCE_USDT_ETH_ROUTE",
-    "CONFIGURE_RELIABLE_ETHEREUM_MAINNET_RPC_FOR_READ_ONLY_WATCHER",
-    "PROMOTE_FROZEN_RECEIVING_ADDRESS_INTO_PAYMENT_POLICY",
+    "RPC_QUORUM_SMOKE_PASSES_ON_EXACT_PRE_ACTIVATION_HEAD",
     "ENABLE_PAYMENT_POLICY",
-    "RUN_EXACT_HEAD_HELIOS_INTEGRITY_AND_REQUIRE_SUCCESS"
+    "RUN_EXACT_HEAD_HELIOS_INTEGRITY_AND_REQUIRE_SUCCESS",
+    "RUN_EXACT_HEAD_RPC_QUORUM_SMOKE_AND_REQUIRE_SUCCESS"
   ],
   "security": {
     "public_receiving_address_is_secret": false,
@@ -48,7 +69,8 @@
     "seed_phrase_present": false,
     "binance_password_present": false,
     "withdrawal_api_key_present": false,
-    "watcher_fund_movement_authority": false
+    "watcher_fund_movement_authority": false,
+    "watcher_transaction_broadcast_authority": false
   },
-  "law": "UI_EVIDENCE_MAY_FREEZE_A_ROUTE_BUT_DOES_NOT_ACTIVATE_PAYMENT_AUTHORITY"
+  "law": "BINANCE_ROUTE_EVIDENCE_MAY_CLOSE_ADDRESS_MEMO_AND_CONFIRMATION_GATES_BUT_DOES_NOT_BY_ITSELF_ACTIVATE_PAYMENT_AUTHORITY"
 }
