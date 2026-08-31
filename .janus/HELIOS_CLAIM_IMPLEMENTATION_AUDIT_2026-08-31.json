@@ -108,6 +108,13 @@
       "external_gate": "Connect real CUDA/ROCm/other accelerated executors and reference implementations."
     },
     {
+      "claim": "AUTOMATED_STANDARD_PILOT_AUTHORITY",
+      "status": "IMPLEMENTED_CORE",
+      "evidence": ["src/helios-pilot-authority.js", "tools/pilot-payment-watch.mjs", ".janus/HELIOS_PILOT_AUTHORITY.json", "commerce/HELIOS_PILOT_PAYMENT_POLICY.json", "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md", "tests/pilot-authority-invariants.test.mjs"],
+      "claim_value": "ARMED_DISABLED_PENDING_RECEIVING_ADDRESS",
+      "external_gate": "Owner must recheck current Binance USDC/Base deposit support, configure the exact public receiving address, confirm no memo/tag is required, enable the policy and obtain a green exact-commit HELIOS Integrity run before invoices or grants may issue."
+    },
+    {
       "claim": "PUBLIC_BUYER_LAB_SHOWS_TRUST_AND_POLICY_SURFACES",
       "status": "DEMO_PREVIEW",
       "evidence": ["index.html", "helios-buyer-cockpit.js", "helios-trust-fabric-ui.js", "helios-smart-compute-node-ui.js", "helios-evidence-independence-ui.js"],
@@ -139,13 +146,16 @@
     "REMOVED_INVENTED_PUBLIC_87_PERCENT_HEALTH_STATUS",
     "PUBLIC_HEALTH_NOW_DEMO_NO_LIVE_SENSORS",
     "INDEX_HTML_IS_EXPLICIT_AUTHORITATIVE_FEATURE_LOADER",
-    "RECEIPT_VIEWER_NO_LONGER_DINAMICALLY_LOADS_OTHER_FEATURES",
+    "RECEIPT_VIEWER_NO_LONGER_DYNAMICALLY_LOADS_OTHER_FEATURES",
     "BUYER_GOVERNOR_REMOVED_INTERACTION_AND_IDLE_OBSERVATION_LANGUAGE",
     "BUYER_GOVERNOR_NOW_HARDWARE_PRESSURE_HEADROOM_HUMAN_BLIND",
     "HOST_FIRST_QOS_WIRED_INTO_DESKTOP_AGENT_EXECUTION_PATH",
     "SMART_COMPUTE_NODE_GENERALIZED_BEYOND_EDGE_HASH_TO_WORKLOAD_APPROPRIATE_EVIDENCE",
     "PROJECT_STATUS_REFRESHED_TO_2026_08_31",
-    "CANONICAL_ARCHITECTURE_REFRESHED_TO_CURRENT_STACK"
+    "CANONICAL_ARCHITECTURE_REFRESHED_TO_CURRENT_STACK",
+    "STANDARD_PILOT_AUTHORITY_ADDED_FAIL_CLOSED_DISABLED_UNTIL_OWNER_RECEIVING_ADDRESS_IS_VERIFIED",
+    "STANDARD_PILOT_PAYMENT_PRIMARY_FROZEN_TO_NATIVE_USDC_BASE_WITH_EXACT_INVOICE_FINGERPRINT",
+    "PILOT_PAYMENT_VERIFIER_HAS_NO_FUND_MOVEMENT_AUTHORITY"
   ],
   "final_rule": "NO_BUYER_FACING_CLAIM_MAY_BE_PROMOTED_FROM_IMPLEMENTED_CORE_OR_EXTERNAL_GATE_TO_ENFORCED_WITHOUT_EXECUTION_PATH_EVIDENCE_AND_A_TESTED_EXACT_COMMIT."
 }

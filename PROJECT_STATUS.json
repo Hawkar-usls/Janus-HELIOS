@@ -3,7 +3,7 @@
   "project": "JANUS HELIOS",
   "project_version": "1.16.0",
   "last_reviewed": "2026-08-31",
-  "status_basis": "CLAIM_TO_IMPLEMENTATION_AUDIT",
+  "status_basis": "CLAIM_TO_IMPLEMENTATION_AUDIT_PLUS_PILOT_AUTHORITY_GATE",
   "production_readiness": "NOT_ESTABLISHED",
   "public_surface": {
     "url": "https://hawkar-usls.github.io/Janus-HELIOS/",
@@ -113,6 +113,29 @@
     "different_hardware_class_proves_independence": false,
     "strong_set_method": "MAXIMUM_CLIQUE_OVER_PAIRWISE_STRONG_INDEPENDENCE"
   },
+  "pilot_authority": {
+    "module": "src/helios-pilot-authority.js",
+    "version": "1.0.0",
+    "contract": ".janus/HELIOS_PILOT_AUTHORITY.json",
+    "watcher": "tools/pilot-payment-watch.mjs",
+    "workflow": ".github/workflows/helios-pilot-authority.yml",
+    "terms": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
+    "payment_policy": "commerce/HELIOS_PILOT_PAYMENT_POLICY.json",
+    "maturity": "IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_RECEIVING_ADDRESS",
+    "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
+    "primary_payment": "NATIVE_USDC_ON_BASE_MAINNET",
+    "chain_id": 8453,
+    "standard_fee_usdc": "10000.000000",
+    "invoice_fingerprint_is_discount": true,
+    "term_days": 90,
+    "receiving_address_configured": false,
+    "wallet_private_key_required": false,
+    "verifier_can_move_funds": false,
+    "real_money_rights": false,
+    "public_production_rights": false,
+    "core_ip_transfer": false,
+    "automatic_commercial_license": false
+  },
   "adaptive_policy_plane": {
     "module": "src/helios-adaptive-policy.js",
     "version": "1.0.0",
@@ -162,6 +185,8 @@
   },
   "licensing_and_acquisition": {
     "helios_public_license": "JANUS_HELIOS_SOURCE_AVAILABLE_EVALUATION_LICENSE_V1_2",
+    "standard_pilot_license": "HELIOS_STANDARD_PILOT_LICENSE_V1_0",
+    "standard_pilot_authority_status": "ARMED_DISABLED_PENDING_RECEIVING_ADDRESS",
     "open_source": false,
     "commercial_rights_granted_by_publication": false,
     "default_transaction_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
@@ -179,13 +204,13 @@
   },
   "integrity_ci": {
     "workflow": ".github/workflows/helios-integrity.yml",
-    "pre_audit_baseline_success_commit": "6240ffda882a97b4cc6f3f46d339aeef46dbac19",
-    "pre_audit_baseline_success_run_id": 33344597344,
-    "pre_audit_baseline_result": "PASS",
+    "pre_pilot_authority_success_commit": "0b137d2c85dd58076ffec578388d599023fcd9a9",
+    "pre_pilot_authority_success_run_id": 33352518186,
+    "pre_pilot_authority_result": "PASS",
     "scope_rule": "A_GREEN_COMMIT_DOES_NOT_CERTIFY_A_LATER_COMMIT; RE_RUN_FOR_EACH_CLOSING_SNAPSHOT"
   },
   "test_suites_present": [
-    "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "REEL_IDENTITY", "REEL_FORGE", "RESOURCE_CONSOLE", "ROUTE_AURA", "RECEIPT_VIEWER", "BUYER_COCKPIT", "RESOURCE_SONIFICATION", "HARDWARE_GUARDIAN_UI", "STELLAR_NAVIGATOR", "STELLAR_BRIDGE", "MODE_FLIGHT", "BONUS_QUASAR", "QUASAR_SONIFICATION", "ENERGY_SPIN_SONIFICATION", "DESKTOP_FABRIC", "HARDWARE_GUARDIAN", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "TRUST_FABRIC", "EDGE_HASH_LAB", "EDGE_CONSTELLATION", "EVIDENCE_INDEPENDENCE", "SMART_COMPUTE_NODE", "CLAIM_IMPLEMENTATION_AUDIT", "DUE_DILIGENCE"
+    "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "REEL_IDENTITY", "REEL_FORGE", "RESOURCE_CONSOLE", "ROUTE_AURA", "RECEIPT_VIEWER", "BUYER_COCKPIT", "RESOURCE_SONIFICATION", "HARDWARE_GUARDIAN_UI", "STELLAR_NAVIGATOR", "STELLAR_BRIDGE", "MODE_FLIGHT", "BONUS_QUASAR", "QUASAR_SONIFICATION", "ENERGY_SPIN_SONIFICATION", "DESKTOP_FABRIC", "HARDWARE_GUARDIAN", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "TRUST_FABRIC", "EDGE_HASH_LAB", "EDGE_CONSTELLATION", "EVIDENCE_INDEPENDENCE", "SMART_COMPUTE_NODE", "CLAIM_IMPLEMENTATION_AUDIT", "PILOT_AUTHORITY", "DUE_DILIGENCE"
   ],
   "repository_change_control": {
     "main_branch_protected_at_last_audit": false,
@@ -195,6 +220,8 @@
     "cannot_be_fixed_by_repository_content_alone": true
   },
   "open_gates": [
+    "PILOT_AUTHORITY_OWNER_RECEIVING_ADDRESS_AND_CURRENT_BINANCE_BASE_SUPPORT_RECHECK",
+    "PILOT_AUTHORITY_EXACT_HEAD_INTEGRITY_AFTER_ADDRESS_ACTIVATION",
     "REAL_VENDOR_TELEMETRY_ADAPTERS_AND_SENSOR_PROVENANCE",
     "REAL_PROVIDER_ADAPTER_AND_SIGNED_MANIFEST",
     "END_TO_END_PROVIDER_AUTHORITY_EPOCH_ENFORCEMENT_IN_ROUTER_FABRIC",

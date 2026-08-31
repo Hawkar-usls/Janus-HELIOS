@@ -9,12 +9,14 @@
   "authority_domains": {
     "gameplay": "RNG_RTP_PAYOUT_BONUS_AND_WAGERING_DOMAIN",
     "compute": "CONSENT_RESOURCE_POLICY_ROUTING_EXECUTION_VERIFICATION_AND_SETTLEMENT_DOMAIN",
+    "licensing": "REQUEST_TERMS_PAYMENT_AND_LIMITED_PILOT_GRANT_DOMAIN",
     "relationship": "STRICTLY_SEPARATED",
     "compute_to_rng": "FORBIDDEN",
     "compute_to_rtp": "FORBIDDEN",
     "compute_to_bonus_probability": "FORBIDDEN",
     "compute_to_personal_jackpot_weight": "FORBIDDEN",
-    "hardware_pressure_to_game_outcome": "FORBIDDEN"
+    "hardware_pressure_to_game_outcome": "FORBIDDEN",
+    "payment_to_core_ownership": "FORBIDDEN"
   },
   "compute_plane": {
     "flow": [
@@ -114,6 +116,46 @@
     "unknown_lineage_counts_as_independent": false,
     "strong_set": "MAXIMUM_CLIQUE_OF_PAIRWISE_STRONGLY_INDEPENDENT_REPLICATIONS"
   },
+  "pilot_authority": {
+    "module": "src/helios-pilot-authority.js",
+    "version": "1.0.0",
+    "classification": "AUTOMATED_STANDARD_PILOT_LICENSE_GATE",
+    "maturity": "IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_RECEIVING_ADDRESS",
+    "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
+    "request_channel": "GITHUB_ISSUE_FORM",
+    "watcher": "tools/pilot-payment-watch.mjs",
+    "workflow": ".github/workflows/helios-pilot-authority.yml",
+    "terms": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
+    "payment_policy": "commerce/HELIOS_PILOT_PAYMENT_POLICY.json",
+    "primary_payment": {
+      "network": "BASE_MAINNET",
+      "chain_id": 8453,
+      "asset": "NATIVE_USDC",
+      "token_contract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "standard_fee_usdc": "10000.000000",
+      "unique_invoice_fingerprint_is_sub_dollar_discount": true,
+      "receiving_address_configured": false
+    },
+    "standard_grant": {
+      "term_days": 90,
+      "non_exclusive": true,
+      "non_transferable": true,
+      "non_sublicensable": true,
+      "controlled_non_money_pilot": true,
+      "real_money_rights": false,
+      "public_production_rights": false,
+      "core_ip_transfer": false,
+      "automatic_commercial_license": false
+    },
+    "security": {
+      "wallet_private_key_required": false,
+      "seed_phrase_required": false,
+      "exchange_password_required": false,
+      "withdrawal_api_key_required": false,
+      "watcher_can_move_funds": false,
+      "public_chain_observation_only": true
+    }
+  },
   "solar_feature_family": {
     "natural_corona": {
       "trigger": "3_OR_MORE_SUNS_ON_SETTLED_NORMAL_GRID",
@@ -155,7 +197,8 @@
     "live_mining": false,
     "live_generic_compute": false,
     "authoritative_settlement": false,
-    "demo_compute_receipts": true
+    "demo_compute_receipts": true,
+    "pilot_payment_authority_active": false
   },
   "commercial_position": {
     "owner_role": "IP_OWNER_AND_LICENSOR",
@@ -165,6 +208,7 @@
     "low_friction_pilot": true,
     "success_based_royalty": true,
     "science_public_benefit_relief_possible": true,
+    "standard_pilot_automation": "IMPLEMENTED_BUT_FAIL_CLOSED_DISABLED_UNTIL_RECEIVING_ADDRESS_RECHECK",
     "market_uniqueness_claim": "MARKET_REVIEWED_COMBINATION_CLAIM_NOT_PATENT_OR_FTO_OPINION"
   },
   "claim_audit": {
@@ -174,6 +218,7 @@
   "production_gate": {
     "status": "NOT_ESTABLISHED",
     "requires": [
+      "PILOT_AUTHORITY_RECEIVING_ADDRESS_AND_CURRENT_NETWORK_RECHECK_BEFORE_PAYMENT_AUTOMATION",
       "REAL_PROVIDER_ADAPTER_AND_SIGNED_MANIFEST",
       "END_TO_END_PROVIDER_AUTHORITY_EPOCH_ENFORCEMENT",
       "REAL_VENDOR_SENSOR_AND_ENERGY_TELEMETRY",

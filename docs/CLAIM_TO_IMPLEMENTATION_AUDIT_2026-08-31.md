@@ -19,9 +19,9 @@ Machine-readable record: [`.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.j
 
 ## Executive result
 
-The 2026-08-31 pass found several cases where HELIOS implementation had evolved faster than canonical status/docs, plus two places where the product story was stronger than the current end-to-end wiring.
+The 2026-08-31 pass found several cases where HELIOS implementation had evolved faster than canonical status/docs, plus places where the product story was stronger than the current end-to-end wiring.
 
-The audit therefore **did not upgrade every claim to PASS**. It tightened the code, removed misleading presentation, refreshed the canonical architecture, and explicitly left production-only claims behind external gates.
+The audit therefore **did not upgrade every claim to PASS**. It tightened the code, removed misleading presentation, refreshed the canonical architecture, explicitly left production-only claims behind external gates, and added the Standard Pilot Authority as an implemented-but-disabled licensing gate rather than pretending a wallet/payment route had already been activated.
 
 ### Corrections made in this pass
 
@@ -31,6 +31,7 @@ The audit therefore **did not upgrade every claim to PASS**. It tightened the co
 4. Host-first Quiet Canary QoS is now part of the Desktop Agent execution path after Hardware Guardian. It may only contract or block external compute.
 5. Smart Compute Node is no longer structurally limited to I0/hash evidence. Generic AI inference, rendering, science, transcoding, storage/network, operator batch, and custom work use workload-appropriate accounting; I0/hash keeps its checked-work evidence path.
 6. `PROJECT_STATUS.json`, canonical architecture and Desktop Fabric contract now match the current modules and versions.
+7. Standard Pilot Authority was added with a fail-closed payment/licence gate. It is deliberately disabled until the owner supplies and rechecks a current receiving address/network and the activating exact commit passes Integrity.
 
 ## Claim matrix
 
@@ -159,6 +160,38 @@ A successor verifier cannot silently forget a prior mandatory rejection without 
 
 **Gate:** make this checker mandatory in production verifier release/deployment.
 
+### Standard Pilot Authority — **IMPLEMENTED_CORE / ARMED-DISABLED**
+
+HELIOS now has a first-party standard-pilot licensing gate:
+
+```text
+NAMED REQUEST
++ FROZEN TERMS ACCEPTANCE
++ AUTHORITY / SCOPE CERTIFICATIONS
++ EXACT INVOICE
++ EXACT ON-CHAIN PAYMENT
++ CONFIRMATION / REUSE GATES
+→ PILOT_ACTIVE
+```
+
+The core and watcher enforce:
+
+```text
+PAYMENT IS EVIDENCE ≠ PAYMENT IS AUTHORITY
+```
+
+The standard automated grant is limited to a 90-day controlled non-money pilot. It is non-exclusive, non-transferable and non-sublicensable and does not transfer HELIOS Core or automatically create production/commercial rights.
+
+The frozen primary payment route is native USDC on Base Mainnet. The standard fee anchor is `10,000 USDC`; each request receives a deterministic sub-dollar **discount** as a unique on-chain invoice fingerprint.
+
+The payment watcher is read-only. It does not need a seed phrase, wallet private key, Binance password or withdrawal API key and cannot move funds.
+
+Current status is intentionally **disabled** because no owner receiving address has been committed.
+
+**Gate:** owner must verify current Binance USDC/Base deposit support, provide the exact current receiving address, confirm the route requires no memo/tag, enable the payment policy, and obtain a green HELIOS Integrity run for that exact activating commit. Until then, no invoice or grant may issue.
+
+This automated path is not a sanctions-screening, KYC, tax or gambling-regulatory engine and never authorizes real-money deployment.
+
 ### Public Buyer Lab / Trust surfaces — **DEMO_PREVIEW**
 
 The public page exposes policy previews, Trust Fabric, Smart Compute Node, Edge Hash/Constellation and Evidence Independence surfaces. Those cards are explanatory/reference UI only.
@@ -198,8 +231,20 @@ WHAT HELIOS ALREADY IMPLEMENTS AS CORE
 WHAT ONLY A REAL PARTNER PILOT CAN PROVE
 ```
 
+The Standard Pilot Authority adds a fourth useful distinction:
+
+```text
+WHAT A PARTNER CAN ACQUIRE AUTOMATICALLY AS A NARROW PILOT RIGHT
+≠
+WHAT STILL REQUIRES A NEGOTIATED PRODUCTION COMMERCIAL LICENCE
+```
+
 The preferred commercial relationship remains low-friction access with strong Core-IP protection and success-aligned economics. A partner should be able to evaluate the architecture without being sold fictional production evidence.
 
 ## Audit law
 
 > **No buyer-facing HELIOS claim may be promoted from `IMPLEMENTED_CORE` or `EXTERNAL_GATE` to `ENFORCED` without execution-path evidence and a green exact-commit integrity run.**
+
+For payment/licensing automation specifically:
+
+> **No HELIOS Pilot Authority may be promoted from `ARMED-DISABLED` to active until the public receiving route is rechecked and the exact activating commit passes HELIOS Integrity.**

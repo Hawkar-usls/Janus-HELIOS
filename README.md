@@ -64,6 +64,7 @@ HELIOS uses four maturity classes:
 | NerdMinerV2 × JANUS I0 bridge | **IMPLEMENTED CORE**, physical bridge/firmware gate pending |
 | Edge Constellation | **IMPLEMENTED CORE**, real fleet pending |
 | Evidence Independence Engine | **IMPLEMENTED CORE**, real attested lineage roots pending |
+| Standard Pilot Authority | **IMPLEMENTED CORE / ARMED-DISABLED**, receiving address pending |
 | Buyer Lab / policy surfaces | **DEMO PREVIEW** |
 | production settlement network | **EXTERNAL GATE / NOT ESTABLISHED** |
 
@@ -341,6 +342,45 @@ See:
 
 ---
 
+## HELIOS Standard Pilot Authority
+
+HELIOS now contains a fail-closed standard-pilot licensing path for partners that want to begin with a small, bounded pilot rather than negotiate a large acquisition/payment upfront.
+
+```text
+NAMED PILOT REQUEST
+        ↓
+FROZEN TERMS ACCEPTED
+        ↓
+EXACT INVOICE
+        ↓
+ON-CHAIN PAYMENT VERIFIED
+        ↓
+PILOT_ACTIVE · 90 DAYS
+```
+
+Core law:
+
+```text
+PAYMENT IS EVIDENCE ≠ PAYMENT IS AUTHORITY
+```
+
+The standard automated pilot is non-exclusive, non-transferable and non-sublicensable. It permits internal evaluation/integration and one controlled non-money pilot, but does **not** transfer HELIOS Core, authorize real-money gambling, authorize public production or automatically create commercial rights.
+
+The frozen primary payment route is **native USDC on Base Mainnet**, with a standard anchor of `10,000 USDC`. Each invoice receives a deterministic sub-dollar **discount** to create a unique on-chain payment fingerprint without charging a surcharge.
+
+The subsystem is currently **ARMED BUT DISABLED** because the owner receiving address has intentionally not been committed yet. No invoice or grant can issue until the exact current receiving address/network is rechecked and configured.
+
+No wallet private key, seed phrase, Binance password or withdrawal API key belongs in HELIOS. The payment watcher is read-only and cannot move funds.
+
+See:
+
+- [`docs/PILOT_AUTHORITY.md`](docs/PILOT_AUTHORITY.md)
+- [`legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md`](legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md)
+- [`commerce/HELIOS_PILOT_PAYMENT_POLICY.json`](commerce/HELIOS_PILOT_PAYMENT_POLICY.json)
+- [`.janus/HELIOS_PILOT_AUTHORITY.json`](.janus/HELIOS_PILOT_AUTHORITY.json)
+
+---
+
 ## Market / uniqueness boundary
 
 HELIOS does **not** claim to have invented slots, game+compute, volunteer computing, consumer GPU clouds, mining, hardware monitoring or public-benefit distributed compute.
@@ -385,6 +425,7 @@ Production is **NOT ESTABLISHED**. Major remaining gates include:
 9. real heterogeneous fleet validation;
 10. independent security/privacy/legal/game-math review;
 11. partner-operated non-money pilot with device-hours, Wh, failures, throttles and measured unit economics;
-12. branch protection/ruleset and signed closing snapshot or equivalent change control.
+12. branch protection/ruleset and signed closing snapshot or equivalent change control;
+13. Pilot Authority receiving-address activation only after current network verification and exact-head Integrity success.
 
 > **ONE CORE. ANY DESTINATION. PROTECT THE DEVICE. PROVE THE WORK. KEEP GAME MATH SEALED.**

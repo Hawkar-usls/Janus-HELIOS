@@ -79,9 +79,17 @@ THE MATERIALS ARE PROVIDED **AS IS**, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 Illustrative economics, prototypes, demos, roadmaps and proposed integrations are not warranties of revenue, profitability, datacenter savings, provider availability, regulatory approval or token-price performance.
 
-## 12. Commercial licensing
+## 12. Commercial and pilot licensing
 
-Commercial, pilot, OEM, operator, platform, hosted, white-label, exclusive field-of-use or production rights are available only under a separate written agreement with the copyright holder.
+Commercial, OEM, operator, platform, hosted, white-label, exclusive field-of-use or production rights are available only under a separate written agreement with the copyright holder.
+
+The repository may also publish a separate **HELIOS Standard Pilot License** for a narrowly scoped non-money pilot. Publication of that document alone grants nothing. Additional pilot rights arise only for a named grantee that satisfies the complete conditions of the then-active standard pilot terms and receives a valid `PILOT_ACTIVE` grant record from HELIOS Pilot Authority.
+
+The Standard Pilot License does not authorize real-money gambling or public production deployment and does not transfer HELIOS Core ownership. See:
+
+- `legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md`;
+- `commerce/HELIOS_PILOT_PAYMENT_POLICY.json`;
+- `.janus/HELIOS_PILOT_AUTHORITY.json`.
 
 ## 13. Acquisition / assignment boundary
 
@@ -99,7 +107,7 @@ Third-party and open-source rights remain governed by their original terms. Any 
 
 ## 14. Separate agreements and reservation of rights
 
-A separately signed agreement may grant additional rights and, to the extent of a conflict, controls for that contracting party.
+A separately signed agreement or a validly activated standard pilot agreement may grant additional rights and, to the extent of a conflict, controls for that contracting party and the expressly granted scope.
 
 All rights not expressly granted are reserved.
 

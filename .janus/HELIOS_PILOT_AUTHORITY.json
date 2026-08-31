@@ -1,0 +1,90 @@
+{
+  "schema": "janus.helios.pilot-authority.contract.v1",
+  "version": "1.0.0",
+  "classification": "AUTOMATED_STANDARD_PILOT_LICENSE_GATE",
+  "status": "ARMED_DISABLED_PENDING_RECEIVING_ADDRESS",
+  "purpose": "Issue a narrowly scoped HELIOS standard pilot grant only after a named grantee accepts frozen pilot terms and an exact on-chain payment is verified.",
+  "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
+  "implementation": "src/helios-pilot-authority.js",
+  "watcher": "tools/pilot-payment-watch.mjs",
+  "workflow": ".github/workflows/helios-pilot-authority.yml",
+  "payment_policy": "commerce/HELIOS_PILOT_PAYMENT_POLICY.json",
+  "terms": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
+  "request_template": ".github/ISSUE_TEMPLATE/helios-pilot-license.yml",
+  "grant_conditions": [
+    "NAMED_LEGAL_ENTITY",
+    "AUTHORIZED_REPRESENTATIVE_CERTIFICATION",
+    "GITHUB_GRANTEE_BINDING",
+    "FROZEN_TERMS_ACCEPTANCE",
+    "NON_MONEY_SCOPE_ACCEPTANCE",
+    "LEGAL_COMPLIANCE_SELF_CERTIFICATION",
+    "EXACT_NETWORK_ASSET_ACKNOWLEDGEMENT",
+    "EXACT_INVOICE_PAYMENT",
+    "MINIMUM_CONFIRMATIONS",
+    "NON_REUSED_TRANSACTION",
+    "PILOT_ACTIVE_GRANT_RECORD"
+  ],
+  "payment": {
+    "primary": "USDC_ON_BASE_MAINNET",
+    "chain_id": 8453,
+    "native_usdc_contract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "standard_fee_usdc": "10000.000000",
+    "invoice_fingerprint": "SUB_DOLLAR_DETERMINISTIC_DISCOUNT",
+    "bitcoin_primary": false,
+    "fiat_usd_onchain_address": false,
+    "wrong_network_auto_grant": false,
+    "wrong_amount_auto_grant": false,
+    "receiving_address_configured": false
+  },
+  "pilot_scope": {
+    "term_days": 90,
+    "non_exclusive": true,
+    "non_transferable": true,
+    "non_sublicensable": true,
+    "internal_evaluation": true,
+    "internal_integration": true,
+    "controlled_non_money_pilot": true,
+    "pilot_only_source_modification": true,
+    "real_money_gambling": false,
+    "public_production_service": false,
+    "source_resale": false,
+    "core_ip_transfer": false,
+    "automatic_commercial_license": false,
+    "automatic_exclusivity": false,
+    "automatic_renewal": false,
+    "janus_i0_included_by_default": false
+  },
+  "security": {
+    "wallet_private_key_required": false,
+    "wallet_seed_required": false,
+    "exchange_password_required": false,
+    "withdrawal_api_key_required": false,
+    "verifier_can_move_funds": false,
+    "public_chain_observation_only": true,
+    "transaction_reuse_forbidden": true,
+    "grant_digest_is_signature": false
+  },
+  "privacy": {
+    "passport_required": false,
+    "home_address_required": false,
+    "phone_required": false,
+    "public_request_collects_only_minimum_contract_identity": true
+  },
+  "legal_boundary": {
+    "real_money_authorization": "NONE",
+    "production_authorization": "NONE",
+    "regulatory_certification": "NONE",
+    "sanctions_screening_service": "NOT_IMPLEMENTED",
+    "tax_engine": "NOT_IMPLEMENTED",
+    "legal_advice": "NONE",
+    "mandatory_applicable_law_controls": true,
+    "commercial_production_requires_separate_written_agreement": true
+  },
+  "activation_gate": {
+    "owner_receiving_address_required": true,
+    "current_binance_network_support_must_be_rechecked": true,
+    "memo_required_must_be_false": true,
+    "policy_enabled_must_be_true": true,
+    "exact_head_integrity_success_required": true
+  }
+}

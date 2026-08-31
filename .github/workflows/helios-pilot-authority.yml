@@ -1,0 +1,38 @@
+name: HELIOS Pilot Authority
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: helios-pilot-authority
+  cancel-in-progress: false
+
+jobs:
+  pilot-authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout exact repository snapshot
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '24'
+
+      - name: Verify or issue standard pilot grants
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HELIOS_PILOT_RPC_URL: ${{ secrets.HELIOS_PILOT_RPC_URL }}
+        run: node tools/pilot-payment-watch.mjs

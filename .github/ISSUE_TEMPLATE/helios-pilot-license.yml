@@ -1,0 +1,80 @@
+name: HELIOS Standard Pilot License Request
+description: Request the standard 90-day non-money HELIOS pilot licence. Payment is invoiced only after the request is validated.
+title: "[HELIOS PILOT] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This request is public. Do **not** post passports, home addresses, phone numbers, wallet seed phrases, private keys, exchange passwords or API keys.
+
+        The standard pilot is limited, non-exclusive, non-transferable and non-sublicensable. It does **not** authorize real-money gambling or a public production service.
+
+        The current automated payment policy uses **USDC on Base Mainnet** only when Pilot Authority is enabled. A random payment without a valid request and exact invoice does not create rights.
+
+  - type: input
+    id: legal_entity_name
+    attributes:
+      label: Legal entity name
+      description: Exact legal/business name that will receive the pilot grant.
+      placeholder: Example Compute Inc.
+    validations:
+      required: true
+
+  - type: input
+    id: authorized_representative
+    attributes:
+      label: Authorized representative
+      description: Name or business role of the person authorized to bind the grantee. Do not post identity-document numbers.
+      placeholder: Jane Doe, CTO
+    validations:
+      required: true
+
+  - type: input
+    id: github_grantee
+    attributes:
+      label: GitHub grantee
+      description: GitHub user or organization that should be bound to the pilot evidence record.
+      placeholder: example-org
+    validations:
+      required: true
+
+  - type: textarea
+    id: pilot_project
+    attributes:
+      label: Pilot project
+      description: Describe the intended controlled pilot, integration target and expected evaluation scope.
+      placeholder: Controlled non-money integration of HELIOS with our compute-provider test environment.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: requested_scope
+    attributes:
+      label: Requested scope
+      options:
+        - HELIOS_STANDARD_NON_MONEY_PILOT
+        - HELIOS_INTERNAL_INTEGRATION_ONLY
+        - HELIOS_RESEARCH_PUBLIC_BENEFIT_PILOT
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance and authority
+      options:
+        - label: I accept `legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md` version 1.0 and understand the invoice will bind its SHA-256 terms digest.
+          required: true
+        - label: I certify that I am authorized to bind the named grantee to the pilot terms.
+          required: true
+        - label: I understand this automated grant does not authorize real-money gambling, public production deployment, sublicensing, source resale, HELIOS Core ownership or automatic commercial rights.
+          required: true
+        - label: I certify that entering this pilot and making the payment are lawful for the grantee and will not knowingly be used to evade sanctions, export controls, AML requirements, gambling regulation, tax obligations or other applicable law.
+          required: true
+        - label: I understand that only the exact token, exact network, exact receiving address and exact invoice amount can satisfy the automatic payment gate; wrong-network or unmatched transfers do not automatically grant rights.
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        After a valid request, HELIOS Pilot Authority will post an invoice record. **Do not pay before an invoice exists.**
