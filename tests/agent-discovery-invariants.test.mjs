@@ -56,10 +56,14 @@ assert.match(llmsTxt, /Do not send unsolicited payment/i);
 assert.match(agentsMd, /technology scouts, buyer agents, licensing agents/i);
 assert.match(agentsMd, /Do not attempt to bypass/i);
 assert.match(agentsMd, /may not:\n\n- bind a principal to a contract/i);
+assert.match(agentsMd, /Never add wallet private keys, seed phrases, withdrawal credentials/i);
 
 const lowerDiscovery = `${agentsJsonText}\n${agentsTxt}\n${llmsTxt}\n${agentsMd}\n${contractText}`.toLowerCase();
 assert.doesNotMatch(lowerDiscovery, /0x7149081aea54fbef57effeb52a5a966b81cc03a0/);
-assert.doesNotMatch(lowerDiscovery, /seed phrase|private key|withdrawal api key/);
+assert.doesNotMatch(
+  lowerDiscovery,
+  /(?:seed[_ -]?phrase|private[_ -]?key|withdrawal[_ -]?api[_ -]?key)\s*[:=]\s*["']?[a-z0-9+\/_=-]{16,}/i
+);
 
 assert.equal(status.pilot_authority.maturity, 'IMPLEMENTED_CORE_ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT');
 assert.equal(status.production_readiness, 'NOT_ESTABLISHED');
