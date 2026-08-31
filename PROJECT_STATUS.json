@@ -3,7 +3,7 @@
   "project": "JANUS HELIOS",
   "project_version": "1.16.0",
   "last_reviewed": "2026-08-31",
-  "status_basis": "CLAIM_TO_IMPLEMENTATION_AUDIT_PLUS_PILOT_AUTHORITY_RPC_QUORUM_GATE",
+  "status_basis": "CLAIM_TO_IMPLEMENTATION_AUDIT_PLUS_ACTIVE_PILOT_AUTHORITY_RPC_QUORUM_GATE",
   "production_readiness": "NOT_ESTABLISHED",
   "public_surface": {
     "url": "https://hawkar-usls.github.io/Janus-HELIOS/",
@@ -51,15 +51,25 @@
     "real_datacenter_offload_measured": false
   },
   "hardware_guardian": {
-    "module": "src/helios-hardware-guardian.js", "version": "1.0.0", "maturity": "ENFORCED_IN_DESKTOP_AGENT",
-    "states": ["GREEN", "WATCH", "THROTTLE", "COOLDOWN", "BLOCK", "UNKNOWN"], "can_widen_execution_budget": false, "human_blind": true, "missing_sensor_is_green": false
+    "module": "src/helios-hardware-guardian.js",
+    "version": "1.0.0",
+    "maturity": "ENFORCED_IN_DESKTOP_AGENT",
+    "states": ["GREEN", "WATCH", "THROTTLE", "COOLDOWN", "BLOCK", "UNKNOWN"],
+    "can_widen_execution_budget": false,
+    "human_blind": true,
+    "missing_sensor_is_green": false
   },
   "host_first_qos": {
-    "implementation": "evaluateHostFirstQuietCanary in src/helios-trust-fabric.js", "enforcement": "src/helios-desktop-agent.js", "maturity": "ENFORCED_IN_DESKTOP_AGENT",
-    "host_priority": "ABSOLUTE", "external_compute_yields_first": true, "human_observation": "FORBIDDEN"
+    "implementation": "evaluateHostFirstQuietCanary in src/helios-trust-fabric.js",
+    "enforcement": "src/helios-desktop-agent.js",
+    "maturity": "ENFORCED_IN_DESKTOP_AGENT",
+    "host_priority": "ABSOLUTE",
+    "external_compute_yields_first": true,
+    "human_observation": "FORBIDDEN"
   },
   "trust_fabric": {
-    "module": "src/helios-trust-fabric.js", "version": "1.0.0",
+    "module": "src/helios-trust-fabric.js",
+    "version": "1.0.0",
     "provider_authority_epoch": "IMPLEMENTED_CORE_NOT_END_TO_END_ROUTER_ENFORCED",
     "receipt_provenance_envelope": "IMPLEMENTED_CORE_EXTERNAL_AUTHORITY_PENDING",
     "device_health_passport": "IMPLEMENTED_CORE_REAL_SENSOR_PERSISTENCE_PENDING",
@@ -68,28 +78,46 @@
     "shadow_accelerator_qualification": "IMPLEMENTED_CORE_NOT_PRODUCTION_ACCELERATOR_GATE"
   },
   "smart_compute_node": {
-    "module": "src/helios-smart-compute-node.js", "version": "1.1.0", "contract": ".janus/HELIOS_SMART_COMPUTE_NODE.json", "maturity": "IMPLEMENTED_CORE",
+    "module": "src/helios-smart-compute-node.js",
+    "version": "1.1.0",
+    "contract": ".janus/HELIOS_SMART_COMPUTE_NODE.json",
+    "maturity": "IMPLEMENTED_CORE",
     "generic_work_kinds": ["GENERAL_COMPUTE", "AI_INFERENCE", "RENDER", "SCIENCE", "TRANSCODE", "STORAGE_NETWORK", "OPERATOR_BATCH", "CUSTOM"],
-    "edge_hash_specialization": true, "work_and_device_state_one_record": true, "production_execution_ready": false
+    "edge_hash_specialization": true,
+    "work_and_device_state_one_record": true,
+    "production_execution_ready": false
   },
   "edge_hash_lab": {
-    "module": "src/helios-edge-hash-lab.js", "version": "1.0.0", "maturity": "IMPLEMENTED_CORE_COMPATIBILITY_BRIDGE_EXTERNAL_FIRMWARE_GATE",
-    "nerdminer_v2": "EXTERNAL_MIT_COMPATIBILITY_TARGET", "janus_i0": "SEPARATELY_SCOPED_BACKGROUND_IP", "stock_nerdminer_i0_authority": false,
-    "i0_vs_random_mirror": true, "normalization": "PER_CHECKED_MH"
+    "module": "src/helios-edge-hash-lab.js",
+    "version": "1.0.0",
+    "maturity": "IMPLEMENTED_CORE_COMPATIBILITY_BRIDGE_EXTERNAL_FIRMWARE_GATE",
+    "nerdminer_v2": "EXTERNAL_MIT_COMPATIBILITY_TARGET",
+    "janus_i0": "SEPARATELY_SCOPED_BACKGROUND_IP",
+    "stock_nerdminer_i0_authority": false,
+    "i0_vs_random_mirror": true,
+    "normalization": "PER_CHECKED_MH"
   },
   "edge_constellation": {
-    "module": "src/helios-edge-constellation.js", "version": "1.1.0", "maturity": "IMPLEMENTED_CORE_REAL_FLEET_PENDING",
-    "node_power_equals_evidence_weight": false, "local_paired_experiment_required": true
+    "module": "src/helios-edge-constellation.js",
+    "version": "1.1.0",
+    "maturity": "IMPLEMENTED_CORE_REAL_FLEET_PENDING",
+    "node_power_equals_evidence_weight": false,
+    "local_paired_experiment_required": true
   },
   "evidence_independence": {
-    "module": "src/helios-evidence-independence.js", "version": "1.0.0", "maturity": "IMPLEMENTED_CORE_REAL_ATTESTED_ROOTS_PENDING",
-    "unknown_lineage_counts_as_independent": false, "same_hardware_class_is_dependency": false, "different_hardware_class_proves_independence": false,
+    "module": "src/helios-evidence-independence.js",
+    "version": "1.0.0",
+    "maturity": "IMPLEMENTED_CORE_REAL_ATTESTED_ROOTS_PENDING",
+    "unknown_lineage_counts_as_independent": false,
+    "same_hardware_class_is_dependency": false,
+    "different_hardware_class_proves_independence": false,
     "strong_set_method": "MAXIMUM_CLIQUE_OVER_PAIRWISE_STRONG_INDEPENDENCE"
   },
   "pilot_authority": {
     "module": "src/helios-pilot-authority.js",
     "version": "1.2.0",
-    "payment_policy_version": "1.2.1",
+    "contract_version": "1.3.0",
+    "payment_policy_version": "1.3.0",
     "contract": ".janus/HELIOS_PILOT_AUTHORITY.json",
     "watcher": "tools/pilot-payment-watch.mjs",
     "rpc_smoke": "tools/pilot-rpc-smoke.mjs",
@@ -98,7 +126,7 @@
     "terms": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
     "payment_policy": "commerce/HELIOS_PILOT_PAYMENT_POLICY.json",
     "route_evidence": "commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json",
-    "maturity": "IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION",
+    "maturity": "IMPLEMENTED_CORE_ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT",
     "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
     "primary_payment": "USDT_ON_ETHEREUM_MAINNET_ERC20",
     "chain_id": 1,
@@ -117,7 +145,10 @@
     "rpc_sources": ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org/"],
     "single_rpc_may_auto_grant": false,
     "rpc_quorum_pre_activation_smoke_result": "PASS_ON_FDDE711F",
-    "payment_policy_enabled": false,
+    "payment_policy_enabled": true,
+    "issuer_main_only": true,
+    "critical_runtime_preflight": true,
+    "first_real_grant_observed": false,
     "wallet_private_key_required": false,
     "verifier_can_move_funds": false,
     "verifier_can_broadcast_transactions": false,
@@ -127,12 +158,20 @@
     "automatic_commercial_license": false
   },
   "adaptive_policy_plane": {
-    "module": "src/helios-adaptive-policy.js", "version": "1.0.0", "contract": ".janus/HELIOS_ADAPTIVE_POLICY.json",
-    "principle": "IMMUTABLE_EXECUTION_TRUTH_PLUS_LEARNABLE_BOUNDED_POLICY_AROUND_IT", "may_change_artifact_identity": false, "may_change_verifier": false, "may_change_game_math": false
+    "module": "src/helios-adaptive-policy.js",
+    "version": "1.0.0",
+    "contract": ".janus/HELIOS_ADAPTIVE_POLICY.json",
+    "principle": "IMMUTABLE_EXECUTION_TRUTH_PLUS_LEARNABLE_BOUNDED_POLICY_AROUND_IT",
+    "may_change_artifact_identity": false,
+    "may_change_verifier": false,
+    "may_change_game_math": false
   },
   "dual_stream_safety_guard": {
-    "module": "src/helios-dual-stream-guard.js", "contract": ".janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json",
-    "hard_balance": "SAFETY_RESERVE>=RHO*CHANGE_PRESSURE", "missing_safety_may_be_fabricated": false, "player_emotional_state_inputs": "FORBIDDEN"
+    "module": "src/helios-dual-stream-guard.js",
+    "contract": ".janus/HELIOS_DUAL_STREAM_SAFETY_GUARD.json",
+    "hard_balance": "SAFETY_RESERVE>=RHO*CHANGE_PRESSURE",
+    "missing_safety_may_be_fabricated": false,
+    "player_emotional_state_inputs": "FORBIDDEN"
   },
   "dual_stream_director": {"module": "helios-dual-stream-director.js", "version": "1.1.0", "presentation_only": true, "loads_other_feature_scripts": false},
   "stellar_navigation": {"module": "helios-stellar-nav.js", "version": "1.1.0", "presentation_only": true, "network_requests": false},
@@ -142,7 +181,7 @@
   "licensing_and_acquisition": {
     "helios_public_license": "JANUS_HELIOS_SOURCE_AVAILABLE_EVALUATION_LICENSE_V1_2",
     "standard_pilot_license": "HELIOS_STANDARD_PILOT_LICENSE_V1_0",
-    "standard_pilot_authority_status": "ARMED_DISABLED_PENDING_RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION",
+    "standard_pilot_authority_status": "ACTIVE_STANDARD_PILOT_AUTHORITY_MAIN_ONLY_AWAITING_FIRST_PAID_GRANT",
     "open_source": false,
     "commercial_rights_granted_by_publication": false,
     "default_transaction_scope": "HELIOS_ONLY_UNLESS_EXPRESSLY_EXPANDED",
@@ -166,7 +205,10 @@
     "rpc_quorum_pre_activation_success_commit": "fdde711f5b2831a533629528ac81821dafebd61c",
     "rpc_quorum_pre_activation_run_id": 33358927756,
     "rpc_quorum_pre_activation_result": "PASS",
-    "scope_rule": "A_GREEN_COMMIT_DOES_NOT_CERTIFY_A_LATER_COMMIT; RE_RUN_FOR_EACH_CLOSING_SNAPSHOT"
+    "dual_green_pre_activation_commit": "8264eda44fcf746054897c787df07ee5611118bc",
+    "dual_green_pre_activation_integrity_run_id": 33359591112,
+    "dual_green_pre_activation_rpc_run_id": 33359591050,
+    "scope_rule": "A_GREEN_COMMIT_DOES_NOT_CERTIFY_A_LATER_COMMIT; ACTIVATION_BRANCH_EXACT_SHA_MUST_PASS_BOTH_GATES_BEFORE_MAIN_PROMOTION"
   },
   "test_suites_present": [
     "ROUTER", "PUBLIC_SURFACE", "POLISH", "SOLAR_CORONA_FREE_SPINS", "BONUS_BUY_CONSENT", "CASCADE_ENERGY", "COSMIC_MUSIC", "LUCKY_CONTRIBUTION", "PROFILE_DASHBOARD", "MOBILE_SHOWCASE", "JANUS_WORLD_MATRIX", "SLOT_UX", "REEL_IDENTITY", "REEL_FORGE", "RESOURCE_CONSOLE", "ROUTE_AURA", "RECEIPT_VIEWER", "BUYER_COCKPIT", "RESOURCE_SONIFICATION", "HARDWARE_GUARDIAN_UI", "STELLAR_NAVIGATOR", "STELLAR_BRIDGE", "MODE_FLIGHT", "BONUS_QUASAR", "QUASAR_SONIFICATION", "ENERGY_SPIN_SONIFICATION", "DESKTOP_FABRIC", "HARDWARE_GUARDIAN", "DESKTOP_AGENT", "ADAPTIVE_POLICY", "DUAL_STREAM_SAFETY", "DUAL_STREAM_DIRECTOR", "TRUST_FABRIC", "EDGE_HASH_LAB", "EDGE_CONSTELLATION", "EVIDENCE_INDEPENDENCE", "SMART_COMPUTE_NODE", "CLAIM_IMPLEMENTATION_AUDIT", "PILOT_AUTHORITY", "PILOT_RPC_QUORUM", "DUE_DILIGENCE"
@@ -179,7 +221,7 @@
     "cannot_be_fixed_by_repository_content_alone": true
   },
   "open_gates": [
-    "PILOT_AUTHORITY_FINAL_POLICY_ENABLE_AFTER_EXACT_HEAD_INTEGRITY_AND_RPC_QUORUM",
+    "FIRST_REAL_PAID_STANDARD_PILOT_GRANT_AND_FIELD_VALIDATION",
     "REAL_VENDOR_TELEMETRY_ADAPTERS_AND_SENSOR_PROVENANCE",
     "REAL_PROVIDER_ADAPTER_AND_SIGNED_MANIFEST",
     "END_TO_END_PROVIDER_AUTHORITY_EPOCH_ENFORCEMENT_IN_ROUTER_FABRIC",
