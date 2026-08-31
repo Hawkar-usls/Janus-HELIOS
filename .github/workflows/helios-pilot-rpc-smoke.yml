@@ -1,0 +1,39 @@
+name: HELIOS Pilot RPC Quorum
+
+on:
+  push:
+    paths:
+      - 'commerce/HELIOS_PILOT_PAYMENT_POLICY.json'
+      - 'commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json'
+      - 'tools/pilot-rpc-smoke.mjs'
+      - 'tools/pilot-payment-watch.mjs'
+      - 'src/helios-pilot-authority.js'
+      - '.github/workflows/helios-pilot-rpc-smoke.yml'
+      - '.github/workflows/helios-pilot-authority.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: helios-pilot-rpc-quorum
+  cancel-in-progress: true
+
+jobs:
+  rpc-quorum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact repository snapshot
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '24'
+
+      - name: Verify independent read-only Ethereum RPC quorum
+        run: node tools/pilot-rpc-smoke.mjs
