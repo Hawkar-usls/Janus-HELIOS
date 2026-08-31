@@ -1,19 +1,20 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [agentsJsonText, agentsTxt, llmsTxt, agentsMd, contractText, statusText, readme] = await Promise.all([
+const [agentsJsonText, agentsTxt, llmsTxt, agentsMd, contractText, statusText, changeControlText] = await Promise.all([
   readFile(new URL('../agents.json', import.meta.url), 'utf8'),
   readFile(new URL('../agents.txt', import.meta.url), 'utf8'),
   readFile(new URL('../llms.txt', import.meta.url), 'utf8'),
   readFile(new URL('../AGENTS.md', import.meta.url), 'utf8'),
   readFile(new URL('../.janus/HELIOS_AGENT_DISCOVERY.json', import.meta.url), 'utf8'),
   readFile(new URL('../PROJECT_STATUS.json', import.meta.url), 'utf8'),
-  readFile(new URL('../README.md', import.meta.url), 'utf8')
+  readFile(new URL('../.janus/HELIOS_REPOSITORY_CHANGE_CONTROL.json', import.meta.url), 'utf8')
 ]);
 
 const beacon = JSON.parse(agentsJsonText);
 const contract = JSON.parse(contractText);
 const status = JSON.parse(statusText);
+const changeControl = JSON.parse(changeControlText);
 
 assert.equal(beacon.schema, 'janus.helios.agent-discovery.v1');
 assert.equal(beacon.project.name, 'JANUS HELIOS');
@@ -60,14 +61,17 @@ const lowerDiscovery = `${agentsJsonText}\n${agentsTxt}\n${llmsTxt}\n${agentsMd}
 assert.doesNotMatch(lowerDiscovery, /0x7149081aea54fbef57effeb52a5a966b81cc03a0/);
 assert.doesNotMatch(lowerDiscovery, /seed phrase|private key|withdrawal api key/);
 
-assert.equal(status.agent_discovery.status, 'ACTIVE_PUBLIC_MACHINE_READABLE_BEACON');
-assert.equal(status.agent_discovery.autonomous_contract_authority, false);
-assert.equal(status.repository_change_control.main_branch_protected_at_last_audit, true);
-assert.equal(status.repository_change_control.required_status_checks_enforced_at_github_setting_level, true);
-assert.doesNotMatch(status.open_gates.join('\n'), /BRANCH_PROTECTION_OR_EQUIVALENT_CHANGE_CONTROL_FOR_CLOSING/);
+assert.equal(status.pilot_authority.maturity, 'IMPLEMENTED_CORE_ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT');
+assert.equal(status.production_readiness, 'NOT_ESTABLISHED');
 
-assert.match(readme, /AI agent discovery/i);
-assert.match(readme, /Standard Pilot Authority is \*\*ACTIVE\*\*/i);
-assert.doesNotMatch(readme, /ARMED BUT DISABLED/i);
+assert.equal(changeControl.status, 'ACTIVE_RULESET_ENFORCED');
+assert.equal(changeControl.ruleset.name, 'HELIOS MAIN GUARD');
+assert.equal(changeControl.ruleset.enforcement, 'active');
+assert.equal(changeControl.ruleset.pull_request_required, true);
+assert.equal(changeControl.ruleset.non_fast_forward_forbidden, true);
+assert.equal(changeControl.ruleset.strict_required_status_checks_policy, true);
+assert.deepEqual(changeControl.ruleset.required_status_checks, ['integrity']);
+assert.deepEqual(changeControl.ruleset.bypass_actors, []);
+assert.equal(changeControl.ruleset.current_user_can_bypass, 'never');
 
 console.log('HELIOS AI agent discovery / buyer-scout beacon invariants: PASS');
