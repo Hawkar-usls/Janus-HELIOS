@@ -1,8 +1,8 @@
 {
   "schema": "janus.helios.pilot-payment-policy.v1",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "enabled": false,
-  "disabled_reason": "RECEIVING_ADDRESS_AND_DEDICATED_RPC_NOT_CONFIGURED_BY_OWNER",
+  "disabled_reason": "RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION_COMMIT_PENDING",
   "authority_mode": "STANDARD_PILOT_ONLY",
   "terms_file": "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md",
   "invoice_ttl_hours": 24,
@@ -20,9 +20,11 @@
     "standard_fee_raw": "10000000000",
     "invoice_fingerprint": "DETERMINISTIC_DISCOUNT_1_TO_999999_MICRO_UNITS_FROM_STANDARD_FEE",
     "fingerprint_is_surcharge": false,
-    "receiving_address": null,
-    "receiving_address_custody": "OWNER_TO_CONFIGURE_CURRENT_BINANCE_OR_OTHER_RECEIVING_ADDRESS",
+    "receiving_address": "0x7149081aea54fbef57effeb52a5a966b81cc03a0",
+    "receiving_address_custody": "OWNER_VERIFIED_CURRENT_BINANCE_USDT_ETHEREUM_ERC20_DEPOSIT_ROUTE",
+    "route_evidence": "commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json",
     "memo_required": false,
+    "memo_tag_status": "EXPANDED_BINANCE_DEPOSIT_SCREEN_SHOWS_NO_MEMO_TAG_PAYMENT_ID_FIELD",
     "private_key_present": false,
     "seed_phrase_present": false,
     "wrong_network_grants_rights": false,
@@ -30,14 +32,22 @@
     "overpayment_or_underpayment_grants_rights": false
   },
   "chain_observation": {
-    "rpc_url": null,
-    "rpc_classification": "DEDICATED_ETHEREUM_RPC_REQUIRED_BEFORE_ENABLE",
+    "rpc_urls": [
+      "https://ethereum-rpc.publicnode.com",
+      "https://public.1rpc.io/eth"
+    ],
+    "rpc_quorum": 2,
+    "rpc_classification": "TWO_INDEPENDENT_PUBLIC_READ_ONLY_ETHEREUM_RPC_SOURCES_LOW_VOLUME_PILOT_BOOTSTRAP",
     "expected_chain_id_hex": "0x1",
+    "max_head_spread_blocks": 8,
     "min_confirmations": 64,
+    "binance_credit_confirmations_observed": 6,
+    "binance_withdrawal_unlock_confirmations_observed": 64,
     "lookback_blocks": 12000,
     "log_chunk_blocks": 1000,
     "erc20_transfer_topic": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-    "production_upgrade": "MULTI_SOURCE_OR_MANAGED_RPC_AND_FINALITY_REVIEW_BEFORE_HIGH_VOLUME_AUTOMATION"
+    "single_rpc_may_auto_grant": false,
+    "production_upgrade": "CONTRACTED_OR_SELF_HOSTED_MULTI_SOURCE_RPC_AND_FINALITY_REVIEW_BEFORE_HIGH_VOLUME_AUTOMATION"
   },
   "request_gate": {
     "channel": "GITHUB_ISSUE_FORM",
@@ -58,6 +68,8 @@
   "grant_gate": {
     "payment_alone_is_authority": false,
     "request_plus_acceptance_plus_exact_payment_required": true,
+    "rpc_quorum_required": true,
+    "rpc_quorum_min_sources": 2,
     "grant_status_on_success": "PILOT_ACTIVE",
     "grant_evidence_channel": "REPOSITORY_AUTHENTICATED_GITHUB_ISSUE_COMMENT",
     "grant_record_digest": "SHA256",
@@ -77,6 +89,7 @@
     "binance_password_required": false,
     "withdrawal_api_key_required": false,
     "payment_verifier_can_move_funds": false,
+    "payment_verifier_can_broadcast_transactions": false,
     "public_chain_observation_only": true,
     "buyer_passport_required": false,
     "buyer_home_address_required": false
@@ -91,13 +104,13 @@
     "production_requires_separate_written_agreement": true
   },
   "activation_requirements": [
-    "OWNER_CONFIRMS_CURRENT_BINANCE_USDT_ETHEREUM_ERC20_DEPOSIT_SUPPORT",
-    "OWNER_PROVIDES_EXACT_CURRENT_USDT_ETHEREUM_ERC20_RECEIVING_ADDRESS",
-    "ADDRESS_IS_RECHECKED_IN_BINANCE_DEPOSIT_UI",
-    "NO_MEMO_OR_TAG_IS_REQUIRED_FOR_THE_SELECTED_DEPOSIT_ROUTE",
-    "DEDICATED_ETHEREUM_RPC_CONFIGURED_AS_HELIOS_PILOT_RPC_URL",
+    "BINANCE_USDT_ETHEREUM_ERC20_ROUTE_EVIDENCE_FROZEN",
+    "NO_MEMO_TAG_PAYMENT_ID_FIELD_OBSERVED_ON_EXPANDED_DEPOSIT_SCREEN",
+    "TWO_SOURCE_ETHEREUM_RPC_QUORUM_CONFIGURED",
+    "RPC_QUORUM_SMOKE_PASSES_ON_EXACT_PRE_ACTIVATION_HEAD",
     "POLICY_ENABLED_SWITCHED_TO_TRUE",
-    "FINAL_EXACT_HEAD_INTEGRITY_RUN_PASSES"
+    "FINAL_EXACT_HEAD_INTEGRITY_RUN_PASSES",
+    "FINAL_EXACT_HEAD_RPC_QUORUM_SMOKE_PASSES"
   ],
   "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY"
 }
