@@ -29,7 +29,7 @@ const ETH_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7';
 const RECEIVER = '0x7149081aea54fbef57effeb52a5a966b81cc03a0';
 
 assert.equal(HELIOS_PILOT_AUTHORITY_VERSION, '1.2.0');
-assert.equal(policy.version, '1.2.0');
+assert.equal(policy.version, '1.2.1');
 assert.equal(policy.enabled, false);
 assert.equal(policy.disabled_reason, 'RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION_COMMIT_PENDING');
 assert.equal(policy.payment.network, 'ETHEREUM_MAINNET');
@@ -45,7 +45,7 @@ assert.equal(policy.payment.private_key_present, false);
 assert.equal(policy.payment.seed_phrase_present, false);
 assert.deepEqual(policy.chain_observation.rpc_urls, [
   'https://ethereum-rpc.publicnode.com',
-  'https://public.1rpc.io/eth'
+  'https://eth.drpc.org/'
 ]);
 assert.equal(policy.chain_observation.rpc_quorum, 2);
 assert.equal(policy.chain_observation.single_rpc_may_auto_grant, false);
@@ -53,6 +53,8 @@ assert.equal(policy.chain_observation.expected_chain_id_hex, '0x1');
 assert.equal(policy.chain_observation.min_confirmations, 64);
 assert.equal(policy.chain_observation.binance_credit_confirmations_observed, 6);
 assert.equal(policy.chain_observation.binance_withdrawal_unlock_confirmations_observed, 64);
+assert.equal(policy.chain_observation.rejected_rpc_sources[0].url, 'https://public.1rpc.io/eth');
+assert.match(policy.chain_observation.rejected_rpc_sources[0].reason, /ETH_GETLOGS_METHOD_NOT_AVAILABLE/);
 assert.equal(policy.grant_gate.payment_alone_is_authority, false);
 assert.equal(policy.grant_gate.rpc_quorum_required, true);
 assert.equal(policy.grant_gate.rpc_quorum_min_sources, 2);
@@ -124,13 +126,7 @@ assert.equal(parsed.acceptance.legal_and_sanctions_compliance, true);
 
 assert.equal(deriveInvoiceFingerprintDiscountRaw(42), 43n);
 const issuedAt = Date.parse('2026-08-31T00:00:00Z');
-const invoice = createPilotInvoice({
-  issue_number: 42,
-  request,
-  policy: enabledPolicy,
-  terms_sha256: 'a'.repeat(64),
-  issued_at_ms: issuedAt
-});
+const invoice = createPilotInvoice({ issue_number: 42, request, policy: enabledPolicy, terms_sha256: 'a'.repeat(64), issued_at_ms: issuedAt });
 assert.equal(invoice.invoice_id, 'HELIOS-PILOT-42');
 assert.equal(invoice.authority_version, '1.2.0');
 assert.equal(invoice.payment.network, 'ETHEREUM_MAINNET');
@@ -147,71 +143,33 @@ assert.equal(invoice.payment.wrong_network_grants_rights, false);
 assert.equal(invoice.law, 'PAYMENT_IS_EVIDENCE_NOT_AUTHORITY');
 
 const goodObservation = {
-  chain_id: 1,
-  token_contract: enabledPolicy.payment.token_contract,
-  tx_hash: `0x${'b'.repeat(64)}`,
-  from: '0x2222222222222222222222222222222222222222',
-  to: enabledPolicy.payment.receiving_address,
-  amount_raw: invoice.payment.exact_amount_raw,
-  block_number: 1000,
-  removed: false,
-  receipt_status: true,
-  observed_at: '2026-08-31T00:02:00Z',
-  rpc_quorum_verified: true,
-  rpc_source_count: 2
+  chain_id: 1, token_contract: enabledPolicy.payment.token_contract, tx_hash: `0x${'b'.repeat(64)}`,
+  from: '0x2222222222222222222222222222222222222222', to: enabledPolicy.payment.receiving_address,
+  amount_raw: invoice.payment.exact_amount_raw, block_number: 1000, removed: false, receipt_status: true,
+  observed_at: '2026-08-31T00:02:00Z', rpc_quorum_verified: true, rpc_source_count: 2
 };
 
-const noQuorum = verifyPilotPaymentEvidence({
-  invoice,
-  observation: { ...goodObservation, rpc_quorum_verified: false },
-  latest_block_number: 1100,
-  min_confirmations: 64
-});
+const noQuorum = verifyPilotPaymentEvidence({ invoice, observation: { ...goodObservation, rpc_quorum_verified: false }, latest_block_number: 1100, min_confirmations: 64 });
 assert.equal(noQuorum.verified, false);
 assert.equal(noQuorum.reason, 'RPC_QUORUM_NOT_VERIFIED');
 
-const oneSource = verifyPilotPaymentEvidence({
-  invoice,
-  observation: { ...goodObservation, rpc_source_count: 1 },
-  latest_block_number: 1100,
-  min_confirmations: 64
-});
+const oneSource = verifyPilotPaymentEvidence({ invoice, observation: { ...goodObservation, rpc_source_count: 1 }, latest_block_number: 1100, min_confirmations: 64 });
 assert.equal(oneSource.verified, false);
 assert.equal(oneSource.reason, 'RPC_SOURCE_COUNT_INSUFFICIENT');
 
-const insufficient = verifyPilotPaymentEvidence({
-  invoice,
-  observation: goodObservation,
-  latest_block_number: 1010,
-  min_confirmations: 64
-});
+const insufficient = verifyPilotPaymentEvidence({ invoice, observation: goodObservation, latest_block_number: 1010, min_confirmations: 64 });
 assert.equal(insufficient.verified, false);
 assert.equal(insufficient.reason, 'INSUFFICIENT_CONFIRMATIONS');
 
-const wrongAmount = verifyPilotPaymentEvidence({
-  invoice,
-  observation: { ...goodObservation, amount_raw: '10000000000' },
-  latest_block_number: 1100,
-  min_confirmations: 64
-});
+const wrongAmount = verifyPilotPaymentEvidence({ invoice, observation: { ...goodObservation, amount_raw: '10000000000' }, latest_block_number: 1100, min_confirmations: 64 });
 assert.equal(wrongAmount.verified, false);
 assert.equal(wrongAmount.reason, 'WRONG_AMOUNT');
 
-const wrongChain = verifyPilotPaymentEvidence({
-  invoice,
-  observation: { ...goodObservation, chain_id: 8453 },
-  latest_block_number: 1100,
-  min_confirmations: 64
-});
+const wrongChain = verifyPilotPaymentEvidence({ invoice, observation: { ...goodObservation, chain_id: 8453 }, latest_block_number: 1100, min_confirmations: 64 });
 assert.equal(wrongChain.verified, false);
 assert.equal(wrongChain.reason, 'WRONG_CHAIN');
 
-const verified = verifyPilotPaymentEvidence({
-  invoice,
-  observation: goodObservation,
-  latest_block_number: 1100,
-  min_confirmations: 64
-});
+const verified = verifyPilotPaymentEvidence({ invoice, observation: goodObservation, latest_block_number: 1100, min_confirmations: 64 });
 assert.equal(verified.verified, true);
 assert.equal(verified.reason, 'EXACT_ONCHAIN_PAYMENT_CONFIRMED_BY_RPC_QUORUM');
 assert.equal(verified.payment_is_authority, false);
@@ -222,13 +180,7 @@ assert.equal(verified.amount_asset, '9999.999957');
 assert.equal(verified.asset, 'USDT');
 
 const grantTime = Date.parse('2026-08-31T00:05:00Z');
-const grant = issuePilotGrant({
-  invoice,
-  request,
-  payment_evidence: verified,
-  granted_at_ms: grantTime,
-  term_days: 90
-});
+const grant = issuePilotGrant({ invoice, request, payment_evidence: verified, granted_at_ms: grantTime, term_days: 90 });
 assert.equal(grant.status, 'PILOT_ACTIVE');
 assert.equal(grant.license.non_exclusive, true);
 assert.equal(grant.license.non_transferable, true);
@@ -291,7 +243,6 @@ assert.match(workflow, /contents: read/);
 assert.match(workflow, /issues: write/);
 assert.match(workflow, /persist-credentials: false/);
 assert.doesNotMatch(workflow, /contents: write/);
-
 assert.match(smokeWorkflow, /name: HELIOS Pilot RPC Quorum/);
 assert.match(smokeWorkflow, /permissions:\s*\n\s*contents: read/);
 assert.match(smokeWorkflow, /node tools\/pilot-rpc-smoke\.mjs/);
