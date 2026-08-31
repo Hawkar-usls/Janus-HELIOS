@@ -1,6 +1,6 @@
 # HELIOS AI Agent Discovery Surface
 
-JANUS HELIOS intentionally exposes a machine-readable discovery layer for AI technology scouts, buyer agents, licensing agents and business-development agents that search public GitHub repositories for infrastructure, software and licensing opportunities.
+JANUS HELIOS intentionally exposes a machine-readable discovery layer for AI technology scouts, buyer agents, licensing agents and business-development agents that search public GitHub repositories, software indexes and the public web for infrastructure, software and licensing opportunities.
 
 This is a discovery layer, not an autonomous sales mandate.
 
@@ -10,13 +10,18 @@ This is a discovery layer, not an autonomous sales mandate.
 - `agents.txt` — compact text discovery entrypoint suitable for crawlers and agentic clients.
 - `llms.txt` — concise LLM-oriented context and canonical evidence links.
 - `AGENTS.md` — instructions for buyer/scout agents and code-changing agents.
+- `codemeta.json` — interoperable `SoftwareSourceCode` metadata for software indexes and retrieval systems.
+- `discovery.html` — public web discovery page with Schema.org JSON-LD, canonical metadata and truthful commercial/truth boundaries.
+- `robots.txt` + `sitemap.xml` — ordinary public crawler discovery surfaces for GitHub Pages.
 - `.janus/HELIOS_AGENT_DISCOVERY.json` — canonical first-party discovery contract and authority boundaries.
 
 The project also exposes `PROJECT_STATUS.json` and the claim/implementation audit so an agent can distinguish implemented code from demo preview and external production gates.
 
 ## Why multiple entrypoints?
 
-Agent-discovery conventions are still evolving. HELIOS does not claim that every AI system must support `agents.txt`, `agents.json`, `llms.txt` or `AGENTS.md`. Using several simple, public, root-level entrypoints makes the project easier to discover through ordinary GitHub indexing, retrieval, RAG and emerging agent conventions without depending on one vendor or protocol.
+Agent-discovery conventions are still evolving. HELIOS does not claim that every AI system must support `agents.txt`, `agents.json`, `llms.txt`, `AGENTS.md`, CodeMeta or Schema.org. Using several simple public entrypoints makes the project easier to discover through ordinary GitHub indexing, web crawling, software metadata indexes, retrieval/RAG and emerging agent conventions without depending on one vendor or protocol.
+
+The crawler layer is intentionally conservative: it exposes truthful category terms and canonical evidence, not keyword stuffing. `robots.txt` permits indexing of the public surface and points to `sitemap.xml`; `discovery.html` exposes Schema.org `SoftwareSourceCode` metadata; `codemeta.json` exposes equivalent software metadata in a machine-oriented representation.
 
 ## Intended discovery targets
 
@@ -67,11 +72,12 @@ For that reason, the public discovery files intentionally do not publish the rec
 Agents should read, in order:
 
 1. `agents.json`
-2. `PROJECT_STATUS.json`
-3. `.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json`
-4. `.janus/HELIOS_ARCHITECTURE.json`
-5. `PARTNERSHIP_BRIEF.md`
-6. `docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md`
+2. `llms.txt` or `codemeta.json` when arriving through a software/web index
+3. `PROJECT_STATUS.json`
+4. `.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json`
+5. `.janus/HELIOS_ARCHITECTURE.json`
+6. `PARTNERSHIP_BRIEF.md`
+7. `docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md`
 
 No agent should upgrade a capability from `IMPLEMENTED_CORE`, `DEMO_PREVIEW` or `EXTERNAL_GATE` to `ENFORCED` without execution-path evidence and an exact tested commit.
 
