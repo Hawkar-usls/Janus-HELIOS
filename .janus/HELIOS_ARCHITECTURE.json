@@ -11,55 +11,105 @@
     "compute": "CONSENT_RESOURCE_POLICY_ROUTING_EXECUTION_VERIFICATION_AND_SETTLEMENT_DOMAIN",
     "licensing": "REQUEST_TERMS_PAYMENT_AND_LIMITED_PILOT_GRANT_DOMAIN",
     "relationship": "STRICTLY_SEPARATED",
-    "compute_to_rng": "FORBIDDEN", "compute_to_rtp": "FORBIDDEN", "compute_to_bonus_probability": "FORBIDDEN",
-    "compute_to_personal_jackpot_weight": "FORBIDDEN", "hardware_pressure_to_game_outcome": "FORBIDDEN", "payment_to_core_ownership": "FORBIDDEN"
+    "compute_to_rng": "FORBIDDEN",
+    "compute_to_rtp": "FORBIDDEN",
+    "compute_to_bonus_probability": "FORBIDDEN",
+    "compute_to_personal_jackpot_weight": "FORBIDDEN",
+    "hardware_pressure_to_game_outcome": "FORBIDDEN",
+    "payment_to_core_ownership": "FORBIDDEN"
   },
   "compute_plane": {
     "flow": ["EXPLICIT_RESOURCE_CONSENT", "USER_CPU_GPU_ENVELOPE", "HELIOS_ROUTER", "PROVIDER_MANIFEST_ADAPTER_VERIFIER", "DESKTOP_FABRIC", "DESKTOP_AGENT", "HARDWARE_GUARDIAN", "HOST_FIRST_QOS", "SMART_COMPUTE_NODE_RECORD", "VERIFIED_RESULT", "RECEIPT_PROVENANCE", "AUTHORITATIVE_PROVIDER_SETTLEMENT_GATE"],
-    "routes": ["MARKET", "SCIENCE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"], "provider_neutral": true, "browser_provider_secrets": "FORBIDDEN"
+    "routes": ["MARKET", "SCIENCE", "TREASURY", "DATACENTER", "OPERATOR", "CUSTOM"],
+    "provider_neutral": true,
+    "browser_provider_secrets": "FORBIDDEN"
   },
   "desktop_fabric": {
-    "module": "src/helios-desktop-fabric.js", "version": "2.1.0", "agent_module": "src/helios-desktop-agent.js", "agent_version": "1.3.0",
-    "resource_classes": ["CPU", "GPU", "HYBRID"], "fenced_leases": true, "stale_result_rejection": true, "mandatory_provider_verification": true, "controller_may_widen_local_policy": false
+    "module": "src/helios-desktop-fabric.js",
+    "version": "2.1.0",
+    "agent_module": "src/helios-desktop-agent.js",
+    "agent_version": "1.3.0",
+    "resource_classes": ["CPU", "GPU", "HYBRID"],
+    "fenced_leases": true,
+    "stale_result_rejection": true,
+    "mandatory_provider_verification": true,
+    "controller_may_widen_local_policy": false
   },
   "hardware_guardian": {
-    "module": "src/helios-hardware-guardian.js", "version": "1.0.0", "maturity": "ENFORCED_IN_DESKTOP_AGENT",
-    "states": ["GREEN", "WATCH", "THROTTLE", "COOLDOWN", "BLOCK", "UNKNOWN"], "hardware_aware": true, "human_blind": true, "can_only_tighten_or_block": true, "missing_sensor_is_green": false
+    "module": "src/helios-hardware-guardian.js",
+    "version": "1.0.0",
+    "maturity": "ENFORCED_IN_DESKTOP_AGENT",
+    "states": ["GREEN", "WATCH", "THROTTLE", "COOLDOWN", "BLOCK", "UNKNOWN"],
+    "hardware_aware": true,
+    "human_blind": true,
+    "can_only_tighten_or_block": true,
+    "missing_sensor_is_green": false
   },
   "host_first_qos": {
-    "module": "src/helios-trust-fabric.js", "enforced_by": "src/helios-desktop-agent.js", "maturity": "ENFORCED_IN_DESKTOP_AGENT", "host_priority": "ABSOLUTE", "external_compute_yields_first": true,
-    "inputs": ["CPU_LOAD", "GPU_LOAD", "MEMORY_PRESSURE", "VRAM_PRESSURE", "THERMAL_POWER_GUARDIAN_STATE"], "human_content_observation": "FORBIDDEN"
+    "module": "src/helios-trust-fabric.js",
+    "enforced_by": "src/helios-desktop-agent.js",
+    "maturity": "ENFORCED_IN_DESKTOP_AGENT",
+    "host_priority": "ABSOLUTE",
+    "external_compute_yields_first": true,
+    "inputs": ["CPU_LOAD", "GPU_LOAD", "MEMORY_PRESSURE", "VRAM_PRESSURE", "THERMAL_POWER_GUARDIAN_STATE"],
+    "human_content_observation": "FORBIDDEN"
   },
   "trust_fabric": {
-    "module": "src/helios-trust-fabric.js", "version": "1.0.0", "provider_authority_epoch": "IMPLEMENTED_CORE_NOT_END_TO_END_CONNECTED", "provider_registration_equals_authority": false,
-    "receipt_provenance": "IMPLEMENTED_CORE_EXTERNAL_AUTHORITY_PENDING", "true_work_accounting": "IMPLEMENTED_CORE_NOT_GLOBAL_LEDGER", "device_health_passport": "IMPLEMENTED_CORE_REAL_SENSOR_PERSISTENCE_PENDING",
-    "verifier_assurance_monotonicity": "IMPLEMENTED_CORE_NOT_RELEASE_GATE", "shadow_accelerator_qualification": "IMPLEMENTED_CORE_NOT_PRODUCTION_ACCELERATOR_GATE"
+    "module": "src/helios-trust-fabric.js",
+    "version": "1.0.0",
+    "provider_authority_epoch": "IMPLEMENTED_CORE_NOT_END_TO_END_CONNECTED",
+    "provider_registration_equals_authority": false,
+    "receipt_provenance": "IMPLEMENTED_CORE_EXTERNAL_AUTHORITY_PENDING",
+    "true_work_accounting": "IMPLEMENTED_CORE_NOT_GLOBAL_LEDGER",
+    "device_health_passport": "IMPLEMENTED_CORE_REAL_SENSOR_PERSISTENCE_PENDING",
+    "verifier_assurance_monotonicity": "IMPLEMENTED_CORE_NOT_RELEASE_GATE",
+    "shadow_accelerator_qualification": "IMPLEMENTED_CORE_NOT_PRODUCTION_ACCELERATOR_GATE"
   },
   "smart_compute_node": {
-    "module": "src/helios-smart-compute-node.js", "version": "1.1.0", "maturity": "IMPLEMENTED_CORE", "principle": "WORK_AND_DEVICE_STATE_IN_ONE_MACHINE_READABLE_RECORD",
-    "generic_work_evidence": ["GENERAL_COMPUTE", "AI_INFERENCE", "RENDER", "SCIENCE", "TRANSCODE", "STORAGE_NETWORK", "OPERATOR_BATCH", "CUSTOM"], "generic_normalization": "WORKLOAD_APPROPRIATE_UNITS",
-    "edge_hash_specialization": "PER_CHECKED_WORK", "device_health_passport": true, "replication_lineage": true, "public_page_live_execution": false
+    "module": "src/helios-smart-compute-node.js",
+    "version": "1.1.0",
+    "maturity": "IMPLEMENTED_CORE",
+    "principle": "WORK_AND_DEVICE_STATE_IN_ONE_MACHINE_READABLE_RECORD",
+    "generic_work_evidence": ["GENERAL_COMPUTE", "AI_INFERENCE", "RENDER", "SCIENCE", "TRANSCODE", "STORAGE_NETWORK", "OPERATOR_BATCH", "CUSTOM"],
+    "generic_normalization": "WORKLOAD_APPROPRIATE_UNITS",
+    "edge_hash_specialization": "PER_CHECKED_WORK",
+    "device_health_passport": true,
+    "replication_lineage": true,
+    "public_page_live_execution": false
   },
   "edge_hash_lab": {
-    "module": "src/helios-edge-hash-lab.js", "version": "1.0.0", "maturity": "IMPLEMENTED_CORE_COMPATIBILITY_BRIDGE_EXTERNAL_FIRMWARE_GATE", "nerdminer_v2": "EXTERNAL_MIT_COMPATIBILITY_TARGET",
-    "janus_i0": "SEPARATELY_SCOPED_BACKGROUND_IP", "stock_firmware_i0_authority": false, "controlled_comparison": "JANUS_I0_50_PERCENT_VS_RANDOMIZED_MIRROR_50_PERCENT", "raw_hashrate_is_proof": false
+    "module": "src/helios-edge-hash-lab.js",
+    "version": "1.0.0",
+    "maturity": "IMPLEMENTED_CORE_COMPATIBILITY_BRIDGE_EXTERNAL_FIRMWARE_GATE",
+    "nerdminer_v2": "EXTERNAL_MIT_COMPATIBILITY_TARGET",
+    "janus_i0": "SEPARATELY_SCOPED_BACKGROUND_IP",
+    "stock_firmware_i0_authority": false,
+    "controlled_comparison": "JANUS_I0_50_PERCENT_VS_RANDOMIZED_MIRROR_50_PERCENT",
+    "raw_hashrate_is_proof": false
   },
   "edge_constellation": {
-    "module": "src/helios-edge-constellation.js", "version": "1.1.0", "maturity": "IMPLEMENTED_CORE_REAL_FLEET_PENDING", "node_classes": ["NERDMINER_ESP32", "DESKTOP_CPU", "DESKTOP_GPU", "ASIC_GATEWAY"],
-    "node_power_equals_evidence_weight": false, "replication_unit": "LOCAL_PAIRED_NODE_RESULT"
+    "module": "src/helios-edge-constellation.js",
+    "version": "1.1.0",
+    "maturity": "IMPLEMENTED_CORE_REAL_FLEET_PENDING",
+    "node_classes": ["NERDMINER_ESP32", "DESKTOP_CPU", "DESKTOP_GPU", "ASIC_GATEWAY"],
+    "node_power_equals_evidence_weight": false,
+    "replication_unit": "LOCAL_PAIRED_NODE_RESULT"
   },
   "evidence_independence": {
-    "module": "src/helios-evidence-independence.js", "version": "1.0.0", "maturity": "IMPLEMENTED_CORE_REAL_ATTESTED_ROOTS_PENDING",
-    "root_axes": ["PHYSICAL_DEVICE", "EXECUTION_LINEAGE", "AUTHORITY", "SITE_NETWORK", "OBSERVATION_EPOCH", "JOB_STREAM"], "unknown_lineage_counts_as_independent": false,
+    "module": "src/helios-evidence-independence.js",
+    "version": "1.0.0",
+    "maturity": "IMPLEMENTED_CORE_REAL_ATTESTED_ROOTS_PENDING",
+    "root_axes": ["PHYSICAL_DEVICE", "EXECUTION_LINEAGE", "AUTHORITY", "SITE_NETWORK", "OBSERVATION_EPOCH", "JOB_STREAM"],
+    "unknown_lineage_counts_as_independent": false,
     "strong_set": "MAXIMUM_CLIQUE_OF_PAIRWISE_STRONGLY_INDEPENDENT_REPLICATIONS"
   },
   "pilot_authority": {
     "module": "src/helios-pilot-authority.js",
     "version": "1.2.0",
-    "contract_version": "1.2.1",
-    "payment_policy_version": "1.2.1",
+    "contract_version": "1.3.0",
+    "payment_policy_version": "1.3.0",
     "classification": "AUTOMATED_STANDARD_PILOT_LICENSE_GATE",
-    "maturity": "IMPLEMENTED_CORE_ARMED_DISABLED_PENDING_FINAL_ACTIVATION",
+    "maturity": "IMPLEMENTED_CORE_ACTIVE_AWAITING_FIRST_REAL_PAID_GRANT",
     "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY",
     "request_channel": "GITHUB_ISSUE_FORM",
     "watcher": "tools/pilot-payment-watch.mjs",
@@ -70,32 +120,68 @@
     "payment_policy": "commerce/HELIOS_PILOT_PAYMENT_POLICY.json",
     "route_evidence": "commerce/HELIOS_PILOT_RECEIVING_ROUTE_EVIDENCE_2026-08-31.json",
     "primary_payment": {
-      "network": "ETHEREUM_MAINNET", "network_display": "Ethereum Mainnet (ERC20)", "chain_id": 1, "asset": "USDT",
-      "token_contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7", "standard_fee_usdt": "10000.000000",
+      "network": "ETHEREUM_MAINNET",
+      "network_display": "Ethereum Mainnet (ERC20)",
+      "chain_id": 1,
+      "asset": "USDT",
+      "token_contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      "standard_fee_usdt": "10000.000000",
       "unique_invoice_fingerprint_is_sub_dollar_discount": true,
-      "receiving_address_configured": true, "receiving_address": "0x7149081aea54fbef57effeb52a5a966b81cc03a0",
-      "memo_required": false, "binance_credit_confirmations_observed": 6, "binance_unlock_confirmations_observed": 64, "helios_grant_confirmations": 64
+      "receiving_address_configured": true,
+      "receiving_address": "0x7149081aea54fbef57effeb52a5a966b81cc03a0",
+      "memo_required": false,
+      "binance_credit_confirmations_observed": 6,
+      "binance_unlock_confirmations_observed": 64,
+      "helios_grant_confirmations": 64
     },
     "rpc_quorum": {
-      "required": true, "minimum_sources": 2, "single_rpc_may_auto_grant": false,
+      "required": true,
+      "minimum_sources": 2,
+      "single_rpc_may_auto_grant": false,
       "sources": ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org/"],
-      "pre_activation_smoke_commit": "fdde711f5b2831a533629528ac81821dafebd61c", "pre_activation_smoke_run_id": 33358927756, "pre_activation_smoke_result": "PASS",
-      "read_only": true, "fund_movement_authority": false, "transaction_broadcast_authority": false
+      "pre_activation_smoke_commit": "fdde711f5b2831a533629528ac81821dafebd61c",
+      "pre_activation_smoke_run_id": 33358927756,
+      "pre_activation_smoke_result": "PASS",
+      "read_only": true,
+      "fund_movement_authority": false,
+      "transaction_broadcast_authority": false
+    },
+    "runtime_preflight": {
+      "issuer_main_only": true,
+      "critical_checks_before_every_issue_cycle": true,
+      "live_rpc_quorum_before_every_issue_cycle": true,
+      "fail_closed": true
     },
     "standard_grant": {
-      "term_days": 90, "non_exclusive": true, "non_transferable": true, "non_sublicensable": true, "controlled_non_money_pilot": true,
-      "real_money_rights": false, "public_production_rights": false, "core_ip_transfer": false, "automatic_commercial_license": false
+      "term_days": 90,
+      "non_exclusive": true,
+      "non_transferable": true,
+      "non_sublicensable": true,
+      "controlled_non_money_pilot": true,
+      "real_money_rights": false,
+      "public_production_rights": false,
+      "core_ip_transfer": false,
+      "automatic_commercial_license": false
     },
     "security": {
-      "wallet_private_key_required": false, "seed_phrase_required": false, "exchange_password_required": false, "withdrawal_api_key_required": false,
-      "watcher_can_move_funds": false, "watcher_can_broadcast_transactions": false, "public_chain_observation_only": true
+      "wallet_private_key_required": false,
+      "seed_phrase_required": false,
+      "exchange_password_required": false,
+      "withdrawal_api_key_required": false,
+      "watcher_can_move_funds": false,
+      "watcher_can_broadcast_transactions": false,
+      "public_chain_observation_only": true
     },
-    "payment_policy_enabled": false
+    "payment_policy_enabled": true,
+    "first_real_grant_observed": false
   },
   "solar_feature_family": {
     "natural_corona": {"trigger": "3_OR_MORE_SUNS_ON_SETTLED_NORMAL_GRID", "compute_effect": "NONE", "game_math_source": "GAME_CORE"},
     "purchased_bonus": {
-      "production_enabled": false, "real_money_enabled": false, "visual_activation_rng_effect": "NONE", "spin_source": "BONUS",
+      "production_enabled": false,
+      "real_money_enabled": false,
+      "visual_activation_rng_effect": "NONE",
+      "spin_source": "BONUS",
       "tiers": [
         {"id": "STANDARD_CORONA", "cost_multiplier_of_bet": 50, "base_spins": 10, "retrigger_spins": 2, "max_spins": 16},
         {"id": "RADIANT_CORONA", "cost_multiplier_of_bet": 100, "base_spins": 12, "retrigger_spins": 2, "max_spins": 20},
@@ -104,28 +190,60 @@
     }
   },
   "stellar_navigation": {
-    "module": "helios-stellar-nav.js", "version": "1.1.0", "classification": "PRESENTATION_ONLY_ASTRONOMY_INSPIRED_BACKGROUND", "rng_effect": "NONE", "compute_routing_effect": "NONE", "network_requests": false,
+    "module": "helios-stellar-nav.js",
+    "version": "1.1.0",
+    "classification": "PRESENTATION_ONLY_ASTRONOMY_INSPIRED_BACKGROUND",
+    "rng_effect": "NONE",
+    "compute_routing_effect": "NONE",
+    "network_requests": false,
     "stellar_map_reference_use": "DESIGN_STUDY_ONLY_NO_CODE_DATA_OR_ASSET_IMPORT"
   },
-  "public_loader": {"authoritative_loader": "index.html", "receipt_viewer_may_load_features": false, "mobile_layer_may_load_features": false, "explicit_major_feature_scripts": true},
+  "public_loader": {
+    "authoritative_loader": "index.html",
+    "receipt_viewer_may_load_features": false,
+    "mobile_layer_may_load_features": false,
+    "explicit_major_feature_scripts": true
+  },
   "public_truth_boundary": {
-    "real_money_gambling": false, "production_provider_connected": false, "live_device_health_sensors": false, "invented_health_score": false, "live_mining": false, "live_generic_compute": false,
-    "authoritative_settlement": false, "demo_compute_receipts": true, "pilot_payment_authority_active": false
+    "real_money_gambling": false,
+    "production_provider_connected": false,
+    "live_device_health_sensors": false,
+    "invented_health_score": false,
+    "live_mining": false,
+    "live_generic_compute": false,
+    "authoritative_settlement": false,
+    "demo_compute_receipts": true,
+    "pilot_payment_authority_active": true,
+    "pilot_payment_authority_is_production_compute_authority": false
   },
   "commercial_position": {
-    "owner_role": "IP_OWNER_AND_LICENSOR", "preferred_licensee_role": "BUILD_INTEGRATE_OPERATE_SELL_SUPPORT", "core_remains_background_ip": true, "janus_i0_separately_scoped": true,
-    "low_friction_pilot": true, "success_based_royalty": true, "science_public_benefit_relief_possible": true,
-    "standard_pilot_automation": "IMPLEMENTED_WITH_VERIFIED_ROUTE_AND_RPC_QUORUM_BUT_FAIL_CLOSED_DISABLED_UNTIL_FINAL_ACTIVATION",
+    "owner_role": "IP_OWNER_AND_LICENSOR",
+    "preferred_licensee_role": "BUILD_INTEGRATE_OPERATE_SELL_SUPPORT",
+    "core_remains_background_ip": true,
+    "janus_i0_separately_scoped": true,
+    "low_friction_pilot": true,
+    "success_based_royalty": true,
+    "science_public_benefit_relief_possible": true,
+    "standard_pilot_automation": "ACTIVE_STANDARD_NON_MONEY_PILOT_AUTHORITY_MAIN_ONLY_WITH_RUNTIME_PREFLIGHT",
     "market_uniqueness_claim": "MARKET_REVIEWED_COMBINATION_CLAIM_NOT_PATENT_OR_FTO_OPINION"
   },
-  "claim_audit": {"human_readable": "docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md", "machine_readable": ".janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json"},
+  "claim_audit": {
+    "human_readable": "docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md",
+    "machine_readable": ".janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json"
+  },
   "production_gate": {
     "status": "NOT_ESTABLISHED",
     "requires": [
-      "PILOT_AUTHORITY_FINAL_POLICY_ENABLE_AND_EXACT_HEAD_DUAL_GREEN_GATES",
-      "REAL_PROVIDER_ADAPTER_AND_SIGNED_MANIFEST", "END_TO_END_PROVIDER_AUTHORITY_EPOCH_ENFORCEMENT", "REAL_VENDOR_SENSOR_AND_ENERGY_TELEMETRY",
-      "AUTHORITATIVE_SIGNED_RECEIPTS_AND_ANTI_REPLAY", "AUTHENTICATED_AGENT_TRANSPORT", "WORKLOAD_SANDBOX_AND_EGRESS_POLICY", "REAL_ATTESTED_INDEPENDENCE_ROOTS",
-      "INDEPENDENT_SECURITY_PRIVACY_LEGAL_GAME_MATH_REVIEW", "PARTNER_OPERATED_NON_MONEY_PILOT"
+      "FIRST_REAL_PAID_STANDARD_PILOT_GRANT_AND_FIELD_VALIDATION",
+      "REAL_PROVIDER_ADAPTER_AND_SIGNED_MANIFEST",
+      "END_TO_END_PROVIDER_AUTHORITY_EPOCH_ENFORCEMENT",
+      "REAL_VENDOR_SENSOR_AND_ENERGY_TELEMETRY",
+      "AUTHORITATIVE_SIGNED_RECEIPTS_AND_ANTI_REPLAY",
+      "AUTHENTICATED_AGENT_TRANSPORT",
+      "WORKLOAD_SANDBOX_AND_EGRESS_POLICY",
+      "REAL_ATTESTED_INDEPENDENCE_ROOTS",
+      "INDEPENDENT_SECURITY_PRIVACY_LEGAL_GAME_MATH_REVIEW",
+      "PARTNER_OPERATED_NON_MONEY_PILOT"
     ]
   }
 }
