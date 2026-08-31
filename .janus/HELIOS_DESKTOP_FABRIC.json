@@ -1,6 +1,6 @@
 {
   "schema": "janus.helios.desktop-fabric.v2",
-  "artifact_id": "JANUS-HELIOS-DESKTOP-FABRIC-2026-08-27-v2.2",
+  "artifact_id": "JANUS-HELIOS-DESKTOP-FABRIC-2026-08-31-v2.3",
   "classification": "DESKTOP_CLASS_DISTRIBUTED_COMPUTE_EXECUTION_PLANE_CORE",
   "implementation": "src/helios-desktop-fabric.js",
   "fabric_version": "2.1.0",
@@ -12,7 +12,7 @@
     "active_dependency_on_buzz_esp32_code": false,
     "historical_removed_module_disclosure_required": true,
     "central_helios_multigateway_resource_routing_derived_from_buzz": false,
-    "note": "The active v2 execution plane is maintained as a HELIOS-native desktop fabric. Historical repository history may contain a removed Buzz-derived dispatcher and is not rewritten or concealed."
+    "note": "The active v2 execution plane is HELIOS-native. Historical repository lineage remains disclosed rather than rewritten."
   },
   "target_hardware": {
     "desktop_class": true,
@@ -28,7 +28,7 @@
     "battery_policy_gate": true
   },
   "desktop_agent": {
-    "runtime_version": "1.1.0",
+    "runtime_version": "1.3.0",
     "exact_provider_task_artifact_executor_binding": true,
     "arbitrary_shell_execution": false,
     "generic_command_fields_forbidden": true,
@@ -37,9 +37,15 @@
     "lease_expiry_rechecked_locally": true,
     "cpu_ram_vram_capacity_rechecked_before_execution": true,
     "thermal_power_battery_policy_rechecked_locally": true,
+    "hardware_guardian_enforced_before_executor": true,
+    "host_first_qos_enforced_before_executor": true,
+    "host_first_qos_can_only_contract_execution_budget": true,
+    "external_compute_yields_to_host_resource_pressure": true,
+    "human_observation_required_for_host_pressure": false,
+    "human_observation_allowed": false,
     "resource_budget_exposed_to_executor": true,
     "immediate_revoke_supported": true,
-    "runtime_heartbeat_inventory": ["PLATFORM", "ARCHITECTURE", "LOGICAL_CORES", "RAM", "GPU_INVENTORY", "CAPABILITIES", "RESOURCE_POLICY", "TELEMETRY"],
+    "runtime_heartbeat_inventory": ["PLATFORM", "ARCHITECTURE", "LOGICAL_CORES", "RAM", "GPU_INVENTORY", "CAPABILITIES", "RESOURCE_POLICY", "TELEMETRY", "HARDWARE_GUARDIAN", "HOST_FIRST_QOS"],
     "browser_provider_secrets_allowed": false
   },
   "scheduler": {
@@ -64,7 +70,9 @@
     "verified_agent_id_per_slice": true,
     "participating_agents_deduplicated": true,
     "slice_verification_timestamp": true,
-    "provider_settlement_authoritative": false
+    "provider_settlement_authoritative": false,
+    "trust_fabric_provenance_envelope_implemented": true,
+    "trust_fabric_provenance_envelope_wired_to_all_fabric_receipts": false
   },
   "provider_boundary": {
     "provider_adapters_injected_server_side": true,
@@ -73,7 +81,9 @@
     "cancel_hook_optional": true,
     "browser_provider_secrets_allowed": false,
     "provider_settlement_receipt_authoritative_in_core": false,
-    "future_authoritative_settlement_requires_provider_specific_verifier": true
+    "future_authoritative_settlement_requires_provider_specific_verifier": true,
+    "provider_authority_epoch_core_implemented": true,
+    "provider_authority_epoch_enforced_by_router_dispatch_end_to_end": false
   },
   "workload_boundary": {
     "generic_shell_command_payloads_forbidden": true,
@@ -92,7 +102,7 @@
     "compute_can_change_bonus_probability": false,
     "compute_can_change_bet": false,
     "compute_can_change_personal_jackpot_weight": false,
-    "scheduler_inputs": "CONSENT_RESOURCE_POLICY_PROVIDER_CAPACITY_WORKLOAD_ADMISSION_AND_DESKTOP_TELEMETRY"
+    "scheduler_inputs": "CONSENT_RESOURCE_POLICY_PROVIDER_CAPACITY_WORKLOAD_ADMISSION_AND_HARDWARE_TELEMETRY"
   },
   "production_claim_boundary": {
     "desktop_coordination_core_implemented": true,
@@ -103,10 +113,10 @@
     "distributed_consensus_claimed": false,
     "exactly_once_claimed": false,
     "real_provider_auth_and_signatures_connected": false,
-    "real_energy_telemetry_validated": false,
+    "real_vendor_energy_telemetry_validated": false,
     "real_datacenter_offload_measured": false,
     "independent_security_review_complete": false,
     "non_money_pilot_required": true
   },
-  "invariant": "HELIOS_NATIVE_DESKTOP_FABRIC: game state never schedules compute; desktop agents are admitted only by explicit consent and resource policy; CPU/GPU/HYBRID placement uses declared capabilities and live telemetry; unschedulable work cannot head-of-line block runnable work; every slice has a fenced lease and verified agent provenance; agent execution requires an exact pre-registered provider/task/artifact executor and a controller budget no broader than local user policy; every result requires provider verification before a HELIOS fabric receipt is emitted."
+  "invariant": "HELIOS_NATIVE_DESKTOP_FABRIC: game state never schedules compute; controller budgets cannot widen local policy; Hardware Guardian and Host-first QoS can only contract or block external work; human-content observation is forbidden; every slice has a fenced lease and verified agent provenance; execution requires an exact pre-registered provider/task/artifact executor; provider verification remains mandatory before fabric receipt emission."
 }

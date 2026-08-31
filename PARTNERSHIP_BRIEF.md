@@ -2,25 +2,25 @@
 
 ## One sentence
 
-> **HELIOS is a licensable provider-agnostic control plane that turns a game-shaped or white-label interface into an explicit, revocable entry point for device compute, protects participating hardware locally, and routes verified work toward replaceable external destinations without allowing compute to alter game mathematics.**
+> **HELIOS is a licensable provider-agnostic control plane that turns a game-shaped or white-label interface into an explicit, revocable entry point for device compute, protects participating hardware locally, and routes verifiable work toward replaceable external destinations without allowing compute to alter game mathematics.**
 
 ## What we are looking for
 
-The preferred partner is not a passive buyer and the HELIOS owner is not seeking to become an iGaming operator or data-center operator.
+The HELIOS owner is seeking a **qualified technology/master-licensee partner**, not a passive buyer and not an arrangement that requires the IP owner to become an iGaming operator, data-center operator or 24/7 infrastructure team.
 
-We are looking for a **qualified technology/master-licensee partner** able to:
+The preferred licensee can:
 
 - fund and conduct a production pilot;
 - integrate HELIOS into its own platform;
-- select/contract an appropriate casino/operator distribution path where relevant;
+- select/contract an appropriate operator/distribution path where relevant;
 - select/contract an appropriate compute, data-center or research workload partner;
-- build and operate the production infrastructure;
-- obtain the required legal/regulatory/security approvals;
+- build and operate production infrastructure;
+- obtain required legal/regulatory/security approvals;
 - provide production support and commercial distribution.
 
-The HELIOS owner provides licensed technology, architecture handover, source/specification access as agreed, and a separately scoped integration-consultation role.
+The HELIOS owner provides the licensed technology, reference implementation, architecture/specification handover and an agreed integration-consultation scope.
 
-## The architecture offered
+## Architecture
 
 ```text
 GAME / WHITE-LABEL USER SURFACE
@@ -29,7 +29,9 @@ EXPLICIT RESOURCE CONSENT
         ↓
 USER CPU / GPU ENVELOPE
         ↓
-HARDWARE GUARDIAN + HOST-FIRST QoS
+HARDWARE GUARDIAN
+        ↓
+HOST-FIRST QoS
         ↓
 SMART COMPUTE NODE
         ↓
@@ -39,12 +41,54 @@ MARKET / SCIENCE / TREASURY / DATA CENTER / OPERATOR / CUSTOM
         ↓
 VERIFIED RESULT + PROVENANCE
         ↓
-AUTHORITATIVE RECEIPT / SETTLEMENT
+AUTHORITATIVE PROVIDER RECEIPT / SETTLEMENT GATE
         ↓
 MEASURABLE EXTERNAL VALUE / IMPACT
 ```
 
-Additional maintained evidence layers include Device Health Passport, true-work accounting, Edge Constellation and an Evidence Independence Engine.
+The maintained first-party stack also includes Device Health Passport primitives, true-work accounting, Edge Hash Lab / JANUS I0 compatibility, hardware-fair Edge Constellation and an Evidence Independence Engine.
+
+## What is already enforced vs what still needs a partner
+
+HELIOS now publishes a formal Claim → Implementation Audit:
+
+- **ENFORCED:** game/compute separation, explicit local consent/caps, Hardware Guardian, hardware-aware/human-blind policy, Host-first QoS in Desktop Agent.
+- **IMPLEMENTED CORE:** Provider Authority Epoch, Receipt Provenance, True Work Accounting, Device Health Passport, Smart Compute Node, Edge Hash Lab, Edge Constellation, Evidence Independence, verifier monotonicity/shadow qualification.
+- **DEMO PREVIEW:** public Buyer Lab and presentation surfaces.
+- **EXTERNAL GATE:** real provider signatures/settlement, real vendor telemetry, attested independence roots, production transport/security and field economics.
+
+This distinction is intentional. A partner is not being asked to pay for fictional production evidence; the pilot exists to cross the external gates.
+
+See [`docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md`](docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md).
+
+## Hardware-care proposition
+
+HELIOS does not optimize for maximum raw throughput at any device cost.
+
+The active Desktop Agent applies:
+
+```text
+LOCAL USER LIMIT
+      ↓
+HARDWARE GUARDIAN
+      ↓
+HOST-FIRST RESOURCE PRESSURE GATE
+      ↓
+FINAL EXTERNAL-COMPUTE BUDGET
+```
+
+External work yields before local host capacity is consumed beyond the configured envelope. The policy is hardware-aware / human-blind: it does not need screen, keyboard, mouse, microphone, process/game name or active-window surveillance.
+
+## Smart Compute Node
+
+The Smart Compute Node combines work evidence and device state in one record. It now supports generic evidence for AI inference, rendering, science, transcoding, storage/network, operator batch and custom work, while the JANUS I0/Edge Hash specialization retains checked-work normalization.
+
+The node can therefore answer two separate questions:
+
+1. **What work was actually completed/verified?**
+2. **Under what hardware/safety evidence was that work performed?**
+
+A result is not authoritative merely because it exists; production authority still depends on provider/verifier/settlement provenance.
 
 ## Hard game-math boundary
 
@@ -57,7 +101,7 @@ compute -> personal jackpot weight FORBIDDEN
 hardware pressure -> game outcome  FORBIDDEN
 ```
 
-Compute may be throttled or stopped to protect the user's device. It may never improve or worsen the player's game outcome.
+Compute may be throttled or stopped to protect the participating device. It may never improve or worsen a player's game outcome.
 
 ## Indicative commercial opening
 
@@ -74,9 +118,9 @@ Alternative:
 agreed fixed amount per verified / monetized device-hour
 ```
 
-The exact royalty denominator is negotiated. Unrelated casino GGR, wagering volume and unrelated cloud revenue are not intended to be silently included.
+The royalty denominator must be explicit. Unrelated casino GGR, wagering volume and unrelated cloud revenue are not intended to be silently included.
 
-Meaningful exclusivity can be discussed, but should require agreed commercialization milestones and/or minimum consideration. A license should not permit the technology to be parked indefinitely.
+Meaningful exclusivity may be discussed only with agreed commercialization milestones and/or minimum consideration. A license should not allow HELIOS to be parked indefinitely.
 
 ## Science / Public Benefit Discount
 
@@ -92,19 +136,11 @@ REDUCED OR ZERO HELIOS PLATFORM ROYALTY
 BY WRITTEN APPROVAL
 ```
 
-This does not waive electricity, infrastructure, provider, security, tax or regulatory costs charged by other parties.
-
-## Why the structure is intentionally low-friction
-
-The goal is to make a serious pilot easy to justify while keeping incentives aligned with actual success.
-
-A smaller pilot payment funds a real commitment. Most of the long-term economics appear only if the licensee succeeds in turning HELIOS into real verified compute value.
-
-That structure is preferred over demanding a large speculative upfront payment from the first capable commercialization partner.
+This affects only the HELIOS licensor's royalty. It does not erase electricity, infrastructure, provider, security, tax, regulatory or settlement costs charged by other parties.
 
 ## IP boundary
 
-Low-friction economics do not mean a transfer of the HELIOS Core.
+Low-friction economics do not transfer the HELIOS Core.
 
 Unless expressly agreed otherwise:
 
@@ -112,7 +148,7 @@ Unless expressly agreed otherwise:
 - the licensee may modify and integrate HELIOS within the licensed field;
 - the licensee may own agreed proprietary customer/provider adapters and operational systems;
 - HELIOS source may not be resold as a standalone competing product;
-- protected licensed materials may not be superficially renamed/reimplemented solely to evade agreed royalties;
+- protected licensed implementation/materials may not simply be renamed/reimplemented to evade agreed license economics;
 - general/core improvements should use a negotiated shared-use or license-back mechanism;
 - field, territory, duration and sublicensing are explicit;
 - JANUS I0 remains separately scoped Background IP unless expressly included.
@@ -121,28 +157,26 @@ Definitive wording and enforceability require qualified counsel.
 
 ## Market truth / uniqueness boundary
 
-HELIOS does **not** claim to have invented game-plus-compute, volunteer computing, consumer GPU markets, hardware monitoring or public-benefit distributed computing.
+HELIOS does **not** claim to have invented game-plus-compute, volunteer computing, consumer GPU markets, mining, hardware monitoring or public-benefit distributed computing.
 
-HEWMEN, BOINC, Charity Engine, SaladCloud and Theta EdgeCloud are relevant predecessors or adjacent systems.
+The safe market-reviewed statement remains:
 
-The safe market-reviewed statement is:
+> **As of the 2026-08-31 public market review, predecessors were identified for individual components, but no public commercial product was identified exposing the same complete maintained HELIOS architecture as one licensable B2B control plane.**
 
-> **As of the 2026-08-31 market review, we found predecessors for individual components, but did not identify a public commercial product exposing the same complete maintained HELIOS architecture as one licensable B2B control plane.**
+The maintained combination includes provider-neutral routing, device sovereignty, Hardware Guardian, Host-first QoS, hardware-aware/human-blind telemetry, generic Smart Compute Nodes, work/receipt provenance, Device Health Passport primitives, independence-aware distributed evidence and strict `GAME RNG ⟂ COMPUTE` separation.
 
-The maintained combination includes provider-neutral routing, local device sovereignty, hardware-aware/human-blind telemetry, Smart Compute Nodes, provider-independent provenance, independence-aware evidence and strict `GAME RNG ⟂ COMPUTE` separation.
+This is not a patentability or freedom-to-operate opinion.
 
-This statement is not a patentability or freedom-to-operate opinion.
-
-## Current maturity
+## Current maturity and best pilot
 
 The public GitHub Pages build is an evaluation/reference prototype. It does not claim production compute settlement or real-money gambling.
 
-The strongest next proof is a partner-operated pilot:
+The strongest next proof is partner-operated:
 
 ```text
 QUALIFIED LICENSEE
         ↓
-REAL COMPUTE PARTNER + WORKLOAD
+REAL COMPUTE PARTNER + SUITABLE WORKLOAD
         ↓
 20–100+ CONSENTING TEST DEVICES
         ↓
@@ -157,6 +191,8 @@ MEASURED UNIT ECONOMICS + OPT-IN / RETENTION
 
 ## Detailed references
 
+- `README.md`
+- `docs/CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md`
 - `docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md`
 - `docs/COMMERCIAL_THESIS.md`
 - `docs/COMPETITIVE_MOAT.md`

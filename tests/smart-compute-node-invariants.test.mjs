@@ -5,13 +5,13 @@ import {
   buildSmartComputeNodeSnapshot
 } from '../src/helios-smart-compute-node.js';
 
-const [contract, ui, receiptViewer] = await Promise.all([
+const [contract, ui, html] = await Promise.all([
   readFile(new URL('../.janus/HELIOS_SMART_COMPUTE_NODE.json', import.meta.url), 'utf8').then(JSON.parse),
   readFile(new URL('../helios-smart-compute-node-ui.js', import.meta.url), 'utf8'),
-  readFile(new URL('../helios-receipt-viewer.js', import.meta.url), 'utf8')
+  readFile(new URL('../index.html', import.meta.url), 'utf8')
 ]);
 
-assert.equal(HELIOS_SMART_COMPUTE_NODE_VERSION, '1.0.0');
+assert.equal(HELIOS_SMART_COMPUTE_NODE_VERSION, '1.1.0');
 
 const roots = {
   physical_device_root: 'gpu-device-a',
@@ -51,8 +51,11 @@ const smart = buildSmartComputeNodeSnapshot({
   measured_watt_hours: 100
 });
 
+assert.equal(smart.work_kind, 'EDGE_HASH');
 assert.equal(smart.fusion_state, 'MONITORED_WORK_AND_DEVICE');
 assert.equal(smart.self_monitoring.work_or_hash_evidence, true);
+assert.equal(smart.self_monitoring.generic_work_evidence_supported, true);
+assert.equal(smart.self_monitoring.edge_hash_evidence_supported, true);
 assert.equal(smart.self_monitoring.device_health, true);
 assert.equal(smart.self_monitoring.human_observation, false);
 assert.equal(smart.guardian.state, 'THROTTLE');
@@ -71,6 +74,60 @@ assert.equal(smart.readiness.production_execution_ready, false);
 assert.equal(smart.claim_boundary.sha256_break, false);
 assert.equal(smart.claim_boundary.guaranteed_mining_advantage, false);
 assert.equal(smart.claim_boundary.game_effect, 'NONE');
+
+const generic = buildSmartComputeNodeSnapshot({
+  node_id: 'ai-gpu-node',
+  node_class: 'DESKTOP_GPU',
+  resource_class: 'GPU',
+  work_kind: 'AI_INFERENCE',
+  resource_policy: { cpu_percent: 10, gpu_percent: 35 },
+  guardian_policy: { max_temp_c: 80 },
+  hardware_telemetry: {
+    gpu_temperature_c: 60,
+    estimated_watts: 110,
+    power_limit_w: 220,
+    available_vram_mb: 8192,
+    on_ac_power: true,
+    sensor_source: 'NVML',
+    sensor_freshness: 'FRESH'
+  },
+  host_telemetry: { idle_state: 'AVAILABLE', cpu_load_percent: 20, gpu_load_percent: 30 },
+  work_evidence: {
+    task_type: 'AI_INFERENCE',
+    unit_name: 'INFERENCE_BATCH',
+    assigned_units: 10,
+    completed_units: 8,
+    verified_units: 7,
+    device_ms: 2500,
+    measured_watt_hours: 0.08
+  },
+  work_provenance: {
+    provider_id: 'provider-ai',
+    executor_id: 'executor-ai-v1',
+    verifier_id: 'verifier-ai-v1',
+    provider_receipt_id: 'receipt-ai-1',
+    provider_execution_verified: true,
+    settlement_authoritative: true
+  },
+  replication_lineage: roots,
+  sealed_observation_window_id: 'window-ai'
+});
+assert.equal(generic.work_kind, 'AI_INFERENCE');
+assert.equal(generic.work_evidence.normalization, 'WORKLOAD_APPROPRIATE_UNITS');
+assert.equal(generic.work_evidence.accounting.assigned_units, 10);
+assert.equal(generic.work_evidence.accounting.completed_units, 8);
+assert.equal(generic.work_evidence.accounting.verified_units, 7);
+assert.equal(generic.work_evidence.authoritative, true);
+assert.equal(generic.readiness.authoritative_work_evidence, true);
+assert.equal(generic.fusion_state, 'MONITORED_WORK_AND_DEVICE');
+assert.equal(generic.device_health_passport.summary.authoritative_receipts, 1);
+assert.ok(generic.laws.includes('WORK_EVIDENCE_USES_WORKLOAD_APPROPRIATE_UNITS'));
+
+assert.throws(() => buildSmartComputeNodeSnapshot({
+  node_id: 'bad-accounting',
+  work_kind: 'RENDER',
+  work_evidence: { assigned_units: 1, completed_units: 2 }
+}), /COMPLETED_WORK_EXCEEDS_ASSIGNED_WORK/);
 
 const unknown = buildSmartComputeNodeSnapshot({
   node_id: 'unknown-sensor-node',
@@ -91,34 +148,37 @@ assert.throws(() => buildSmartComputeNodeSnapshot({
   node_id: 'spy-node',
   hardware_telemetry: { screen: 'pixels' }
 }), /HUMAN_OBSERVATION_FORBIDDEN/);
-
 assert.throws(() => buildSmartComputeNodeSnapshot({
   node_id: 'secret-node',
   edge_manifest: { pool_password: 'forbidden' }
 }), /EDGE_HASH_SECRET_FORBIDDEN/);
-
 assert.throws(() => buildSmartComputeNodeSnapshot({}), /SMART_COMPUTE_NODE_ID_REQUIRED/);
 
-assert.equal(contract.version, '1.0.0');
+assert.equal(contract.version, '1.1.0');
 assert.equal(contract.classification, 'UNIFIED_WORK_AND_DEVICE_SELF_MONITORING_NODE');
 assert.ok(contract.core_laws.includes('WORK_MONITORING_AND_DEVICE_MONITORING_ARE_ONE_NODE_RECORD'));
+assert.ok(contract.supported_work_evidence.generic.includes('AI_INFERENCE'));
+assert.ok(contract.supported_work_evidence.generic.includes('RENDER'));
 assert.equal(contract.safety.provider_can_override_guardian, false);
 assert.equal(contract.safety.missing_thermal_sensor_means_green, false);
 assert.equal(contract.safety.human_activity_observation_allowed, false);
-assert.equal(contract.work_evidence.raw_hashrate_is_proof, false);
+assert.equal(contract.supported_work_evidence.sha256_break_claim, false);
 assert.equal(contract.device_health.unknown_remains_unknown, true);
 assert.equal(contract.public_demo.live_mining, false);
+assert.equal(contract.public_demo.generic_live_compute, false);
 assert.equal(contract.public_demo.fake_hashrate, false);
 assert.equal(contract.public_demo.fake_temperature, false);
 assert.equal(contract.authority.game_effect, 'NONE');
 
+assert.match(ui, /VERSION='1\.1\.0'/);
 assert.match(ui, /SMART COMPUTE NODE · WORK \+ DEVICE SELF-MONITORING/);
+assert.match(ui, /HASH \/ AI \/ RENDER \/ SCIENCE/);
 assert.match(ui, /ONE NODE RECORD/);
 assert.match(ui, /LIVE SENSORS REQUIRED/);
-assert.match(ui, /helios-smart-compute-node\.js\?v=1\.0\.0/);
+assert.match(ui, /helios-smart-compute-node\.js\?v=1\.1\.0/);
 assert.doesNotMatch(ui, /requestPort\s*\(/);
 assert.doesNotMatch(ui, /getUserMedia\s*\(/);
 assert.doesNotMatch(ui, /Math\.random\s*\(/);
-assert.match(receiptViewer, /helios-smart-compute-node-ui-script/);
+assert.match(html, /id="helios-smart-compute-node-ui-script"[^>]+helios-smart-compute-node-ui\.js\?v=1\.1\.0/);
 
-console.log('HELIOS Smart Compute Node work + device self-monitoring invariants: PASS');
+console.log('HELIOS Smart Compute Node generic work + edge-hash + device self-monitoring invariants: PASS');

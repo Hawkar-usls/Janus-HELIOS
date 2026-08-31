@@ -10,10 +10,10 @@ import {
   analyzeEvidenceIndependence
 } from '../src/helios-evidence-independence.js';
 
-const [contract, ui, receiptViewer] = await Promise.all([
+const [contract, ui, indexHtml] = await Promise.all([
   readFile(new URL('../.janus/HELIOS_EVIDENCE_INDEPENDENCE_ENGINE.json', import.meta.url), 'utf8').then(JSON.parse),
   readFile(new URL('../helios-evidence-independence-ui.js', import.meta.url), 'utf8'),
-  readFile(new URL('../helios-receipt-viewer.js', import.meta.url), 'utf8')
+  readFile(new URL('../index.html', import.meta.url), 'utf8')
 ]);
 
 assert.equal(HELIOS_EVIDENCE_INDEPENDENCE_VERSION, '1.0.0');
@@ -49,10 +49,7 @@ const sameHardwareDifferentRoots = compareReplicationLineage(a, b);
 assert.equal(sameHardwareDifferentRoots.strongly_independent, true);
 assert.equal(sameHardwareDifferentRoots.classification, 'STRONGLY_INDEPENDENT');
 
-const samePhysical = compareReplicationLineage(
-  roots('a'),
-  { ...roots('c'), physical_device_root: 'a-device' }
-);
+const samePhysical = compareReplicationLineage(roots('a'), { ...roots('c'), physical_device_root: 'a-device' });
 assert.equal(samePhysical.same_physical_root, true);
 assert.equal(samePhysical.strongly_independent, false);
 assert.equal(samePhysical.classification, 'SAME_PHYSICAL_ROOT');
@@ -111,8 +108,7 @@ assert.match(ui, /No lineage roots are invented/);
 assert.doesNotMatch(ui, /requestPort\s*\(/);
 assert.doesNotMatch(ui, /Math\.random\s*\(/);
 assert.doesNotMatch(ui, /\b9[0-9]% independent\b/i);
-assert.match(receiptViewer, /helios-evidence-independence-ui-script/);
-assert.match(receiptViewer, /helios-evidence-independence-ui\.js\?v=1\.0\.0/);
-assert.match(receiptViewer, /helios-edge-constellation-ui\.js\?v=1\.1\.0/);
+assert.match(indexHtml, /id="helios-evidence-independence-ui-script"[^>]+helios-evidence-independence-ui\.js\?v=1\.0\.0/);
+assert.match(indexHtml, /id="helios-edge-constellation-ui-script"[^>]+helios-edge-constellation-ui\.js\?v=1\.1\.0/);
 
-console.log('HELIOS Evidence Independence Engine invariants: PASS');
+console.log('HELIOS Evidence Independence Engine + explicit loader invariants: PASS');

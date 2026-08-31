@@ -1,13 +1,14 @@
 {
   "schema": "janus.helios.smart-compute-node.contract.v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "classification": "UNIFIED_WORK_AND_DEVICE_SELF_MONITORING_NODE",
-  "purpose": "Fuse HELIOS work/hash evidence, Hardware Guardian decisions, host-first execution budgets, Device Health Passport records, provenance and replication lineage into one machine-readable compute-node object.",
+  "purpose": "Fuse workload-appropriate work evidence, Hardware Guardian decisions, host-first execution budgets, Device Health Passport records, provenance and replication lineage into one machine-readable compute-node object. Edge-hash/I0 evidence remains a specialized supported path, not the universal evidence format.",
   "core_laws": [
     "WORK_MONITORING_AND_DEVICE_MONITORING_ARE_ONE_NODE_RECORD",
     "DEVICE_SAFETY_PRECEDES_EXTERNAL_THROUGHPUT",
     "UNKNOWN_SENSOR_DATA_REMAINS_UNKNOWN",
-    "HASH_OR_WORK_EVIDENCE_IS_NORMALIZED_BY_CHECKED_WORK",
+    "WORK_EVIDENCE_USES_WORKLOAD_APPROPRIATE_UNITS",
+    "EDGE_HASH_EVIDENCE_IS_NORMALIZED_BY_CHECKED_WORK",
     "WORK_RESULT_EXISTS_NE_AUTHORITY_PROVEN",
     "REPLICATION_COUNT_NE_INDEPENDENT_ROOT_COUNT",
     "HARDWARE_AWARE_HUMAN_BLIND",
@@ -15,12 +16,23 @@
   ],
   "node_record": {
     "required_identity": "PSEUDONYMOUS_NODE_ID",
-    "work_evidence": "EDGE_HASH_OR_COMPATIBLE_VERIFIED_WORK_EVIDENCE",
+    "work_evidence": "GENERIC_OR_EDGE_HASH_VERIFIED_WORK_EVIDENCE",
     "device_state": "HARDWARE_GUARDIAN_DECISION",
     "execution_budget": "HOST_FIRST_QUIET_CANARY_BUDGET",
     "device_history": "DEVICE_HEALTH_PASSPORT",
     "provenance": "WORK_PROVENANCE_ENVELOPE",
     "replication_lineage": "EVIDENCE_INDEPENDENCE_ROOTS"
+  },
+  "supported_work_evidence": {
+    "generic": ["GENERAL_COMPUTE", "AI_INFERENCE", "RENDER", "SCIENCE", "TRANSCODE", "STORAGE_NETWORK", "OPERATOR_BATCH", "CUSTOM"],
+    "generic_normalization": "WORKLOAD_APPROPRIATE_UNITS",
+    "edge_hash": "EDGE_HASH",
+    "edge_hash_normalization": "PER_CHECKED_WORK",
+    "i0_vs_random_mirror_supported": true,
+    "assigned_work_equals_completed_work": false,
+    "completed_work_equals_verified_work": false,
+    "sha256_break_claim": false,
+    "guaranteed_mining_advantage_claim": false
   },
   "safety": {
     "provider_can_override_guardian": false,
@@ -29,14 +41,6 @@
     "unknown_sensor_data_is_zero": false,
     "human_activity_observation_required": false,
     "human_activity_observation_allowed": false
-  },
-  "work_evidence": {
-    "raw_hashrate_is_proof": false,
-    "raw_counts_alone_are_sufficient": false,
-    "normalization": "PER_CHECKED_WORK",
-    "i0_vs_random_mirror_supported": true,
-    "sha256_break_claim": false,
-    "guaranteed_mining_advantage_claim": false
   },
   "device_health": {
     "hardware_aware": true,
@@ -54,6 +58,7 @@
   "public_demo": {
     "presentation_only": true,
     "live_mining": false,
+    "generic_live_compute": false,
     "connected_devices": 0,
     "device_access": false,
     "pool_access": false,
@@ -66,7 +71,7 @@
   "commercial_boundary": {
     "nerdminer_v2": "EXTERNAL_MIT_COMPATIBILITY_TARGET",
     "janus_i0": "SEPARATELY_SCOPED_BACKGROUND_IP",
-    "smart_node_contract": "HELIOS_FIRST_PARTY_INTEGRATION_LAYER"
+    "smart_node_contract": "HELIOS_FIRST_PARTY_GENERIC_INTEGRATION_LAYER"
   },
   "authority": {
     "game_effect": "NONE",

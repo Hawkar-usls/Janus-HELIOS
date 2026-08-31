@@ -137,8 +137,7 @@ assert.match(ui, /PUBLIC PAGE AUTHORITY/);
 assert.match(ui, /NONE · ARCHITECTURE DEMO/);
 assert.doesNotMatch(ui, /Math\.random/);
 
-const receiptViewer = readFileSync(new URL('../helios-receipt-viewer.js', import.meta.url), 'utf8');
-assert.match(receiptViewer, /helios-trust-fabric-ui-script/);
-assert.match(receiptViewer, /helios-trust-fabric-ui\.js\?v=1\.0\.0/);
+const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+assert.match(html, /id="helios-trust-fabric-ui-script"[^>]+helios-trust-fabric-ui\.js\?v=1\.0\.0/);
 
 console.log('HELIOS trust fabric invariants: PASS');

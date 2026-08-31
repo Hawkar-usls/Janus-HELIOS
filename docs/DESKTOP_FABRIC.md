@@ -1,12 +1,10 @@
-# HELIOS Desktop Fabric v2
+# HELIOS Desktop Fabric v2.1 + Desktop Agent v1.3
 
 ## Purpose
 
-`src/helios-desktop-fabric.js` is the active HELIOS execution-plane coordinator for distributing admitted work across explicitly consenting desktop, workstation or server-class agents.
+`src/helios-desktop-fabric.js` coordinates admitted work across explicitly consenting desktop/workstation/server-class agents.
 
-`src/helios-desktop-agent.js` is the active local runtime contract for an individual desktop-class machine.
-
-The pair is intentionally specified around HELIOS requirements rather than ESP32 constraints:
+`src/helios-desktop-agent.js` is the local enforcement runtime. It is deliberately **not a generic remote shell**.
 
 ```text
 PROVIDER / DATA CENTER / OPERATOR
@@ -15,15 +13,19 @@ PROVIDER / DATA CENTER / OPERATOR
               ↓
        DESKTOP FABRIC
               ↓
-   PROVIDER ADAPTER + ADMISSION
+ PROVIDER ADAPTER + ADMISSION
               ↓
- CPU / GPU / HYBRID RESOURCE POOLS
+ CPU / GPU / HYBRID PLACEMENT
               ↓
-  DISPATCHABLE SLICE SELECTION
+ FENCED LEASE + CONTROLLER BUDGET
               ↓
- FENCED LEASE + EXECUTION BUDGET
+     HELIOS DESKTOP AGENT 1.3
               ↓
-     HELIOS DESKTOP AGENT
+     LOCAL USER POLICY
+              ↓
+     HARDWARE GUARDIAN
+              ↓
+       HOST-FIRST QoS
               ↓
  EXACT APPROVED EXECUTOR + SHA-256
               ↓
@@ -32,197 +34,115 @@ PROVIDER / DATA CENTER / OPERATOR
         FABRIC RECEIPT
 ```
 
-The game remains a presentation and consent surface. Slot events never become scheduler inputs.
+The game remains a presentation/consent surface. Slot events never become compute-scheduler inputs.
 
-## Hardware target
+## Placement and scheduling
 
-The active fabric is designed for machines with substantially more resources than an ESP32-class worker:
+The fabric supports `CPU`, `GPU` and `HYBRID` workloads with minimum core/RAM/VRAM/capability constraints. It includes:
 
-- multi-core desktop CPUs;
-- discrete GPUs;
-- CPU-only, GPU-only or hybrid workloads;
-- memory and VRAM requirements;
 - per-agent concurrency;
-- thermal limits;
-- battery/AC-power policy;
-- optional watt-budget gating;
-- reliability and latency telemetry.
+- bounded queue/backpressure;
+- priority aging;
+- dispatchable-work selection without resource-class head-of-line blocking;
+- provider circuit breaker;
+- bounded retries;
+- fenced leases, ACK/lease deadlines and stale-result rejection;
+- mandatory provider-specific verification before a slice becomes verified.
 
-An ESP32 is not required by the active fabric.
+## Exact executor boundary
 
-## Placement model
-
-A workload declares a resource class:
-
-- `CPU`
-- `GPU`
-- `HYBRID`
-
-A HYBRID workload defaults to requiring both `GENERAL_CPU` and `GENERAL_GPU` capability. A workload may also declare minimum logical cores, RAM, VRAM and additional capability tags.
-
-Agents advertise current capabilities and resource policy through authenticated-heartbeat hooks. An agent is rejected for new work when, for example, it has no compute consent, is revoked, exceeds its concurrency limit, is too hot, violates its power/battery policy, lacks required memory/VRAM or does not expose required capabilities.
-
-## Scheduler fairness
-
-The scheduler sorts queued work by effective priority with aging, but it does **not** blindly dispatch the first queue entry.
-
-Instead it walks the ordered candidates and selects the highest-priority slice that is **currently dispatchable** to an eligible resource pool.
-
-This matters when, for example:
+An executor must be registered in advance against:
 
 ```text
-priority 100 → GPU job → no eligible GPU right now
-priority  10 → CPU job → eligible CPU available
+provider_id + task_type + artifact SHA-256
 ```
 
-The CPU job may run. The unschedulable GPU job does not head-of-line block the whole scheduler tick.
+If the exact tuple is missing, the Desktop Agent refuses the assignment.
 
-The regression is covered by `tests/desktop-fabric-invariants.test.mjs`.
+Generic `command`, `shell`, `script`, `eval`, process-spawn, secret and credential-bearing fields are rejected by the generic workload/agent boundary. The active agent does not import Node `child_process`.
 
-## Workload contract
+## Local budget sovereignty
 
-Example:
+The coordinator sends an `execution_budget`, but that budget is not final authority.
 
-```js
-{
-  workload_id: 'render-2026-0001',
-  provider_id: 'operator-render',
-  type: 'GENERAL_COMPUTE_JOB',
-  route_class: 'DATACENTER',
-  artifact_digest: 'sha256:<64 hex>',
-  consent_required: true,
-  priority: 25,
-  requirements: {
-    resource_class: 'GPU',
-    min_logical_cores: 8,
-    min_memory_mb: 16384,
-    min_vram_mb: 12000,
-    required_capabilities: ['GENERAL_GPU', 'CUDA']
-  },
-  total_units: 1000,
-  shard_units: 25,
-  metadata: {
-    purpose: 'approved-batch-render'
-  }
-}
-```
-
-Generic `command`, `shell`, `script`, `eval`, process-spawn, credential and secret-bearing fields are rejected by the generic workload boundary. A real provider adapter maps an admitted typed workload to its own approved execution mechanism outside the browser.
-
-## Desktop agent runtime
-
-The desktop runtime is deliberately **not** a remote shell.
-
-An executor must be registered in advance against the exact tuple:
+Desktop Agent v1.3 computes the actual executor budget through a monotonic-contraction chain:
 
 ```text
-provider_id
-+ task_type
-+ artifact SHA-256
-= approved executor
+CONTROLLER BUDGET
+      ↓ must not exceed
+LOCAL USER POLICY
+      ↓ may only contract
+HARDWARE GUARDIAN
+      ↓ may only contract
+HOST-FIRST QoS
+      ↓
+FINAL EXECUTOR BUDGET
 ```
 
-If that tuple is not registered, the machine refuses the assignment with `APPROVED_EXECUTOR_NOT_FOUND_FOR_EXACT_ARTIFACT`.
+A controller cannot widen CPU/GPU percentage, temperature ceiling, watt ceiling or concurrency beyond local policy.
 
-The runtime does not import Node `child_process` and the buyer preflight explicitly checks that no generic `exec`, `spawn` or `eval` process-execution primitive appears in the active desktop-agent source.
+## Hardware Guardian
 
-### Double enforcement of user limits
+Immediately before effect, the agent evaluates hardware-only evidence such as available temperature/power/load/memory/VRAM/AC/battery signals.
 
-The coordinator includes an `execution_budget` in each assignment based on the selected agent's advertised policy. The local agent then checks it again.
-
-The controller may make a budget **stricter**, but cannot widen local user limits. Examples that fail closed:
-
-- controller CPU % above local limit;
-- controller GPU % above local limit;
-- controller temperature ceiling above local ceiling;
-- controller concurrency above local maximum;
-- unlimited/higher watt budget when the user imposed a watt cap.
-
-Immediately before execution, the agent also rechecks:
-
-- lease expiry;
-- local CPU core capacity;
-- currently available RAM;
-- currently available VRAM;
-- thermal state;
-- watt state;
-- battery/AC-power policy;
-- active consent / revoke state;
-- required capabilities;
-- exact approved executor binding.
-
-This is intentional defense in depth: a stale, compromised or simply outdated coordinator decision cannot override the current local resource policy.
-
-## Provider adapter model
-
-A provider adapter is registered by `provider_id` and supplies at minimum:
-
-- `dispatch(agentId, assignment)`;
-- `verify({ workload, slice, agent_id, output, at })`.
-
-Optional cancellation can be supplied as `cancel(...)`.
-
-The public HELIOS project does not place provider secrets in the browser. Real authentication, signed manifests, durable state and authoritative provider settlement remain production gates.
-
-## Queue and backpressure
-
-The fabric has bounded workload/slice capacity. If the queue would exceed the configured bound, submission fails with:
-
-`FABRIC_BACKPRESSURE_QUEUE_FULL`
-
-Priority is combined with time-based aging so old lower-priority work can gain scheduling weight rather than waiting forever behind a permanent stream of newer jobs.
-
-## Provider circuit breaker
-
-Repeated provider dispatch failures increment provider health state. After the configured failure threshold, dispatch to that provider is paused for a cooldown period. This prevents one unhealthy adapter from consuming the whole scheduler loop.
-
-## Fenced lease model
-
-Each dispatched slice receives a cryptographically random `lease_id` that acts as a fencing token.
+Guardian states:
 
 ```text
-current lease holder → may ACK / renew / submit
-expired holder       → no authority
-reassignment         → new lease_id
-old result           → STALE_FENCING_TOKEN
+GREEN / WATCH / THROTTLE / COOLDOWN / BLOCK / UNKNOWN
 ```
 
-ACK and lease expiry are separate deadlines. A lost agent can therefore be reaped and its slice retried without accepting a late stale result from the previous holder.
+Missing sensor evidence is not automatically healthy. Depending on local policy it enters limited `UNKNOWN` mode or blocks.
 
-The desktop agent independently rechecks `lease_expires_at_ms` before local execution, so an already-expired assignment is rejected before an executor starts.
+## Host-first QoS
+
+Desktop Agent v1.3 now enforces the Trust Fabric Host-first Quiet Canary decision after Guardian.
+
+The policy uses hardware/resource pressure such as CPU/GPU load and memory pressure. External compute yields when local pressure is high.
+
+It does **not** require human-content observation:
+
+```text
+SCREEN / KEYBOARD / MOUSE / MIC / CAMERA / PROCESS NAME / GAME NAME / ACTIVE WINDOW
+→ FORBIDDEN FOR THIS POLICY
+```
+
+This preserves the distinction:
+
+```text
+HARDWARE-AWARE ≠ HUMAN-SURVEILLANT
+```
 
 ## Verification and provenance
 
-A returned result is not credited merely because an agent says it completed. The provider-specific verifier must return `true` before a slice reaches `VERIFIED`.
+A result is not credited merely because an agent says it completed. The provider-specific verifier must accept the result before the fabric marks a slice `VERIFIED`.
 
-After successful verification, HELIOS records:
+The fabric records per-slice verified agent/time provenance and emits a receipt after all slices verify.
 
-- `verified_agent_id` on the slice;
-- `verified_at_ms` on the slice;
-- a deduplicated `participating_agents` list in the final fabric receipt;
-- `slice_provenance[]` linking every verified slice to the agent and verification time.
+That fabric receipt does **not** itself prove external provider payment/settlement. The Trust Fabric Receipt Provenance Envelope exists as an implemented core primitive, but real signatures, anti-replay and authoritative provider settlement remain external production gates.
 
-A HELIOS fabric receipt is emitted only after every slice verifies. That fabric receipt records execution completion but deliberately does **not** claim authoritative provider payment/settlement.
+## Provider Authority Epoch truth boundary
 
-## Historical Buzz/ESP32 boundary
+Trust Fabric implements registration ≠ admission, scoped provider leases, authority epochs, dispatch budgets and revocation.
 
-Earlier HELIOS repository history contained a `helios-swarm-dispatcher.js` implementation that explicitly documented Buzz/JANUS swarm lineage. That historical fact is not hidden or rewritten.
+However, generic Router/Fabric dispatch does not yet require the Authority Epoch object on every dispatch. Therefore the correct maturity claim is:
 
-The active desktop fabric and desktop agent are HELIOS requirements-first implementations and have **no active code dependency on `janus-distributed-ai-swarm` or Buzz ESP32 firmware**. The central HELIOS multi-gateway resource-routing product architecture is documented separately from that historical worker implementation.
-
-This is a stronger diligence posture than cosmetic renaming: the active product contract, coordinator, desktop runtime, tests and data-room references now point to the HELIOS-native desktop fabric rather than the removed Buzz-derived dispatcher.
+```text
+PROVIDER AUTHORITY EPOCH = IMPLEMENTED CORE
+END-TO-END ROUTER/FABRIC ENFORCEMENT = OPEN PRODUCTION GATE
+```
 
 ## Production boundary
 
-This is an increasingly complete coordination/agent core, not proof that production distributed compute has already been solved. Before a real commercial deployment, HELIOS still needs at minimum:
+The Fabric/Agent pair is a tested execution core, not proof of a production distributed-compute service. Remaining gates include:
 
-- real provider adapter(s);
-- durable authenticated multi-host state;
-- production agent transport/authentication;
-- provider authentication/signatures;
-- server-side receipt verification and anti-replay;
-- real thermal/energy telemetry validation;
+- real provider adapter(s) and signed manifests;
+- authenticated production agent transport;
+- durable multi-host coordination/state;
+- end-to-end provider authority-epoch validation;
+- real vendor telemetry/energy validation;
+- signed provider receipts and anti-replay;
+- workload sandbox/egress policy;
 - independent security/privacy review;
-- non-money pilot with measured throughput, failures, device-hours, watt-hours and unit economics.
+- partner-operated non-money pilot with throughput, failures, device-hours, watt-hours, throttling and unit economics.
 
-No distributed-consensus, exactly-once execution or production-readiness claim is made by this public prototype.
+See [`CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md`](CLAIM_TO_IMPLEMENTATION_AUDIT_2026-08-31.md) for current maturity labels.

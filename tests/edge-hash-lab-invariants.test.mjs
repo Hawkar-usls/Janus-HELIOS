@@ -16,14 +16,14 @@ import {
   createEdgeConstellationPlan
 } from '../src/helios-edge-constellation.js';
 
-const [ui, constellationUi, contract, constellationContract, notices, excluded, receiptViewer, providers, constellationDoc] = await Promise.all([
+const [ui, constellationUi, contract, constellationContract, notices, excluded, indexHtml, providers, constellationDoc] = await Promise.all([
   readFile(new URL('../helios-edge-hash-lab-ui.js', import.meta.url), 'utf8'),
   readFile(new URL('../helios-edge-constellation-ui.js', import.meta.url), 'utf8'),
   readFile(new URL('../.janus/HELIOS_EDGE_HASH_LAB.json', import.meta.url), 'utf8').then(JSON.parse),
   readFile(new URL('../.janus/HELIOS_EDGE_CONSTELLATION.json', import.meta.url), 'utf8').then(JSON.parse),
   readFile(new URL('../THIRD_PARTY_NOTICES.md', import.meta.url), 'utf8'),
   readFile(new URL('../legal/EXCLUDED_ASSETS_SCHEDULE.md', import.meta.url), 'utf8'),
-  readFile(new URL('../helios-receipt-viewer.js', import.meta.url), 'utf8'),
+  readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../providers/REFERENCE_ROUTES.json', import.meta.url), 'utf8').then(JSON.parse),
   readFile(new URL('../docs/EDGE_CONSTELLATION.md', import.meta.url), 'utf8')
 ]);
@@ -44,10 +44,7 @@ assert.equal(stock.i0_scheduler_enabled, false);
 assert.equal(stock.public_demo_connects_to_pool, false);
 assert.equal(stock.public_demo_collects_wallet_address, false);
 assert.equal(stock.game_effect, 'NONE');
-assert.throws(
-  () => normalizeEdgeNodeManifest({ firmware_mode: 'STOCK_EXTERNAL', i0_scheduler_enabled: true }),
-  /I0_SCHEDULER_REQUIRES_BRIDGE_OR_COMPATIBLE_FIRMWARE/
-);
+assert.throws(() => normalizeEdgeNodeManifest({ firmware_mode: 'STOCK_EXTERNAL', i0_scheduler_enabled: true }), /I0_SCHEDULER_REQUIRES_BRIDGE_OR_COMPATIBLE_FIRMWARE/);
 
 const bridge = normalizeEdgeNodeManifest({ firmware_mode: 'JANUS_I0_BRIDGE', i0_scheduler_enabled: true });
 assert.equal(bridge.i0_scheduler_authority, 'BACKGROUND_IP_BRIDGE_ONLY');
@@ -69,10 +66,7 @@ assert.equal(previewPlan.claims.nonce_prediction, false);
 assert.equal(previewPlan.claims.mining_profit_claim, false);
 assert.equal(previewPlan.source_lineage.full_i0_scheduler_embedded_in_helios, false);
 
-const executablePlan = createI0BenchmarkPlan({
-  manifest: { firmware_mode: 'JANUS_I0_BRIDGE', i0_scheduler_enabled: true },
-  checked_work_target_mh: 40
-});
+const executablePlan = createI0BenchmarkPlan({ manifest: { firmware_mode: 'JANUS_I0_BRIDGE', i0_scheduler_enabled: true }, checked_work_target_mh: 40 });
 assert.equal(executablePlan.mode, 'BRIDGE_EXECUTION_PLAN');
 assert.equal(executablePlan.execution_ready, true);
 assert.equal(executablePlan.execution_gate, 'BRIDGE_CONFORMANCE_STILL_REQUIRED');
@@ -141,9 +135,6 @@ assert.match(notices, /Copyright \(c\) 2023 Bitmaker/);
 assert.match(excluded, /Hawkar-usls\/janus-io/);
 assert.match(excluded, /JANUS I0/i);
 
-// Superseding Edge Constellation compatibility boundary.
-// Detailed v1.1 independence behavior lives in edge-constellation-invariants.test.mjs
-// and evidence-independence-invariants.test.mjs; this parent test only protects the bridge.
 assert.equal(HELIOS_EDGE_CONSTELLATION_VERSION, '1.1.0');
 assert.ok(EDGE_NODE_CLASSES.NERDMINER_ESP32);
 assert.ok(EDGE_NODE_CLASSES.DESKTOP_CPU);
@@ -194,9 +185,9 @@ assert.match(constellationUi, /PLANNED · NOT CONNECTED/);
 assert.doesNotMatch(constellationUi, /requestPort\s*\(/);
 assert.doesNotMatch(constellationUi, /Math\.random\s*\(/);
 assert.doesNotMatch(constellationUi, /wallet_address\s*[:=]/i);
-assert.match(receiptViewer, /helios-edge-constellation-ui-script/);
-assert.match(receiptViewer, /helios-edge-constellation-ui\.js\?v=1\.1\.0/);
-assert.match(receiptViewer, /helios-evidence-independence-ui-script/);
+assert.match(indexHtml, /id="helios-edge-hash-lab-ui-script"[^>]+helios-edge-hash-lab-ui\.js\?v=1\.0\.0/);
+assert.match(indexHtml, /id="helios-edge-constellation-ui-script"[^>]+helios-edge-constellation-ui\.js\?v=1\.1\.0/);
+assert.match(indexHtml, /id="helios-evidence-independence-ui-script"[^>]+helios-evidence-independence-ui\.js\?v=1\.0\.0/);
 
 assert.equal(constellationContract.version, '1.1.0');
 assert.ok(constellationContract.core_laws.includes('NODE_POWER_NOT_EQUAL_EVIDENCE_WEIGHT'));
@@ -215,4 +206,4 @@ assert.equal(constellationContract.authority.game_math_authority, 'NONE');
 assert.equal(constellationContract.authority.public_compute_execution_authority, 'NONE');
 assert.match(constellationDoc, /NODE POWER ≠ EVIDENCE WEIGHT/);
 
-console.log('HELIOS Edge Hash Lab / NerdMinerV2 × JANUS I0 + superseding Edge Constellation bridge invariants: PASS');
+console.log('HELIOS Edge Hash Lab / NerdMinerV2 × JANUS I0 + Edge Constellation loader invariants: PASS');

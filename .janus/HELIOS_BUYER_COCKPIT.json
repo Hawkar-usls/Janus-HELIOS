@@ -1,27 +1,31 @@
 {
   "schema": "janus.helios.buyer_cockpit.v1",
   "module": "helios-buyer-cockpit.js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "classification": "DEMO_BUYER_PRESENTATION_AND_POLICY_PREVIEW",
-  "purpose": "Expose TOPA Spider findings that materially improve the sellable HELIOS demo without pretending the static public page is a production compute marketplace or agent runtime.",
+  "purpose": "Expose buyer-facing policy and integration depth without pretending the static public page is a production compute marketplace or agent runtime.",
   "visible_demo_surfaces": [
     "TRUST_STRIP_WITH_NO_INVENTED_RELIABILITY",
     "SIMULATED_COMPUTE_LIFECYCLE_PREVIEW",
     "CAPABILITY_HINTS_ON_ROUTE_CARDS"
   ],
   "buyer_lab_surfaces": [
-    "ADVANCED_RESOURCE_GOVERNOR_POLICY_PREVIEW",
-    "QUIET_IDLE_AC_AND_INTERACTION_POLICY_PREVIEW",
+    "HARDWARE_AWARE_HUMAN_BLIND_RESOURCE_GOVERNOR_POLICY_PREVIEW",
+    "HOST_RESERVE_AC_HEADROOM_AND_PRESSURE_SHEDDING_POLICY_PREVIEW",
     "WEIGHTED_MULTI_ROUTE_ALLOCATION_MIXER_PREVIEW",
     "OPT_IN_COARSE_LOCAL_CAPABILITY_SELF_TEST",
     "VERIFICATION_AND_ATTESTATION_CHAIN_HOOKS",
-    "RESILIENCE_RETRY_REASSIGNMENT_HOOKS",
-    "COMPUTE_CONSTELLATION_FABRIC_VIEW",
     "DEMO_COMPUTE_PASSPORT_EXPORT",
     "SESSION_IDENTITY_MANIFEST",
     "ONE_EXPLAIN_PANEL",
     "EXTERNAL_ENERGY_SIGNAL_HOOK"
   ],
+  "human_blind_policy": {
+    "hardware_aware": true,
+    "human_observation": "FORBIDDEN",
+    "host_pressure_inputs": ["CPU_LOAD", "GPU_LOAD", "MEMORY_PRESSURE", "VRAM_PRESSURE", "POWER", "THERMAL_HEADROOM"],
+    "forbidden_observation": ["SCREEN", "KEYBOARD", "MOUSE", "MICROPHONE", "CAMERA", "PROCESS_NAME", "GAME_NAME", "ACTIVE_WINDOW", "BROWSER_HISTORY"]
+  },
   "truth_boundary": {
     "public_page_is_static_demo": true,
     "real_provider_connected": false,
@@ -31,6 +35,7 @@
     "external_energy_signal_connected": false,
     "allocation_mixer_changes_public_demo_routing": false,
     "governor_controls_enforced_by_public_page": false,
+    "demo_compute_passport_is_device_health_passport": false,
     "production_enforcement_point": "DESKTOP_AGENT_FABRIC_OR_APPROVED_ADAPTER"
   },
   "coarse_self_test": {
@@ -44,25 +49,11 @@
     "max_receipts": 24,
     "authoritative": false,
     "wagering_value": "NONE",
-    "exportable": true
+    "exportable": true,
+    "distinct_from_device_health_passport": true
   },
-  "reads": [
-    "ACTIVE_ROUTE_PRESENTATION",
-    "COMPUTE_STATE_TEXT",
-    "DEMO_RECEIPT_TEXT",
-    "EXPLICIT_RESOURCE_POLICY_STATE",
-    "PRESENTATION_MODULE_STATES",
-    "OPT_IN_COARSE_BROWSER_CAPABILITY"
-  ],
-  "forbidden_inputs": [
-    "BET_SIZE",
-    "BALANCE",
-    "LOSS_STREAK",
-    "NEAR_MISS",
-    "WAGER_HISTORY",
-    "INFERRED_VULNERABILITY",
-    "GAME_RNG_INTERNAL_STATE"
-  ],
+  "reads": ["ACTIVE_ROUTE_PRESENTATION", "COMPUTE_STATE_TEXT", "DEMO_RECEIPT_TEXT", "EXPLICIT_RESOURCE_POLICY_STATE", "OPT_IN_COARSE_BROWSER_CAPABILITY"],
+  "forbidden_inputs": ["BET_SIZE", "BALANCE", "LOSS_STREAK", "NEAR_MISS", "WAGER_HISTORY", "INFERRED_VULNERABILITY", "GAME_RNG_INTERNAL_STATE"],
   "authority": {
     "rng_effect": "NONE",
     "rtp_effect": "NONE",
@@ -72,5 +63,5 @@
     "provider_verification_effect": "NONE",
     "settlement_effect": "NONE"
   },
-  "design_principle": "SELL_THE_DEPTH_WITHOUT_PRETENDING_THE_DEMO_IS_PRODUCTION"
+  "design_principle": "SELL_THE_DEPTH_WITHOUT_PRETENDING_THE_DEMO_IS_PRODUCTION_OR_OBSERVING_THE_HUMAN"
 }

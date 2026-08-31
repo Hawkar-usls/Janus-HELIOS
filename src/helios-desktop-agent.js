@@ -13,8 +13,9 @@ import {
   assertHardwareOnlyTelemetry,
   tightenExecutionBudgetForGuardian
 } from './helios-hardware-guardian.js';
+import { evaluateHostFirstQuietCanary } from './helios-trust-fabric.js';
 
-export const HELIOS_DESKTOP_AGENT_VERSION = '1.2.0';
+export const HELIOS_DESKTOP_AGENT_VERSION = '1.3.0';
 export const DESKTOP_AGENT_RESULT_SCHEMA = 'janus.helios.desktop-agent.result.v1';
 
 const FORBIDDEN_KEYS = new Set([
@@ -65,6 +66,33 @@ function optionalMetric(value) {
   if (value == null || value === '') return null;
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
+}
+
+function asPercent(value) {
+  const n = optionalMetric(value);
+  if (n == null) return null;
+  const scaled = n >= 0 && n <= 1 ? n * 100 : n;
+  return Math.max(0, Math.min(100, scaled));
+}
+
+function hostPressureTelemetry(telemetry) {
+  const cpu = asPercent(telemetry.cpu_load);
+  const gpu = asPercent(telemetry.gpu_load);
+  const totalMemoryMb = Math.max(1, os.totalmem() / 1024 / 1024);
+  const availableMemoryMb = optionalMetric(telemetry.available_memory_mb);
+  const memoryPressure = availableMemoryMb == null
+    ? null
+    : Math.max(0, Math.min(100, 100 - (availableMemoryMb / totalMemoryMb * 100)));
+  const busy = (cpu != null && cpu >= 85) || (gpu != null && gpu >= 90) || (memoryPressure != null && memoryPressure >= 85);
+  return {
+    idle_state: busy ? 'BUSY' : 'AVAILABLE',
+    cpu_load_percent: cpu,
+    gpu_load_percent: gpu,
+    memory_pressure_percent: memoryPressure,
+    vram_pressure_percent: null,
+    sensor_scope: 'HARDWARE_RESOURCE_PRESSURE_ONLY',
+    human_observation: 'FORBIDDEN'
+  };
 }
 
 export class DesktopExecutorRegistry {
@@ -121,6 +149,7 @@ export class HeliosDesktopAgentRuntime {
       battery_allowed: resource_policy.battery_allowed === true,
       min_battery_percent: Math.max(5, Math.min(100, Number(resource_policy.min_battery_percent ?? 40))),
       hardware_guardian_enabled: resource_policy.hardware_guardian_enabled !== false,
+      host_first_qos_enabled: resource_policy.host_first_qos_enabled !== false,
       missing_thermal_sensor_action: String(resource_policy.missing_thermal_sensor_action || 'LIMIT').toUpperCase(),
       immediate_revoke: resource_policy.immediate_revoke !== false
     };
@@ -194,11 +223,17 @@ export class HeliosDesktopAgentRuntime {
       'GENERAL_CPU',
       ...(this.gpuInventory.length ? ['GENERAL_GPU'] : []),
       'HARDWARE_GUARDIAN',
+      'HOST_FIRST_QOS',
       ...this.extraCapabilities,
       ...this.registry.capabilities()
     ])].sort();
     const resourceClass = this.policy.allow_gpu && this.gpuInventory.length ? (this.policy.allow_cpu ? 'HYBRID' : 'GPU') : 'CPU';
     const guardian = this.guardian.evaluate(telemetry, { resource_class: resourceClass });
+    const hostFirstQos = evaluateHostFirstQuietCanary(
+      { cpu_limit_percent: this.policy.cpu_limit_percent, gpu_limit_percent: this.policy.gpu_limit_percent },
+      guardian,
+      hostPressureTelemetry(telemetry)
+    );
     return {
       agent_id: this.agentId,
       session_id: String(session_id),
@@ -211,6 +246,7 @@ export class HeliosDesktopAgentRuntime {
       resource_policy: clone(this.policy),
       telemetry,
       hardware_guardian: clone(guardian),
+      host_first_qos: clone(hostFirstQos),
       revoked: this.revoked
     };
   }
@@ -256,24 +292,51 @@ export class HeliosDesktopAgentRuntime {
     if (!guardian.allow_execution) throw new Error(`HARDWARE_GUARDIAN_BLOCK:${guardian.state}:${guardian.reasons[0] || 'UNSPECIFIED'}`);
     const guardedBudget = tightenExecutionBudgetForGuardian(budget, guardian);
 
+    const hostFirstQos = this.policy.host_first_qos_enabled
+      ? evaluateHostFirstQuietCanary(
+          { cpu_limit_percent: guardedBudget.cpu_limit_percent, gpu_limit_percent: guardedBudget.gpu_limit_percent },
+          { ...guardian, allowed_load_scale: 1 },
+          hostPressureTelemetry(telemetry)
+        )
+      : Object.freeze({
+          schema: 'janus.helios.host-first-qos.v1',
+          allow_execution: true,
+          host_priority: 'LOCAL_POLICY_ONLY',
+          external_compute_yields_first: false,
+          cpu_percent: guardedBudget.cpu_limit_percent,
+          gpu_percent: guardedBudget.gpu_limit_percent,
+          scale: 1,
+          reasons: ['HOST_FIRST_QOS_DISABLED_BY_LOCAL_POLICY'],
+          human_observation: 'FORBIDDEN'
+        });
+    if (!hostFirstQos.allow_execution) throw new Error(`HOST_FIRST_QOS_BLOCK:${hostFirstQos.reasons[0] || 'UNSPECIFIED'}`);
+    const finalBudget = {
+      ...guardedBudget,
+      cpu_limit_percent: Math.min(guardedBudget.cpu_limit_percent, hostFirstQos.cpu_percent),
+      gpu_limit_percent: Math.min(guardedBudget.gpu_limit_percent, hostFirstQos.gpu_percent)
+    };
+    if (finalBudget.cpu_limit_percent < 1 && (resourceClass === 'CPU' || resourceClass === 'HYBRID')) throw new Error('HOST_FIRST_CPU_RESERVE_BLOCK');
+    if (finalBudget.gpu_limit_percent < 1 && (resourceClass === 'GPU' || resourceClass === 'HYBRID')) throw new Error('HOST_FIRST_GPU_RESERVE_BLOCK');
+
     const executor = this.registry.resolve(assignment);
     if (!executor) throw new Error('APPROVED_EXECUTOR_NOT_FOUND_FOR_EXACT_ARTIFACT');
     const advertised = new Set([
       'GENERAL_CPU',
       ...(this.gpuInventory.length ? ['GENERAL_GPU'] : []),
       'HARDWARE_GUARDIAN',
+      'HOST_FIRST_QOS',
       ...this.extraCapabilities,
       ...this.registry.capabilities()
     ]);
     for (const capability of assignment.requirements?.required_capabilities || []) {
       if (!advertised.has(capability)) throw new Error(`CAPABILITY_NOT_AVAILABLE:${capability}`);
     }
-    return { executor, budget: guardedBudget, guardian };
+    return { executor, budget: finalBudget, guardian, hostFirstQos };
   }
 
   async executeAssignment(assignment) {
     const telemetry = await this.telemetry();
-    const { executor, budget, guardian } = this.assertAssignmentAllowed(assignment, telemetry);
+    const { executor, budget, guardian, hostFirstQos } = this.assertAssignmentAllowed(assignment, telemetry);
     this.inflight += 1;
     const startedAt = Date.now();
     try {
@@ -281,7 +344,8 @@ export class HeliosDesktopAgentRuntime {
         payload: clone(assignment.payload),
         assignment: clone(assignment),
         resource_budget: clone(budget),
-        hardware_guardian: clone(guardian)
+        hardware_guardian: clone(guardian),
+        host_first_qos: clone(hostFirstQos)
       });
       assertNoGameCoupling(output || {}, 'executor_output');
       assertNoClientSecrets(output || {}, 'executor_output');
@@ -298,6 +362,7 @@ export class HeliosDesktopAgentRuntime {
         artifact_digest: normalizeDigest(assignment.artifact_digest),
         ok: true,
         output: clone(output),
+        execution_budget_applied: clone(budget),
         hardware_guardian: {
           state: guardian.state,
           allowed_load_scale: guardian.allowed_load_scale,
@@ -305,6 +370,13 @@ export class HeliosDesktopAgentRuntime {
           reasons: [...guardian.reasons],
           sensor_scope: guardian.sensor_scope,
           human_observation: guardian.human_observation
+        },
+        host_first_qos: {
+          host_priority: hostFirstQos.host_priority,
+          external_compute_yields_first: hostFirstQos.external_compute_yields_first,
+          scale: hostFirstQos.scale,
+          reasons: [...hostFirstQos.reasons],
+          human_observation: hostFirstQos.human_observation
         },
         started_at_ms: startedAt,
         completed_at_ms: Date.now(),

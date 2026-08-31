@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION='1.0.0';
+  const VERSION='1.1.0';
   const state={attached:false,host:null,raw:null,status:null,summary:null,details:null,observer:null,statusObserver:null,lastFingerprint:''};
 
   const text=(tag,value,className='')=>{
@@ -35,161 +35,50 @@
       .helios-receipt-actions{display:flex;gap:6px;align-items:center}
       .helios-receipt-copy{border:1px solid #2b3a44;background:#081017;color:#9eabb4;border-radius:7px;padding:5px 7px;font:800 7px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em}.helios-receipt-copy:hover{border-color:var(--mode);color:#fff}.helios-receipt-copy.copied{color:var(--good);border-color:#28523a}
       .helios-receipt-raw{border-top:1px solid #1d2a33;background:#03070a}.helios-receipt-raw>summary{list-style:none;cursor:pointer;padding:7px 10px;color:#697882;font:800 7px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}.helios-receipt-raw>summary::-webkit-details-marker{display:none}.helios-receipt-raw>summary:after{content:'+';font-size:11px;color:#7f909b}.helios-receipt-raw[open]>summary:after{content:'−'}
-      .helios-receipt-v2 .helios-receipt-raw pre{margin:0;border-top:1px solid #152028;padding:9px 10px 11px;background:#020609;color:#8fa0aa;max-height:190px;font-size:7px;line-height:1.45;scrollbar-width:thin}
+      .helios-receipt-v2 .helios-receipt-raw pre{margin:0;border-top:1px solid #152028;padding:9px 10px 11px;background:#020609;color:#8fa0aa;max-height:190px;overflow:auto;font-size:7px;line-height:1.45;scrollbar-width:thin}
       .helios-receipt-empty{padding:2px 0;color:#71808a;font:8px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}
       @media(max-width:620px){.helios-receipt-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.helios-receipt-card:last-child{grid-column:1/-1}.helios-receipt-hero{align-items:center}}
     `;
     document.head.appendChild(style);
   }
 
-  function normalizeGpu(v){
-    if(v===false||v==null) return 'OFF';
-    const n=Number(v);
-    return Number.isFinite(n)?`${n}%`:String(v);
-  }
-
-  function resourceLabel(obj){
-    const p=obj?.resource_policy||{};
-    if(p.cpu_percent==null&&p.gpu_percent==null&&p.gpu==null) return '—';
-    const cpu=p.cpu_percent==null?'—':`${Number(p.cpu_percent)||0}%`;
-    const gpu=p.gpu_percent!=null?normalizeGpu(p.gpu_percent):normalizeGpu(p.gpu);
-    return `CPU ${cpu} · GPU ${gpu}`;
-  }
-
-  function proofKind(obj){
-    return String(obj?.proof_kind||obj?.expected_proof||obj?.verification?.status||'UNVERIFIED');
-  }
-
-  function proofPresentation(obj){
-    const mode=String(obj?.mode||'').toUpperCase();
-    const proof=proofKind(obj).toUpperCase();
-    if(mode==='ROUTE_PREVIEW') return {label:'ROUTE PREVIEW',className:'preview'};
-    if(proof.includes('MOCK')||mode==='SIMULATION') return {label:'DEMO PROOF',className:'demo'};
-    if(obj?.verified===true||String(obj?.verification?.status||'').toUpperCase()==='VERIFIED') return {label:'VERIFIED',className:'live'};
-    return {label:'UNVERIFIED',className:''};
-  }
-
-  function shortTime(value){
-    if(!value) return '';
-    const d=new Date(value);
-    if(Number.isNaN(d.getTime())) return String(value);
-    return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  }
-
-  function addCard(grid,label,value,className=''){
-    const card=document.createElement('div');
-    card.className=`helios-receipt-card ${className}`.trim();
-    card.append(text('span',label),text('b',value));
-    card.title=String(value??'');
-    grid.appendChild(card);
-  }
+  function normalizeGpu(v){if(v===false||v==null)return'OFF';const n=Number(v);return Number.isFinite(n)?`${n}%`:String(v);}
+  function resourceLabel(obj){const p=obj?.resource_policy||{};if(p.cpu_percent==null&&p.gpu_percent==null&&p.gpu==null)return'—';const cpu=p.cpu_percent==null?'—':`${Number(p.cpu_percent)||0}%`;const gpu=p.gpu_percent!=null?normalizeGpu(p.gpu_percent):normalizeGpu(p.gpu);return`CPU ${cpu} · GPU ${gpu}`;}
+  function proofKind(obj){return String(obj?.proof_kind||obj?.expected_proof||obj?.verification?.status||'UNVERIFIED');}
+  function proofPresentation(obj){const mode=String(obj?.mode||'').toUpperCase();const proof=proofKind(obj).toUpperCase();if(mode==='ROUTE_PREVIEW')return{label:'ROUTE PREVIEW',className:'preview'};if(proof.includes('MOCK')||mode==='SIMULATION')return{label:'DEMO PROOF',className:'demo'};if(obj?.verified===true||String(obj?.verification?.status||'').toUpperCase()==='VERIFIED')return{label:'VERIFIED',className:'live'};return{label:'UNVERIFIED',className:''};}
+  function shortTime(value){if(!value)return'';const d=new Date(value);if(Number.isNaN(d.getTime()))return String(value);return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+  function addCard(grid,label,value,className=''){const card=document.createElement('div');card.className=`helios-receipt-card ${className}`.trim();card.append(text('span',label),text('b',value));card.title=String(value??'');grid.appendChild(card);}
 
   function renderObject(obj){
     const root=document.createDocumentFragment();
-    const hero=document.createElement('div'); hero.className='helios-receipt-hero';
-    const identity=document.createElement('div');
-    identity.append(text('div',obj.mode==='ROUTE_PREVIEW'?'ROUTE READY':'COMPUTE RECEIPT','helios-receipt-kicker'));
-    identity.append(text('div',String(obj.provider_route||obj.route_selected||'HELIOS').replaceAll('_',' '),'helios-receipt-title'));
-    const proof=proofPresentation(obj); const proofEl=text('div',proof.label,`helios-receipt-proof ${proof.className}`.trim());
-    hero.append(identity,proofEl);
-
-    const grid=document.createElement('div'); grid.className='helios-receipt-grid';
-    addCard(grid,'Route',obj.provider_route||obj.route_selected||'—','route');
-    addCard(grid,'Task',obj.task_type||'—');
-    addCard(grid,'Resources',resourceLabel(obj),'resource');
-    addCard(grid,'Work',obj.compute_units!=null?`${obj.compute_units} ${obj.asset||'UNIT'}`:'—','units');
-    addCard(grid,'Proof',proofKind(obj));
-    addCard(grid,'Sink',obj.sink||'—');
-
-    const meta=document.createElement('div'); meta.className='helios-receipt-meta';
-    const id=document.createElement('div'); id.className='helios-receipt-id';
-    id.append(text('span','ID '),text('b',obj.receipt_id||obj.plan_id||'preview'));
-    const right=document.createElement('div');
-    const time=text('div',shortTime(obj.timestamp),'helios-receipt-time');
-    const actions=document.createElement('div'); actions.className='helios-receipt-actions';
-    const copy=text('button','COPY JSON','helios-receipt-copy'); copy.type='button';
-    copy.addEventListener('click',async()=>{
-      const raw=state.raw?.textContent||'';
-      try{await navigator.clipboard.writeText(raw);copy.textContent='COPIED';copy.classList.add('copied');setTimeout(()=>{copy.textContent='COPY JSON';copy.classList.remove('copied');},1000);}catch(_){copy.textContent='COPY FAILED';setTimeout(()=>copy.textContent='COPY JSON',1000);}
-    });
-    actions.append(copy); right.append(time,actions); meta.append(id,right);
-    root.append(hero,grid,meta);
-    state.summary.replaceChildren(root);
+    const hero=document.createElement('div');hero.className='helios-receipt-hero';
+    const identity=document.createElement('div');identity.append(text('div',obj.mode==='ROUTE_PREVIEW'?'ROUTE READY':'COMPUTE RECEIPT','helios-receipt-kicker'));identity.append(text('div',String(obj.provider_route||obj.route_selected||'HELIOS').replaceAll('_',' '),'helios-receipt-title'));
+    const proof=proofPresentation(obj);hero.append(identity,text('div',proof.label,`helios-receipt-proof ${proof.className}`.trim()));
+    const grid=document.createElement('div');grid.className='helios-receipt-grid';
+    addCard(grid,'Route',obj.provider_route||obj.route_selected||'—','route');addCard(grid,'Task',obj.task_type||'—');addCard(grid,'Resources',resourceLabel(obj),'resource');addCard(grid,'Work',obj.compute_units!=null?`${obj.compute_units} ${obj.asset||'UNIT'}`:'—','units');addCard(grid,'Proof',proofKind(obj));addCard(grid,'Sink',obj.sink||'—');
+    const meta=document.createElement('div');meta.className='helios-receipt-meta';const id=document.createElement('div');id.className='helios-receipt-id';id.append(text('span','ID '),text('b',obj.receipt_id||obj.plan_id||'preview'));
+    const right=document.createElement('div');const time=text('div',shortTime(obj.timestamp),'helios-receipt-time');const actions=document.createElement('div');actions.className='helios-receipt-actions';const copy=text('button','COPY JSON','helios-receipt-copy');copy.type='button';copy.addEventListener('click',async()=>{const raw=state.raw?.textContent||'';try{await navigator.clipboard.writeText(raw);copy.textContent='COPIED';copy.classList.add('copied');setTimeout(()=>{copy.textContent='COPY JSON';copy.classList.remove('copied');},1000);}catch(_){copy.textContent='COPY FAILED';setTimeout(()=>copy.textContent='COPY JSON',1000);}});actions.append(copy);right.append(time,actions);meta.append(id,right);root.append(hero,grid,meta);state.summary.replaceChildren(root);
   }
 
   function render(){
-    if(!state.raw||!state.summary) return;
-    const raw=state.raw.textContent?.trim()||'';
-    const status=state.status?.textContent?.trim()||'';
-    const fingerprint=`${status}\n${raw}`;
-    if(fingerprint===state.lastFingerprint) return;
-    state.lastFingerprint=fingerprint;
-    const preserveRawOpen=Boolean(state.details?.open);
-    try{
-      const obj=JSON.parse(raw);
-      if(!obj||typeof obj!=='object') throw new Error('NOT_OBJECT');
-      renderObject(obj);
-      state.host.dataset.receiptView='HUMAN_SUMMARY';
-      window.dispatchEvent(new CustomEvent('helios:receipt-view',{detail:{version:VERSION,receipt_id:obj.receipt_id||null,mode:obj.mode||null,provider_route:obj.provider_route||obj.route_selected||null,presentation_only:true,raw_json_preserved:true}}));
-    }catch(_){
-      state.summary.replaceChildren(text('div',raw||'Waiting for compute receipt…','helios-receipt-empty'));
-      state.host.dataset.receiptView='TEXT';
-    }finally{
-      if(state.details) state.details.open=preserveRawOpen;
-    }
-  }
-
-  function loadBuyerEnhancements(){
-    if(!document.getElementById('helios-buyer-cockpit-script')){
-      const script=document.createElement('script');script.id='helios-buyer-cockpit-script';script.src='./helios-buyer-cockpit.js?v=1.0.0';script.async=false;document.head.appendChild(script);
-    }
-    if(!document.getElementById('helios-trust-fabric-ui-script')){
-      const script=document.createElement('script');script.id='helios-trust-fabric-ui-script';script.src='./helios-trust-fabric-ui.js?v=1.0.0';script.async=false;document.head.appendChild(script);
-    }
-    if(!document.getElementById('helios-edge-hash-lab-ui-script')){
-      const script=document.createElement('script');script.id='helios-edge-hash-lab-ui-script';script.src='./helios-edge-hash-lab-ui.js?v=1.0.0';script.async=false;document.head.appendChild(script);
-    }
-    if(!document.getElementById('helios-edge-constellation-ui-script')){
-      const script=document.createElement('script');script.id='helios-edge-constellation-ui-script';script.src='./helios-edge-constellation-ui.js?v=1.1.0';script.async=false;document.head.appendChild(script);
-    }
-    if(!document.getElementById('helios-evidence-independence-ui-script')){
-      const script=document.createElement('script');script.id='helios-evidence-independence-ui-script';script.src='./helios-evidence-independence-ui.js?v=1.0.0';script.async=false;document.head.appendChild(script);
-    }
-    if(!document.getElementById('helios-smart-compute-node-ui-script')){
-      const script=document.createElement('script');script.id='helios-smart-compute-node-ui-script';script.src='./helios-smart-compute-node-ui.js?v=1.0.0';script.async=false;document.head.appendChild(script);
-    }
-    if(!document.getElementById('helios-resource-sonification-script')){
-      const script=document.createElement('script');script.id='helios-resource-sonification-script';script.src='./helios-resource-sonification.js?v=1.0.0';script.async=false;document.head.appendChild(script);
-    }
+    if(!state.raw||!state.summary)return;
+    const raw=state.raw.textContent?.trim()||'';const status=state.status?.textContent?.trim()||'';const fingerprint=`${status}\n${raw}`;if(fingerprint===state.lastFingerprint)return;state.lastFingerprint=fingerprint;const preserveRawOpen=Boolean(state.details?.open);
+    try{const obj=JSON.parse(raw);if(!obj||typeof obj!=='object')throw new Error('NOT_OBJECT');renderObject(obj);state.host.dataset.receiptView='HUMAN_SUMMARY';window.dispatchEvent(new CustomEvent('helios:receipt-view',{detail:{version:VERSION,receipt_id:obj.receipt_id||null,mode:obj.mode||null,provider_route:obj.provider_route||obj.route_selected||null,presentation_only:true,raw_json_preserved:true}}));}
+    catch(_){state.summary.replaceChildren(text('div',raw||'Waiting for compute receipt…','helios-receipt-empty'));state.host.dataset.receiptView='TEXT';}
+    finally{if(state.details)state.details.open=preserveRawOpen;}
   }
 
   function attach(){
-    if(state.attached) return true;
-    state.raw=document.getElementById('receipt');
-    state.status=document.getElementById('receipt-status');
-    state.host=state.raw?.closest('.receipt')||null;
-    if(!state.raw||!state.host) return false;
-    injectStyles();
-    state.host.classList.add('helios-receipt-v2');
-    state.summary=document.createElement('div'); state.summary.className='helios-receipt-summary'; state.summary.setAttribute('aria-live','polite');
-    state.details=document.createElement('details'); state.details.className='helios-receipt-raw';
-    const label=text('summary','RAW JSON · MACHINE VIEW');
-    state.raw.before(state.summary);
-    state.details.append(label,state.raw);
-    state.host.appendChild(state.details);
-    state.observer=new MutationObserver(render); state.observer.observe(state.raw,{childList:true,characterData:true,subtree:true});
-    if(state.status){state.statusObserver=new MutationObserver(render);state.statusObserver.observe(state.status,{childList:true,characterData:true,subtree:true});}
-    state.attached=true; render();
-    window.HELIOS_RECEIPT_VIEWER=Object.freeze({version:VERSION,getState:()=>({version:VERSION,attached:state.attached,view:state.host?.dataset.receiptView||'UNKNOWN',raw_open:Boolean(state.details?.open),presentation_only:true,raw_json_preserved:true,receipt_authority:'NONE'})});
-    window.dispatchEvent(new CustomEvent('helios:receipt-viewer-ready',{detail:{version:VERSION,human_summary:true,raw_json_collapsible:true,copy_json:true,presentation_only:true,raw_json_preserved:true,receipt_authority:'NONE'}}));
-    loadBuyerEnhancements();
+    if(state.attached)return true;
+    state.raw=document.getElementById('receipt');state.status=document.getElementById('receipt-status');state.host=state.raw?.closest('.receipt')||null;if(!state.raw||!state.host)return false;
+    injectStyles();state.host.classList.add('helios-receipt-v2');state.summary=document.createElement('div');state.summary.className='helios-receipt-summary';state.summary.setAttribute('aria-live','polite');state.details=document.createElement('details');state.details.className='helios-receipt-raw';const label=text('summary','RAW JSON · MACHINE VIEW');state.raw.before(state.summary);state.details.append(label,state.raw);state.host.appendChild(state.details);
+    state.observer=new MutationObserver(render);state.observer.observe(state.raw,{childList:true,characterData:true,subtree:true});if(state.status){state.statusObserver=new MutationObserver(render);state.statusObserver.observe(state.status,{childList:true,characterData:true,subtree:true});}
+    state.attached=true;render();
+    window.HELIOS_RECEIPT_VIEWER=Object.freeze({version:VERSION,getState:()=>({version:VERSION,attached:state.attached,view:state.host?.dataset.receiptView||'UNKNOWN',raw_open:Boolean(state.details?.open),presentation_only:true,raw_json_preserved:true,receipt_authority:'NONE',feature_loader_authority:'NONE'})});
+    window.dispatchEvent(new CustomEvent('helios:receipt-viewer-ready',{detail:{version:VERSION,human_summary:true,raw_json_collapsible:true,copy_json:true,presentation_only:true,raw_json_preserved:true,receipt_authority:'NONE',feature_loader_authority:'NONE'}}));
     return true;
   }
 
-  function init(){
-    if(attach()) return;
-    let attempts=0; const retry=()=>{if(attach()||++attempts>=80)return;setTimeout(retry,75);}; retry();
-  }
-
+  function init(){if(attach())return;let attempts=0;const retry=()=>{if(attach()||++attempts>=80)return;setTimeout(retry,75);};retry();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
