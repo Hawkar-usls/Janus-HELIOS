@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://hawkar-usls.github.io/Janus-HELIOS/</loc></url>
+  <url><loc>https://hawkar-usls.github.io/Janus-HELIOS/discovery.html</loc></url>
+  <url><loc>https://hawkar-usls.github.io/Janus-HELIOS/agents.json</loc></url>
+  <url><loc>https://hawkar-usls.github.io/Janus-HELIOS/agents.txt</loc></url>
+  <url><loc>https://hawkar-usls.github.io/Janus-HELIOS/llms.txt</loc></url>
+  <url><loc>https://hawkar-usls.github.io/Janus-HELIOS/opportunity.json</loc></url>
+  <url><loc>https://hawkar-usls.github.io/Janus-HELIOS/PROJECT_STATUS.json</loc></url>
+</urlset>

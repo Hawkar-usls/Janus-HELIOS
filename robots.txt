@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hawkar-usls.github.io/Janus-HELIOS/sitemap.xml
+
+# Machine-readable discovery entrypoints
+# https://hawkar-usls.github.io/Janus-HELIOS/agents.json
+# https://hawkar-usls.github.io/Janus-HELIOS/agents.txt
+# https://hawkar-usls.github.io/Janus-HELIOS/llms.txt
+# https://hawkar-usls.github.io/Janus-HELIOS/opportunity.json
