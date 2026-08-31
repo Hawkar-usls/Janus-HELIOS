@@ -1,6 +1,6 @@
 {
   "schema": "janus.helios.pilot-payment-policy.v1",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "enabled": false,
   "disabled_reason": "RPC_QUORUM_SMOKE_AND_FINAL_ACTIVATION_COMMIT_PENDING",
   "authority_mode": "STANDARD_PILOT_ONLY",
@@ -34,7 +34,7 @@
   "chain_observation": {
     "rpc_urls": [
       "https://ethereum-rpc.publicnode.com",
-      "https://public.1rpc.io/eth"
+      "https://eth.drpc.org/"
     ],
     "rpc_quorum": 2,
     "rpc_classification": "TWO_INDEPENDENT_PUBLIC_READ_ONLY_ETHEREUM_RPC_SOURCES_LOW_VOLUME_PILOT_BOOTSTRAP",
@@ -47,6 +47,12 @@
     "log_chunk_blocks": 1000,
     "erc20_transfer_topic": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
     "single_rpc_may_auto_grant": false,
+    "rejected_rpc_sources": [
+      {
+        "url": "https://public.1rpc.io/eth",
+        "reason": "ETH_GETLOGS_METHOD_NOT_AVAILABLE_IN_LIVE_GITHUB_ACTIONS_SMOKE_2026_08_31"
+      }
+    ],
     "production_upgrade": "CONTRACTED_OR_SELF_HOSTED_MULTI_SOURCE_RPC_AND_FINALITY_REVIEW_BEFORE_HIGH_VOLUME_AUTOMATION"
   },
   "request_gate": {
