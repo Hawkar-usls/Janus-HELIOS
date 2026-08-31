@@ -11,136 +11,33 @@
     "EXTERNAL_GATE": "Claim requires real provider, sensors, devices, signatures, fleet, legal/regulatory review or other evidence outside the static repository."
   },
   "findings": [
-    {
-      "claim": "GAME_RNG_PERP_COMPUTE",
-      "status": "ENFORCED",
-      "evidence": ["src/helios-router.js", "src/helios-desktop-fabric.js", "src/helios-desktop-agent.js", "tests/public-surface-invariants.test.mjs"],
-      "external_gate": null
-    },
-    {
-      "claim": "EXPLICIT_REVOCABLE_RESOURCE_CONSENT_AND_LOCAL_CAPS",
-      "status": "ENFORCED",
-      "evidence": ["src/helios-router.js", "src/helios-desktop-agent.js", "index.html"],
-      "external_gate": "Production transport/authentication still required."
-    },
-    {
-      "claim": "HARDWARE_GUARDIAN_CAN_ONLY_TIGHTEN_OR_BLOCK",
-      "status": "ENFORCED",
-      "evidence": ["src/helios-hardware-guardian.js", "src/helios-desktop-agent.js", "tests/hardware-guardian-invariants.test.mjs", "tests/desktop-agent-invariants.test.mjs"],
-      "external_gate": "Real vendor telemetry adapters and sensor provenance."
-    },
-    {
-      "claim": "HARDWARE_AWARE_HUMAN_BLIND",
-      "status": "ENFORCED",
-      "evidence": ["src/helios-hardware-guardian.js", "src/helios-trust-fabric.js", "src/helios-desktop-agent.js", "helios-buyer-cockpit.js"],
-      "external_gate": "Production adapter review must preserve forbidden-observation boundary."
-    },
-    {
-      "claim": "HOST_FIRST_QOS_EXTERNAL_COMPUTE_YIELDS_TO_DEVICE_PRESSURE",
-      "status": "ENFORCED",
-      "evidence": ["src/helios-trust-fabric.js", "src/helios-desktop-agent.js", "tests/desktop-agent-invariants.test.mjs"],
-      "external_gate": "Real-device pressure tuning and workload-specific calibration."
-    },
-    {
-      "claim": "PROVIDER_DEFAULT_DENY_AND_AUTHORITY_EPOCH",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-trust-fabric.js", "tests/trust-fabric-invariants.test.mjs"],
-      "external_gate": "Wire authority-epoch lease validation into every Router/Fabric production dispatch before describing it as end-to-end enforced."
-    },
-    {
-      "claim": "RECEIPT_PROVENANCE_ENVELOPE",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-trust-fabric.js", "tests/trust-fabric-invariants.test.mjs"],
-      "external_gate": "Real provider signatures, anti-replay and authoritative settlement integration."
-    },
-    {
-      "claim": "TRUE_WORK_ACCOUNTING",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-trust-fabric.js", "tests/trust-fabric-invariants.test.mjs"],
-      "external_gate": "Wire accounting to production durable global/settlement ledger and measured energy source."
-    },
-    {
-      "claim": "DEVICE_HEALTH_PASSPORT",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-trust-fabric.js", "src/helios-smart-compute-node.js", ".janus/HELIOS_HARDWARE_GUARDIAN.json"],
-      "external_gate": "Persistent real sensor windows, vendor provenance and privacy/security review."
-    },
-    {
-      "claim": "SMART_COMPUTE_NODE_WORK_AND_DEVICE_ONE_RECORD",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-smart-compute-node.js", ".janus/HELIOS_SMART_COMPUTE_NODE.json", "tests/smart-compute-node-invariants.test.mjs"],
-      "external_gate": "Production provider adapters and live hardware telemetry."
-    },
-    {
-      "claim": "SMART_COMPUTE_NODE_GENERIC_WORK_SUPPORT",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-smart-compute-node.js", "tests/smart-compute-node-invariants.test.mjs"],
-      "external_gate": "Each workload family still needs its own real provider/verifier semantics."
-    },
-    {
-      "claim": "NERDMINER_V2_JANUS_I0_EDGE_HASH_LAB",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-edge-hash-lab.js", ".janus/HELIOS_EDGE_HASH_LAB.json", "tests/edge-hash-lab-invariants.test.mjs"],
-      "external_gate": "Approved physical bridge/compatible firmware and real Stratum experiment; stock NerdMiner firmware has no I0 authority."
-    },
-    {
-      "claim": "EDGE_CONSTELLATION_HARDWARE_FAIR_REPLICATION",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-edge-constellation.js", "tests/edge-constellation-invariants.test.mjs"],
-      "external_gate": "Real heterogeneous fleet."
-    },
-    {
-      "claim": "EVIDENCE_INDEPENDENCE_ENGINE",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-evidence-independence.js", "tests/evidence-independence-invariants.test.mjs"],
-      "external_gate": "Attested physical/executor/authority/site-network/epoch/job-stream roots from real nodes."
-    },
-    {
-      "claim": "VERIFIER_ASSURANCE_MONOTONICITY",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-trust-fabric.js", "tests/trust-fabric-invariants.test.mjs"],
-      "external_gate": "Promote this checker into the production provider/verifier release gate."
-    },
-    {
-      "claim": "SHADOW_ACCELERATOR_QUALIFICATION",
-      "status": "IMPLEMENTED_CORE",
-      "evidence": ["src/helios-trust-fabric.js", "tests/trust-fabric-invariants.test.mjs"],
-      "external_gate": "Connect real CUDA/ROCm/other accelerated executors and reference implementations."
-    },
+    {"claim":"GAME_RNG_PERP_COMPUTE","status":"ENFORCED","evidence":["src/helios-router.js","src/helios-desktop-fabric.js","src/helios-desktop-agent.js","tests/public-surface-invariants.test.mjs"],"external_gate":null},
+    {"claim":"EXPLICIT_REVOCABLE_RESOURCE_CONSENT_AND_LOCAL_CAPS","status":"ENFORCED","evidence":["src/helios-router.js","src/helios-desktop-agent.js","index.html"],"external_gate":"Production transport/authentication still required."},
+    {"claim":"HARDWARE_GUARDIAN_CAN_ONLY_TIGHTEN_OR_BLOCK","status":"ENFORCED","evidence":["src/helios-hardware-guardian.js","src/helios-desktop-agent.js","tests/hardware-guardian-invariants.test.mjs","tests/desktop-agent-invariants.test.mjs"],"external_gate":"Real vendor telemetry adapters and sensor provenance."},
+    {"claim":"HARDWARE_AWARE_HUMAN_BLIND","status":"ENFORCED","evidence":["src/helios-hardware-guardian.js","src/helios-trust-fabric.js","src/helios-desktop-agent.js","helios-buyer-cockpit.js"],"external_gate":"Production adapter review must preserve forbidden-observation boundary."},
+    {"claim":"HOST_FIRST_QOS_EXTERNAL_COMPUTE_YIELDS_TO_DEVICE_PRESSURE","status":"ENFORCED","evidence":["src/helios-trust-fabric.js","src/helios-desktop-agent.js","tests/desktop-agent-invariants.test.mjs"],"external_gate":"Real-device pressure tuning and workload-specific calibration."},
+    {"claim":"PROVIDER_DEFAULT_DENY_AND_AUTHORITY_EPOCH","status":"IMPLEMENTED_CORE","evidence":["src/helios-trust-fabric.js","tests/trust-fabric-invariants.test.mjs"],"external_gate":"Wire authority-epoch lease validation into every Router/Fabric production dispatch before describing it as end-to-end enforced."},
+    {"claim":"RECEIPT_PROVENANCE_ENVELOPE","status":"IMPLEMENTED_CORE","evidence":["src/helios-trust-fabric.js","tests/trust-fabric-invariants.test.mjs"],"external_gate":"Real provider signatures, anti-replay and authoritative settlement integration."},
+    {"claim":"TRUE_WORK_ACCOUNTING","status":"IMPLEMENTED_CORE","evidence":["src/helios-trust-fabric.js","tests/trust-fabric-invariants.test.mjs"],"external_gate":"Wire accounting to production durable global/settlement ledger and measured energy source."},
+    {"claim":"DEVICE_HEALTH_PASSPORT","status":"IMPLEMENTED_CORE","evidence":["src/helios-trust-fabric.js","src/helios-smart-compute-node.js",".janus/HELIOS_HARDWARE_GUARDIAN.json"],"external_gate":"Persistent real sensor windows, vendor provenance and privacy/security review."},
+    {"claim":"SMART_COMPUTE_NODE_WORK_AND_DEVICE_ONE_RECORD","status":"IMPLEMENTED_CORE","evidence":["src/helios-smart-compute-node.js",".janus/HELIOS_SMART_COMPUTE_NODE.json","tests/smart-compute-node-invariants.test.mjs"],"external_gate":"Production provider adapters and live hardware telemetry."},
+    {"claim":"SMART_COMPUTE_NODE_GENERIC_WORK_SUPPORT","status":"IMPLEMENTED_CORE","evidence":["src/helios-smart-compute-node.js","tests/smart-compute-node-invariants.test.mjs"],"external_gate":"Each workload family still needs its own real provider/verifier semantics."},
+    {"claim":"NERDMINER_V2_JANUS_I0_EDGE_HASH_LAB","status":"IMPLEMENTED_CORE","evidence":["src/helios-edge-hash-lab.js",".janus/HELIOS_EDGE_HASH_LAB.json","tests/edge-hash-lab-invariants.test.mjs"],"external_gate":"Approved physical bridge/compatible firmware and real Stratum experiment; stock NerdMiner firmware has no I0 authority."},
+    {"claim":"EDGE_CONSTELLATION_HARDWARE_FAIR_REPLICATION","status":"IMPLEMENTED_CORE","evidence":["src/helios-edge-constellation.js","tests/edge-constellation-invariants.test.mjs"],"external_gate":"Real heterogeneous fleet."},
+    {"claim":"EVIDENCE_INDEPENDENCE_ENGINE","status":"IMPLEMENTED_CORE","evidence":["src/helios-evidence-independence.js","tests/evidence-independence-invariants.test.mjs"],"external_gate":"Attested physical/executor/authority/site-network/epoch/job-stream roots from real nodes."},
+    {"claim":"VERIFIER_ASSURANCE_MONOTONICITY","status":"IMPLEMENTED_CORE","evidence":["src/helios-trust-fabric.js","tests/trust-fabric-invariants.test.mjs"],"external_gate":"Promote this checker into the production provider/verifier release gate."},
+    {"claim":"SHADOW_ACCELERATOR_QUALIFICATION","status":"IMPLEMENTED_CORE","evidence":["src/helios-trust-fabric.js","tests/trust-fabric-invariants.test.mjs"],"external_gate":"Connect real CUDA/ROCm/other accelerated executors and reference implementations."},
     {
       "claim": "AUTOMATED_STANDARD_PILOT_AUTHORITY",
       "status": "IMPLEMENTED_CORE",
       "evidence": ["src/helios-pilot-authority.js", "tools/pilot-payment-watch.mjs", ".janus/HELIOS_PILOT_AUTHORITY.json", "commerce/HELIOS_PILOT_PAYMENT_POLICY.json", "legal/HELIOS_STANDARD_PILOT_LICENSE_v1.md", "tests/pilot-authority-invariants.test.mjs"],
-      "claim_value": "ARMED_DISABLED_PENDING_RECEIVING_ADDRESS",
-      "external_gate": "Owner must recheck current Binance USDC/Base deposit support, configure the exact public receiving address, confirm no memo/tag is required, enable the policy and obtain a green exact-commit HELIOS Integrity run before invoices or grants may issue."
+      "claim_value": "ARMED_DISABLED_PENDING_RECEIVING_ADDRESS_AND_RPC",
+      "external_gate": "Owner must recheck current Binance USDT/Ethereum ERC20 deposit support, configure the exact public receiving address, confirm no memo/tag is required, configure a dedicated Ethereum RPC as HELIOS_PILOT_RPC_URL, enable the policy and obtain a green exact-commit HELIOS Integrity run before invoices or grants may issue."
     },
-    {
-      "claim": "PUBLIC_BUYER_LAB_SHOWS_TRUST_AND_POLICY_SURFACES",
-      "status": "DEMO_PREVIEW",
-      "evidence": ["index.html", "helios-buyer-cockpit.js", "helios-trust-fabric-ui.js", "helios-smart-compute-node-ui.js", "helios-evidence-independence-ui.js"],
-      "external_gate": "Public page intentionally has no production authority."
-    },
-    {
-      "claim": "PUBLIC_PAGE_HAS_LIVE_DEVICE_HEALTH_OR_MINING",
-      "status": "EXTERNAL_GATE",
-      "evidence": ["index.html", ".janus/HELIOS_SMART_COMPUTE_NODE.json"],
-      "claim_value": false,
-      "external_gate": "Desktop Agent or approved edge bridge required. No fake temperature, watts, hashrate or health percentage is permitted."
-    },
-    {
-      "claim": "PRODUCTION_COMPUTE_SETTLEMENT_NETWORK",
-      "status": "EXTERNAL_GATE",
-      "evidence": ["PROJECT_STATUS.json", ".janus/HELIOS_ARCHITECTURE.json"],
-      "claim_value": false,
-      "external_gate": "Real provider, signed manifests/receipts, anti-replay, security/privacy/legal review and pilot."
-    },
-    {
-      "claim": "MARKET_UNIQUENESS_OF_COMPLETE_MAINTAINED_COMBINATION",
-      "status": "EXTERNAL_GATE",
-      "evidence": ["docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md", "docs/COMPETITIVE_MOAT.md"],
-      "claim_value": "MARKET_REVIEWED_NO_IDENTIFIED_PUBLIC_COMMERCIAL_MATCH",
-      "external_gate": "Not a patentability, freedom-to-operate or mathematical nonexistence claim. Ongoing market review required."
-    }
+    {"claim":"PUBLIC_BUYER_LAB_SHOWS_TRUST_AND_POLICY_SURFACES","status":"DEMO_PREVIEW","evidence":["index.html","helios-buyer-cockpit.js","helios-trust-fabric-ui.js","helios-smart-compute-node-ui.js","helios-evidence-independence-ui.js"],"external_gate":"Public page intentionally has no production authority."},
+    {"claim":"PUBLIC_PAGE_HAS_LIVE_DEVICE_HEALTH_OR_MINING","status":"EXTERNAL_GATE","evidence":["index.html",".janus/HELIOS_SMART_COMPUTE_NODE.json"],"claim_value":false,"external_gate":"Desktop Agent or approved edge bridge required. No fake temperature, watts, hashrate or health percentage is permitted."},
+    {"claim":"PRODUCTION_COMPUTE_SETTLEMENT_NETWORK","status":"EXTERNAL_GATE","evidence":["PROJECT_STATUS.json",".janus/HELIOS_ARCHITECTURE.json"],"claim_value":false,"external_gate":"Real provider, signed manifests/receipts, anti-replay, security/privacy/legal review and pilot."},
+    {"claim":"MARKET_UNIQUENESS_OF_COMPLETE_MAINTAINED_COMBINATION","status":"EXTERNAL_GATE","evidence":["docs/MARKET_AND_LICENSE_POSITION_2026-08-31.md","docs/COMPETITIVE_MOAT.md"],"claim_value":"MARKET_REVIEWED_NO_IDENTIFIED_PUBLIC_COMMERCIAL_MATCH","external_gate":"Not a patentability, freedom-to-operate or mathematical nonexistence claim. Ongoing market review required."}
   ],
   "audit_fixes_applied": [
     "REMOVED_INVENTED_PUBLIC_87_PERCENT_HEALTH_STATUS",
@@ -154,7 +51,9 @@
     "PROJECT_STATUS_REFRESHED_TO_2026_08_31",
     "CANONICAL_ARCHITECTURE_REFRESHED_TO_CURRENT_STACK",
     "STANDARD_PILOT_AUTHORITY_ADDED_FAIL_CLOSED_DISABLED_UNTIL_OWNER_RECEIVING_ADDRESS_IS_VERIFIED",
-    "STANDARD_PILOT_PAYMENT_PRIMARY_FROZEN_TO_NATIVE_USDC_BASE_WITH_EXACT_INVOICE_FINGERPRINT",
+    "BASE_ROUTE_REJECTED_AFTER_CURRENT_BINANCE_NETWORK_RECHECK",
+    "STANDARD_PILOT_PAYMENT_PRIMARY_FROZEN_TO_TETHER_USDT_ETHEREUM_ERC20_WITH_EXACT_INVOICE_FINGERPRINT",
+    "DEDICATED_ETHEREUM_RPC_REQUIRED_BEFORE_PILOT_AUTHORITY_ENABLE",
     "PILOT_PAYMENT_VERIFIER_HAS_NO_FUND_MOVEMENT_AUTHORITY"
   ],
   "final_rule": "NO_BUYER_FACING_CLAIM_MAY_BE_PROMOTED_FROM_IMPLEMENTED_CORE_OR_EXTERNAL_GATE_TO_ENFORCED_WITHOUT_EXECUTION_PATH_EVIDENCE_AND_A_TESTED_EXACT_COMMIT."

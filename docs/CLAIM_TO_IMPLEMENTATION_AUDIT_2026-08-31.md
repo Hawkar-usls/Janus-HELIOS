@@ -2,42 +2,42 @@
 
 ## Purpose
 
-This audit answers a simple buyer-facing question:
+This audit answers a buyer-facing question:
 
 > **When HELIOS says it can do something, where does that claim actually live?**
 
-A file existing in the repository is not enough. Every material HELIOS claim is classified as one of four states:
+A file existing in the repository is not enough. Every material claim is classified as one of four states:
 
 | State | Meaning |
 |---|---|
 | **ENFORCED** | The active execution path applies the invariant before effect. |
 | **IMPLEMENTED_CORE** | Executable first-party core exists and is tested, but a real provider/device/authority integration is still required. |
 | **DEMO_PREVIEW** | The public UI demonstrates the interaction or policy but intentionally has no real external authority. |
-| **EXTERNAL_GATE** | The truth can only be established with real sensors, providers, signatures, devices, legal/regulatory review, or a field pilot. |
+| **EXTERNAL_GATE** | Truth requires real sensors, providers, signatures, devices, legal/regulatory review, or a field pilot. |
 
 Machine-readable record: [`.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json`](../.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json).
 
 ## Executive result
 
-The 2026-08-31 pass found several cases where HELIOS implementation had evolved faster than canonical status/docs, plus places where the product story was stronger than the current end-to-end wiring.
+The 2026-08-31 pass found implementation/doc drift and places where product language was stronger than end-to-end wiring. The audit tightened code, removed misleading presentation, refreshed canonical architecture and left external claims behind explicit gates.
 
-The audit therefore **did not upgrade every claim to PASS**. It tightened the code, removed misleading presentation, refreshed the canonical architecture, explicitly left production-only claims behind external gates, and added the Standard Pilot Authority as an implemented-but-disabled licensing gate rather than pretending a wallet/payment route had already been activated.
+The Standard Pilot Authority is likewise treated as an implemented-but-disabled licensing gate, not as a live payment service merely because the code exists.
 
 ### Corrections made in this pass
 
-1. The old decorative public `87% STABLE` health indicator was removed. A static page with no live sensor cannot claim a hardware-health percentage.
-2. `index.html` is now the explicit authoritative feature loader. Receipt Viewer no longer loads unrelated features dynamically.
-3. Buyer Lab resource policy no longer says `PAUSE ON INTERACTION` / `IDLE ONLY`. Hardware protection is expressed as host reserve/headroom/pressure shedding and remains **hardware-aware / human-blind**.
-4. Host-first Quiet Canary QoS is now part of the Desktop Agent execution path after Hardware Guardian. It may only contract or block external compute.
-5. Smart Compute Node is no longer structurally limited to I0/hash evidence. Generic AI inference, rendering, science, transcoding, storage/network, operator batch, and custom work use workload-appropriate accounting; I0/hash keeps its checked-work evidence path.
-6. `PROJECT_STATUS.json`, canonical architecture and Desktop Fabric contract now match the current modules and versions.
-7. Standard Pilot Authority was added with a fail-closed payment/licence gate. It is deliberately disabled until the owner supplies and rechecks a current receiving address/network and the activating exact commit passes Integrity.
+1. Removed the decorative public `87% STABLE` hardware-health indicator.
+2. Made `index.html` the explicit authoritative feature loader.
+3. Replaced interaction/idle observation language with hardware-pressure/headroom logic.
+4. Wired Host-first QoS into Desktop Agent after Hardware Guardian.
+5. Generalized Smart Compute Node beyond I0/hash to workload-appropriate generic work evidence.
+6. Refreshed `PROJECT_STATUS.json` and canonical architecture.
+7. Added Standard Pilot Authority fail-closed.
+8. Rechecked the owner-side Binance deposit networks; Base was not available for the intended route, so the disabled payment policy was moved from USDC/Base to official Tether USDT on Ethereum Mainnet (ERC20) instead of pretending the old route remained valid.
+9. Required a dedicated Ethereum RPC before Pilot Authority can be enabled.
 
 ## Claim matrix
 
 ### Game / compute constitutional separation — **ENFORCED**
-
-Implemented in Router, Desktop Fabric and Desktop Agent. Game-event coupling and game-effect fields are rejected by the compute path.
 
 ```text
 COMPUTE → RNG                  FORBIDDEN
@@ -49,23 +49,17 @@ HARDWARE PRESSURE → GAME MATH  FORBIDDEN
 
 ### Explicit consent and local resource sovereignty — **ENFORCED**
 
-The public interaction requires explicit opt-in and supports immediate revoke. The Desktop Agent independently rechecks local consent and rejects a controller budget that exceeds local policy.
+The public interaction requires explicit opt-in and supports immediate revoke. Desktop Agent independently rechecks local consent and rejects controller budgets above local policy.
 
 ### Hardware Guardian — **ENFORCED**
 
-`src/helios-hardware-guardian.js` evaluates thermal, power, battery, memory/VRAM and host-load evidence. It may tighten or block the compute budget and cannot make the requested budget larger.
-
-Missing thermal evidence is not painted green. Depending on local policy it enters limited `UNKNOWN` operation or blocks.
+Guardian evaluates thermal, power, battery, memory/VRAM and host-load evidence. It may tighten or block compute and cannot widen the requested budget. Missing thermal evidence is not painted green.
 
 ### Hardware-aware / human-blind policy — **ENFORCED**
 
-The hardware path rejects content-surveillance fields such as screen, keyboard, mouse, microphone, camera, clipboard, browser history, process/game name and active-window content.
-
-Host protection therefore does **not** need to infer what the person is doing.
+Screen, keyboard, mouse, microphone, camera, clipboard, browser history, process/game name and active-window content are forbidden hardware-policy inputs.
 
 ### Host-first QoS — **ENFORCED**
-
-The active Desktop Agent now applies:
 
 ```text
 CONTROLLER BUDGET
@@ -79,44 +73,25 @@ HOST-FIRST QoS
 FINAL EXECUTOR BUDGET
 ```
 
-Each stage can only preserve or reduce the external-compute budget. Under high local CPU/GPU/memory pressure, external work yields first.
+Each stage can only preserve or reduce external compute.
 
 ### Provider default-deny + Authority Epoch — **IMPLEMENTED_CORE**
 
-`ProviderAuthorityEpoch` implements registration ≠ admission, scoped non-transferable leases, dispatch budgets, revocation and stale-epoch rejection.
-
-However, the current generic Router/Fabric dispatch path does **not yet require this authority object on every dispatch**. Therefore the correct claim is implemented core, not end-to-end production enforcement.
-
-**Gate:** wire authority-epoch validation into every production Router/Fabric dispatch.
+Core exists, but the generic Router/Fabric path does not yet require an authority epoch on every production dispatch.
 
 ### Receipt Provenance Envelope — **IMPLEMENTED_CORE**
 
-HELIOS can construct an envelope binding provider, lease/job identity, manifest/adapter/executor/verifier/Guardian digests and external verification/settlement state.
-
-**Gate:** real provider signing, anti-replay and authoritative settlement.
+Core can bind provider, lease/job identity, manifests/adapters/executor/verifier/Guardian digests and verification/settlement state. Real signatures, anti-replay and authoritative settlement remain external gates.
 
 ### True Work Accounting — **IMPLEMENTED_CORE**
 
-Assigned, admitted, executed, retried, rejected/stale, verified and failed work are distinct counters. Device time and measured watt-hours are separate evidence categories.
-
-**Gate:** durable production accounting and authoritative measured-energy sources.
+Assigned, admitted, executed, retried, stale/rejected, verified and failed work are distinct counters. Durable production accounting remains pending.
 
 ### Device Health Passport — **IMPLEMENTED_CORE**
 
-The first-party builder records sealed observation windows, sensor provenance/freshness, Guardian state, compute/verified-work time, measured Wh when available, blocks/throttles/cooldowns/revokes, and receipt references.
-
-It preserves:
-
-```text
-INTEGRITY ≠ SENSOR TRUTH
-UNKNOWN   ≠ ZERO
-```
-
-**Gate:** persistent real sensor windows and vendor/OS telemetry provenance.
+The builder records sealed observation windows, provenance/freshness, Guardian state, compute time, verified work, measured Wh where available and receipt references. `INTEGRITY ≠ SENSOR TRUTH`; `UNKNOWN ≠ ZERO`.
 
 ### Smart Compute Node — **IMPLEMENTED_CORE**
-
-The unified node record now combines:
 
 ```text
 WORK EVIDENCE
@@ -128,41 +103,27 @@ WORK EVIDENCE
 + REPLICATION LINEAGE
 ```
 
-Version 1.1 supports generic work-evidence families (`AI_INFERENCE`, `RENDER`, `SCIENCE`, `TRANSCODE`, `STORAGE_NETWORK`, `OPERATOR_BATCH`, etc.) using workload-appropriate units, while Edge Hash / JANUS I0 retains checked-work normalization.
-
-**Gate:** real provider/verifier semantics for each production workload family.
+Generic work families include AI inference, render, science, transcode, storage/network, operator batch and custom work. Real provider/verifier semantics remain workload-specific external gates.
 
 ### NerdMinerV2 × JANUS I0 Edge Hash Lab — **IMPLEMENTED_CORE**
 
-NerdMinerV2 remains an external MIT compatibility target; no firmware source is silently absorbed into HELIOS. Stock firmware does not acquire JANUS I0 authority. I0 testing requires a compatible bridge/firmware and keeps a controlled `I0 ↔ randomized mirror` experiment normalized by checked work.
-
-**Gate:** physical bridge/firmware and real Stratum experiment.
+NerdMinerV2 remains an external MIT compatibility target; stock firmware has no JANUS I0 authority. Physical I0 requires a compatible bridge/firmware and controlled experiment.
 
 ### Edge Constellation — **IMPLEMENTED_CORE**
 
-Cross-node research uses local paired experiments and does not equate hardware power with evidence weight.
-
-```text
-NODE POWER ≠ EVIDENCE WEIGHT
-```
-
-**Gate:** real heterogeneous ESP32/CPU/GPU/ASIC fleet.
+`NODE POWER ≠ EVIDENCE WEIGHT`. Real heterogeneous fleet remains pending.
 
 ### Evidence Independence Engine — **IMPLEMENTED_CORE**
 
-Replication lineage uses physical-device, execution-lineage, authority, site/network, observation-epoch and job-stream roots. `UNKNOWN` is not treated as independent. Cross-node strong sets use pairwise strong-independence graph structure.
-
-**Gate:** real attested lineage roots.
+Replication lineage uses physical-device, execution-lineage, authority, site/network, observation-epoch and job-stream roots. `UNKNOWN` is not independent. Real attested roots remain pending.
 
 ### Verifier Assurance Monotonicity — **IMPLEMENTED_CORE**
 
-A successor verifier cannot silently forget a prior mandatory rejection without an explicit replayable semantics-change record.
-
-**Gate:** make this checker mandatory in production verifier release/deployment.
+A successor verifier cannot silently forget a prior mandatory rejection without an explicit semantics-change record. Production release-gate wiring remains pending.
 
 ### Standard Pilot Authority — **IMPLEMENTED_CORE / ARMED-DISABLED**
 
-HELIOS now has a first-party standard-pilot licensing gate:
+HELIOS has a first-party standard-pilot licensing gate:
 
 ```text
 NAMED REQUEST
@@ -174,44 +135,39 @@ NAMED REQUEST
 → PILOT_ACTIVE
 ```
 
-The core and watcher enforce:
+Core law:
 
 ```text
 PAYMENT IS EVIDENCE ≠ PAYMENT IS AUTHORITY
 ```
 
-The standard automated grant is limited to a 90-day controlled non-money pilot. It is non-exclusive, non-transferable and non-sublicensable and does not transfer HELIOS Core or automatically create production/commercial rights.
+The standard automated grant is a 90-day controlled non-money pilot. It is non-exclusive, non-transferable and non-sublicensable and does not transfer HELIOS Core or automatically create production/commercial rights.
 
-The frozen primary payment route is native USDC on Base Mainnet. The standard fee anchor is `10,000 USDC`; each request receives a deterministic sub-dollar **discount** as a unique on-chain invoice fingerprint.
+The currently frozen payment route is:
 
-The payment watcher is read-only. It does not need a seed phrase, wallet private key, Binance password or withdrawal API key and cannot move funds.
+```text
+Ethereum Mainnet (ERC20)
+chain_id = 1
+asset = USDT / USD₮
+contract = 0xdAC17F958D2ee523a2206206994597C13D831ec7
+standard anchor = 10,000 USDT
+```
 
-Current status is intentionally **disabled** because no owner receiving address has been committed.
+The payment watcher is read-only and cannot move funds. Token symbol alone is not accepted; chain ID, token contract, receiving address, exact raw amount, successful receipt and confirmation threshold must match.
 
-**Gate:** owner must verify current Binance USDC/Base deposit support, provide the exact current receiving address, confirm the route requires no memo/tag, enable the payment policy, and obtain a green HELIOS Integrity run for that exact activating commit. Until then, no invoice or grant may issue.
+Current status is intentionally **disabled** because the owner receiving address is not yet configured and a dedicated Ethereum RPC has not yet been configured for the workflow.
 
-This automated path is not a sanctions-screening, KYC, tax or gambling-regulatory engine and never authorizes real-money deployment.
+**Gate:** recheck the current Binance `USDT → ETH / Ethereum (ERC20)` address, confirm no memo/tag is required, configure the exact public receiving address, configure `HELIOS_PILOT_RPC_URL`, enable policy, and obtain a green HELIOS Integrity run for that exact activating commit. Until then, no invoice or grant may issue.
+
+The automated path is not KYC, sanctions-screening, tax or gambling-regulatory authority and never authorizes real-money deployment.
 
 ### Public Buyer Lab / Trust surfaces — **DEMO_PREVIEW**
 
-The public page exposes policy previews, Trust Fabric, Smart Compute Node, Edge Hash/Constellation and Evidence Independence surfaces. Those cards are explanatory/reference UI only.
-
-The public page intentionally has:
-
-```text
-LIVE MINING                NO
-LIVE GENERIC PROVIDER JOB  NO
-LIVE TEMPERATURE           NO
-LIVE WATTS                 NO
-FAKE HEALTH %              NO
-AUTHORITATIVE SETTLEMENT   NO
-```
+The public page exposes explanatory policy/trust surfaces only and intentionally has no live mining, live generic provider jobs, live temperature/watts, fake health %, or authoritative settlement.
 
 ### Market uniqueness — **EXTERNAL_GATE / MARKET-REVIEWED CLAIM**
 
 HELIOS does not claim to have invented game+compute, volunteer computing, GPU marketplaces, hardware monitoring or public-benefit computing.
-
-The maintained market statement remains:
 
 > As of the 2026-08-31 public market review, predecessors were identified for individual components, but no public commercial product was identified exposing the same complete maintained HELIOS architecture as one licensable B2B control plane.
 
@@ -219,32 +175,23 @@ That is a market-review statement, **not** a patentability or freedom-to-operate
 
 ### Production readiness — **EXTERNAL_GATE**
 
-HELIOS remains a reference/evaluation prototype. Production truth requires, at minimum, real provider adapters and manifests, authenticated agent transport, real vendor telemetry, signed/anti-replay receipts, workload sandbox/egress policy, independent security/privacy/legal/game-math review and a partner-operated non-money pilot.
+HELIOS remains a reference/evaluation prototype. Production truth requires real provider adapters/manifests, authenticated agent transport, real vendor telemetry, signed/anti-replay receipts, workload sandbox/egress policy, independent security/privacy/legal/game-math review and a partner-operated non-money pilot.
 
 ## Commercial consequence
-
-This audit strengthens the intended licensing proposition because it separates three things a serious partner should not confuse:
 
 ```text
 WHAT HELIOS ALREADY ENFORCES
 WHAT HELIOS ALREADY IMPLEMENTS AS CORE
 WHAT ONLY A REAL PARTNER PILOT CAN PROVE
+WHAT A PARTNER CAN ACQUIRE AS A NARROW STANDARD PILOT RIGHT
 ```
 
-The Standard Pilot Authority adds a fourth useful distinction:
-
-```text
-WHAT A PARTNER CAN ACQUIRE AUTOMATICALLY AS A NARROW PILOT RIGHT
-≠
-WHAT STILL REQUIRES A NEGOTIATED PRODUCTION COMMERCIAL LICENCE
-```
-
-The preferred commercial relationship remains low-friction access with strong Core-IP protection and success-aligned economics. A partner should be able to evaluate the architecture without being sold fictional production evidence.
+The last line is deliberately not equivalent to a production/commercial licence.
 
 ## Audit law
 
 > **No buyer-facing HELIOS claim may be promoted from `IMPLEMENTED_CORE` or `EXTERNAL_GATE` to `ENFORCED` without execution-path evidence and a green exact-commit integrity run.**
 
-For payment/licensing automation specifically:
+For payment/licensing automation:
 
-> **No HELIOS Pilot Authority may be promoted from `ARMED-DISABLED` to active until the public receiving route is rechecked and the exact activating commit passes HELIOS Integrity.**
+> **No HELIOS Pilot Authority may be promoted from `ARMED-DISABLED` to active until the receiving route and RPC are rechecked/configured and the exact activating commit passes HELIOS Integrity.**

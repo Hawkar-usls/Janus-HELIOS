@@ -30,45 +30,40 @@ A random payment to the receiving address grants nothing. The complete request +
 
 The subsystem is intentionally committed as:
 
-`ARMED_DISABLED_PENDING_RECEIVING_ADDRESS`
+`ARMED_DISABLED_PENDING_RECEIVING_ADDRESS_AND_RPC`
 
-No invoice or pilot grant can be issued until the owner supplies and rechecks the exact receiving address and flips `commerce/HELIOS_PILOT_PAYMENT_POLICY.json` to `enabled: true`.
+No invoice or pilot grant can be issued until the owner rechecks the exact Binance receiving route, configures the public receiving address, configures a dedicated Ethereum RPC through `HELIOS_PILOT_RPC_URL`, and flips `commerce/HELIOS_PILOT_PAYMENT_POLICY.json` to `enabled: true` on an exact commit that passes HELIOS Integrity.
 
-This protects against accidentally publishing an unverified or stale exchange deposit route.
+This prevents an unverified/stale exchange route or an untrusted default RPC from becoming licensing authority.
 
-## Recommended Binance receiving route
+## Frozen standard payment route
 
-For the standard automated pilot, the preferred asset is **USDC**, not BTC and not a fiat USD balance.
+The current standard route is **USDT on Ethereum Mainnet (ERC20)**, not BTC and not a fiat USD balance.
 
-Reasoning:
+The route was selected after the current Binance deposit UI was checked and Base was not available for the intended deposit path. HELIOS therefore does not pretend the earlier USDC/Base route is usable.
 
-- HELIOS pilot pricing is USD-denominated;
-- USDC is designed to track one US dollar, avoiding BTC price volatility between invoice and confirmation;
-- native USDC on Base is an ERC-20 asset with six decimals and a stable machine-verifiable contract identity;
-- Base is EVM-compatible, making the verification path simple and auditable;
-- a fiat USD balance is not an on-chain address and therefore cannot be verified by this blockchain watcher.
-
-The currently frozen primary network is:
+Frozen identity:
 
 ```text
-Network: Base Mainnet
-Chain ID: 8453
-Asset: native USDC
-Contract: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+Network: Ethereum Mainnet (ERC20)
+Chain ID: 1
+Asset: USDT / USD₮
+Contract: 0xdAC17F958D2ee523a2206206994597C13D831ec7
 Decimals: 6
 ```
 
-Circle identifies that contract as native USDC on Base:
+Tether's supported-protocol documentation identifies that contract as USD₮ on Ethereum. Ethereum Mainnet uses chain ID `1`.
 
-- https://developers.circle.com/stablecoins/usdc-contract-addresses
+The token symbol alone is **not authority**. The automatic gate checks the combination:
 
-Base documents chain ID 8453 and the public bootstrap RPC endpoint:
-
-- https://docs.base.org/base-chain/quickstart/connecting-to-base
-
-Binance's deposit guidance requires the selected deposit network to match the sender's withdrawal network. Network availability can change, so the **current Binance deposit screen controls**:
-
-- https://academy.binance.com/articles/your-guide-to-binance-deposit-withdrawal
+```text
+CHAIN ID
++ ERC20 CONTRACT
++ RECEIVING ADDRESS
++ EXACT RAW AMOUNT
++ SUCCESSFUL RECEIPT
++ CONFIRMATION THRESHOLD
+```
 
 ### Owner activation procedure
 
@@ -77,53 +72,46 @@ In Binance:
 ```text
 Wallet / Deposit
 → Crypto Deposit
-→ USDC
-→ Base
+→ USDT
+→ ETH / Ethereum (ERC20)
 → copy the CURRENT deposit address
 ```
 
 Before activation, verify in the Binance UI that:
 
-1. `USDC` deposits are currently enabled;
-2. the selected network is exactly `Base` / Base Mainnet;
+1. `USDT` deposits are currently enabled;
+2. the selected network is exactly `ETH` / `Ethereum (ERC20)`;
 3. the displayed receiving address is copied in full;
-4. no tag / memo / payment ID is required for that deposit route; and
-5. Binance has not displayed a maintenance or deposit-suspension notice.
+4. no tag / memo / payment ID is required; and
+5. Binance has not displayed maintenance or deposit-suspension notice.
 
-Then set only the **public receiving address** in the policy. Never add a seed phrase, private key, Binance password, withdrawal credential or exchange API key.
+Only the public `0x...` receiving address belongs in HELIOS. Never add a seed phrase, private key, Binance password, withdrawal credential, 2FA code or exchange withdrawal API key.
 
-If Binance does **not** offer USDC on Base for the account at activation time, do not improvise another network in production. Freeze a new policy version and update its chain ID, official token contract, confirmation rule, tests and docs first.
+If Binance later changes network support, do not silently substitute another chain. Freeze a new payment-policy version with the new chain ID, official token contract, confirmation rule, watcher tests and docs first.
 
-## Why BTC is not the standard automated route
+## Why BTC is not the standard route
 
-BTC may be accepted later as a separately defined manual or alternate payment method, but it is intentionally not the primary standard-pilot route because:
+BTC can be supported later as a separately defined manual/alternate payment method, but it is intentionally not the primary standard-pilot route because the offer is USD-denominated. BTC would add quote timestamp, quote expiry, exchange-rate source and slippage policy to a process that does not need them.
 
-- the pilot offer is denominated in USD;
-- BTC volatility creates an unnecessary valuation question at payment time;
-- exact fee matching requires an exchange-rate policy and quote-expiry logic;
-- the verification and confirmation model is different from the EVM USDC path.
-
-This is a commercial/operational choice, not a prediction about Bitcoin's future value.
+This is an operational choice, not a prediction about Bitcoin's value.
 
 ## Standard pilot fee and invoice fingerprint
 
 The standard policy anchor is:
 
-`10,000.000000 USDC`
+`10,000.000000 USDT`
 
-For payment matching, each GitHub Pilot Request gets a deterministic discount between `0.000001` and `0.999999` USDC.
+For payment matching, each GitHub Pilot Request receives a deterministic discount between `0.000001` and `0.999999` USDT.
 
 Example:
 
 ```text
-standard fee       10000.000000 USDC
-invoice fingerprint    0.000043 USDC discount
-exact invoice        9999.999957 USDC
+standard fee       10000.000000 USDT
+invoice fingerprint    0.000043 USDT discount
+exact invoice        9999.999957 USDT
 ```
 
-The difference is deliberately a **discount**, not a surcharge.
-
-This lets the watcher identify a payment without requiring the buyer to expose a wallet private key, use a memo field, or perform a second transaction.
+The difference is a **discount**, never a surcharge. It gives the watcher an invoice fingerprint without requiring a memo or wallet private key.
 
 ## Request identity and privacy
 
@@ -145,35 +133,40 @@ phone number               NO
 wallet private key         NO
 seed phrase                NO
 Binance password           NO
+2FA code                   NO
 withdrawal API key         NO
 ```
 
-A serious partner that needs private procurement/KYC handling should use a separate negotiated enterprise process rather than publishing sensitive material in a GitHub issue.
+A partner that needs private procurement/KYC handling should use a separate negotiated enterprise process rather than publishing sensitive material in a GitHub issue.
 
 ## What the watcher verifies
 
-`tools/pilot-payment-watch.mjs` is a read-only observer. It:
+`tools/pilot-payment-watch.mjs` is a read-only EVM observer. It:
 
-1. verifies the RPC chain ID;
-2. scans only the frozen USDC contract for `Transfer` events to the frozen receiving address;
-3. matches the exact invoice amount;
+1. verifies the RPC reports Ethereum Mainnet chain ID `1`;
+2. scans only the frozen Tether USDT contract for `Transfer` events to the frozen receiving address;
+3. matches the exact raw invoice amount;
 4. checks transaction success;
 5. reads the transaction block timestamp;
 6. enforces invoice issue/expiry time;
 7. waits for the configured confirmation threshold;
 8. rejects wrong chain/token/address/amount evidence;
 9. checks that the transaction is not already associated with another pilot grant; and
-10. emits a repository-authenticated grant record and closes the request only after the complete gate passes.
+10. emits a repository-authenticated grant record only after the complete gate passes.
 
-The watcher cannot withdraw, swap, spend or return funds.
+The watcher cannot withdraw, swap, spend, sign or return funds.
 
 ## RPC boundary
 
-The policy currently points to Base's public `https://mainnet.base.org` endpoint as a bootstrap/low-volume observer.
+Unlike the earlier Base bootstrap policy, the Ethereum policy intentionally commits **no default RPC URL**.
 
-Base explicitly describes its public endpoint as rate-limited and not intended as a production RPC service. Before HELIOS processes meaningful payment volume, configure `HELIOS_PILOT_RPC_URL` with a dedicated/self-hosted or appropriately contracted RPC provider.
+Before enabling Pilot Authority, configure a dedicated or appropriately managed Ethereum endpoint as the GitHub Actions secret/environment value:
 
-The workflow uses the secret only as an RPC URL override. It never requires a wallet signing secret.
+`HELIOS_PILOT_RPC_URL`
+
+The watcher checks `eth_chainId` and fails if the endpoint is not Ethereum Mainnet. The RPC credential is not a wallet credential and grants no ability to move funds.
+
+For high-volume or higher-assurance production use, the observation layer should later be upgraded to multi-source/provider redundancy and an explicit Ethereum-finality policy. The current `64`-confirmation threshold is a conservative confirmation gate, not a claim of legal or cryptographic settlement finality.
 
 ## What `PILOT_ACTIVE` means
 
@@ -196,13 +189,9 @@ AUTOMATIC COMMERCIAL RIGHTS  NO
 JANUS I0 INCLUDED            NO
 ```
 
-The grant gives a partner enough room to build and test a real integration without selling or transferring HELIOS Core.
-
-A production/commercial licence remains a separate agreement.
+The grant gives a partner room to build and test a real integration without selling or transferring HELIOS Core. Production/commercial use remains a separate written agreement.
 
 ## GitHub evidence model
-
-For the standard flow, the evidence chain is:
 
 ```text
 GitHub Pilot Request
@@ -216,23 +205,11 @@ GitHub Pilot Request
 
 The grant-record digest protects record integrity but is **not described as a digital signature**.
 
-A later production version may add an actual dedicated signing key / hardware-backed signing service, but no fake signature claim is made today.
-
 ## Legal / regulatory boundary
 
-Automation is not legal advice and does not itself implement:
+Automation is not legal advice and does not itself implement regulated identity verification, sanctions-screening services, tax determination, gambling certification, money-transmitter analysis, export-control legal review or production security certification.
 
-- regulated identity verification;
-- sanctions-screening services;
-- tax determination;
-- gambling certification;
-- money-transmitter analysis;
-- export-control legal review; or
-- production security certification.
-
-The request requires a business/legal compliance self-certification, and the Standard Pilot License makes the grant conditional on applicable law. If law requires additional review, that requirement overrides the automated path.
-
-Most importantly, the standard automated grant never authorizes real-money gambling.
+The request requires a business/legal compliance self-certification, and applicable law overrides automation. Most importantly, the standard automated grant never authorizes real-money gambling.
 
 ## Files
 
@@ -250,16 +227,19 @@ tests/pilot-authority-invariants.test.mjs
 ## Activation law
 
 ```text
-NO VERIFIED RECEIVING ADDRESS
+NO VERIFIED USDT/ERC20 ADDRESS
+OR NO DEDICATED ETHEREUM RPC
         ↓
 PILOT AUTHORITY DISABLED
 
 VERIFIED CURRENT ADDRESS
-+ EXACT NETWORK
++ ETHEREUM MAINNET / CHAIN 1
++ OFFICIAL TETHER USDT CONTRACT
 + NO MEMO REQUIREMENT
++ DEDICATED RPC
 + GREEN EXACT-HEAD INTEGRITY
         ↓
 PILOT AUTHORITY MAY BE ENABLED
 ```
 
-This is intentional. Payment automation should fail closed before it handles money.
+Payment automation fails closed before it handles money.

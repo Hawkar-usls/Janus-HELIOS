@@ -1,9 +1,11 @@
-export const HELIOS_PILOT_AUTHORITY_VERSION = '1.0.0';
+export const HELIOS_PILOT_AUTHORITY_VERSION = '1.1.0';
 export const HELIOS_PILOT_GRANT_SCHEMA = 'janus.helios.pilot-grant.v1';
 export const HELIOS_PILOT_INVOICE_SCHEMA = 'janus.helios.pilot-invoice.v1';
 
 const EVM_ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
 const TX_HASH_RE = /^0x[a-fA-F0-9]{64}$/;
+const ETHEREUM_MAINNET_CHAIN_ID = 1;
+const ETHEREUM_USDT_CONTRACT = '0xdac17f958d2ee523a2206206994597c13d831ec7';
 
 function stable(value, fallback = '') {
   return value == null ? fallback : String(value).trim();
@@ -33,7 +35,7 @@ function normalizeTxHash(value) {
   return txHash.toLowerCase();
 }
 
-function usdcRawToDisplay(raw, decimals = 6) {
+function rawToDisplay(raw, decimals = 6) {
   const amount = BigInt(raw);
   const scale = 10n ** BigInt(decimals);
   const whole = amount / scale;
@@ -71,12 +73,15 @@ export function validatePilotPaymentPolicy(policy = {}) {
   if (policy.enabled !== true) throw new Error(`PILOT_AUTHORITY_DISABLED:${stable(policy.disabled_reason, 'UNSPECIFIED')}`);
 
   const payment = policy.payment || {};
-  if (payment.asset !== 'USDC') throw new Error('PILOT_PRIMARY_ASSET_MUST_BE_USDC');
-  if (payment.network !== 'BASE_MAINNET') throw new Error('PILOT_PRIMARY_NETWORK_MUST_BE_BASE_MAINNET');
-  if (Number(payment.chain_id) !== 8453) throw new Error('PILOT_BASE_CHAIN_ID_MISMATCH');
-  if (Number(payment.decimals) !== 6) throw new Error('PILOT_USDC_DECIMALS_MISMATCH');
-  if (normalizeEvmAddress(payment.token_contract) !== '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913') {
-    throw new Error('PILOT_USDC_CONTRACT_MUST_BE_NATIVE_BASE_USDC');
+  if (payment.asset !== 'USDT') throw new Error('PILOT_PRIMARY_ASSET_MUST_BE_USDT');
+  if (payment.network !== 'ETHEREUM_MAINNET') throw new Error('PILOT_PRIMARY_NETWORK_MUST_BE_ETHEREUM_MAINNET');
+  if (Number(payment.chain_id) !== ETHEREUM_MAINNET_CHAIN_ID) throw new Error('PILOT_ETHEREUM_CHAIN_ID_MISMATCH');
+  if (Number(payment.decimals) !== 6) throw new Error('PILOT_USDT_DECIMALS_MISMATCH');
+  if (normalizeEvmAddress(payment.token_contract) !== ETHEREUM_USDT_CONTRACT) {
+    throw new Error('PILOT_USDT_CONTRACT_MUST_BE_TETHER_ETHEREUM_USDT');
+  }
+  if (String(policy.chain_observation?.expected_chain_id_hex || '').toLowerCase() !== '0x1') {
+    throw new Error('PILOT_RPC_EXPECTED_CHAIN_ID_MUST_BE_ETHEREUM_MAINNET');
   }
   normalizeEvmAddress(payment.receiving_address, 'PILOT_RECEIVING_ADDRESS_NOT_CONFIGURED');
   if (payment.memo_required === true) throw new Error('PILOT_AUTOMATION_DOES_NOT_SUPPORT_MEMO_REQUIRED_DEPOSIT');
@@ -105,6 +110,7 @@ export function createPilotInvoice({
   if (!/^[a-f0-9]{64}$/.test(termsDigest)) throw new Error('INVALID_PILOT_TERMS_DIGEST');
 
   const payment = policy.payment;
+  const decimals = toPositiveInteger(payment.decimals, 'PILOT_ASSET_DECIMALS_REQUIRED');
   const baseRaw = BigInt(payment.standard_fee_raw);
   const discountRaw = deriveInvoiceFingerprintDiscountRaw(issueNumber);
   if (discountRaw >= baseRaw) throw new Error('INVOICE_FINGERPRINT_EXCEEDS_STANDARD_FEE');
@@ -124,15 +130,16 @@ export function createPilotInvoice({
     terms_sha256: termsDigest,
     payment: Object.freeze({
       network: payment.network,
-      chain_id: 8453,
-      asset: 'USDC',
+      network_display: stable(payment.network_display, payment.network),
+      chain_id: Number(payment.chain_id),
+      asset: payment.asset,
       token_contract: normalizeEvmAddress(payment.token_contract),
       receiving_address: normalizeEvmAddress(payment.receiving_address),
-      decimals: 6,
+      decimals,
       standard_fee_raw: baseRaw.toString(),
       invoice_fingerprint_discount_raw: discountRaw.toString(),
       exact_amount_raw: amountRaw.toString(),
-      exact_amount_usdc: usdcRawToDisplay(amountRaw, 6),
+      exact_amount_asset: rawToDisplay(amountRaw, decimals),
       memo_required: false,
       wrong_network_grants_rights: false,
       overpayment_or_underpayment_auto_grants_rights: false
@@ -190,7 +197,8 @@ export function verifyPilotPaymentEvidence({ invoice, observation, latest_block_
     to,
     token_contract: token,
     amount_raw: String(observation.amount_raw),
-    amount_usdc: expected.exact_amount_usdc,
+    amount_asset: expected.exact_amount_asset,
+    asset: expected.asset,
     block_number: blockNumber,
     confirmations,
     observed_at: new Date(observedAtMs).toISOString(),
@@ -254,8 +262,9 @@ export function issuePilotGrant({ invoice, request, payment_evidence, granted_at
     payment: Object.freeze({
       invoice_id: invoice.invoice_id,
       network: invoice.payment.network,
+      chain_id: invoice.payment.chain_id,
       asset: invoice.payment.asset,
-      amount_usdc: invoice.payment.exact_amount_usdc,
+      amount_asset: invoice.payment.exact_amount_asset,
       tx_hash: payment_evidence.tx_hash,
       confirmations_at_grant: payment_evidence.confirmations,
       payment_is_authority: false

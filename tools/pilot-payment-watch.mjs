@@ -134,7 +134,7 @@ async function closeIssue(issueNumber, stateReason = 'completed') {
 }
 
 function invoiceComment(invoice) {
-  return `<!-- HELIOS_PILOT_INVOICE:${invoice.invoice_id} -->\n## HELIOS Pilot Authority · invoice issued\n\nThe standard pilot request passed the request/acceptance gate. **Do not change network or asset.**\n\n- Invoice: \`${invoice.invoice_id}\`\n- Network: **Base Mainnet · chain 8453**\n- Asset: **native USDC**\n- Token contract: \`${invoice.payment.token_contract}\`\n- Receiving address: \`${invoice.payment.receiving_address}\`\n- Exact amount: **${invoice.payment.exact_amount_usdc} USDC**\n- Expires: **${invoice.expires_at}**\n- Terms: \`${invoice.terms_file}\`\n- Terms SHA-256: \`${invoice.terms_sha256}\`\n\nThe tiny sub-dollar difference from 10,000 USDC is a deterministic **discount** used only as an on-chain invoice fingerprint. It is not a surcharge.\n\n**Wrong network, wrong token, wrong amount, late payment or a random transfer without this invoice does not automatically grant rights.**\n\n${INVOICE_JSON_OPEN}\n${JSON.stringify(invoice)}\n${INVOICE_JSON_CLOSE}`;
+  return `<!-- HELIOS_PILOT_INVOICE:${invoice.invoice_id} -->\n## HELIOS Pilot Authority · invoice issued\n\nThe standard pilot request passed the request/acceptance gate. **Do not change network or asset.**\n\n- Invoice: \`${invoice.invoice_id}\`\n- Network: **${invoice.payment.network_display} · chain ${invoice.payment.chain_id}**\n- Asset: **${invoice.payment.asset}**\n- Token contract: \`${invoice.payment.token_contract}\`\n- Receiving address: \`${invoice.payment.receiving_address}\`\n- Exact amount: **${invoice.payment.exact_amount_asset} ${invoice.payment.asset}**\n- Expires: **${invoice.expires_at}**\n- Terms: \`${invoice.terms_file}\`\n- Terms SHA-256: \`${invoice.terms_sha256}\`\n\nThe tiny sub-unit difference from the standard fee is a deterministic **discount** used only as an on-chain invoice fingerprint. It is not a surcharge.\n\n**Wrong network, wrong token, wrong amount, late payment or a random transfer without this invoice does not automatically grant rights.**\n\n${INVOICE_JSON_OPEN}\n${JSON.stringify(invoice)}\n${INVOICE_JSON_CLOSE}`;
 }
 
 function invalidComment(message) {
@@ -146,7 +146,7 @@ function expiredComment(invoice) {
 }
 
 function grantComment(grant, grantDigest) {
-  return `${GRANT_MARKER}${grant.grant_id} -->\n## HELIOS Pilot Authority · PILOT_ACTIVE\n\nThe request, frozen terms and exact on-chain payment have satisfied the Standard Pilot License grant conditions.\n\n- Grant: \`${grant.grant_id}\`\n- Grantee: **${grant.grantee.legal_entity_name}**\n- GitHub grantee: \`${grant.grantee.github_grantee}\`\n- Effective: **${grant.effective_at}**\n- Expires: **${grant.expires_at}**\n- Payment tx: \`${grant.payment.tx_hash}\`\n- Grant-record SHA-256: \`${grantDigest}\`\n\nThis is a **90-day standard controlled non-money pilot grant**. It is non-exclusive, non-transferable and non-sublicensable. It does not transfer HELIOS Core, authorize real-money gambling or create public-production/commercial rights.\n\nA successful pilot requires a separate written agreement for production/commercial use.\n\n\`PAYMENT IS EVIDENCE, NOT AUTHORITY\`\n\n<!-- HELIOS_PILOT_GRANT_JSON\n${JSON.stringify({ ...grant, grant_record_sha256: grantDigest })}\nHELIOS_PILOT_GRANT_JSON -->`;
+  return `${GRANT_MARKER}${grant.grant_id} -->\n## HELIOS Pilot Authority · PILOT_ACTIVE\n\nThe request, frozen terms and exact on-chain payment have satisfied the Standard Pilot License grant conditions.\n\n- Grant: \`${grant.grant_id}\`\n- Grantee: **${grant.grantee.legal_entity_name}**\n- GitHub grantee: \`${grant.grantee.github_grantee}\`\n- Effective: **${grant.effective_at}**\n- Expires: **${grant.expires_at}**\n- Payment: **${grant.payment.amount_asset} ${grant.payment.asset}** on **${grant.payment.network}**\n- Payment tx: \`${grant.payment.tx_hash}\`\n- Grant-record SHA-256: \`${grantDigest}\`\n\nThis is a **90-day standard controlled non-money pilot grant**. It is non-exclusive, non-transferable and non-sublicensable. It does not transfer HELIOS Core, authorize real-money gambling or create public-production/commercial rights.\n\nA successful pilot requires a separate written agreement for production/commercial use.\n\n\`PAYMENT IS EVIDENCE, NOT AUTHORITY\`\n\n<!-- HELIOS_PILOT_GRANT_JSON\n${JSON.stringify({ ...grant, grant_record_sha256: grantDigest })}\nHELIOS_PILOT_GRANT_JSON -->`;
 }
 
 async function getLatestBlockNumber() {
@@ -185,7 +185,7 @@ async function observationForLog(log, latestBlock) {
   const fromTopic = String(log.topics?.[1] || '');
   const from = /^0x[a-fA-F0-9]{64}$/.test(fromTopic) ? `0x${fromTopic.slice(-40)}` : null;
   return {
-    chain_id: 8453,
+    chain_id: Number(policy.payment.chain_id),
     token_contract: policy.payment.token_contract,
     tx_hash: log.transactionHash,
     from,
@@ -208,12 +208,13 @@ async function txAlreadyGrantedElsewhere(txHash, currentIssueNumber) {
 async function run() {
   if (policy.enabled !== true) {
     console.log(`HELIOS Pilot Authority: ARMED BUT DISABLED · ${policy.disabled_reason || 'UNSPECIFIED'}`);
-    console.log('No invoice or grant can be issued until the owner configures and rechecks the receiving address/network.');
+    console.log('No invoice or grant can be issued until the owner configures and rechecks the receiving address/network and required RPC.');
     return;
   }
 
   validatePilotPaymentPolicy(policy);
   if (!TOKEN || !REPOSITORY) throw new Error('GITHUB_AUTOMATION_CONTEXT_REQUIRED');
+  if (!RPC_URL) throw new Error('PILOT_RPC_URL_REQUIRED');
 
   const issues = await listPilotIssues();
   if (!issues.length) {
@@ -223,7 +224,7 @@ async function run() {
 
   const latestBlock = await getLatestBlockNumber();
   const logs = await getRecentPaymentLogs(latestBlock);
-  console.log(`HELIOS Pilot Authority: ${issues.length} request(s), ${logs.length} recent inbound USDC transfer log(s).`);
+  console.log(`HELIOS Pilot Authority: ${issues.length} request(s), ${logs.length} recent inbound ${policy.payment.asset} transfer log(s).`);
 
   for (const issue of issues) {
     const comments = await listComments(issue.number);
@@ -239,7 +240,7 @@ async function run() {
       continue;
     }
 
-    let invoiceEntry = comments
+    const invoiceEntry = comments
       .map(comment => ({ comment, invoice: parseInvoiceFromComment(comment.body) }))
       .find(entry => entry.invoice);
 
@@ -259,6 +260,11 @@ async function run() {
     const invoice = invoiceEntry.invoice;
     if (invoice.terms_sha256 !== termsSha256) {
       console.warn(`Invoice ${invoice.invoice_id} is bound to an older/different terms digest; manual review required.`);
+      continue;
+    }
+
+    if (invoice.payment?.chain_id !== policy.payment.chain_id || invoice.payment?.token_contract?.toLowerCase() !== policy.payment.token_contract.toLowerCase()) {
+      console.warn(`Invoice ${invoice.invoice_id} is bound to a different payment policy; manual review required.`);
       continue;
     }
 

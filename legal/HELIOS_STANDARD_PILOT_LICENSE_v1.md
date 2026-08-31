@@ -38,7 +38,7 @@ The standard automated pilot term is **90 days** from the grant's effective time
 
 ## 3. Rights not granted
 
-This Standard Pilot License does **not** authorize real-money gambling or wagering, public production deployment, sublicensing, source resale or transfer of HELIOS Core ownership.
+This Standard Pilot License does **not** authorize real-money gambling or wagering using HELIOS.
 
 The Standard Pilot License does **not** grant any right to:
 
@@ -77,7 +77,7 @@ The controlling invoice identifies:
 
 Only the exact payment described by the invoice satisfies the automatic payment gate. Sending a different token, a different amount or the correct token on a different network does not automatically grant rights.
 
-The standard pilot invoice may include a deterministic discount of less than one USDC below the stated standard pilot fee solely to create a unique on-chain payment fingerprint. This fingerprint is a discount, not a surcharge.
+The standard pilot invoice may include a deterministic discount of less than one unit of the invoiced stablecoin below the stated standard pilot fee solely to create a unique on-chain payment fingerprint. This fingerprint is a discount, not a surcharge.
 
 Accidental, unmatched, late, wrong-network, underpaid or overpaid transfers are subject to manual review and applicable law; they do not create automatic licence rights merely because value reached an address associated with the copyright holder or a custodial provider.
 

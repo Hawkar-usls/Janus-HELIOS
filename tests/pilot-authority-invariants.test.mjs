@@ -22,18 +22,25 @@ const [policy, contract, terms, template, workflow, watcher, pkg] = await Promis
   readFile(new URL('../package.json', import.meta.url), 'utf8').then(JSON.parse)
 ]);
 
-assert.equal(HELIOS_PILOT_AUTHORITY_VERSION, '1.0.0');
+const ETH_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+
+assert.equal(HELIOS_PILOT_AUTHORITY_VERSION, '1.1.0');
+assert.equal(policy.version, '1.1.0');
 assert.equal(policy.enabled, false);
-assert.equal(policy.disabled_reason, 'RECEIVING_ADDRESS_NOT_CONFIGURED_BY_OWNER');
-assert.equal(policy.payment.network, 'BASE_MAINNET');
-assert.equal(policy.payment.chain_id, 8453);
-assert.equal(policy.payment.asset, 'USDC');
-assert.equal(policy.payment.token_contract.toLowerCase(), '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913');
+assert.equal(policy.disabled_reason, 'RECEIVING_ADDRESS_AND_DEDICATED_RPC_NOT_CONFIGURED_BY_OWNER');
+assert.equal(policy.payment.network, 'ETHEREUM_MAINNET');
+assert.equal(policy.payment.network_display, 'Ethereum Mainnet (ERC20)');
+assert.equal(policy.payment.chain_id, 1);
+assert.equal(policy.payment.asset, 'USDT');
+assert.equal(policy.payment.token_contract.toLowerCase(), ETH_USDT);
 assert.equal(policy.payment.decimals, 6);
-assert.equal(policy.payment.standard_fee_usdc, '10000.000000');
+assert.equal(policy.payment.standard_fee_asset, '10000.000000');
 assert.equal(policy.payment.receiving_address, null);
 assert.equal(policy.payment.private_key_present, false);
 assert.equal(policy.payment.seed_phrase_present, false);
+assert.equal(policy.chain_observation.rpc_url, null);
+assert.equal(policy.chain_observation.expected_chain_id_hex, '0x1');
+assert.equal(policy.chain_observation.rpc_classification, 'DEDICATED_ETHEREUM_RPC_REQUIRED_BEFORE_ENABLE');
 assert.equal(policy.grant_gate.payment_alone_is_authority, false);
 assert.equal(policy.grant_gate.real_money_gambling_rights, false);
 assert.equal(policy.grant_gate.public_production_rights, false);
@@ -46,6 +53,15 @@ enabledPolicy.enabled = true;
 enabledPolicy.disabled_reason = null;
 enabledPolicy.payment.receiving_address = '0x1111111111111111111111111111111111111111';
 assert.equal(validatePilotPaymentPolicy(enabledPolicy), true);
+
+const wrongNetwork = structuredClone(enabledPolicy);
+wrongNetwork.payment.network = 'BASE_MAINNET';
+wrongNetwork.payment.chain_id = 8453;
+assert.throws(() => validatePilotPaymentPolicy(wrongNetwork), /PILOT_PRIMARY_NETWORK_MUST_BE_ETHEREUM_MAINNET/);
+
+const wrongToken = structuredClone(enabledPolicy);
+wrongToken.payment.token_contract = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+assert.throws(() => validatePilotPaymentPolicy(wrongToken), /PILOT_USDT_CONTRACT_MUST_BE_TETHER_ETHEREUM_USDT/);
 
 const request = normalizePilotRequest({
   legal_entity_name: 'Example Compute Inc.',
@@ -82,15 +98,20 @@ const invoice = createPilotInvoice({
   issued_at_ms: issuedAt
 });
 assert.equal(invoice.invoice_id, 'HELIOS-PILOT-42');
+assert.equal(invoice.authority_version, '1.1.0');
+assert.equal(invoice.payment.network, 'ETHEREUM_MAINNET');
+assert.equal(invoice.payment.chain_id, 1);
+assert.equal(invoice.payment.asset, 'USDT');
+assert.equal(invoice.payment.token_contract, ETH_USDT);
 assert.equal(invoice.payment.standard_fee_raw, '10000000000');
 assert.equal(invoice.payment.invoice_fingerprint_discount_raw, '43');
 assert.equal(invoice.payment.exact_amount_raw, '9999999957');
-assert.equal(invoice.payment.exact_amount_usdc, '9999.999957');
+assert.equal(invoice.payment.exact_amount_asset, '9999.999957');
 assert.equal(invoice.payment.wrong_network_grants_rights, false);
 assert.equal(invoice.law, 'PAYMENT_IS_EVIDENCE_NOT_AUTHORITY');
 
 const goodObservation = {
-  chain_id: 8453,
+  chain_id: 1,
   token_contract: enabledPolicy.payment.token_contract,
   tx_hash: `0x${'b'.repeat(64)}`,
   from: '0x2222222222222222222222222222222222222222',
@@ -122,7 +143,7 @@ assert.equal(wrongAmount.reason, 'WRONG_AMOUNT');
 
 const wrongChain = verifyPilotPaymentEvidence({
   invoice,
-  observation: { ...goodObservation, chain_id: 1 },
+  observation: { ...goodObservation, chain_id: 8453 },
   latest_block_number: 1100,
   min_confirmations: 64
 });
@@ -138,6 +159,8 @@ const verified = verifyPilotPaymentEvidence({
 assert.equal(verified.verified, true);
 assert.equal(verified.payment_is_authority, false);
 assert.equal(verified.confirmations, 101);
+assert.equal(verified.amount_asset, '9999.999957');
+assert.equal(verified.asset, 'USDT');
 
 const grantTime = Date.parse('2026-08-31T00:05:00Z');
 const grant = issuePilotGrant({
@@ -157,14 +180,22 @@ assert.equal(grant.license.commercial_production_rights, false);
 assert.equal(grant.license.real_money_gambling_rights, false);
 assert.equal(grant.license.clone_or_license_circumvention_rights, false);
 assert.equal(grant.production_requires_separate_written_agreement, true);
+assert.equal(grant.payment.network, 'ETHEREUM_MAINNET');
+assert.equal(grant.payment.chain_id, 1);
+assert.equal(grant.payment.asset, 'USDT');
+assert.equal(grant.payment.amount_asset, '9999.999957');
 assert.equal(grant.payment.payment_is_authority, false);
 assert.equal(isPilotGrantActive(grant, grantTime + 1000), true);
 assert.equal(isPilotGrantActive(grant, Date.parse(grant.expires_at)), false);
 
-assert.equal(contract.status, 'ARMED_DISABLED_PENDING_RECEIVING_ADDRESS');
+assert.equal(contract.version, '1.1.0');
+assert.equal(contract.status, 'ARMED_DISABLED_PENDING_RECEIVING_ADDRESS_AND_RPC');
 assert.equal(contract.core_law, 'PAYMENT_IS_EVIDENCE_NOT_AUTHORITY');
-assert.equal(contract.payment.primary, 'USDC_ON_BASE_MAINNET');
+assert.equal(contract.payment.primary, 'USDT_ON_ETHEREUM_MAINNET_ERC20');
+assert.equal(contract.payment.chain_id, 1);
+assert.equal(contract.payment.erc20_contract.toLowerCase(), ETH_USDT);
 assert.equal(contract.payment.bitcoin_primary, false);
+assert.equal(contract.payment.dedicated_rpc_required_before_enable, true);
 assert.equal(contract.pilot_scope.term_days, 90);
 assert.equal(contract.pilot_scope.real_money_gambling, false);
 assert.equal(contract.security.wallet_private_key_required, false);
@@ -178,6 +209,7 @@ assert.match(terms, /non-transferable and non-sublicensable/i);
 assert.match(terms, /does not transfer ownership/i);
 assert.match(terms, /different token, a different amount or the correct token on a different network/i);
 assert.match(terms, /private key, seed phrase, withdrawal credential or exchange password/i);
+assert.match(terms, /less than one unit of the invoiced stablecoin/i);
 assert.match(terms, /Commercial production deployment requires a separate written commercial agreement/i);
 
 assert.match(template, /name: HELIOS Standard Pilot License Request/);
@@ -203,10 +235,12 @@ assert.match(watcher, /RPC_CHAIN_ID_MISMATCH/);
 assert.match(watcher, /txAlreadyGrantedElsewhere/);
 assert.match(watcher, /PILOT_ACTIVE/);
 assert.match(watcher, /policy\.enabled !== true/);
+assert.match(watcher, /policy\.payment\.asset/);
+assert.doesNotMatch(watcher, /Base Mainnet · chain 8453|native USDC|inbound USDC/i);
 assert.doesNotMatch(watcher, /seed phrase\s*=|private key\s*=/i);
 
 assert.match(pkg.scripts.test, /pilot-authority-invariants\.test\.mjs/);
 assert.match(pkg.scripts['check:public'], /src\/helios-pilot-authority\.js/);
 assert.match(pkg.scripts['check:public'], /tools\/pilot-payment-watch\.mjs/);
 
-console.log('HELIOS Pilot Authority standard-license + exact-payment invariants: PASS');
+console.log('HELIOS Pilot Authority USDT/Ethereum standard-license + exact-payment invariants: PASS');

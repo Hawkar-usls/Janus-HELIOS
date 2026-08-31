@@ -1,0 +1,22 @@
+{
+  "schema": "janus.helios.payment-route-decision.v1",
+  "decision_date": "2026-08-31",
+  "observed_owner_deposit_ui": "BINANCE_CURRENT_ACCOUNT_SCREENSHOTS",
+  "previous_candidate": {
+    "asset": "USDC",
+    "network": "BASE_MAINNET",
+    "status": "REJECTED_FOR_CURRENT_OWNER_ROUTE",
+    "reason": "BASE_NOT_PRESENT_IN_CURRENT_DEPOSIT_NETWORK_UI"
+  },
+  "selected_candidate": {
+    "asset": "USDT",
+    "network": "ETHEREUM_MAINNET",
+    "network_display": "Ethereum Mainnet (ERC20)",
+    "chain_id": 1,
+    "token_contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "contract_authority": "TETHER_OFFICIAL_ETHEREUM_USDT",
+    "selection_reason": "CURRENT_BINANCE_UI_SUPPORT_PLUS_OFFICIAL_TETHER_ETHEREUM_CONTRACT_PLUS_EXISTING_EVM_READ_ONLY_WATCHER"
+  },
+  "activation_status": "DISABLED_PENDING_RECEIVING_ADDRESS_AND_DEDICATED_RPC",
+  "core_law": "PAYMENT_IS_EVIDENCE_NOT_AUTHORITY"
+}
