@@ -1,0 +1,42 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "JANUS HELIOS",
+  "version": "1.16.0",
+  "description": "Source-available licensable B2B compute control plane for explicit revocable device-resource consent, provider-agnostic workload routing, host-first device protection, verified work provenance, and strict separation between game mathematics and compute economics.",
+  "codeRepository": "https://github.com/Hawkar-usls/Janus-HELIOS",
+  "url": "https://hawkar-usls.github.io/Janus-HELIOS/",
+  "issueTracker": "https://github.com/Hawkar-usls/Janus-HELIOS/issues",
+  "license": "https://github.com/Hawkar-usls/Janus-HELIOS/blob/main/LICENSE.md",
+  "dateModified": "2026-08-31",
+  "developmentStatus": "active",
+  "programmingLanguage": ["JavaScript", "HTML", "CSS", "JSON", "YAML"],
+  "applicationCategory": "Distributed Compute Infrastructure",
+  "keywords": [
+    "licensable B2B compute control plane",
+    "distributed compute",
+    "GPU orchestration",
+    "AI inference routing",
+    "render compute",
+    "edge compute",
+    "data center offload",
+    "compute marketplace",
+    "device sovereignty",
+    "hardware guardian",
+    "host-first QoS",
+    "verified work provenance",
+    "proof-carrying compute receipts",
+    "white-label compute interface",
+    "iGaming B2B technology"
+  ],
+  "relatedLink": [
+    "https://hawkar-usls.github.io/Janus-HELIOS/discovery.html",
+    "https://hawkar-usls.github.io/Janus-HELIOS/agents.json",
+    "https://hawkar-usls.github.io/Janus-HELIOS/opportunity.json",
+    "https://hawkar-usls.github.io/Janus-HELIOS/llms.txt",
+    "https://github.com/Hawkar-usls/Janus-HELIOS/blob/main/PROJECT_STATUS.json",
+    "https://github.com/Hawkar-usls/Janus-HELIOS/blob/main/.janus/HELIOS_CLAIM_IMPLEMENTATION_AUDIT_2026-08-31.json"
+  ],
+  "runtimePlatform": "Public web reference/demo plus source-available implementation core; production provider infrastructure is not established",
+  "softwareRequirements": "Production deployment requires qualified external provider integration, authenticated execution transport, security/privacy/legal review, and field validation"
+}
